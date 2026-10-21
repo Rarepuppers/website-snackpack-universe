@@ -25,6 +25,23 @@
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadSuitArtwork, { once: true });
     else loadSuitArtwork();
+    // Mahjong always starts with native family glyphs. Only replace them when
+    // both sheets have decoded; a partial/failed load must not leave color as
+    // the only distinction between two tiles with the same rank.
+    function loadMahjongArtwork() {
+      if (!document.querySelector('#mj-board')) return;
+      var decoded = 0;
+      ['mahjong-suits.png', 'snack-symbols.png'].forEach(function (file) {
+        var image = new Image();
+        image.onload = function () {
+          decoded++;
+          if (decoded === 2) document.documentElement.classList.add('sp-mj-art-ready');
+        };
+        image.src = new URL('sprites/' + file, scriptUrl).href;
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadMahjongArtwork, { once: true });
+    else loadMahjongArtwork();
   // Keep a small, private-on-device return trail for the arcade hub. This file
   // is already loaded by every game, so one guarded hook covers the full set.
   (function recordRecentGame() {
@@ -94,6 +111,108 @@
     apply();
   }());
 
+  (function fitActivePlay() {
+    if (!/^\/play\/(cascade|asteroid-destroyer|table-tennis)\/?$/.test(location.pathname)) return;
+    var stage = document.querySelector('.game-stage');
+    var controls = stage && stage.querySelector('.game-controls');
+    var surface = stage && stage.querySelector('.cs-layout, #as-canvas, #tt-canvas');
+    if (!controls || !surface) return;
+    stage.classList.add('sp-compact-play');
+    var focus = document.createElement('button');
+    focus.type = 'button'; focus.className = 'btn-game sp-focus-toggle';
+    focus.textContent = 'Focus play'; focus.setAttribute('aria-pressed', 'false');
+    controls.appendChild(focus);
+    var frame = 0;
+    var previousPosition = '', previousMaxWidth = '';
+    var previousRole = null, previousLabel = null, inertBranches = [];
+    function fit() {
+      frame = 0;
+      var compact = matchMedia('(max-width: 700px), (max-height: 600px)').matches;
+      var focused = stage.classList.contains('sp-focus-play');
+      if (!compact && !focused) { stage.style.removeProperty('--sp-field-height'); stage.style.removeProperty('--sp-cell'); return; }
+      var pad = stage.querySelector('.cs-pad, .as-controls');
+      var top = surface.getBoundingClientRect().top + (focused ? 0 : scrollY);
+      var space = Math.max(160, innerHeight - top - (pad ? pad.getBoundingClientRect().height + 16 : 0) - 24);
+      stage.style.setProperty('--sp-field-height', Math.floor(Math.min(540, space)) + 'px');
+      // Cascade has twenty rows, nineteen gutters and eighteen pixels of chrome.
+      stage.style.setProperty('--sp-cell', Math.max(6, Math.min(26, (space - 37) / 20)) + 'px');
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(fit); }
+    function setFocus(on) {
+      if (on) {
+        previousPosition = stage.style.position; previousMaxWidth = stage.style.maxWidth;
+        stage.style.position = 'fixed'; stage.style.maxWidth = 'none';
+        previousRole = stage.getAttribute('role'); previousLabel = stage.getAttribute('aria-label');
+        stage.setAttribute('role', 'dialog'); stage.setAttribute('aria-modal', 'true');
+        stage.setAttribute('aria-label', document.querySelector('h1').textContent.trim() + ' focus play');
+        // Keep the same live game in place while taking background navigation
+        // out of the keyboard/accessibility tree. Restore existing inert state.
+        for (var branch = stage; branch.parentElement && branch !== document.body; branch = branch.parentElement) {
+          Array.from(branch.parentElement.children).forEach(function (sibling) {
+            if (sibling !== branch) { inertBranches.push([sibling, sibling.inert]); sibling.inert = true; }
+          });
+        }
+      } else {
+        stage.style.position = previousPosition; stage.style.maxWidth = previousMaxWidth;
+        inertBranches.forEach(function (entry) { entry[0].inert = entry[1]; }); inertBranches = [];
+        if (previousRole === null) stage.removeAttribute('role'); else stage.setAttribute('role', previousRole);
+        if (previousLabel === null) stage.removeAttribute('aria-label'); else stage.setAttribute('aria-label', previousLabel);
+        stage.removeAttribute('aria-modal');
+      }
+      stage.classList.toggle('sp-focus-play', on);
+      document.body.classList.toggle('sp-play-focused', on);
+      focus.setAttribute('aria-pressed', String(on));
+      focus.textContent = on ? 'Exit focus play' : 'Focus play';
+      schedule();
+    }
+    focus.addEventListener('click', function () { setFocus(!stage.classList.contains('sp-focus-play')); });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Tab' && stage.classList.contains('sp-focus-play')) {
+        var stops = Array.from(stage.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), a[href], [tabindex="0"]')).filter(function (el) { return el.getBoundingClientRect().height > 0; });
+        var first = stops[0], last = stops[stops.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+      if (event.key === 'Escape' && stage.classList.contains('sp-focus-play')) {
+        event.preventDefault(); event.stopImmediatePropagation(); setFocus(false); focus.focus();
+      }
+    }, true);
+    var observer = new ResizeObserver(schedule);
+    [stage.querySelector('.game-toolbar'), stage.querySelector('.game-status'), stage.querySelector('.cs-pad, .as-controls')].forEach(function (el) { if (el) observer.observe(el); });
+    addEventListener('resize', schedule);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', schedule);
+    schedule();
+  }());
+
+  (function enlargeCrosswordGrid() {
+    if (!/^\/play\/crossword\/?$/.test(location.pathname)) return;
+    var stage = document.querySelector('.game-stage');
+    var wrap = stage && stage.querySelector('.cw-board-wrap');
+    var grid = stage && stage.querySelector('.cw-grid');
+    if (!wrap || !grid) return;
+    var button = document.createElement('button');
+    button.type = 'button'; button.className = 'btn-game sp-grid-zoom';
+    button.textContent = 'Enlarge grid'; button.setAttribute('aria-pressed', 'false');
+    wrap.before(button);
+    wrap.setAttribute('role', 'region'); wrap.setAttribute('aria-label', 'Crossword grid');
+    function revealSelection() {
+      if (!stage.classList.contains('sp-cw-zoom')) return;
+      var cell = grid.querySelector('.is-selected');
+      if (!cell) return;
+      var a = cell.getBoundingClientRect(), b = wrap.getBoundingClientRect();
+      if (a.left < b.left || a.right > b.right) wrap.scrollLeft += a.left - b.left - (b.width - a.width) / 2;
+      if (a.top < b.top || a.bottom > b.bottom) wrap.scrollTop += a.top - b.top - (b.height - a.height) / 2;
+    }
+    button.addEventListener('click', function () {
+      var on = stage.classList.toggle('sp-cw-zoom');
+      button.setAttribute('aria-pressed', String(on)); button.textContent = on ? 'Show whole grid' : 'Enlarge grid';
+      if (!on) { wrap.scrollTop = 0; wrap.scrollLeft = 0; }
+      else revealSelection();
+    });
+    new MutationObserver(revealSelection).observe(grid, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
+    addEventListener('resize', revealSelection);
+  }());
+
   (function addClearMahjongFaces() {
     if (!/^\/play\/mahjong\/?$/.test(location.pathname)) return;
     var controls = document.querySelector('.game-controls');
@@ -147,7 +266,7 @@
     var stage = document.querySelector(".game-stage");
     var controls = stage && stage.querySelector(".game-controls, .fc-actions");
     if (!controls || controls.querySelector(".sp-options-toggle")) return;
-    var keep = ".btn-game--primary, .primary, [id$='-undo'], [id$='-hint'], #sp-pause";
+    var keep = ".btn-game--primary, .primary, .sp-focus-toggle, [id$='-undo'], [id$='-hint'], #sp-pause";
     var foldable = Array.prototype.filter.call(controls.children, function (el) { return !el.matches(keep); }).length
       + stage.querySelectorAll(".color-pick, .category-controls").length;
     // The sound toggle joins later (enableArcadeAudio), so one is enough.
