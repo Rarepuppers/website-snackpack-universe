@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thirteen (13) Card Game Online — Free, vs Computer | Tiến Lên</title>
-<meta name="description" content="Play Thirteen (13) card game free online against three computer players — the Vietnamese classic Tiến Lên (Tien Len). Singles, pairs, sequences and bombs, two rule sets, plus a shared daily deal. No ads, no sign-in, no download.">
+<title>13 Card Game Online Free — Thirteen (Tiến Lên) vs Computer</title>
+<meta name="description" content="Play the 13 card game free online: Thirteen, the Vietnamese classic Tiến Lên (Tien Len), against three computer players on Easy, Normal or Sharp. Two rule sets and a shared daily deal. No ads, no sign-in, no download.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/play/thirteen/">
 <meta name="theme-color" content="#de6a38">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
 <link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
-<meta property="og:title" content="Thirteen (13) Card Game Online — Free, vs Computer | Tiến Lên">
+<meta property="og:title" content="13 Card Game Online Free — Thirteen (Tiến Lên) vs Computer">
 <meta property="og:description" content="The Vietnamese shedding card game, Tiến Lên. Beat three computer players with singles, pairs, sequences and bombs — free in your browser, no ads.">
 <meta property="og:image" content="https://www.snackpackuniverse.com/play/social/thirteen.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/play/thirteen/">
@@ -56,7 +56,8 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "Is this Thirteen free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and no download required." } },
-    { "@type": "Question", "name": "What are the rules of Thirteen (Tien Len)?", "acceptedAnswer": { "@type": "Answer", "text": "You shed your hand by beating the last play with the same shape — a higher single, pair, triple or sequence — or by passing. Whoever holds the 3 of spades leads the first round. Bombs beat 2s, and the Standard and Classic rule sets differ in what counts as one." } },
+    { "@type": "Question", "name": "What are the rules of Thirteen (Tien Len)?", "acceptedAnswer": { "@type": "Answer", "text": "You shed your hand by beating the last play with the same shape — a higher single, pair, triple or sequence — or by passing. Whoever holds the 3 of spades leads the first round. In Standard rules the 2 is the top card and only a bomb (four of a kind, or three or more consecutive pairs) can beat it; in Classic rules the 2 is the lowest card and there are no bombs." } },
+    { "@type": "Question", "name": "How hard are the computer players?", "acceptedAnswer": { "@type": "Answer", "text": "You choose. Easy always plays its lowest legal combination and spends its 2s early, Normal leads carefully but follows like Easy, and Sharp holds back 2s and bombs and plans its runs. Each difficulty keeps its own win–loss record on your device." } },
     { "@type": "Question", "name": "How do I play Thirteen with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Every card in your hand is a real button, so Tab walks the hand in order and Enter or Space selects a card. Play, Pass and Sort take focus the same way, so a whole turn can be taken without a mouse." } },
     { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up. There is no account and nothing is uploaded." } },
     { "@type": "Question", "name": "Can I play Thirteen offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device, so it loads and plays on a plane or a dead signal. If you would rather have it from the store, Thirteen is also in Snackpack Brain Games Vol 2 on Android." } }
@@ -162,9 +163,15 @@
       <div class="game-stage" data-no-keyboard-reason="Every card in your hand is a real button, so Tab already walks the hand in order and Enter or Space selects a card; keyboard-grid.js roving focus would replace that with a cursor and gain nothing. Play, Pass and Sort take focus the same way. Every other control is reachable by Tab.">
         <div class="game-toolbar">
           <div class="game-readout">
-            <span class="readout-chip"><span>Wins</span><b id="t-wins">0</b></span>
+            <span class="readout-chip" title="Games won and lost against this difficulty on this device"><span>Record</span><b id="t-record">0–0</b></span>
+            <span class="readout-chip" title="All wins on this device, every difficulty"><span>Wins</span><b id="t-wins">0</b></span>
           </div>
           <div class="game-controls">
+            <div class="seg" role="group" aria-label="Difficulty">
+              <button type="button" data-level="easy" aria-pressed="false">Easy</button>
+              <button type="button" data-level="normal" aria-pressed="true">Normal</button>
+              <button type="button" data-level="sharp" aria-pressed="false">Sharp</button>
+            </div>
             <div class="seg" role="group" aria-label="Rules">
               <button type="button" data-mode="standard" aria-pressed="true">Standard</button>
               <button type="button" data-mode="classic" aria-pressed="false">Classic</button>
@@ -235,21 +242,39 @@
         <li><strong>Triple</strong> — three of a kind.</li>
         <li><strong>Sequence</strong> — three or more cards in a run (e.g. 5-6-7). Twos can't be used in runs in Standard rules.</li>
         <li><strong>Double sequence</strong> — three or more consecutive pairs.</li>
-        <li><strong>Bomb</strong> — four of a kind (or a long double-sequence) can "chop" a powerful 2.</li>
+        <li><strong>Bomb</strong> (Standard rules) — four of a kind, or three or more consecutive pairs, can "chop" a single 2; four consecutive pairs chop a pair of 2s.</li>
       </ul>
       <p>On your turn you must beat the current play with a higher combination <em>of the same shape and length</em>, or pass. Once three players pass, the last to play wins the round and leads a fresh one with anything they like.</p>
 
       <h3>Rule sets</h3>
+      <div class="th-rules-table" role="region" aria-label="Standard and Classic rules compared" tabindex="0">
+        <table>
+          <thead><tr><th scope="col"><span class="sr-only">Rule</span></th><th scope="col">Standard</th><th scope="col">Classic (our house variant)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Highest card</th><td>2 (then Ace, King…)</td><td>Ace; the 2 is the <em>lowest</em></td></tr>
+            <tr><th scope="row">2s in runs</th><td>Never</td><td>Allowed</td></tr>
+            <tr><th scope="row">Runs wrap round (Q-K-A-2-3)</th><td>No</td><td>Yes</td></tr>
+            <tr><th scope="row">Bombs chop 2s</th><td>Yes</td><td>No, because no card needs an answer</td></tr>
+            <tr><th scope="row">Who opens</th><td colspan="2">Whoever holds the 3♠; the first play must include it</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How to win more often</h3>
       <ul>
-        <li><strong>Standard</strong> — Southern (Miền Nam) rules: 2 is the highest card and can't appear in sequences.</li>
-        <li><strong>Classic</strong> — Northern (Miền Bắc) rules: sequences may wrap around the top of the deck.</li>
+        <li><strong>Count the dangerous cards.</strong> In Standard there are only four 2s. Once two or three have gone, an Ace becomes a strong single.</li>
+        <li><strong>Don't break a run to win a small round.</strong> A 5-6-7-8 sheds four cards in one go; splitting it to beat a single usually leaves you two awkward leftovers.</li>
+        <li><strong>Lead your weak shapes.</strong> When you win a round, lead the combination you could never use to answer someone else, such as a stray low pair.</li>
+        <li><strong>Hold a bomb for a 2.</strong> Four 8s look like a lot of cards to keep, but they're the only answer when an opponent drops a 2 to take the lead late in the game.</li>
+        <li><strong>Watch the card counts.</strong> When an opponent is down to one or two cards, lead pairs or runs they're unlikely to be able to match, not singles.</li>
       </ul>
+      <p><strong>Worked example (Standard):</strong> CPU 2 is down to three cards and leads the 2♥, hoping to take the lead and play out its last two. No single can beat a 2, but your 6♠ 6♣ 7♦ 7♥ 8♠ 8♣, three pairs in a row, is a bomb. It chops the 2, the round is yours, and you lead next instead.</p>
 
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Thirteen free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>Who do I play against?</summary><p>Three computer players. You're seated as "You" and the 3 of spades decides who opens.</p></details>
-        <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Thirteen the rank order ends King, Ace, 2 — so a 2 beats every other single card. Save them for when you really need them.</p></details>
+        <details class="faq-item"><summary>Who do I play against?</summary><p>Three computer players at the difficulty you choose. Easy plays its lowest legal cards and spends 2s early, Normal leads carefully but follows like Easy, and Sharp holds back its 2s and bombs. Each difficulty keeps its own win–loss record on this device. Whoever holds the 3 of spades opens.</p></details>
+        <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Standard rules the rank order ends King, Ace, 2, so a 2 beats every other single card and only a bomb can answer it. Save them for when you really need them. Classic rules turn this round: the 2 is the lowest card and the Ace is highest.</p></details>
         <details class="faq-item"><summary>What's the Daily deal?</summary><p>Toggle Daily and everyone gets the same hand on the same day, so you can compare how you played it against anyone else. Starting a New game drops you out of Daily mode — a daily is one hand, so re-dealing it while still calling it today's would be misleading.</p></details>
         <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and more games, try the free <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app.</p></details>
       </div>
@@ -621,6 +646,35 @@ function cpuChoosePlay(state, playerIdx) {
   try { wins = parseInt(localStorage.getItem("sp_thirteen_wins") || "0", 10) || 0; } catch (e) {}
   winsEl.textContent = wins;
 
+  // Difficulty (web only; the app has one opponent). Sharp is the shared app
+  // policy above. Easy always plays its lowest legal combination and never
+  // holds back 2s or bombs; Normal leads like Sharp but follows like Easy.
+  // A Sharp-strategy player wins about 42% / 31% / 26% of four-player games
+  // against Easy / Normal / Sharp (a fair seat is 25%) — tests/visual/arcade-thirteen.spec.
+  var LEVELS = ["easy", "normal", "sharp"];
+  var level = "normal";
+  try { var savedLevel = localStorage.getItem("sp_thirteen_level"); if (LEVELS.indexOf(savedLevel) >= 0) level = savedLevel; } catch (e) {}
+  function cpuEasyPlay(state, idx) {
+    var c = legalCombos(state, idx);
+    if (!c.length) return "pass";
+    var n = state.players[idx].hand.length;
+    var fin = c.find(function (x) { return x.cards.length === n; });
+    if (fin) return fin;
+    c.sort(function (a, b) { return a.rankKey - b.rankKey || a.cards.length - b.cards.length; });
+    return c[0];
+  }
+  function cpuLevelPlay(state, idx) {
+    if (level === "sharp") return cpuChoosePlay(state, idx);
+    if (level === "normal" && (!state.lastCombo || state.lastPlayerIdx === idx)) return cpuChoosePlay(state, idx);
+    return cpuEasyPlay(state, idx);
+  }
+  var recordEl = document.getElementById("t-record");
+  function recordKey() { return "sp_thirteen_record_" + level; }
+  function readRecord() { try { var r = JSON.parse(localStorage.getItem(recordKey()) || "null"); if (r && r.won >= 0 && r.lost >= 0) return r; } catch (e) {} return { won: 0, lost: 0 }; }
+  function showRecord() { var r = readRecord(); recordEl.textContent = r.won + "–" + r.lost; }
+  function syncLevel() { document.querySelectorAll(".seg [data-level]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.level === level)); }); showRecord(); }
+  syncLevel();
+
   function cardEl(c, opts) {
     opts = opts || {};
     var b = document.createElement(opts.button ? "button" : "div");
@@ -713,7 +767,7 @@ function cpuChoosePlay(state, playerIdx) {
     cpuTimer = setTimeout(function () {
       if (!gs || gs.phase !== "playing" || gs.currentPlayer === 0) return;
       var idx = gs.currentPlayer;
-      var play = cpuChoosePlay(gs, idx);
+      var play = cpuLevelPlay(gs, idx);
       if (play === "pass") { applyPass(gs, idx); if(window.SnackPackAudio)window.SnackPackAudio.play("tick"); }
       else { applyPlay(gs, idx, play); if(window.SnackPackAudio)window.SnackPackAudio.play("place"); }
       render();
@@ -727,6 +781,9 @@ function cpuChoosePlay(state, playerIdx) {
     if (cpuTimer) clearTimeout(cpuTimer);
     if (resume) resume.clear();
     if (window.SnackPackAudio) window.SnackPackAudio.play(gs.winner === 0 ? "win" : "invalid");
+    var r = readRecord(); if (gs.winner === 0) r.won++; else r.lost++;
+    try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
+    showRecord();
     if (gs.winner === 0) {
       wins++; winsEl.textContent = wins;
       try { localStorage.setItem("sp_thirteen_wins", String(wins)); } catch (e) {}
@@ -738,7 +795,7 @@ function cpuChoosePlay(state, playerIdx) {
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Thirteen",
         puzzle: dailyMode ? dailyNumber() : null,
-        headline: "Won the " + mode + " deal",
+        headline: "Won the " + mode + " deal on " + level[0].toUpperCase() + level.slice(1),
         stats: [wins + (wins === 1 ? " win" : " wins") + " total"]
       });
     }
@@ -816,6 +873,18 @@ function cpuChoosePlay(state, playerIdx) {
     newGame();
   });
 
+  document.querySelectorAll(".seg [data-level]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (btn.dataset.level === level) return;
+      if (resume) resume.save();
+      level = btn.dataset.level;
+      try { localStorage.setItem("sp_thirteen_level", level); } catch (e) {}
+      syncLevel();
+      if (resume) resume.variantChanged();
+      newGame();
+    });
+  });
+
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (resume) resume.save();
@@ -829,7 +898,7 @@ function cpuChoosePlay(state, playerIdx) {
   newGame();
   function validThirteenCard(c){return c&&Number.isInteger(c.value)&&c.value>=1&&c.value<=13&&Number.isInteger(c.suit)&&c.suit>=0&&c.suit<4&&c.id===c.value+"-"+c.suit;}
   function validThirteenSave(p){if(!p||p.phase!=="playing"||p.mode!==mode||!Array.isArray(p.players)||p.players.length!==4||!Number.isInteger(p.currentPlayer)||p.currentPlayer<0||p.currentPlayer>3||!Array.isArray(p.passed))return false;var cards=[];for(var i=0;i<4;i++){if(!p.players[i]||!Array.isArray(p.players[i].hand))return false;cards=cards.concat(p.players[i].hand);}if(p.lastCombo&&(!Array.isArray(p.lastCombo.cards)||!p.lastCombo.cards.every(validThirteenCard)))return false;return cards.every(validThirteenCard)&&new Set(cards.map(function(c){return c.id;})).size===cards.length&&p.passed.every(function(x){return Number.isInteger(x)&&x>=0&&x<4;});}
-  if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:"thirteen",variant:function(){return(dailyMode?"daily-"+dailyNumber():"random")+"-"+mode;},serialize:function(){return{phase:gs.phase,mode:gs.mode,players:gs.players,currentPlayer:gs.currentPlayer,lastCombo:gs.lastCombo,lastPlayerIdx:gs.lastPlayerIdx,selectedCards:gs.selectedCards,passed:Array.from(gs.passedPlayers),winner:gs.winner,roundStarter:gs.roundStarter,isFirstTurn:gs.isFirstTurn,selected:selected.map(function(c){return c.id;})};},validate:validThirteenSave,restore:function(p){if(cpuTimer)clearTimeout(cpuTimer);gs={phase:p.phase,mode:p.mode,players:p.players,currentPlayer:p.currentPlayer,lastCombo:p.lastCombo,lastPlayerIdx:p.lastPlayerIdx,selectedCards:p.selectedCards||[],passedPlayers:new Set(p.passed),winner:p.winner,roundStarter:p.roundStarter,isFirstTurn:!!p.isFirstTurn};selected=gs.players[0].hand.filter(function(c){return(p.selected||[]).indexOf(c.id)>=0;});render();scheduleCpu();return true;},isActive:function(){return gs&&gs.phase==="playing"&&(selected.length>0||gs.players.reduce(function(n,p){return n+p.hand.length;},0)<52);}});
+  if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:"thirteen",variant:function(){return(dailyMode?"daily-"+dailyNumber():"random")+"-"+mode+"-"+level;},serialize:function(){return{phase:gs.phase,mode:gs.mode,players:gs.players,currentPlayer:gs.currentPlayer,lastCombo:gs.lastCombo,lastPlayerIdx:gs.lastPlayerIdx,selectedCards:gs.selectedCards,passed:Array.from(gs.passedPlayers),winner:gs.winner,roundStarter:gs.roundStarter,isFirstTurn:gs.isFirstTurn,selected:selected.map(function(c){return c.id;})};},validate:validThirteenSave,restore:function(p){if(cpuTimer)clearTimeout(cpuTimer);gs={phase:p.phase,mode:p.mode,players:p.players,currentPlayer:p.currentPlayer,lastCombo:p.lastCombo,lastPlayerIdx:p.lastPlayerIdx,selectedCards:p.selectedCards||[],passedPlayers:new Set(p.passed),winner:p.winner,roundStarter:p.roundStarter,isFirstTurn:!!p.isFirstTurn};selected=gs.players[0].hand.filter(function(c){return(p.selected||[]).indexOf(c.id)>=0;});render();scheduleCpu();return true;},isActive:function(){return gs&&gs.phase==="playing"&&(selected.length>0||gs.players.reduce(function(n,p){return n+p.hand.length;},0)<52);}});
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

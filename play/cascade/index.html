@@ -42,6 +42,10 @@
 .cs-next-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
 .cs-next { display: grid; grid-template-columns: repeat(4, 14px); grid-auto-rows: 14px; gap: 1px; justify-content: center; }
 .cs-next-cell { width: 14px; height: 14px; border-radius: 2px; }
+button.cs-next-box { font: inherit; color: inherit; cursor: pointer; min-width: 0; }
+button.cs-next-box:hover:not(:disabled) { border-color: var(--accent); }
+button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
+.cs-hold-state { display: block; margin-top: 6px; font-size: 0.68rem; font-weight: 700; color: var(--muted); }
 .cs-rotzone { position: absolute; top: 0; bottom: 0; width: 50%; }
 .cs-rotzone.l { left: 0; }
 .cs-rotzone.r { right: 0; }
@@ -222,6 +226,11 @@
                 <div class="cs-next-label">Next</div>
                 <div class="cs-next" id="cs-next"></div>
               </div>
+              <button class="cs-next-box" id="cs-hold" type="button" aria-describedby="cs-hold-state">
+                <span class="cs-next-label" style="display:block;">Hold</span>
+                <span class="cs-next" id="cs-hold-cells" aria-hidden="true"></span>
+                <span class="cs-hold-state" id="cs-hold-state">Empty</span>
+              </button>
               <div class="cs-next-box">
                 <div class="cs-next-label">Level</div>
                 <b id="cs-level" style="font-size:1.4rem;font-family:var(--serif);">1</b>
@@ -237,7 +246,7 @@
           <button type="button" data-act="soft" aria-label="Soft drop">↓</button>
           <button type="button" class="primary" data-act="hard" aria-label="Hard drop">⤓</button>
         </div>
-        <p class="game-hint">Desktop: ← → move · ↑ or Z/X rotate · ↓ soft drop · Space hard drop · P pause · Tap board halves to rotate.</p>
+        <p class="game-hint">Desktop: ← → move · ↑ or Z/X rotate · ↓ soft drop · Space hard drop · C or Shift hold · P pause · Tap board halves to rotate. Hold once per piece; it unlocks when the next piece lands.</p>
       </div>
     </div>
   </section>
@@ -421,6 +430,10 @@
   var statusEl = document.getElementById("cs-status");
 
   var grid, piece, nextType, score, lines, over, paused, startLevel = 1, best;
+  // Hold, as in the app (2026-10-19): once per piece, unlocked when the next
+  // piece locks. An empty hold takes the next piece from the queue.
+  var holdType = null, holdUsed = false;
+  var holdEl = document.getElementById("cs-hold"), holdCellsEl = document.getElementById("cs-hold-cells"), holdStateEl = document.getElementById("cs-hold-state");
   var cellEls = [], dropTimer = null;
 
   best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
@@ -451,6 +464,7 @@
     piece = spawn(randomType());
     nextType = randomType();
     score = 0; lines = 0; over = false; paused = false;
+    holdType = null; holdUsed = false;
     statusEl.className = "game-status";
     statusEl.textContent = "Clear full rows to score. Arrow keys or the buttons below.";
     render();
@@ -473,7 +487,23 @@
     if (!isValid(grid, pieceCells(nx))) { gameOver(); return; }
     piece = nx;
     nextType = randomType();
+    holdUsed = false;
     render();
+  }
+
+  function hold() {
+    if (over || paused || holdUsed) return;
+    var fromQueue = holdType === null;
+    var nx = spawn(fromQueue ? nextType : holdType);
+    // Check the replacement fits before changing anything; a blocked spawn
+    // ends the run, as a blocked lock would.
+    if (!isValid(grid, pieceCells(nx))) { gameOver(); return; }
+    holdType = piece.type;
+    piece = nx;
+    if (fromQueue) nextType = randomType();
+    holdUsed = true;
+    render();
+    scheduleDrop();
   }
 
   function stepDown() {
@@ -564,6 +594,26 @@
     linesEl.textContent = lines;
     levelEl.textContent = curLevel();
     renderNext();
+    renderHold();
+  }
+
+  function shapeCells(el, type) {
+    el.innerHTML = "";
+    var set = {};
+    if (type !== null) TETROMINOES[type].rotations[0].forEach(function (rc) { set[rc[0] * 4 + rc[1]] = TETROMINOES[type].color; });
+    for (var i = 0; i < 16; i++) {
+      var d = document.createElement("span");
+      d.className = "cs-next-cell";
+      d.style.background = set[i] ? COLORS[set[i]] : "transparent";
+      el.appendChild(d);
+    }
+  }
+  var SHAPE_NAMES = ["I", "O", "T", "S", "Z", "J", "L"];
+  function renderHold() {
+    shapeCells(holdCellsEl, holdType);
+    holdEl.disabled = over || holdUsed;
+    holdStateEl.textContent = holdUsed ? "Used — next piece" : holdType === null ? "Empty — tap to hold" : "Tap to swap";
+    holdEl.setAttribute("aria-label", "Hold piece" + (holdType === null ? ", empty" : ", holding the " + SHAPE_NAMES[holdType] + " piece"));
   }
 
   function renderNext() {
@@ -589,7 +639,10 @@
     else if (k === "ArrowUp" || k === "x" || k === "X") rotate(1);
     else if (k === "z" || k === "Z") rotate(-1);
     else if (k === " ") hardDrop();
+    else if (k === "c" || k === "C" || k === "Shift") hold();
   });
+
+  holdEl.addEventListener("click", hold);
 
   wellEl.addEventListener("click", function (e) {
     var z = e.target.closest(".cs-rotzone");
