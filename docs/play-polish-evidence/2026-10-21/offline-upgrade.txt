@@ -1,0 +1,27 @@
+SW request false
+SW request true
+REG {
+  active: 'activating',
+  waiting: undefined,
+  installing: undefined,
+  controller: 'activating',
+  keys: [
+    'snackpack-arcade-v46',
+    'last-bastion-2026-10-21-menu-review',
+    'snackpack-arcade-v47'
+  ]
+}
+{
+  "note": "Actual previous v46 service worker upgraded to current v47 against current local pages; not a simulation of an old published HTML bundle.",
+  "before": [
+    "snackpack-arcade-v46",
+    "last-bastion-2026-10-21-menu-review"
+  ],
+  "after": [
+    "last-bastion-2026-10-21-menu-review",
+    "snackpack-arcade-v47"
+  ],
+  "activeCache": "snackpack-arcade-v47",
+  "offlineCrosswordEnlarge": true,
+  "errors": []
+}

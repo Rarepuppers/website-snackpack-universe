@@ -1,0 +1,24 @@
+Running 20 portfolio guards.
+
+PASS  check-android-permissions.js
+PASS  check-bundled-assets.js
+PASS  check-copy-register.js
+PASS  check-cta-contrast.js
+PASS  check-expo-deps.js
+PASS  check-external-links.js
+PASS  check-game-logic.js
+PASS  check-game-ui-delivery.js
+PASS  check-image-host-disclosure.js
+PASS  check-key-backups.js
+PASS  check-listing-live.js
+PASS  check-listing-source.js
+PASS  check-no-ads-claim.js
+PASS  check-offline-claim.js
+PASS  check-pinball-audio.js
+PASS  check-pinball-marketing.js
+PASS  check-stale-native-art.js
+PASS  check-telemetry-disclosure.js
+PASS  check-verify-script.js
+PASS  check-version-sync.js
+
+check-all OK: all 20 portfolio guards pass.

@@ -1,0 +1,26 @@
+
+[WebServer] (node:26892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:21680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/15] tests\visual\arcade-play-polish.spec.mjs:4:1 › hub limits the verified-deal promise to the three supported games
+[2/15] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when suits artwork fails
+[3/15] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when snacks artwork fails
+[4/15] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when all artwork fails
+[5/15] tests\visual\arcade-play-polish.spec.mjs:36:1 › Mahjong decoded art and the saved Clear faces choice have separate ownership
+[6/15] tests\visual\arcade-play-polish.spec.mjs:49:3 › cascade: phone playfield and essential controls fit, with a landscape focus exit
+[7/15] tests\visual\arcade-play-polish.spec.mjs:49:3 › asteroid-destroyer: phone playfield and essential controls fit, with a landscape focus exit
+[8/15] tests\visual\arcade-play-polish.spec.mjs:49:3 › table-tennis: phone playfield and essential controls fit, with a landscape focus exit
+[9/15] tests\visual\arcade-play-polish.spec.mjs:76:1 › Crossword enlargement keeps 40px cells in a local scroller and retains the active answer
+[10/15] tests\visual\arcade-play-polish.spec.mjs:89:3 › Play hub reflows with enlarged text
+[11/15] tests\visual\arcade-play-polish.spec.mjs:89:3 › Play crossword/ reflows with enlarged text
+[12/15] tests\visual\arcade-play-polish.spec.mjs:107:1 › Thirteen describes its existing house variants without unsupported regional labels
+[13/15] tests\visual\arcade-play-polish.spec.mjs:114:1 › hub offers first-screen quick play and discloses input requirements
+[14/15] tests\visual\arcade-play-polish.spec.mjs:130:1 › Backgammon enlarged points stay inside a local scroller and remain playable
+[15/15] tests\visual\arcade-play-polish.spec.mjs:147:1 › Focus play preserves an existing pause and Escape resumes before exiting
+  15 passed (6.4s)

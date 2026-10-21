@@ -1,0 +1,1 @@
+Page wiring ownership: both real generators preserve standalone/legal/redirect pages; ordinary pages update idempotently.

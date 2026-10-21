@@ -1,0 +1,257 @@
+
+[WebServer] (node:28996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 152 tests using 2 workers
+
+
+(node:27164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:29632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/152] tests\visual\arcade-backgammon.spec.mjs:16:1 › a game against the computer plays to a result and is recorded
+[2/152] tests\visual\arcade-art-fallback.spec.mjs:5:3 › Solitaire remains playable with all-art failure
+[3/152] tests\visual\arcade-art-fallback.spec.mjs:5:3 › Solitaire remains playable with webp-only failure
+[4/152] tests\visual\arcade-cards.spec.mjs:36:1 › Hearts: a standard quick game plays to a result and is recorded
+[5/152] tests\visual\arcade-cards.spec.mjs:36:1 › Hearts: a sharp quick game plays to a result and is recorded
+[6/152] tests\visual\arcade-backgammon.spec.mjs:40:1 › the daily game rolls the same dice for everyone
+[7/152] tests\visual\arcade-checkers-draws.spec.mjs:3:1 › checkers: repetition survives reload and undo without recording a loss
+[8/152] tests\visual\arcade-copy.spec.mjs:6:1 › Thirteen says 'You lead' when the player opens a round
+[9/152] tests\visual\arcade-cards.spec.mjs:52:1 › Spades: a quick game plays to a result and is recorded
+[10/152] tests\visual\arcade-copy.spec.mjs:20:1 › Snakes & Ladders conjugates for 'You'
+[11/152] tests\visual\arcade-copy.spec.mjs:67:1 › Word Search says which word was found and how many are left
+[12/152] tests\visual\arcade-copy.spec.mjs:89:1 › Flag Frenzy moves legacy progress into the sp_ namespace
+[13/152] tests\visual\arcade-copy.spec.mjs:111:1 › Thirteen Classic: a CPU's opening play includes the 3 of spades
+[14/152] tests\visual\arcade-daily.spec.mjs:8:1 › daily hub: every card reaches a working daily puzzle
+tests\visual\arcade-daily.spec.mjs:8:1 › daily hub: every card reaches a working daily puzzle
+cards on the hub: 21
+
+[15/152] tests\visual\arcade-cards.spec.mjs:62:1 › Hearts and Spades daily games deal the same hands to everyone
+[16/152] tests\visual\arcade-faq.spec.mjs:32:1 › every game page carries a valid FAQPage
+[17/152] tests\visual\arcade-faq.spec.mjs:37:1 › every JSON-LD block on every game page parses
+[18/152] tests\visual\arcade-faq.spec.mjs:48:1 › no FAQ answer is empty or a stub
+[19/152] tests\visual\arcade-faq.spec.mjs:63:1 › an answer only promises an Android app when the page links to one
+[20/152] tests\visual\arcade-faq.spec.mjs:84:1 › the saved-progress answer matches what the page actually does
+[21/152] tests\visual\arcade-faq.spec.mjs:100:1 › the keyboard answer agrees with the page's own keyboard marker
+[22/152] tests\visual\arcade-faq.spec.mjs:119:1 › no answer claims the web version needs a connection
+[23/152] tests\visual\arcade-faq.spec.mjs:135:1 › every game page registers the service worker its FAQ relies on
+[24/152] tests\visual\arcade-faq.spec.mjs:150:1 › a game really does play with the network cut
+[25/152] tests\visual\arcade-five-dice.spec.mjs:26:1 › a solo game runs 13 turns, and the best score survives a reload
+[26/152] tests\visual\arcade-daily.spec.mjs:40:3 › crossword: the hub's daily link opens a daily puzzle
+[27/152] tests\visual\arcade-daily.spec.mjs:40:3 › kakuro: the hub's daily link opens a daily puzzle
+[28/152] tests\visual\arcade-daily.spec.mjs:40:3 › picross: the hub's daily link opens a daily puzzle
+[29/152] tests\visual\arcade-funnel.spec.mjs:10:1 › the once-a-day modal is stamped with the player's local date
+[30/152] tests\visual\arcade-header.spec.mjs:20:3 › the site header stays above every game toolbar (phone)
+tests\visual\arcade-header.spec.mjs:20:3 › the site header stays above every game toolbar (phone)
+header on top everywhere
+
+[31/152] tests\visual\arcade-header.spec.mjs:20:3 › the site header stays above every game toolbar (desktop)
+[32/152] tests\visual\arcade-five-dice.spec.mjs:36:1 › a game against cpu finishes and is kept in the record
+tests\visual\arcade-header.spec.mjs:20:3 › the site header stays above every game toolbar (desktop)
+header on top everywhere
+
+[33/152] tests\visual\arcade-keyboard.spec.mjs:27:1 › every marked game carries a reason that names real bindings
+[34/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › 2048: responds to its documented keys
+[35/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › cascade: responds to its documented keys
+[36/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › crossword: responds to its documented keys
+[37/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › snackwords: responds to its documented keys
+[38/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › crossbar-challenge: responds to its documented keys
+[39/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › free-kick-curl: responds to its documented keys
+[40/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › target-shooting-arena: responds to its documented keys
+[41/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › header-hero: responds to its documented keys
+[42/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › flappy-snacky: responds to its documented keys
+[43/152] tests\visual\arcade-keyboard.spec.mjs:70:3 › dribble-rush: responds to its documented keys
+[44/152] tests\visual\arcade-keyboard.spec.mjs:86:3 › asteroid-destroyer: consumes its documented movement key
+[45/152] tests\visual\arcade-keyboard.spec.mjs:86:3 › snacky-worm: consumes its documented movement key
+[46/152] tests\visual\arcade-keyboard.spec.mjs:92:1 › table-tennis: consumes its paddle keys once play has started
+[47/152] tests\visual\arcade-keyboard.spec.mjs:102:1 › sudoku: arrows move the selection and digits fill it
+[48/152] tests\visual\arcade-keyboard.spec.mjs:111:1 › kakuro: digits fill the selected cell
+[49/152] tests\visual\arcade-keyboard.spec.mjs:130:3 › golf-solitaire: the playable cards and the stock are keyboard-reachable
+[50/152] tests\visual\arcade-keyboard.spec.mjs:130:3 › pyramid: the playable cards and the stock are keyboard-reachable
+[51/152] tests\visual\arcade-keyboard.spec.mjs:130:3 › tripeaks: the playable cards and the stock are keyboard-reachable
+[52/152] tests\visual\arcade-keyboard.spec.mjs:163:3 › goalkeeper-hero: playable with the keyboard alone
+[53/152] tests\visual\arcade-five-dice.spec.mjs:36:1 › a game against sharp finishes and is kept in the record
+[54/152] tests\visual\arcade-keyboard.spec.mjs:163:3 › penalty-shootout: playable with the keyboard alone
+[55/152] tests\visual\arcade-keyboard.spec.mjs:163:3 › keepy-uppy: playable with the keyboard alone
+[56/152] tests\visual\arcade-keyboard.spec.mjs:163:3 › snakes-and-ladders: playable with the keyboard alone
+[57/152] tests\visual\arcade-keyboard.spec.mjs:163:3 › soccer-trivia-sprint: playable with the keyboard alone
+[58/152] tests\visual\arcade-keyboard.spec.mjs:178:1 › flag-frenzy: playable with the keyboard alone
+[59/152] tests\visual\arcade-keyboard.spec.mjs:191:1 › thirteen: playable with the keyboard alone
+[60/152] tests\visual\arcade-layout.spec.mjs:26:3 › every board starts on the first screen (phone)
+[61/152] tests\visual\arcade-five-dice.spec.mjs:50:1 › the daily game deals everyone the same dice
+[62/152] tests\visual\arcade-mobile.spec.mjs:19:1 › no game overflows horizontally on a phone
+tests\visual\arcade-layout.spec.mjs:26:3 › every board starts on the first screen (phone)
+all 42 boards start on screen
+
+[63/152] tests\visual\arcade-layout.spec.mjs:26:3 › every board starts on the first screen (laptop)
+tests\visual\arcade-mobile.spec.mjs:19:1 › no game overflows horizontally on a phone
+no overflow anywhere
+
+[64/152] tests\visual\arcade-pause.spec.mjs:28:3 › crossbar-challenge: pause control works
+[65/152] tests\visual\arcade-pause.spec.mjs:28:3 › free-kick-curl: pause control works
+[66/152] tests\visual\arcade-pause.spec.mjs:28:3 › goalkeeper-hero: pause control works
+[67/152] tests\visual\arcade-pause.spec.mjs:28:3 › header-hero: pause control works
+[68/152] tests\visual\arcade-pause.spec.mjs:28:3 › penalty-shootout: pause control works
+[69/152] tests\visual\arcade-pause.spec.mjs:28:3 › soccer-trivia-sprint: pause control works
+[70/152] tests\visual\arcade-pause.spec.mjs:28:3 › target-shooting-arena: pause control works
+[71/152] tests\visual\arcade-pause.spec.mjs:78:1 › soccer-trivia-sprint: the question clock is held while paused
+tests\visual\arcade-layout.spec.mjs:26:3 › every board starts on the first screen (laptop)
+all 42 boards start on screen
+
+[72/152] tests\visual\arcade-layout.spec.mjs:47:1 › Options shows the folded controls and names the current choice
+[73/152] tests\visual\arcade-layout.spec.mjs:68:1 › Mahjong tiles scale with the stage and taps still land
+[74/152] tests\visual\arcade-play-polish.spec.mjs:4:1 › hub limits the verified-deal promise to the three supported games
+[75/152] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when suits artwork fails
+[76/152] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when snacks artwork fails
+[77/152] tests\visual\arcade-play-polish.spec.mjs:13:3 › Mahjong retains native families when all artwork fails
+[78/152] tests\visual\arcade-play-polish.spec.mjs:36:1 › Mahjong decoded art and the saved Clear faces choice have separate ownership
+[79/152] tests\visual\arcade-play-polish.spec.mjs:49:3 › cascade: phone playfield and essential controls fit, with a landscape focus exit
+[80/152] tests\visual\arcade-play-polish.spec.mjs:49:3 › asteroid-destroyer: phone playfield and essential controls fit, with a landscape focus exit
+[81/152] tests\visual\arcade-play-polish.spec.mjs:49:3 › table-tennis: phone playfield and essential controls fit, with a landscape focus exit
+[82/152] tests\visual\arcade-pause.spec.mjs:94:1 › goalkeeper-hero: the shot clock is held while paused
+[83/152] tests\visual\arcade-play-polish.spec.mjs:76:1 › Crossword enlargement keeps 40px cells in a local scroller and retains the active answer
+[84/152] tests\visual\arcade-play-polish.spec.mjs:89:3 › Play hub reflows with enlarged text
+[85/152] tests\visual\arcade-play-polish.spec.mjs:89:3 › Play crossword/ reflows with enlarged text
+[86/152] tests\visual\arcade-play-polish.spec.mjs:107:1 › Thirteen describes its existing house variants without unsupported regional labels
+[87/152] tests\visual\arcade-play-polish.spec.mjs:114:1 › hub offers first-screen quick play and discloses input requirements
+[88/152] tests\visual\arcade-play-polish.spec.mjs:130:1 › Backgammon enlarged points stay inside a local scroller and remain playable
+[89/152] tests\visual\arcade-play-polish.spec.mjs:150:1 › Focus play preserves an existing pause and Escape resumes before exiting
+[90/152] tests\visual\arcade-play-polish.spec.mjs:167:3 › compact Cascade and Asteroid controls fit at 320px
+[91/152] tests\visual\arcade-play-polish.spec.mjs:167:3 › compact Cascade and Asteroid controls fit at 390px
+[92/152] tests\visual\arcade-record.spec.mjs:14:1 › connect-4: the win record survives a reload and is per opponent
+[93/152] tests\visual\arcade-pause.spec.mjs:103:1 › header-hero: the cross is not lost while paused
+[94/152] tests\visual\arcade-record.spec.mjs:82:4 › checkers: a finished win is kept in the record
+[95/152] tests\visual\arcade-record.spec.mjs:82:4 › checkers: a finished loss is kept in the record
+[96/152] tests\visual\arcade-record.spec.mjs:106:1 › reversi: a finished game is kept in the record
+[97/152] tests\visual\arcade-record.spec.mjs:124:1 › penalty-shootout: a shootout result is kept in the record
+[98/152] tests\visual\arcade-pause.spec.mjs:125:1 › crossbar-challenge: plays 15 shots through to the finish
+[99/152] tests\visual\arcade-resume.spec.mjs:21:1 › 2048: a run survives a reload
+[100/152] tests\visual\arcade-resume.spec.mjs:47:1 › 2048: starting fresh retires the save
+[101/152] tests\visual\arcade-resume.spec.mjs:61:1 › 2048: a fresh board is not offered back
+[102/152] tests\visual\arcade-resume.spec.mjs:84:1 › mahjong: a part-cleared board survives a reload
+[103/152] tests\visual\arcade-resume.spec.mjs:119:1 › mahjong: each layout keeps its own save
+[104/152] tests\visual\arcade-resume.spec.mjs:141:1 › pyramid: a part-cleared deal survives a reload
+[105/152] tests\visual\arcade-resume.spec.mjs:163:1 › pyramid: a new deal retires the save
+[106/152] tests\visual\arcade-resume.spec.mjs:173:1 › tripeaks: a scored run survives a reload
+[107/152] tests\visual\arcade-resume.spec.mjs:193:1 › golf-solitaire: a run survives a reload
+[108/152] tests\visual\arcade-resume.spec.mjs:232:1 › connect-4: a match against the CPU survives a reload
+[109/152] tests\visual\arcade-resume.spec.mjs:257:1 › connect-4: a new match retires the save
+[110/152] tests\visual\arcade-resume.spec.mjs:268:1 › connect-4: each difficulty keeps its own save
+[111/152] tests\visual\arcade-resume.spec.mjs:285:1 › connect-4: an empty board is not offered back
+[112/152] tests\visual\arcade-resume.spec.mjs:320:1 › checkers: a match against the CPU survives a reload
+[113/152] tests\visual\arcade-resume.spec.mjs:340:1 › checkers: the opening position is not offered back
+[114/152] tests\visual\arcade-resume.spec.mjs:367:1 › reversi: a match against the CPU survives a reload
+[115/152] tests\visual\arcade-resume.spec.mjs:386:1 › reversi: the opening four discs are not offered back
+[116/152] tests\visual\arcade-resume.spec.mjs:396:1 › snakes-and-ladders: a game survives a reload
+[117/152] tests\visual\arcade-pause.spec.mjs:140:1 › free-kick-curl: plays 10 kicks through to the finish
+[118/152] tests\visual\arcade-pause.spec.mjs:154:1 › crossbar-challenge: a shot paused in mid-air still resolves
+[119/152] tests\visual\arcade-resume.spec.mjs:419:1 › snakes-and-ladders: New game retires the save
+[120/152] tests\visual\arcade-pause.spec.mjs:172:1 › penalty-shootout: a kick paused in mid-air still resolves
+[121/152] tests\visual\arcade-pause.spec.mjs:186:1 › target-shooting-arena: the target resumes moving after a pause
+[122/152] tests\visual\arcade-pause.spec.mjs:217:1 › soccer-trivia-sprint: a backgrounded tab no longer auto-fails the question
+[123/152] tests\visual\arcade-soccer-fairness.spec.mjs:10:1 › penalty-shootout: restarting during flight cancels the old result and next phase
+[124/152] tests\visual\arcade-soccer-fairness.spec.mjs:21:1 › soccer-trivia-sprint: a complete category sprint keeps unique questions and correct shuffled answers
+[125/152] tests\visual\arcade-soccer-fairness.spec.mjs:42:1 › soccer-trivia-sprint: expired questions cannot earn a late correct answer
+[126/152] tests\visual\arcade-pause.spec.mjs:230:1 › goalkeeper-hero: a backgrounded tab no longer concedes the shot
+[127/152] tests\visual\arcade-thirteen.spec.mjs:45:1 › Easy, Normal and Sharp are clearly different opponents
+[128/152] tests\visual\arcade-pause.spec.mjs:240:1 › header-hero: a backgrounded tab no longer burns the cross
+[129/152] tests\visual\arcade-webp.spec.mjs:45:3 › flappy-snacky: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › flappy-snacky: shared art is fetched as WebP
+flappy-snacky: 907 KB cold
+
+[130/152] tests\visual\arcade-webp.spec.mjs:45:3 › checkers: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › checkers: shared art is fetched as WebP
+checkers: 654 KB cold
+
+[131/152] tests\visual\arcade-webp.spec.mjs:45:3 › reversi: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › reversi: shared art is fetched as WebP
+reversi: 619 KB cold
+
+[132/152] tests\visual\arcade-webp.spec.mjs:45:3 › connect-4: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › connect-4: shared art is fetched as WebP
+connect-4: 624 KB cold
+
+[133/152] tests\visual\arcade-webp.spec.mjs:45:3 › solitaire: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › solitaire: shared art is fetched as WebP
+solitaire: 623 KB cold
+
+[134/152] tests\visual\arcade-webp.spec.mjs:45:3 › spider-solitaire: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › spider-solitaire: shared art is fetched as WebP
+spider-solitaire: 635 KB cold
+
+[135/152] tests\visual\arcade-webp.spec.mjs:45:3 › tripeaks: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › tripeaks: shared art is fetched as WebP
+tripeaks: 568 KB cold
+
+[136/152] tests\visual\arcade-webp.spec.mjs:45:3 › pyramid: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › pyramid: shared art is fetched as WebP
+pyramid: 581 KB cold
+
+[137/152] tests\visual\arcade-webp.spec.mjs:45:3 › golf-solitaire: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › golf-solitaire: shared art is fetched as WebP
+golf-solitaire: 594 KB cold
+
+[138/152] tests\visual\arcade-webp.spec.mjs:45:3 › freecell: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › freecell: shared art is fetched as WebP
+freecell: 514 KB cold
+
+[139/152] tests\visual\arcade-webp.spec.mjs:45:3 › thirteen: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › thirteen: shared art is fetched as WebP
+thirteen: 669 KB cold
+
+[140/152] tests\visual\arcade-webp.spec.mjs:45:3 › memory-match: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › memory-match: shared art is fetched as WebP
+memory-match: 580 KB cold
+
+[141/152] tests\visual\arcade-webp.spec.mjs:45:3 › minesweeper: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › minesweeper: shared art is fetched as WebP
+minesweeper: 615 KB cold
+
+[142/152] tests\visual\arcade-webp.spec.mjs:45:3 › picross: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › picross: shared art is fetched as WebP
+picross: 682 KB cold
+
+[143/152] tests\visual\arcade-webp.spec.mjs:45:3 › snakes-and-ladders: shared art is fetched as WebP
+tests\visual\arcade-webp.spec.mjs:45:3 › snakes-and-ladders: shared art is fetched as WebP
+snakes-and-ladders: 1104 KB cold
+
+[144/152] tests\visual\arcade-weight.spec.mjs:50:3 › crossbar-challenge: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › crossbar-challenge: stays inside the first-load budget
+crossbar-challenge: 2125 KB cold, pitches=[pitch-wide.webp]
+
+[145/152] tests\visual\arcade-weight.spec.mjs:50:3 › dribble-rush: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › dribble-rush: stays inside the first-load budget
+dribble-rush: 2028 KB cold, pitches=[pitch-runner.webp]
+
+[146/152] tests\visual\arcade-weight.spec.mjs:50:3 › free-kick-curl: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › free-kick-curl: stays inside the first-load budget
+free-kick-curl: 2168 KB cold, pitches=[pitch-wide.webp]
+
+[147/152] tests\visual\arcade-weight.spec.mjs:50:3 › goalkeeper-hero: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › goalkeeper-hero: stays inside the first-load budget
+goalkeeper-hero: 2109 KB cold, pitches=[pitch-wide.webp]
+
+[148/152] tests\visual\arcade-weight.spec.mjs:50:3 › header-hero: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › header-hero: stays inside the first-load budget
+header-hero: 2031 KB cold, pitches=[pitch-wide.webp]
+
+[149/152] tests\visual\arcade-weight.spec.mjs:50:3 › keepy-uppy: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › keepy-uppy: stays inside the first-load budget
+keepy-uppy: 2166 KB cold, pitches=[pitch-wide.webp]
+
+[150/152] tests\visual\arcade-weight.spec.mjs:50:3 › penalty-shootout: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › penalty-shootout: stays inside the first-load budget
+penalty-shootout: 2106 KB cold, pitches=[pitch-wide.webp]
+
+[151/152] tests\visual\arcade-weight.spec.mjs:50:3 › target-shooting-arena: stays inside the first-load budget
+tests\visual\arcade-weight.spec.mjs:50:3 › target-shooting-arena: stays inside the first-load budget
+target-shooting-arena: 2173 KB cold, pitches=[pitch-wide.webp]
+
+tests\visual\arcade-thirteen.spec.mjs:45:1 › Easy, Normal and Sharp are clearly different opponents
+Sharp-strategy player wins: easy 40.5%, normal 31.8%, sharp 26.4%
+
+[152/152] tests\visual\arcade-thirteen.spec.mjs:62:1 › a game on Easy plays to a result, lands in Easy's record, and the level is remembered
+  152 passed (4.2m)

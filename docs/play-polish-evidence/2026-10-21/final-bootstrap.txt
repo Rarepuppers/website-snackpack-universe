@@ -1,0 +1,1 @@
+Game UI bootstrap coverage passed (43 playable pages; Daily and Stats excluded).

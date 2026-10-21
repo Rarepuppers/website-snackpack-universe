@@ -1,0 +1,106 @@
+[
+  {
+    "slug": "hub",
+    "mode": "phone",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "mahjong",
+    "mode": "phone",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "crossword",
+    "mode": "enlarged",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "cascade",
+    "mode": "phone",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "asteroid-destroyer",
+    "mode": "phone",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "table-tennis",
+    "mode": "phone",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "cascade",
+    "mode": "focus",
+    "width": 812,
+    "height": 375,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "asteroid-destroyer",
+    "mode": "focus",
+    "width": 812,
+    "height": 375,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "table-tennis",
+    "mode": "focus",
+    "width": 812,
+    "height": 375,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "hub",
+    "mode": "text",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "crossword",
+    "mode": "text",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "backgammon",
+    "mode": "enlarged",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  },
+  {
+    "slug": "mahjong",
+    "mode": "failure",
+    "width": 375,
+    "height": 812,
+    "errors": [],
+    "overflow": 0
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "runtimeCommits": [
+    "b1b28c0f",
+    "fedd3fdd"
+  ],
+  "testFollowup": "e4333cba",
+  "tree": "dirty with other sessions changes",
+  "note": "Final runtime hashes after the native activation follow-up; the full browser suite and portfolio checks started before that three-line change. All 17 targeted cases and syntax pass afterward. Other owners dirty controllers remain in the tested tree; not a clean/exact-commit or publication claim.",
+  "sha256": {
+    "play/index.html": "d296fd5332da97fd55e14b08ffa0ecf354bea1df4f2de2704fe4db9db80a8db5",
+    "play/play.css": "ca05acde160b7ac1f103571985079349da382e8b7d9164111f245c3d7a0773ae",
+    "play/game-ui-controls.js": "a05c71ca94e98346d30f8d43b9f32ffa193d69205c98224d0e61d33230d570b7",
+    "play/hub.js": "5386d5cfe9223bfa94a8d8f959583b0cb2dfe55a0b62ca7323188944a2d84a5f",
+    "play/pause.js": "c1f55f1ce29fc61a176020cece9d16b9710ecd99e08004d55337cd3e64560f8b",
+    "sw.js": "923e48a4a26f2d746ade09a549bbceaa060c32a494eb66f4531e2917e594de8d",
+    "scripts/build-pwa.mjs": "b17dba9485abeea9281228409589f725b4388cf917d8412af476046170aa7e7e",
+    "scripts/build-theme.mjs": "e188338fc283f2f97d8688bc57cd562978f651abc6eb92fabf57ee01cffea3ca",
+    "scripts/lib/page-wiring-owner.mjs": "b1ff4c922da00900ef314a3ebdadb3c3979d6360a02bc1241e8d8fa6d4c012b7"
+  },
+  "nativeActivationFollowup": "3f43a3f8"
+}

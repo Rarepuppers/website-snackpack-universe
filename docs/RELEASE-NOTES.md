@@ -5,6 +5,26 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-10-21 - Play usability and artwork resilience (prepared locally)
+
+Implemented in `b1b28c0f`, `fedd3fdd` and `3f43a3f8`; **not pushed/deployed**. Arcade cache prepared as v47.
+
+- Compact Cascade, Asteroid Destroyer and Table Tennis playfields follow available phone height.
+  Focus play keeps the live game and controls together, traps focus within the active panel and
+  restores background access on exit. Pause persists when changing layout; Escape resumes first.
+- Crossword has a locally scrollable 40px-cell enlargement. Its keyboard and long hub titles
+  reflow with enlarged text. Backgammon offers a locally enlarged board without changing rules.
+- Mahjong retains native family/rank identity until both art sheets load; missing art no longer
+  removes the visible family distinction. The saved Clear faces preference remains independent.
+- Static quick-play links, a touch-controls filter and a visible Last Bastion input badge improve
+  discovery. The hub's verified-deal claim is limited to Klondike/FreeCell/TriPeaks; Thirteen's
+  existing house variants are described without unsupported regional equivalence.
+- Theme/PWA generators preserve Last Bastion's independently owned privacy wiring; isolated
+  tests verify actual generators and idempotence. Corrected the stale helmet-tile placeholder note.
+
+No art generation, new modes, default game-rule/save changes, native builds or publication ran.
+See [implementation evidence and remaining acceptance](archive/PLAY-POLISH-IMPLEMENTATION-2026-10-21.md).
+
 ## 2026-10-20 - Complete offline books, two questions and practical printing
 
 Published in `3b542981`. Full CI and Pages pass; all 29 reader cases pass on

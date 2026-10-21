@@ -4,6 +4,52 @@
 assets, modes, backgrounds, sprites, animation, bugs and polish. This is a review and
 implementation proposal; this pass changes no gameplay, public copy, asset delivery or deployment.
 
+**Implementation update:** Mark requested continuation. `b1b28c0f` and `fedd3fdd` deliver the
+first-wave fixes and bounded discovery/Backgammon/ownership follow-through locally.
+`3f43a3f8` follows with native keyboard activation ownership. A combined 152-case browser run
+passes, followed by all 17 implementation cases on the activation follow-up. All 20 portfolio
+guards pass; the evidence record preserves the dirty-tree/test timing limits. See
+[completed implementation](archive/PLAY-POLISH-IMPLEMENTATION-2026-10-21.md) for verification
+and [current queue](#current-queue-after-the-first-implementation-batch) below. Findings and
+pre-change measurements in the original audit remain historical evidence, not open duplicates.
+The patch is not pushed/deployed. Other sessions' changes remain separate.
+
+## Current queue after the first implementation batch
+
+- **PLAY-01/02/03/04/05 implemented:** qualified deal promise, compact real-time field/input
+  layouts with opt-in Focus play, 40px local Crossword enlargement, automatic native Mahjong
+  identity until both sheets load, and the demonstrated hub/Crossword 200% text reflow repairs.
+  Actual screen-reader, phone hardware and full enlarged-text/browser-zoom acceptance remain open.
+- **PLAY-06 bounded copy correction implemented:** Standard/Classic now describe the actual
+  house variants without unsupported regional equivalence. More teaching examples remain polish.
+- **PLAY-07 bounded slice implemented:** local Backgammon board enlargement provides wider
+  points and preserves legal source/destination actions. Further guidance/count/die review and
+  match play remain separate; this is not full completion of the game's next-review matrix.
+- **PLAY-08/09 bounded slice implemented:** first-screen static quick-play links, a visible
+  Last Bastion input badge and touch-controls filter. No usage/conversion improvement is claimed;
+  Atlas stays outside that filter pending its owner's actual input acceptance.
+- **PLAY-13/14 implemented for confirmed scope:** shared generators now preserve the Last
+  Bastion privacy subtree as well as game/redirect output; both real generators have isolated
+  idempotence tests wired into CI. Pinball retains the ordinary site shell, and no speculative
+  Keeping Up exclusion is invented. Corrected the obsolete Last Bastion placeholder receipt.
+- **PLAY-15 partial:** 17 new production browser scenarios and a generator fixture test cover
+  the demonstrated boundaries. Full accessibility, reduced-motion and every per-family state
+  review remain acceptance work, not implied by those automated cases.
+
+Next source work, in order: review/complete the **existing owner's Thirteen difficulty** delivery;
+**Cascade Hold** as a separate app/web parity feature; remaining card-hand/scorecard ergonomics
+and state-cue reviews (PLAY-10/11); then selected animation polish (PLAY-12) only where a named
+interaction benefits. Backgammon match and new ports retain their full feature contracts below.
+The soccer owner committed its fairness work as `5136e7de` during this batch; this chat did not
+stage that work or establish publication. Do not implement either owner's changes twice.
+
+Human/mobile/AT/audio and exact native/runtime acceptance remain open. The changed hub needs
+reviewed Linux screenshot adoption (three themes × phone/desktop) before an authorized release;
+local Windows behavior passes do not replace that CI step. Last Bastion, Pinball and
+Atlas ownership/gates remain separate. No production build, new bitmap generation or publication
+ran. The audit's original findings/roadmap follow for rationale; use this status section to avoid
+reopening delivered fixes.
+
 ## Decision
 
 Prioritize usable controls, truthful claims and resilient piece identities before new art or games.
