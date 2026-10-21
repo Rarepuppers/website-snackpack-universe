@@ -5240,3 +5240,14 @@ No new push/deploy, executable packaging, Steam action or cross-chat message ran
 
 Final portfolio verification also passes all 20 discovered guards, including shared-asset delivery.
 The retained `portfolio-verification.txt` records this final run.
+
+### Post-implementation audit — 21 October 2026
+
+Reviewed checkpoint `7780ba86`; preserved unrelated dirty pages/art. Fresh local browser suite:
+41 passed in 1.2 minutes. Twelve new captures cover five settings groups, baseline/kit combat,
+dense 4K CVD, map and Marine/Medic/Assault galleries. No new runtime defect or essential raster
+replacement was established. Static/diagnostic evidence does not close human/device acceptance.
+`AUDIT-FOLLOWUP-2026-10-21.md` details priorities, asset decisions, conditional mode scope and
+owner/acceptance handoffs; CURRENT-PLAN links it as supporting detail, not another queue.
+No runtime/release-note change, generation, package, push or deployment. Full verifier and
+portfolio results above remain historical; only the browser suite was rerun for this review.

@@ -18,6 +18,22 @@ This is the only active execution queue. Completed audit tasks are in the
 [archive](archive/README.md); player-facing changes are in the [release notes](RELEASE-NOTES.md).
 Keep the content freeze until observed play and live measurement justify expansion.
 
+## Latest post-implementation audit — 21 October
+
+The [follow-up review](AUDIT-FOLLOWUP-2026-10-21.md) records detailed asset, animation, mode and
+polish recommendations against `7780ba86`. Fresh checks: **41 browser regressions pass (1.2m)**;
+twelve new local captures cover all settings groups, baseline/kit combat, dense 4K CVD, map and
+Marine/Medic/Assault galleries. No new runtime defect or essential asset-generation task was
+established. These sampled checks do not close observed-play, AT, audio or hardware gates.
+
+Priority remains: **P1** observed Runs 1–5 → floor decision → hero registration/transitions →
+earned-rack/hostile-tell/map clarity → actual semantic-menu acceptance; fresh package/hardware
+acceptance has an external owner. **P2** targeted audio/teaching polish and conditional practice;
+**P3** one conditional existing-region encounter variation. Follow-up details refine the existing
+IDs and acceptance criteria; they do not open a second execution queue or authorize content/release.
+Existing code-native teaching diagrams do not need replacement merely because historical plans
+mention placeholders. Release notes remain unchanged because this audit changes no runtime.
+
 ## 21 October accepted follow-through — executable scope complete
 
 Mark accepted the [audit and prioritized proposal](AUDIT-REVIEW-2026-10-21.md). Implementation

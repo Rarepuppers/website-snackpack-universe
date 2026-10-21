@@ -1,0 +1,1488 @@
+{
+  "checkedAt": "2026-10-21T11:22:48.691Z",
+  "head": "7780ba86",
+  "limitations": "Diagnostic snapshots and brief simulated input only. DPR 1. No observed-run, audio, assistive-technology or hardware acceptance.",
+  "results": [
+    {
+      "name": "Accessibility",
+      "controls": [
+        {
+          "key": "setting-screenShakeEnabled",
+          "rect": {
+            "x": 406,
+            "y": 158,
+            "width": 28,
+            "height": 24,
+            "top": 158,
+            "right": 434,
+            "bottom": 182,
+            "left": 406
+          },
+          "name": "Screen shake",
+          "value": "on"
+        },
+        {
+          "key": "setting-screenShakeIntensity",
+          "rect": {
+            "x": 292,
+            "y": 196,
+            "width": 102,
+            "height": 24,
+            "top": 196,
+            "right": 394,
+            "bottom": 220,
+            "left": 292
+          },
+          "name": "Shake intensity",
+          "value": "1"
+        },
+        {
+          "key": "setting-reducedFlashEnabled",
+          "rect": {
+            "x": 406,
+            "y": 234,
+            "width": 28,
+            "height": 24,
+            "top": 234,
+            "right": 434,
+            "bottom": 258,
+            "left": 406
+          },
+          "name": "Reduced flash",
+          "value": "on"
+        },
+        {
+          "key": "setting-damageNumbersEnabled",
+          "rect": {
+            "x": 406,
+            "y": 272,
+            "width": 28,
+            "height": 24,
+            "top": 272,
+            "right": 434,
+            "bottom": 296,
+            "left": 406
+          },
+          "name": "Damage numbers",
+          "value": "on"
+        },
+        {
+          "key": "setting-cooldownTimersEnabled",
+          "rect": {
+            "x": 406,
+            "y": 310,
+            "width": 28,
+            "height": 24,
+            "top": 310,
+            "right": 434,
+            "bottom": 334,
+            "left": 406
+          },
+          "name": "Cooldown timers",
+          "value": "on"
+        },
+        {
+          "key": "setting-affinityHudEnabled",
+          "rect": {
+            "x": 406,
+            "y": 348,
+            "width": 28,
+            "height": 24,
+            "top": 348,
+            "right": 434,
+            "bottom": 372,
+            "left": 406
+          },
+          "name": "Affinity indicator",
+          "value": "on"
+        },
+        {
+          "key": "setting-enemyHealthBars",
+          "rect": {
+            "x": 292,
+            "y": 385,
+            "width": 146,
+            "height": 26,
+            "top": 385,
+            "right": 438,
+            "bottom": 411,
+            "left": 292
+          },
+          "name": "Enemy health bars",
+          "value": "threats"
+        },
+        {
+          "key": "setting-reducedMotionEnabled",
+          "rect": {
+            "x": 826,
+            "y": 158,
+            "width": 28,
+            "height": 24,
+            "top": 158,
+            "right": 854,
+            "bottom": 182,
+            "left": 826
+          },
+          "name": "Reduced motion",
+          "value": "on"
+        },
+        {
+          "key": "setting-highContrastOutlinesEnabled",
+          "rect": {
+            "x": 826,
+            "y": 196,
+            "width": 28,
+            "height": 24,
+            "top": 196,
+            "right": 854,
+            "bottom": 220,
+            "left": 826
+          },
+          "name": "High-contrast outlines",
+          "value": "on"
+        },
+        {
+          "key": "setting-uiScale",
+          "rect": {
+            "x": 712,
+            "y": 233,
+            "width": 146,
+            "height": 26,
+            "top": 233,
+            "right": 858,
+            "bottom": 259,
+            "left": 712
+          },
+          "name": "HUD scale",
+          "value": "1"
+        },
+        {
+          "key": "setting-radarSize",
+          "rect": {
+            "x": 712,
+            "y": 271,
+            "width": 146,
+            "height": 26,
+            "top": 271,
+            "right": 858,
+            "bottom": 297,
+            "left": 712
+          },
+          "name": "Radar size",
+          "value": "1"
+        },
+        {
+          "key": "setting-offscreenThreatIndicators",
+          "rect": {
+            "x": 712,
+            "y": 309,
+            "width": 146,
+            "height": 26,
+            "top": 309,
+            "right": 858,
+            "bottom": 335,
+            "left": 712
+          },
+          "name": "Threat indicators",
+          "value": "all"
+        },
+        {
+          "key": "setting-colorVisionMode",
+          "rect": {
+            "x": 712,
+            "y": 347,
+            "width": 146,
+            "height": 26,
+            "top": 347,
+            "right": 858,
+            "bottom": 373,
+            "left": 712
+          },
+          "name": "Colour-vision palette",
+          "value": "standard"
+        },
+        {
+          "key": "setting-gameSpeedMultiplier",
+          "rect": {
+            "x": 712,
+            "y": 385,
+            "width": 146,
+            "height": 26,
+            "top": 385,
+            "right": 858,
+            "bottom": 411,
+            "left": 712
+          },
+          "name": "Game speed",
+          "value": "1"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "Audio",
+      "controls": [
+        {
+          "key": "setting-soundEnabled",
+          "rect": {
+            "x": 406,
+            "y": 158,
+            "width": 28,
+            "height": 24,
+            "top": 158,
+            "right": 434,
+            "bottom": 182,
+            "left": 406
+          },
+          "name": "Sound",
+          "value": "on"
+        },
+        {
+          "key": "setting-masterVolume",
+          "rect": {
+            "x": 292,
+            "y": 196,
+            "width": 102,
+            "height": 24,
+            "top": 196,
+            "right": 394,
+            "bottom": 220,
+            "left": 292
+          },
+          "name": "Master volume",
+          "value": "1"
+        },
+        {
+          "key": "setting-sfxVolume",
+          "rect": {
+            "x": 712,
+            "y": 158,
+            "width": 102,
+            "height": 24,
+            "top": 158,
+            "right": 814,
+            "bottom": 182,
+            "left": 712
+          },
+          "name": "SFX volume",
+          "value": "1"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "Controls",
+      "controls": [
+        {
+          "key": "setting-autoFireEnabled",
+          "rect": {
+            "x": 406,
+            "y": 158,
+            "width": 28,
+            "height": 24,
+            "top": 158,
+            "right": 434,
+            "bottom": 182,
+            "left": 406
+          },
+          "name": "Auto-fire",
+          "value": "on"
+        },
+        {
+          "key": "setting-gamepadMoveDeadzone",
+          "rect": {
+            "x": 292,
+            "y": 196,
+            "width": 102,
+            "height": 24,
+            "top": 196,
+            "right": 394,
+            "bottom": 220,
+            "left": 292
+          },
+          "name": "Move deadzone",
+          "value": "0.18"
+        },
+        {
+          "key": "setting-gamepadAimDeadzone",
+          "rect": {
+            "x": 292,
+            "y": 234,
+            "width": 102,
+            "height": 24,
+            "top": 234,
+            "right": 394,
+            "bottom": 258,
+            "left": 292
+          },
+          "name": "Aim deadzone",
+          "value": "0.25"
+        },
+        {
+          "key": "setting-gamepadVibrationStrength",
+          "rect": {
+            "x": 712,
+            "y": 158,
+            "width": 102,
+            "height": 24,
+            "top": 158,
+            "right": 814,
+            "bottom": 182,
+            "left": 712
+          },
+          "name": "Controller vibration",
+          "value": "0.75"
+        },
+        {
+          "key": "setting-aimAssistStrength",
+          "rect": {
+            "x": 712,
+            "y": 196,
+            "width": 102,
+            "height": 24,
+            "top": 196,
+            "right": 814,
+            "bottom": 220,
+            "left": 712
+          },
+          "name": "Aim assist",
+          "value": "0"
+        },
+        {
+          "key": "setting-controls",
+          "rect": {
+            "x": 490,
+            "y": 232,
+            "width": 380,
+            "height": 28,
+            "top": 232,
+            "right": 870,
+            "bottom": 260,
+            "left": 490
+          },
+          "name": "Control bindings",
+          "value": ""
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "Display",
+      "controls": [
+        {
+          "key": "setting-displaySizePercent",
+          "rect": {
+            "x": 292,
+            "y": 158,
+            "width": 102,
+            "height": 24,
+            "top": 158,
+            "right": 394,
+            "bottom": 182,
+            "left": 292
+          },
+          "name": "Display size",
+          "value": "100"
+        },
+        {
+          "key": "setting-presentationMode",
+          "rect": {
+            "x": 292,
+            "y": 195,
+            "width": 146,
+            "height": 26,
+            "top": 195,
+            "right": 438,
+            "bottom": 221,
+            "left": 292
+          },
+          "name": "Presentation",
+          "value": "auto"
+        },
+        {
+          "key": "setting-fullscreenMode",
+          "rect": {
+            "x": 292,
+            "y": 233,
+            "width": 146,
+            "height": 26,
+            "top": 233,
+            "right": 438,
+            "bottom": 259,
+            "left": 292
+          },
+          "name": "Fullscreen",
+          "value": "windowed"
+        },
+        {
+          "key": "setting-frameCap",
+          "rect": {
+            "x": 292,
+            "y": 271,
+            "width": 146,
+            "height": 26,
+            "top": 271,
+            "right": 438,
+            "bottom": 297,
+            "left": 292
+          },
+          "name": "Frame cap",
+          "value": "display"
+        },
+        {
+          "key": "setting-brightness",
+          "rect": {
+            "x": 712,
+            "y": 158,
+            "width": 102,
+            "height": 24,
+            "top": 158,
+            "right": 814,
+            "bottom": 182,
+            "left": 712
+          },
+          "name": "Brightness",
+          "value": "1"
+        },
+        {
+          "key": "setting-gamma",
+          "rect": {
+            "x": 712,
+            "y": 196,
+            "width": 102,
+            "height": 24,
+            "top": 196,
+            "right": 814,
+            "bottom": 220,
+            "left": 712
+          },
+          "name": "Gamma",
+          "value": "1"
+        },
+        {
+          "key": "setting-effectQuality",
+          "rect": {
+            "x": 712,
+            "y": 233,
+            "width": 146,
+            "height": 26,
+            "top": 233,
+            "right": 858,
+            "bottom": 259,
+            "left": 712
+          },
+          "name": "Combat effects",
+          "value": "auto"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "Save & privacy",
+      "controls": [
+        {
+          "key": "setting-export-save",
+          "rect": {
+            "x": 70,
+            "y": 156,
+            "width": 380,
+            "height": 28,
+            "top": 156,
+            "right": 450,
+            "bottom": 184,
+            "left": 70
+          },
+          "name": "Export save backup",
+          "value": ""
+        },
+        {
+          "key": "setting-import-save",
+          "rect": {
+            "x": 70,
+            "y": 194,
+            "width": 380,
+            "height": 28,
+            "top": 194,
+            "right": 450,
+            "bottom": 222,
+            "left": 70
+          },
+          "name": "Import save backup",
+          "value": ""
+        },
+        {
+          "key": "setting-privacy",
+          "rect": {
+            "x": 490,
+            "y": 156,
+            "width": 380,
+            "height": 28,
+            "top": 156,
+            "right": 870,
+            "bottom": 184,
+            "left": 490
+          },
+          "name": "Privacy policy",
+          "value": ""
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "baseline-1080",
+      "query": "?screen=game&theme=bastion-standard&seed=61061&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {
+        "combat": {
+          "playerPosition": {
+            "x": 27.73993749999997,
+            "y": 12.65625
+          },
+          "uiScale": 1,
+          "reducedMotion": false,
+          "moveRightBinding": "KeyD",
+          "paused": false,
+          "initialGameSpeed": 1,
+          "gameSpeedModified": false
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "kit-1080",
+      "query": "?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {
+        "combat": {
+          "playerPosition": {
+            "x": 27.384687499999973,
+            "y": 12.65625
+          },
+          "uiScale": 1,
+          "reducedMotion": false,
+          "moveRightBinding": "KeyD",
+          "paused": false,
+          "initialGameSpeed": 1,
+          "gameSpeedModified": false
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "dense-cvd-4k",
+      "query": "?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept&stress=12&palette=deuteranopia&uiscale=1.2&radarsize=1.25&flash=0&sound=0",
+      "width": 3840,
+      "height": 2160,
+      "errors": [],
+      "audit": {
+        "combat": {
+          "playerPosition": {
+            "x": 23.743374999999993,
+            "y": 12.65625
+          },
+          "uiScale": 1.2,
+          "reducedMotion": false,
+          "moveRightBinding": "KeyD",
+          "paused": false,
+          "initialGameSpeed": 1,
+          "gameSpeedModified": false
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "map-1080",
+      "query": "?screen=map&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {},
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-marine",
+      "query": "?mode=gallery&hero=marine",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {
+        "gallery": {
+          "heroId": "marine",
+          "page": 0,
+          "pageCount": 27,
+          "samples": [
+            {
+              "id": "marine-base-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 86.2,
+              "y": 86.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 100.96,
+              "y": 88.8576,
+              "width": 31.679999999999993,
+              "height": 31.679999999999993
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 311.2,
+              "y": 86.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 325.96000000000004,
+              "y": 88.8576,
+              "width": 31.680000000000007,
+              "height": 31.679999999999993
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 536.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 552.76,
+              "y": 88.2576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 761.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 774.16,
+              "y": 88.2576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 86.2,
+              "y": 160.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 100.96,
+              "y": 163.4576,
+              "width": 31.679999999999993,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 311.2,
+              "y": 160.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 325.96000000000004,
+              "y": 163.4576,
+              "width": 31.680000000000007,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 536.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 552.76,
+              "y": 163.4576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 761.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 774.16,
+              "y": 163.4576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 86.2,
+              "y": 234.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 97.96,
+              "y": 238.05760000000004,
+              "width": 31.679999999999993,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 311.2,
+              "y": 234.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 324.76000000000005,
+              "y": 238.6576,
+              "width": 31.680000000000007,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 536.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 550.36,
+              "y": 238.6576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            },
+            {
+              "id": "marine-base-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 761.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "marine-helmet-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 775.9599999999999,
+              "y": 238.6576,
+              "width": 31.67999999999995,
+              "height": 31.680000000000007
+            }
+          ],
+          "rows": []
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-medic",
+      "query": "?mode=gallery&hero=medic",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {
+        "gallery": {
+          "heroId": "medic",
+          "page": 0,
+          "pageCount": 27,
+          "samples": [
+            {
+              "id": "medic-base-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 86.2,
+              "y": 86.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 86.2,
+              "y": 86.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 311.2,
+              "y": 86.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 311.2,
+              "y": 86.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 536.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 536.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 761.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 761.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 86.2,
+              "y": 160.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 86.2,
+              "y": 160.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 311.2,
+              "y": 160.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 311.2,
+              "y": 160.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 536.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 536.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 761.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 761.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 86.2,
+              "y": 234.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 86.2,
+              "y": 234.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 311.2,
+              "y": 234.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 311.2,
+              "y": 234.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 536.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 536.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 761.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 761.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 12,
+              "type": 5,
+              "x": 86.2,
+              "y": 308.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 12,
+              "type": 5,
+              "x": 86.2,
+              "y": 308.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 13,
+              "type": 5,
+              "x": 311.2,
+              "y": 308.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 13,
+              "type": 5,
+              "x": 311.2,
+              "y": 308.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 14,
+              "type": 5,
+              "x": 536.2,
+              "y": 308.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 14,
+              "type": 5,
+              "x": 536.2,
+              "y": 308.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 15,
+              "type": 5,
+              "x": 761.2,
+              "y": 308.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 15,
+              "type": 5,
+              "x": 761.2,
+              "y": 308.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 16,
+              "type": 5,
+              "x": 86.2,
+              "y": 382.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 16,
+              "type": 5,
+              "x": 86.2,
+              "y": 382.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 17,
+              "type": 5,
+              "x": 311.2,
+              "y": 382.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 17,
+              "type": 5,
+              "x": 311.2,
+              "y": 382.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 18,
+              "type": 5,
+              "x": 536.2,
+              "y": 382.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 18,
+              "type": 5,
+              "x": 536.2,
+              "y": 382.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-base-v1",
+              "frame": 19,
+              "type": 5,
+              "x": 761.2,
+              "y": 382.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "medic-helmet-v1",
+              "frame": 19,
+              "type": 5,
+              "x": 761.2,
+              "y": 382.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            }
+          ],
+          "rows": []
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "gallery-assault",
+      "query": "?mode=gallery&hero=assault",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "audit": {
+        "gallery": {
+          "heroId": "assault",
+          "page": 0,
+          "pageCount": 27,
+          "samples": [
+            {
+              "id": "assault-base-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 86.2,
+              "y": 86.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 0,
+              "type": 5,
+              "x": 158.4,
+              "y": 96.624,
+              "width": 43.20000000000002,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 311.2,
+              "y": 86.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 1,
+              "type": 5,
+              "x": 383.4,
+              "y": 96.624,
+              "width": 43.19999999999999,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 536.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 2,
+              "type": 5,
+              "x": 608.4,
+              "y": 96.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 761.2,
+              "y": 86.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 3,
+              "type": 5,
+              "x": 833.4,
+              "y": 96.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 86.2,
+              "y": 160.832,
+              "width": 57.60000000000001,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 4,
+              "type": 5,
+              "x": 158.4,
+              "y": 170.624,
+              "width": 43.20000000000002,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 311.2,
+              "y": 160.832,
+              "width": 57.599999999999966,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 5,
+              "type": 5,
+              "x": 383.4,
+              "y": 170.624,
+              "width": 43.19999999999999,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 536.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 6,
+              "type": 5,
+              "x": 608.4,
+              "y": 170.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 761.2,
+              "y": 160.832,
+              "width": 57.60000000000002,
+              "height": 57.599999999999994
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 7,
+              "type": 5,
+              "x": 833.4,
+              "y": 170.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 86.2,
+              "y": 234.832,
+              "width": 57.60000000000001,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 8,
+              "type": 5,
+              "x": 158.4,
+              "y": 244.624,
+              "width": 43.20000000000002,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 311.2,
+              "y": 234.832,
+              "width": 57.599999999999966,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 9,
+              "type": 5,
+              "x": 383.4,
+              "y": 244.624,
+              "width": 43.19999999999999,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 536.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 10,
+              "type": 5,
+              "x": 608.4,
+              "y": 244.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            },
+            {
+              "id": "assault-base-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 761.2,
+              "y": 234.832,
+              "width": 57.60000000000002,
+              "height": 57.60000000000002
+            },
+            {
+              "id": "assault-breach-overlay-v1",
+              "frame": 11,
+              "type": 5,
+              "x": 833.4,
+              "y": 244.624,
+              "width": 43.200000000000045,
+              "height": 43.20000000000002
+            }
+          ],
+          "rows": []
+        }
+      },
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  ]
+}
