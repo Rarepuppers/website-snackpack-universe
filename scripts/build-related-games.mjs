@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { existsSync } from "node:fs";
 import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
 
 /*
@@ -53,9 +54,12 @@ const FEATURED = {
 
 function parseHub(html) {
   const games = [];
-  // Some tiles carry a "New" badge between the anchor and the icon.
+  // Some tiles carry a "New" badge between the anchor and the icon, and tiles
+  // with WebP art wrap the <img> in a <picture>. The wrapper used to stop the
+  // match, which left 12 games (Hearts, Spades, Thirteen…) with no related
+  // block of their own and out of every other page's rotation.
   const re =
-    /<a class="game-tile" href="\.\/([^"]+?)\/">\s*(?:<span class="game-badge-new">[^<]*<\/span>\s*)?<img class="game-icon" src="\.\/tiles\/([^"]+)"[^>]*>\s*<h3>([^<]*)<\/h3>/g;
+    /<a class="game-tile" href="\.\/([^"]+?)\/">\s*(?:<span class="game-badge-new">[^<]*<\/span>\s*)?(?:<picture>\s*<source[^>]*>\s*)?<img class="game-icon" src="\.\/tiles\/([^"]+)"[^>]*>\s*(?:<\/picture>\s*)?<h3>([^<]*)<\/h3>/g;
   let m;
   while ((m = re.exec(html))) {
     games.push({ slug: m[1], tile: m[2], title: m[3].trim() });
@@ -63,10 +67,18 @@ function parseHub(html) {
   return games;
 }
 
+// Tiles with a WebP sibling get the same <picture> build-webp.mjs would give
+// them, so the two generators agree instead of rewriting each other.
+const TILES = path.join(root, "play", "tiles");
 function tile(href, src, title) {
+  const img = `<img class="game-icon" src="${src}" alt="" aria-hidden="true" loading="lazy" width="72" height="72">`;
+  const webp = src.replace(/\.png$/, ".webp");
+  const icon = webp !== src && existsSync(path.join(TILES, path.basename(webp)))
+    ? `<picture><source srcset="${webp}" type="image/webp">${img}</picture>`
+    : img;
   return (
     `      <a class="game-tile" href="${href}">\n` +
-    `        <img class="game-icon" src="${src}" alt="" aria-hidden="true" loading="lazy" width="72" height="72">\n` +
+    `        ${icon}\n` +
     `        <h3>${title}</h3>\n` +
     `      </a>`
   );

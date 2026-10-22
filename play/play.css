@@ -274,6 +274,15 @@
   border-color: var(--ink);
 }
 
+/* A dead Play / Lay meld / Pass looked exactly like a live one. */
+.btn-game:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+  border-color: var(--line-strong);
+}
+.btn-game--primary:disabled { border-color: var(--ink); }
+
 .seg {
   display: inline-flex;
   padding: 4px;
