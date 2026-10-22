@@ -2,6 +2,10 @@
 
 Supporting evidence and recommendation specifications. [CURRENT-PLAN](CURRENT-PLAN.md) is the sole active queue. This review authorizes no runtime implementation, asset generation, packaging or publication.
 
+**Subsequent continuation:** AUDIO-02 is implemented locally in the audio-controls build;
+see [completed record](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). The defect/evidence
+below describe the audited baseline. Human listening acceptance remains open.
+
 ## Checkpoint and method
 
 Started at nested website HEAD `4238b130`, following `5974c948`; source identity is `web-2026.10.22-controls-records`. The checkout had existing About/privacy/social and unrelated website edits, plus scratch evidence. None belongs to this audit. Concurrent website commits subsequently advanced HEAD; no Last Bastion tracked files changed in that range at review time. Verification reports retain their actual starting revision and dirty status. No exact-clean-tree claim is made.

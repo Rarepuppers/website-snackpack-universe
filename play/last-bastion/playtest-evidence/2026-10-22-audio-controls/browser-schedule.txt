@@ -1,0 +1,31 @@
+[WebServer] (node:21432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:24828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices
+  1) tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+      44 |   await expect.poll(output).toEqual([0.25]);
+      45 |   await page.keyboard.press("Escape");
+    > 46 |   await page.waitForFunction(() => window.__combatPauseMode === "root");
+         |              ^
+      47 |   await page.keyboard.press("Escape", { delay: 80 }); // Resume and create fresh voices for retry.
+      48 |   await page.waitForFunction(() => !window.__combatAccessibilityAudit.paused);
+      49 |   await page.waitForTimeout(300);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:46:14
+
+    Error Context: test-results\last-bastion-functional-co-ee8ad-nter-retry-stops-old-voices\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices

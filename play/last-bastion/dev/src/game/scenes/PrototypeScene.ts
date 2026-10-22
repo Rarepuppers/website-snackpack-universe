@@ -301,7 +301,7 @@ export class PrototypeScene extends Phaser.Scene {
   private qaSession: ReturnType<typeof mountQaSessionPanel> | null = null;
   private assetLoadFeedback: AssetLoadFeedbackHandle | null = null;
   private assetRetryListener: ((event: KeyboardEvent) => void) | null = null;
-  private readonly synth = new WebAudioSynth(this.settings.soundEnabled, this.simulation.snapshot().heroId);
+  private synth!: WebAudioSynth;
   private haptics!: CombatHaptics;
   private runOutcomeRecorded = false;
   private previousHeroState = "idle";
@@ -355,6 +355,9 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.synth = new WebAudioSynth(this.settings.soundEnabled, this.simulation.snapshot().heroId);
+    const synth = this.synth;
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => synth.dispose());
     if (this.assetLoadFeedback?.failedKeys.length) {
       this.renderAssetLoadFailure();
       return;
@@ -1205,6 +1208,7 @@ export class PrototypeScene extends Phaser.Scene {
   }
 
   private restartRun(): void {
+    this.synth.stop();
     this.qaSession?.stop("attempt restarted");
     this.initialRunSettings = { ...this.settings };
     this.gameSpeedModified = false;

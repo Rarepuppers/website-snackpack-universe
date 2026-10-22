@@ -1,5 +1,17 @@
 # Last Bastion release notes
 
+## 22 October 2026 — live audio controls and cleanup
+
+**Prepared locally:** `web-2026.10.22-audio-controls` — not pushed, deployed or desktop-packaged.
+
+- Master/SFX volume and Sound now affect already-playing combat samples and synthesized feedback
+  through one output gain with a short transition. Zero/mute stops active voices and cancels the
+  rotary weapon's delayed end cue; restoring sound does not restart old cues.
+- Encounter retry stops the previous attempt's sounds while retaining decoded samples. Combat
+  scene shutdown stops/disconnects voices, cancels timers/downloads and closes its audio context.
+- Existing samples, cue mappings, per-family limits, pause behavior, save schema 16 and simulation
+  compatibility 3 remain. Real headphone/speaker acceptance is still required.
+
 ## 22 October 2026 — native rebinding and records
 
 **Prepared locally:** `web-2026.10.22-controls-records` — not pushed, deployed or desktop-packaged.

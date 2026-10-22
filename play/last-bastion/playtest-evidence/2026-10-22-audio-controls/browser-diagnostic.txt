@@ -1,0 +1,84 @@
+
+[WebServer] (node:18968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:3024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices
+tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices
+audio settings probe {
+  save: {
+    screenShakeEnabled: true,
+    reducedFlashEnabled: false,
+    soundEnabled: true,
+    damageNumbersEnabled: true,
+    cooldownTimersEnabled: true,
+    affinityHudEnabled: true,
+    autoFireEnabled: true,
+    enemyHealthBars: 'threats',
+    reducedMotionEnabled: false,
+    highContrastOutlinesEnabled: false,
+    uiScale: 1,
+    masterVolume: 0.25,
+    sfxVolume: 1,
+    uiVolume: 1,
+    musicVolume: 1,
+    ambienceVolume: 1,
+    gamepadMoveDeadzone: 0.18,
+    gamepadAimDeadzone: 0.25,
+    gamepadAimSensitivity: 1,
+    gamepadVibrationStrength: 0.75,
+    aimAssistStrength: 0,
+    displaySizePercent: 100,
+    presentationMode: 'auto',
+    fullscreenMode: 'windowed',
+    selectedDisplayId: null,
+    frameCap: 'display',
+    brightness: 1,
+    gamma: 1,
+    screenShakeIntensity: 1,
+    radarSize: 1,
+    offscreenThreatIndicators: 'all',
+    colorVisionMode: 'standard',
+    effectQuality: 'auto',
+    gameSpeedMultiplier: 1
+  },
+  audio: [
+    { state: 'running', time: 0.45066666666666666, gains: [Array] },
+    { state: 'running', time: 0.5306666666666666, gains: [Array] }
+  ]
+}
+
+  1) tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   0.25,
+    +   0,
+      ]
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      34 |   await page.mouse.click(480, 217, { delay: 80 }); // Master: 0 -> .25
+      35 |   console.log("audio settings probe", await page.evaluate(() => ({ save: JSON.parse(localStorage.getItem("last-bastion-save")).settings, audio: window.__audioProbe.map(p => ({ state:p.context.state, time:p.context.currentTime, gains:p.outputs.map(n=>n.gain.value) })) })));
+    > 36 |   await expect.poll(output).toEqual([0.25]);
+         |                             ^
+      37 |   await page.mouse.click(480, 195, { delay: 80 }); // Sound off
+      38 |   await expect.poll(output).toEqual([0]);
+      39 |   await page.mouse.click(480, 195, { delay: 80 }); // Sound on
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:36:29
+
+    Error Context: test-results\last-bastion-functional-co-ee8ad-nter-retry-stops-old-voices\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:3:1 › combat audio settings control the live output and encounter retry stops old voices

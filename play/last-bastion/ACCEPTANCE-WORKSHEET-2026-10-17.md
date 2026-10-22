@@ -4,13 +4,13 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.10.22-controls-records`; it is not published or packaged.
+Current prepared local build is `web-2026.10.22-audio-controls`; it is not published or packaged.
 The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
 
 22 October audit adds AUDIO-02: an active production sample retains gain after master zero/mute.
-After its authorized correction, specifically listen while muting active rotary/damage/reward cues,
+The authorized correction is now implemented locally. Specifically listen while muting active rotary/damage/reward cues,
 then unmute, pause/blur and restart; record clicks, stale tails and any missing warning. The audit's
 instrumented production-class reproduction is not ear acceptance. See CURRENT-PLAN for queue state.
 
@@ -76,7 +76,8 @@ failures by screen/control under a dated evidence folder; preserve the tester's 
 ## Desktop package: Claude, then hardware tester
 
 Use the current prepared source in [CURRENT-PLAN](CURRENT-PLAN.md) and
-[release handoff](RELEASE-HANDOFF-2026-10-16.md), including the 22 October controls/records patch
+[release handoff](RELEASE-HANDOFF-2026-10-16.md), including the 22 October audio-controls patch,
+controls/records patch
 and How to Play patch
 on top of `637f6ec8` + `6472ceeb`; the archived
 17 October checkpoint is older. Read root `docs/RELEASING.md` and inspect current changes before

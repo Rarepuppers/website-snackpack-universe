@@ -1,5 +1,12 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Prepared local build — audio continuation:** `web-2026.10.22-audio-controls`. AUDIO-02 is
+implemented: active gain/mute, rotary-tail cancellation and scene/retry cleanup. Use
+[completed scope](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md) and
+[current evidence](playtest-evidence/2026-10-22-audio-controls/README.md). Listening and all
+physical/Steam/release gates remain open; Claude owns separately assigned packaging.
+The audit and older prepared-build sections below are historical.
+
 **22 October audit:** see [CURRENT-PLAN](CURRENT-PLAN.md) and the [fresh audit](AUDIT-REVIEW-2026-10-22.md).
 Runtime checkpoint `4238b130` passes all game verification lanes; the new portfolio run passes 20/20.
 Active-voice volume/mute persistence is reproduced (AUDIO-02) and needs correction/acceptance before

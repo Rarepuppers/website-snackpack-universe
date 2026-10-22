@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.22-controls-records";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.22-audio-controls";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

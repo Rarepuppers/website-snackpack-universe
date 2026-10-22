@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run --run src/game/audio/WebAudioSynth.test.ts
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  16:14:05
+   Duration  554ms (transform 63ms, setup 0ms, import 81ms, tests 308ms, environment 0ms)

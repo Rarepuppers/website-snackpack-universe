@@ -25,11 +25,73 @@ export class WebAudioSynth {
   private rotaryLoopGain: GainNode | null = null;
   private rotaryStopTimer: ReturnType<typeof setTimeout> | null = null;
   private outputVolume = 1;
+  private output: GainNode | null = null;
+  private soundEnabled: boolean;
+  private disposed = false;
+  private readonly sources = new Map<AudioScheduledSourceNode, GainNode>();
+  private readonly downloads = new AbortController();
+  private voiceGeneration = 0;
 
-  constructor(public enabled: boolean, private readonly heroId?: string) {}
+  constructor(enabled: boolean, private readonly heroId?: string) { this.soundEnabled = enabled; }
+
+  get enabled(): boolean { return this.soundEnabled; }
+  set enabled(enabled: boolean) {
+    this.soundEnabled = enabled;
+    this.updateOutput();
+  }
 
   setVolume(volume: number): void {
     this.outputVolume = Math.max(0, Math.min(1, volume));
+    this.updateOutput();
+  }
+
+  private updateOutput(): void {
+    if (!this.output || !this.context || this.disposed) return;
+    const now = this.context.currentTime;
+    this.output.gain.cancelAndHoldAtTime(now);
+    this.output.gain.linearRampToValueAtTime(this.enabled ? this.outputVolume : 0, now + 0.01);
+    if (!this.enabled || this.outputVolume === 0) this.stopVoices(now + 0.01);
+  }
+
+  private stopVoices(at: number): void {
+    this.voiceGeneration += 1;
+    if (this.rotaryStopTimer) clearTimeout(this.rotaryStopTimer);
+    this.rotaryStopTimer = null;
+    this.rotaryLoop = null;
+    this.rotaryLoopGain = null;
+    for (const source of this.sources.keys()) {
+      try { source.stop(at); } catch { /* Already ended. */ }
+    }
+    this.activeVoices.clear();
+  }
+
+  /** In-place encounter retry retains decoded samples, but no prior attempt's voices. */
+  stop(): void {
+    this.stopVoices(this.context?.currentTime ?? 0);
+    this.playedThisFrame.clear();
+    this.lastStartedMs.clear();
+  }
+
+  /** Scene-owned resources must not survive an exit or in-place restart. */
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.downloads.abort();
+    this.stopVoices(this.context?.currentTime ?? 0);
+    for (const [source, gain] of this.sources) { source.disconnect(); gain.disconnect(); }
+    this.sources.clear();
+    this.output?.disconnect();
+    this.output = null;
+    if (this.context) void this.context.close().catch(() => {});
+    this.context = null;
+    this.productionBuffers.clear();
+  }
+
+  private track(source: AudioScheduledSourceNode, gain: GainNode): void {
+    this.sources.set(source, gain);
+    source.addEventListener("ended", () => {
+      source.disconnect(); gain.disconnect(); this.sources.delete(source);
+    }, { once: true });
   }
 
   /** Call once per render frame so identical simultaneous cues play only once. */
@@ -38,7 +100,7 @@ export class WebAudioSynth {
   }
 
   play(cue: AudioCue): void {
-    if (!this.enabled || this.playedThisFrame.has(cue.id)) {
+    if (this.disposed || !this.enabled || this.outputVolume === 0 || this.playedThisFrame.has(cue.id)) {
       return;
     }
     const context = this.resolveContext();
@@ -46,7 +108,7 @@ export class WebAudioSynth {
       return;
     }
     if (context.state === "suspended") {
-      void context.resume();
+      void context.resume().catch(() => {});
     }
     this.loadProductionBuffers(context);
     this.playedThisFrame.add(cue.id);
@@ -62,6 +124,7 @@ export class WebAudioSynth {
       return;
     }
     this.activeVoices.set(cue.id, activeVoices + 1);
+    const generation = this.voiceGeneration;
     const oscillator = context.createOscillator();
     const gain = context.createGain();
 
@@ -73,14 +136,16 @@ export class WebAudioSynth {
         now + cue.durationSeconds,
       );
     }
-    gain.gain.setValueAtTime(cue.volume * this.outputVolume, now);
+    gain.gain.setValueAtTime(cue.volume, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + cue.durationSeconds);
 
     oscillator.connect(gain);
-    gain.connect(context.destination);
+    gain.connect(this.output!);
+    this.track(oscillator, gain);
     oscillator.start(now);
     oscillator.stop(now + cue.durationSeconds + 0.02);
     oscillator.addEventListener("ended", () => {
+      if (generation !== this.voiceGeneration) return;
       const remainingVoices = Math.max(0, (this.activeVoices.get(cue.id) ?? 1) - 1);
       if (remainingVoices === 0) this.activeVoices.delete(cue.id);
       else this.activeVoices.set(cue.id, remainingVoices);
@@ -97,7 +162,7 @@ export class WebAudioSynth {
       if (!urls) continue;
       void this.fetchAndDecode(context, urls.ogg)
         .catch(() => this.fetchAndDecode(context, urls.mp3))
-        .then((buffer) => this.productionBuffers.set(asset.id, buffer))
+        .then((buffer) => { if (!this.disposed) this.productionBuffers.set(asset.id, buffer); })
         .catch(() => { /* Keep the oscillator fallback when both decoders fail. */ });
     }
     for (const asset of PRODUCTION_AUDIO_FEEDBACK_ASSETS) {
@@ -105,13 +170,13 @@ export class WebAudioSynth {
       if (!urls) continue;
       void this.fetchAndDecode(context, urls.ogg)
         .catch(() => this.fetchAndDecode(context, urls.mp3))
-        .then((buffer) => this.productionBuffers.set(asset.id, buffer))
+        .then((buffer) => { if (!this.disposed) this.productionBuffers.set(asset.id, buffer); })
         .catch(() => { /* Keep the oscillator fallback when both decoders fail. */ });
     }
   }
 
   private async fetchAndDecode(context: AudioContext, url: string): Promise<AudioBuffer> {
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: this.downloads.signal });
     if (!response.ok) throw new Error(`audio fetch failed: ${response.status}`);
     return context.decodeAudioData(await response.arrayBuffer());
   }
@@ -160,9 +225,10 @@ export class WebAudioSynth {
       const gain = context.createGain();
       source.buffer = loop;
       source.loop = true;
-      gain.gain.value = 0.64 * this.outputVolume;
+      gain.gain.value = 0.64;
       source.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(this.output!);
+      this.track(source, gain);
       source.start(context.currentTime + Math.max(0.02, start.duration - 0.025));
       this.rotaryLoop = source;
       this.rotaryLoopGain = gain;
@@ -174,28 +240,28 @@ export class WebAudioSynth {
       this.rotaryLoopGain?.gain.setValueAtTime(this.rotaryLoopGain.gain.value, context.currentTime);
       this.rotaryLoopGain?.gain.linearRampToValueAtTime(0.001, stopAt);
       this.rotaryLoop?.stop(stopAt);
-      this.rotaryLoop?.disconnect();
-      this.rotaryLoopGain?.disconnect();
       this.rotaryLoop = null;
       this.rotaryLoopGain = null;
       this.rotaryStopTimer = null;
       this.activeVoices.delete(cueId);
-      this.startBuffer(context, cueId, end, 0.66, false);
+      if (!this.disposed && this.enabled && this.outputVolume > 0) this.startBuffer(context, cueId, end, 0.66, false);
     }, 120);
     return true;
   }
 
   private startBuffer(context: AudioContext, cueId: string, buffer: AudioBuffer, volume: number, countVoice = true): void {
+    const generation = this.voiceGeneration;
     if (countVoice) this.activeVoices.set(cueId, (this.activeVoices.get(cueId) ?? 0) + 1);
     const source = context.createBufferSource();
     const gain = context.createGain();
     source.buffer = buffer;
-    gain.gain.value = volume * this.outputVolume;
+    gain.gain.value = volume;
     source.connect(gain);
-    gain.connect(context.destination);
+    gain.connect(this.output!);
+    this.track(source, gain);
     source.start();
     source.addEventListener("ended", () => {
-      if (countVoice) {
+      if (countVoice && generation === this.voiceGeneration) {
         const remaining = Math.max(0, (this.activeVoices.get(cueId) ?? 1) - 1);
         if (remaining === 0) this.activeVoices.delete(cueId);
         else this.activeVoices.set(cueId, remaining);
@@ -211,6 +277,9 @@ export class WebAudioSynth {
     }
     try {
       this.context = new AudioContext();
+      this.output = this.context.createGain();
+      this.output.gain.value = this.enabled ? this.outputVolume : 0;
+      this.output.connect(this.context.destination);
     } catch {
       this.contextFailed = true;
     }

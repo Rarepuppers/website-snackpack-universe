@@ -1,5 +1,63 @@
 import { test, expect } from "@playwright/test";
 
+test("combat audio settings control the live output and encounter retry stops old voices", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.addInitScript(() => {
+    const Native = window.AudioContext;
+    window.__audioProbe = [];
+    window.AudioContext = class extends Native {
+      constructor(...args) { super(...args); this.probe = { context: this, outputs: [], stops: 0, sources: 0 }; window.__audioProbe.push(this.probe); }
+      createGain() {
+        const node = super.createGain(), connect = node.connect.bind(node);
+        const hold = node.gain.cancelAndHoldAtTime.bind(node.gain);
+        node.ramps = [];
+        const ramp = node.gain.linearRampToValueAtTime.bind(node.gain);
+        node.gain.linearRampToValueAtTime = (...args) => { node.ramps.push(args); return ramp(...args); };
+        node.gain.cancelAndHoldAtTime = (...args) => { node.liveOutput = true; return hold(...args); };
+        node.connect = (...args) => { if (args[0] === this.destination) this.probe.outputs.push(node); return connect(...args); };
+        return node;
+      }
+      track(node) {
+        this.probe.sources++; const stop = node.stop.bind(node);
+        node.stop = (...args) => { this.probe.stops++; return stop(...args); }; return node;
+      }
+      createBufferSource() { return this.track(super.createBufferSource()); }
+      createOscillator() { return this.track(super.createOscillator()); }
+    };
+  });
+  await page.goto("/play/last-bastion/?screen=game&scenario=weapon-review&loadout=bulwark&sound=1");
+  await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+  await page.locator("#game-root canvas").click({ position: { x: 600, y: 300 } });
+  await page.waitForFunction(() => window.__audioProbe.some(p => p.sources > 0));
+  await page.mouse.click(850, 25, { delay: 80 }); // Open pause explicitly (focus loss may already have paused).
+  await page.waitForFunction(() => window.__combatAccessibilityAudit.paused);
+  await page.mouse.click(480, 212, { delay: 80 }); // Settings
+  await page.waitForFunction(() => window.__combatPauseMode === "settings");
+  const output = () => page.evaluate(() => window.__audioProbe.flatMap(p => p.outputs.filter(n => n.liveOutput).map(n => n.ramps.at(-1)[0])));
+  await page.mouse.click(480, 217, { delay: 80 }); // Master: 1 -> 0
+  await expect.poll(output).toEqual([0]);
+  await page.mouse.click(480, 217, { delay: 80 }); // Master: 0 -> .25
+  await expect.poll(output).toEqual([0.25]);
+  await page.mouse.click(480, 195, { delay: 80 }); // Sound off
+  await expect.poll(output).toEqual([0]);
+  await page.mouse.click(480, 195, { delay: 80 }); // Sound on
+  await expect.poll(output).toEqual([0.25]);
+  await page.keyboard.press("Escape", { delay: 80 });
+  await page.waitForFunction(() => window.__combatPauseMode === "root");
+  await page.keyboard.press("Escape", { delay: 80 }); // Resume and create fresh voices for retry.
+  await page.waitForFunction(() => !window.__combatAccessibilityAudit.paused);
+  await page.waitForTimeout(300);
+  await page.mouse.click(850, 25, { delay: 80 });
+  await page.waitForFunction(() => window.__combatAccessibilityAudit.paused);
+  const stops = await page.evaluate(() => window.__audioProbe.filter(p => p.outputs.some(n => n.liveOutput)).reduce((sum,p) => sum+p.stops,0));
+  await page.mouse.click(480, 255, { delay: 80 });
+  await page.waitForFunction(() => window.__combatPauseMode === "confirm-restart");
+  await page.mouse.click(480, 164, { delay: 80 });
+  await page.waitForFunction(() => window.__combatAccessibilityAudit.paused === false);
+  await page.waitForFunction(count => window.__audioProbe.filter(p => p.outputs.some(n => n.liveOutput)).reduce((sum,p) => sum+p.stops,0) > count, stops);
+  await expect.poll(output).toEqual([0.25]);
+});
+
 test("opt-in local QA session exports active frames, excludes pause, stops and resets", async ({ page }) => {
   const failures = watchRuntime(page);
   await page.goto("/play/last-bastion/?scenario=weapon-review&loadout=bastion-service-rifle&qasession=1&sound=0");

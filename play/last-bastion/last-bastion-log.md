@@ -5310,3 +5310,17 @@ Detailed evidence, asset reuse decisions, prioritized implementation/acceptance 
 and external owner handoffs are in AUDIT-REVIEW-2026-10-22.md and CURRENT-PLAN.md. Archived the
 previous mixed-history queue; corrected stale playtest/package-check identity and asset-plan
 queue wording. No new art, gameplay, package, push, deployment or human/device gate closure.
+
+### Live audio controls — 22 October 2026
+
+Authorized continuation implements AUDIO-02 on `328cc8d3`: shared live output gain for all
+samples/fallback/rotary cues, 10ms volume/mute transition, zero/mute source stops and cancelled
+rotary tails, in-place retry cleanup and scene-owned disposal/download cancellation. Delayed
+ended callbacks cannot corrupt the next attempt's voice counts. Existing samples, simulation,
+schema 16 and compatibility 3 retained. Prepared `web-2026.10.22-audio-controls`; output rebuilt.
+Seven production-class tests and a real-browser settings/retry graph regression added. Full
+verifier passes in 130.8s: 1,790 unit / 313 files, 51 browser and 31 desktop-host tests, plus
+all required static/output/offline/site lanes. Earlier browser test diagnostics are retained.
+23 October finalization confirms the completed root portfolio run passes all 20 guards.
+Implementation is archived; CURRENT-PLAN retains listening and other external acceptance gates.
+No art generation, executable packaging, push/deploy, Steam action or fleet dependency maintenance.

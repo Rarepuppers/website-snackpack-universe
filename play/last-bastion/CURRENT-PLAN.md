@@ -1,12 +1,19 @@
 # Last Bastion — current plan
 
-**Updated:** 22 October 2026. **Sole active execution queue.**
-Prepared local identity: `web-2026.10.22-controls-records`; audited runtime checkpoint `4238b130`, following `5974c948`. Save schema 16, simulation compatibility 3. Later concurrent website commits did not change the audited game files at review time.
+**Updated:** 23 October 2026. **Sole active execution queue.**
+Prepared local identity: `web-2026.10.22-audio-controls`; audio implementation based on `328cc8d3`; earlier audit checkpoint `4238b130`. Save schema 16, simulation compatibility 3. Later concurrent website commits did not change the audited game files at review time.
 Last verified published identity: `web-2026.10.17-qa-readiness` (historical evidence, not rechecked live here).
 
-Read the [22 October audit](AUDIT-REVIEW-2026-10-22.md) for each item's problem/evidence, benefit/scope, effort/risk, asset decision, implementation steps and acceptance checks. Read the [fresh evidence](playtest-evidence/2026-10-22-audit-review/README.md), [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md), [QA guide](QA-READINESS.md) and [release handoff](RELEASE-HANDOFF-2026-10-16.md) before execution. Recommendations are planning only; this audit implements no runtime features or assets.
+Read the [22 October audit](AUDIT-REVIEW-2026-10-22.md) for each item's problem/evidence, benefit/scope, effort/risk, asset decision, implementation steps and acceptance checks. Read the [fresh evidence](playtest-evidence/2026-10-22-audit-review/README.md), [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md), [QA guide](QA-READINESS.md) and [release handoff](RELEASE-HANDOFF-2026-10-16.md) before execution. The audit was planning-only. Subsequent continuation authorizes and implements AUDIO-02; see [completed audio scope](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). Other gated proposals remain planning only.
 
 ## Current evidence and closed work
+
+**Audio continuation:** full verifier PASS in **130.8s**, **1,790 unit tests / 313 files,
+51 browser cases and 31 desktop-host tests**, plus static/output/offline/site checks.
+The completed continuation portfolio run also passes **all 20 guards**; no fleet dependency edits.
+The [audio evidence](playtest-evidence/2026-10-22-audio-controls/README.md) records exact scope.
+AUDIO-02 implementation is complete locally; real listening remains the first acceptance action.
+The audit results in the next paragraph predate this runtime patch.
 
 Fresh full verifier: **PASS, 117.9s; 1,783 unit / 312 files, 50 browser, 31 desktop-host tests**, static/content/image/output, HTTP/offline and site checks. Fresh portfolio: **20/20 PASS**, superseding the earlier 19/20 observation for this run; no fleet dependency work performed. Inventory: 227 definitions / 310 source references match hashes. These checks do not establish real device, audio, screen-reader, Steam or observed-run acceptance.
 
@@ -16,7 +23,7 @@ Native title/menu/settings/How to Play/rebinding/records, capture ownership/repe
 
 | Order / ID | Priority and state | Next action / owner | Gate to close |
 |---|---|---|---|
-| 1 AUDIO-02 | P1, confirmed defect; implementation requires authorization | Code owner fixes live volume/mute for active samples; reuse audio, master gain/lifecycle approach | Production-class and browser regressions plus real listening; mute affects active rotary/sample tails and future cues, no delayed exit sound |
+| 1 AUDIO-02 acceptance | P1, implementation complete locally | Human tester listens to live gain/mute, rotary tails and restart/exit behavior | Actual headphone/speaker acceptance; automated implementation checks are recorded separately |
 | 2 ACCEPT-02 / UX-01 | P1 observation; P2 conditional fixes | Mark/tester completes exact Runs 1–5 with earned unlocks; record teaching, mode purpose, fairness and replay intent | Existing five-run thresholds and signed findings; repeat affected combinations after fixes |
 | 3 ART-01 | P1, acceptance open | Human + hardware tester compares baseline/A/B/kit on standard seed 61061 | Motion/readability/pacing accept/revise/reject; **keep floors opt-in** until passed |
 | 4 ART-02 / LB-04 | P1, evidence-gated correction | Inspect hero/equipment state transitions and facings; identify failed frame/anchor | Signed motion acceptance; fix registration before generating frames |
@@ -32,7 +39,7 @@ P0 crash/save loss/input dead ends interrupt this order if demonstrated. No new 
 
 ## Executable now and external handoff
 
-- **Now:** review/authorize the bounded AUDIO-02 fix; start native AT acceptance and observed play using the existing worksheet and disposable/exported saves. No further QA tool is needed. Automation, inventory checking and local captures are executable without Steam access. This audit's documentation cleanup is complete.
+- **Now:** perform AUDIO-02 listening acceptance; start native AT acceptance and observed play using the existing worksheet and disposable/exported saves. No further QA tool is needed. Automation, inventory checking and local captures are executable without Steam access. This audit's documentation cleanup is complete.
 - **Mark / human tester:** return Runs 1–5 with build/commit, hero/threat/weapon IDs, controller/remaps, display/DPR/scaling, sound output, confusion/damage findings and clips. Sign or explicitly accept touched S1/S2 presentation issues; Run 0 and diagnostics do not count.
 - **AT/controller/audio tester:** return actual spoken control output, focus/capture failures, physical hot-plug/navigation and listening notes by cue/screen. Automated semantic trees and simulated pads are separate evidence.
 - **Claude, when specifically assigned:** from `desktop/`, use existing `npm run package:win` and `npm run smoke:package:win` after reading release guidance/current changes. Return source/dirty status, build identity, manifest, executable SHA-256, package path/time and complete smoke log. No packaging command has run in this audit.
@@ -43,4 +50,4 @@ P0 crash/save loss/input dead ends interrupt this order if demonstrated. No new 
 
 ## Boundaries
 
-Preserve other sessions' edits and retained masters. Commit only audit documentation/evidence in the nested website repository. No generated art, floor adoption, balance changes or fleet dependency maintenance. Acceptance of this plan supplies none of the missing observed/hardware/Steam/analytics evidence. [The five-run matrix](local-playtest-plan-2026-08-21.md), [presentation register](presentation-defect-plan-2026-08-23.md) and [asset specifications](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) define procedures; this file owns queue state.
+Preserve other sessions' edits and retained masters. Commit only scoped AUDIO-02 code, generated browser output, tests and documentation/evidence in the nested website repository. No generated art, floor adoption, balance changes or fleet dependency maintenance. AUDIO-02 changes existing playback only. Acceptance of this plan supplies none of the missing observed/hardware/Steam/analytics evidence. [The five-run matrix](local-playtest-plan-2026-08-21.md), [presentation register](presentation-defect-plan-2026-08-23.md) and [asset specifications](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) define procedures; this file owns queue state.

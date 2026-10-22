@@ -43,4 +43,4 @@ Set `AUDIT_SUPPLEMENT=1` for only the two corrected routes. Full verifier:
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-last-bastion.ps1 -Json <new-report-path>`.
 From `play/last-bastion/dev`, audio reproduction:
 `node node_modules/vitest/vitest.mjs run --root .. playtest-evidence/2026-10-22-audit-review/audio-probe.test.ts`.
-When fixing AUDIO-02, write desired-behavior regressions; do not add this bug-demonstration assertion to the production acceptance suite.
+This reproducer belongs to audit checkpoint 4238b130; the subsequent audio-controls implementation changes the graph and has its own desired-behavior regressions. Do not run the old bug-demonstration assertion as current acceptance.
