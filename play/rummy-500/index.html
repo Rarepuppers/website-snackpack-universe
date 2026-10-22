@@ -175,8 +175,6 @@
   button.rm-meld:hover { background: rgba(0, 0, 0, 0.26); }
   .rm-hand-tools { display: flex; justify-content: center; gap: 8px; margin-top: 4px; }
   .rm-hint { min-height: 1.3em; }
-  /* play.css has no disabled look for .btn-game; without one a dead Lay meld looks pressable. */
-  #rm-actions .btn-game:disabled { opacity: 0.45; cursor: default; transform: none; }
   @media (prefers-reduced-motion: reduce) { .rm-seat { transition: none; } }
 </style>
 <main>
@@ -295,6 +293,10 @@
         <img class="game-icon" src="../tiles/asteroid-destroyer.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
         <h3>Asteroid Destroyer</h3>
       </a>
+      <a class="game-tile" href="../brick-breaker/">
+        <picture><source srcset="../tiles/brick-breaker.webp" type="image/webp"><img class="game-icon" src="../tiles/brick-breaker.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
+        <h3>Brick Breaker</h3>
+      </a>
       <a class="game-tile" href="../flappy-snacky/">
         <img class="game-icon" src="../tiles/flappy-snacky.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
         <h3>Flappy Snacky</h3>
@@ -302,10 +304,6 @@
       <a class="game-tile" href="../snacky-worm/">
         <img class="game-icon" src="../tiles/snacky-worm.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
         <h3>Snacky Worm</h3>
-      </a>
-      <a class="game-tile" href="../flag-frenzy/">
-        <img class="game-icon" src="../tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
-        <h3>Flag Frenzy</h3>
       </a>
     </div>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
