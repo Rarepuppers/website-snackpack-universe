@@ -8,6 +8,14 @@ Read the [22 October audit](AUDIT-REVIEW-2026-10-22.md) for each item's problem/
 
 ## Current evidence and closed work
 
+**23 October Phase 1:** Mark approved the phased recommendations and starting Phase 1.
+Human testing is unavailable now. Phase 1 is in progress, not accepted; automated evidence and
+the remaining owner actions are recorded in [Phase 1 evidence](playtest-evidence/2026-10-23-phase-1/README.md).
+Approval supplies no missing listening, observed-run, AT, hardware, Steam or analytics evidence.
+Fresh full verifier at `3a1073c6`: **PASS, 122.2s; 1,790 unit / 313 files, 51 browser,
+31 desktop-host tests**, static/output/offline/site checks. No new automated failure reproduced.
+No runtime changes in this phase start. Prior portfolio results below remain dated, not rerun here.
+
 **Audio continuation:** full verifier PASS in **130.8s**, **1,790 unit tests / 313 files,
 51 browser cases and 31 desktop-host tests**, plus static/output/offline/site checks.
 The completed continuation portfolio run also passes **all 20 guards**; no fleet dependency edits.
@@ -38,6 +46,25 @@ Native title/menu/settings/How to Play/rebinding/records, capture ownership/repe
 P0 crash/save loss/input dead ends interrupt this order if demonstrated. No new P0 was reproduced. Effort/risk and exact validation contracts are in the audit; every future runtime change requires relevant production regressions, full game verification and portfolio guards. No blanket refactor or performance downgrade without a measured problem.
 
 ## Executable now and external handoff
+
+### Approved phases and additional review scopes
+
+The ordered queue above retains its priority and gates. These approved subscopes make the
+23 October recommendations explicit; they are not a second execution queue or confirmed defects.
+Phase 1 starts now. Later implementation must meet the applicable evidence and scope gates.
+
+| Phase | Scope, in priority order | Entry/exit and asset policy |
+|---|---|---|
+| 1 — acceptance and demonstrated fixes | Audio listening; Runs 1–5; hostile/hazard/earned-rack readability; hero/equipment transitions; native AT/controller acceptance; exact-package hardware/save acceptance | Fresh executable checks support each area; humans sign perceptual/device results. Reproduce and fix demonstrated defects only. No new art required. |
+| 2 — clarity and quality of life | Reward/card comparisons; nine map-node meanings; destructible/terrain readability; useful debrief information; minimum-size text/focus; cue/mix polish | Record the failed player decision or missing information, trace existing production consumers, then bound copy/layout/feedback fixes. Reuse inspection, symbols, atlases and samples; no separate card system. |
+| 3 — balance and progression | Earned build viability; reward economy/unlock pacing; enemy-combination fairness; conditional practice | Comparable seeds/threats and observed outcomes; pick rate alone is not imbalance. Change one variable and repeat affected runs. Practice retains LEARN-01 gate and progression isolation. |
+| 4 — existing-content variety | Production exposure of existing content; one regional encounter variant; one terrain/destructible variant; one event/reward variant; floor decision | VARIETY-01 requires Runs 1–5 and two weeks of verified measurement. A catalogue entry is not proof of shipping reachability. Test navigation/collision/replay/rewards and every offered effect. Floors remain opt-in pending motion/hardware acceptance. Reuse first. |
+| 5 — expansion | One missing monster role; small differentiated item/relic/upgrade set; one world interaction; one genuinely distinct map node; one hero; then region/large expansion | Separate design/cost case after earlier gates. Specify counterplay, deterministic behavior, saves, progression, semantics, animation/audio and asset provenance. Unimplemented interaction effects stay unavailable. No speculative generation or production activation. |
+
+For every resulting change, attach problem/evidence, player benefit, bounded steps, effort/risk,
+dependencies, reuse versus generation decision and measurable acceptance before implementation.
+Use production regressions plus full game/portfolio checks for runtime changes; human/device
+checks stay separate. Review/specification work is available now; content activation is gated.
 
 - **Now:** perform AUDIO-02 listening acceptance; start native AT acceptance and observed play using the existing worksheet and disposable/exported saves. No further QA tool is needed. Automation, inventory checking and local captures are executable without Steam access. This audit's documentation cleanup is complete.
 - **Mark / human tester:** return Runs 1–5 with build/commit, hero/threat/weapon IDs, controller/remaps, display/DPR/scaling, sound output, confusion/damage findings and clips. Sign or explicitly accept touched S1/S2 presentation issues; Run 0 and diagnostics do not count.

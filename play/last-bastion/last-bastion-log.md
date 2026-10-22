@@ -5324,3 +5324,13 @@ all required static/output/offline/site lanes. Earlier browser test diagnostics 
 23 October finalization confirms the completed root portfolio run passes all 20 guards.
 Implementation is archived; CURRENT-PLAN retains listening and other external acceptance gates.
 No art generation, executable packaging, push/deploy, Steam action or fleet dependency maintenance.
+
+### Phase 1 acceptance start — 23 October 2026
+
+Mark approved the phased recommendations and starting Phase 1; human testing is unavailable now.
+Recorded the approved phases in CURRENT-PLAN without closing their evidence gates. Fresh full
+verifier at `3a1073c6` passes in 122.2s: 1,790 unit / 313 files, 51 browser and 31 desktop-host
+tests plus static/output/offline/site checks. Reviewed coverage against the six Phase 1 areas;
+no new automated defect reproduced, no runtime changes. Dated evidence includes exact provenance,
+coverage limits and the first available human-session handoff. Human/device/Steam acceptance
+remains NOT RUN; floors opt-in and content gates unchanged. No package, publication or new assets.
