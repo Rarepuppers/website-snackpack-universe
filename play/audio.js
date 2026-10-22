@@ -122,6 +122,14 @@
     muted = Boolean(next);
     try { localStorage.setItem(storageKey, muted ? "1" : "0"); } catch (error) {}
     updateButtons();
+    // Muting must also stop cues already in flight. Unmuting must not replay
+    // an old celebration/hit; new events will reuse the now-silent voices.
+    if (muted) Object.keys(pools).forEach(function (name) {
+      pools[name].forEach(function (voice) {
+        voice.volume = 0;
+        try { voice.pause(); voice.currentTime = 0; } catch (error) {}
+      });
+    });
     // Loops are continuous, so muting has to reach the ones already running.
     for (var i = 0; activeLoops && i < activeLoops.length; i++) activeLoops[i]._sync();
   }
