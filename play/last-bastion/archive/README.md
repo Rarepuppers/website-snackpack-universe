@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [Pre-audit current-plan snapshot, 22 October](CURRENT-PLAN-BEFORE-AUDIT-2026-10-22.md) | Mixed completed history and old queue wording superseded by the focused current queue; retained for provenance with relative links rebased. |
 | [22 October controls/records implementation](CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md) | Native rebinding, isolated capture and semantic records delivered locally; human/device/publication acceptance stays active. |
 | [22 October How to Play implementation](HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md) | Native help instructions, diagram descriptions and page controls delivered locally; real AT/controller and release gates remain in CURRENT-PLAN. |
 | [21 October menu/gallery implementation](MENU-REVIEW-IMPLEMENTATION-2026-10-21.md) | QA-03/QA-04 and the semantic title/menu/settings slice delivered locally; human/assistive-technology, hardware and publication gates remain in CURRENT-PLAN. |

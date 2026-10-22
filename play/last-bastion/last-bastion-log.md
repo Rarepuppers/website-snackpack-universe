@@ -5297,3 +5297,16 @@ The final full portfolio run completes with 19/20 guards passing, including asse
 The Expo dependency guard reports patch drift in 12 unrelated apps (with SDK autolinking matches);
 full diagnostics and a separate app-maintenance handoff are retained. No app package/lockfiles
 were changed, and this checkpoint makes no all-green portfolio/native-app release claim.
+
+### Audit and queue consolidation — 22 October 2026
+
+Audited runtime checkpoint `4238b130` / `web-2026.10.22-controls-records`; concurrent website
+commits did not alter the game. Fresh full verifier passes in 117.9s: 1,783 unit / 312 files,
+50 browser and 31 desktop-host tests, static/output/offline/site checks. Fresh portfolio passes
+20/20; no fleet dependencies edited. Fourteen local captures and semantic snapshots, read-only
+227-definition/310-source hash check and an instrumented production audio reproduction retained.
+AUDIO-02 confirms active sample gains ignore subsequent zero/mute; no runtime fix made.
+Detailed evidence, asset reuse decisions, prioritized implementation/acceptance specifications
+and external owner handoffs are in AUDIT-REVIEW-2026-10-22.md and CURRENT-PLAN.md. Archived the
+previous mixed-history queue; corrected stale playtest/package-check identity and asset-plan
+queue wording. No new art, gameplay, package, push, deployment or human/device gate closure.

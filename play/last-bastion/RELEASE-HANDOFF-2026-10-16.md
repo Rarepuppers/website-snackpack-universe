@@ -1,5 +1,11 @@
 # Last Bastion release handoff — 16 October 2026
 
+**22 October audit:** see [CURRENT-PLAN](CURRENT-PLAN.md) and the [fresh audit](AUDIT-REVIEW-2026-10-22.md).
+Runtime checkpoint `4238b130` passes all game verification lanes; the new portfolio run passes 20/20.
+Active-voice volume/mute persistence is reproduced (AUDIO-02) and needs correction/acceptance before
+audio release sign-off. No runtime fix, package, deployment or human/device acceptance is supplied
+by this documentation audit. Older results below remain dated history.
+
 **Prepared local build (22 October):** `web-2026.10.22-controls-records`, adding native control
 rebinding/records and capture isolation fixes on top of `5974c948`. Use the
 [completed record](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md) and

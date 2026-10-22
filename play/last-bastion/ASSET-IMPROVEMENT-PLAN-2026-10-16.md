@@ -209,5 +209,6 @@ runtime change follows from this preparation. Motion/hardware gates remain activ
 
 Practice and encounter variants remain later Patch B scope, contingent on observed play.
 The completed implementation checkpoint is archived in `archive/ASSET-PATCH-A-IMPLEMENTATION-2026-10-16.md`.
-This plan remains active for motion/hardware acceptance and any resulting corrections. No claim
+This document retains the asset specifications; CURRENT-PLAN.md alone queues motion/hardware
+acceptance and any resulting corrections. Completed steps above are historical. No claim
 is made that every historical candidate has a proven runtime consumer or that 4K60 is established.

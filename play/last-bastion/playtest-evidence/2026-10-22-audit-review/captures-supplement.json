@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-22T04:04:44.438Z",
+  "results": [
+    {
+      "name": "character-select-correct",
+      "query": "?screen=title&flow=character-select&mode=expedition",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "density-capacity-correct",
+      "query": "?screen=game&scenario=density-capacity&theme=bastion-standard&seed=61061&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  ]
+}

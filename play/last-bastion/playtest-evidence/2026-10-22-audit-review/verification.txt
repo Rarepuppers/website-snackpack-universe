@@ -1,0 +1,60 @@
+Last Bastion verification
+Commit: 4238b130
+Build identity: web-2026.10.22-controls-records
+Working tree: DIRTY
+
+=== Web static/unit/build/smoke/offline ===
+
+> last-bastion-web@0.0.1 verify
+> npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run ui:audit:text && npm run typecheck && npm run test && npm run test:build-check && npm run build:check && npm run smoke && npm run offline
+
+
+> last-bastion-web@0.0.1 image:audit:webp
+> node scripts/audit-production-images.mjs
+
+PASS 8 lossy + 55 lossless derivatives
+Runtime WebP audit complete: 63 assets; 51.93 MiB -> 27.06 MiB (52.1%).
+
+> last-bastion-web@0.0.1 combat:audit:boundaries
+> node scripts/audit-combat-boundaries.mjs
+
+PASS 33 enemy adapters delegate policy with no inline switch state machines.
+First shared-state seam: ordinary projectile volley geometry; runtime mutation and world effects remain simulation-owned.
+
+> last-bastion-web@0.0.1 content:audit
+> vitest run src/game/content/ContentInventory.test.ts --reporter=verbose
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/content/ContentInventory.test.ts [ src/game/content/ContentInventory.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{9320fca0-e7ea-4cd7-91a6-bb4a5d605719}\AC\Temp\gdqrRLp6GM3oBvzc_a6ue\ssr\.tmp-1792623368025-6p4nrf3cd15' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{9320fca0-e7ea-4cd7-91a6-bb4a5d605719}\AC\Temp\gdqrRLp6GM3oBvzc_a6ue\ssr\34c1c93612de0af00fb9b4e084f955174e3bcbd9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  09:56:07
+   Duration  152ms (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+FAIL Web static/unit/build/smoke/offline (2.4s)
+NOT-RUN Website JavaScript and offline core (a previous lane failed)
+NOT-RUN Executable browser acceptance (a previous lane failed)
+NOT-RUN Desktop host build and tests (a previous lane failed)
+
+Report written to play/last-bastion/playtest-evidence/2026-10-22-audit-review/verification.json
+
+FAIL     Web static/unit/build/smoke/offline
+NOT-RUN  Website JavaScript and offline core
+NOT-RUN  Executable browser acceptance
+NOT-RUN  Desktop host build and tests
+
+Manual gates, not covered by anything above:
+  MANUAL   Observed gameplay, visual and audio review
+  MANUAL   Packaged-window hardware checks
+  MANUAL   Steam client acceptance
+
+VERIFICATION FAILED (2.5s)

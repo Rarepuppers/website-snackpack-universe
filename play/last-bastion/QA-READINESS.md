@@ -57,7 +57,7 @@ manifest can be written; a mixed bundle cannot be accepted merely by retaining i
 To inspect a prepared Windows package without rebuilding or launching it:
 
 ```powershell
-npm run check:package -- release/win-unpacked web-2026.10.17-qa-readiness
+npm run check:package -- release/win-unpacked web-2026.10.22-controls-records
 ```
 
 This runs the compiled checker already produced by the build owner. If `dist/PackageProvenance.js`

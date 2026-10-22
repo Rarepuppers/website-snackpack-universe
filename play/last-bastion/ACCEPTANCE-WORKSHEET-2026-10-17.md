@@ -9,6 +9,11 @@ The earlier browser publication below refers to the 17 October QA-readiness buil
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
 
+22 October audit adds AUDIO-02: an active production sample retains gain after master zero/mute.
+After its authorized correction, specifically listen while muting active rotary/damage/reward cues,
+then unmute, pause/blur and restart; record clicks, stale tails and any missing warning. The audit's
+instrumented production-class reproduction is not ear acceptance. See CURRENT-PLAN for queue state.
+
 ## Observed play: Mark / human tester
 
 Start `npm run dev -- --host 127.0.0.1` in `dev/`, open

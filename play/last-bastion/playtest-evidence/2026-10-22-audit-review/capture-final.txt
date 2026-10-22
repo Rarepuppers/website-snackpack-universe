@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.goto: net::ERR_NETWORK_ACCESS_DENIED at http://127.0.0.1:44243/play/last-bastion/?flow=menu
+Call log:
+  - navigating to "http://127.0.0.1:44243/play/last-bastion/?flow=menu", waiting until "networkidle"
+
+    at C:\snackpack-universe\website-snackpack-universe\play\last-bastion\playtest-evidence\2026-10-22-audit-review\capture.mjs:30:16 {
+  log: [
+    '  - navigating to "http://127.0.0.1:44243/play/last-bastion/?flow=menu", waiting until "networkidle"'
+  ],
+  name: 'Error'
+}
+
+Node.js v24.14.1

@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Executable doesn't exist at C:\Users\Mark\AppData\Local\Packages\sandbox.{cee7dd2c-18f3-4310-8ade-2fddc706590a}\AC\ms-playwright\chromium_headless_shell-1234\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+    at C:\snackpack-universe\website-snackpack-universe\play\last-bastion\playtest-evidence\2026-10-22-audit-review\capture.mjs:10:26 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.14.1

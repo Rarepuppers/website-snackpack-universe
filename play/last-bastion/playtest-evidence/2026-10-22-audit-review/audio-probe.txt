@@ -1,0 +1,8 @@
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:27:27
+   Duration  220ms (transform 66ms, setup 0ms, import 87ms, tests 2ms, environment 0ms)

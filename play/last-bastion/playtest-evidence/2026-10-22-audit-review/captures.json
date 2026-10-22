@@ -1,0 +1,197 @@
+{
+  "checkedAt": "2026-10-22T03:33:01.125Z",
+  "results": [
+    {
+      "name": "menu-small",
+      "query": "?flow=menu",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "failed": [],
+      "dom": "LAST BASTION\nDAILY DROP\n22 OCT • same waves for all\nQUICK DROP\n10 waves • about 10 minutes\nEXPEDITION\n20-node campaign • one life\nARMORY\n0 command marks earned\nRECORDS\nRuns 0 • Wins 0 • Kills 0\nCODEX\nWeapons, enemies and status effects\nHOW TO PLAY\nControls and modes\nSETTINGS\nAudio, controls, display\nMORE GAMES\nBack to the SnackPack arcade\nBack",
+      "semantics": "- main \"Last Bastion game\":\n  - region \"Game menus\":\n    - heading \"LAST BASTION\" [level=1]\n    - button \"DAILY DROP 22 OCT • same waves for all\"\n    - button \"QUICK DROP 10 waves • about 10 minutes\"\n    - button \"EXPEDITION 20-node campaign • one life\"\n    - button \"ARMORY 0 command marks earned\"\n    - button \"RECORDS Runs 0 • Wins 0 • Kills 0\"\n    - button \"CODEX Weapons, enemies and status effects\"\n    - button \"HOW TO PLAY Controls and modes\"\n    - button \"SETTINGS Audio, controls, display\"\n    - button \"MORE GAMES Back to the SnackPack arcade\"\n    - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "help-small",
+      "query": "?flow=how-to-play",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "failed": [],
+      "dom": "HOW TO PLAY\n\nLEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n\nMOVE AND SURVIVE\n\nWASD or left stick moves. Mouse or right stick aims.\nSPACE / A rolls with a short invulnerability window.\nEach hero has a passive; read it on the character screen.\n\nPage 1 of 4\n\nPrevious page\nNext page\nBack",
+      "semantics": "- main \"Last Bastion game\":\n  - region \"Game menus\":\n    - heading \"HOW TO PLAY\" [level=1]\n    - paragraph: LEFT/RIGHT or D-PAD pages • ENTER / A next • ESC / B back\n    - img \"Movement path around cover toward an evade position, with a threat ahead.\"\n    - article:\n      - heading \"MOVE AND SURVIVE\" [level=2]\n      - paragraph: WASD or left stick moves. Mouse or right stick aims. SPACE / A rolls with a short invulnerability window. Each hero has a passive; read it on the character screen.\n    - paragraph: Page 1 of 4\n    - button \"Previous page\" [disabled]\n    - button \"Next page\"\n    - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "controls-small",
+      "query": "?flow=controls",
+      "width": 960,
+      "height": 540,
+      "errors": [],
+      "failed": [],
+      "dom": "CONTROL BINDINGS\n\nSelect an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n\nKeyboard\nController\nMOVE UP: W\nMOVE DOWN: S\nMOVE LEFT: A\nMOVE RIGHT: D\nROLL / EVADE: SPACE\nINTERACT: E\nULTIMATE: R\nUSE KIT: Q\nFIRE MODE: T\nPAUSE: ESC\nReset all bindings\nBack",
+      "semantics": "- main \"Last Bastion game\":\n  - region \"Game menus\":\n    - heading \"CONTROL BINDINGS\" [level=1]\n    - status: Select an action to rebind. Duplicate assignments swap. Delete resets all; Escape goes back.\n    - button \"Keyboard\" [pressed]\n    - button \"Controller\"\n    - 'button \"MOVE UP: W\"'\n    - 'button \"MOVE DOWN: S\"'\n    - 'button \"MOVE LEFT: A\"'\n    - 'button \"MOVE RIGHT: D\"'\n    - 'button \"ROLL / EVADE: SPACE\"'\n    - 'button \"INTERACT: E\"'\n    - 'button \"ULTIMATE: R\"'\n    - 'button \"USE KIT: Q\"'\n    - 'button \"FIRE MODE: T\"'\n    - 'button \"PAUSE: ESC\"'\n    - button \"Reset all bindings\"\n    - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      }
+    },
+    {
+      "name": "records-4k",
+      "query": "?flow=records",
+      "width": 3840,
+      "height": 2160,
+      "errors": [],
+      "failed": [],
+      "dom": "RECORDS\nCAREER\nRUNS FINISHED\n0\nVICTORIES\n0\nBEST WAVE / COLUMN\n0\nBEST EXPEDITION NODES\n0\nLIFETIME NODES CLEARED\n0\nENEMIES DEFEATED\n0\nTOTAL DAMAGE\n0\nSCRAP EARNED\n0\nRECENT RUNS\n\n0–0 of 0\n\nNO COMPLETED RUNS YET\n\nNewer runs\nOlder runs\nBack",
+      "semantics": "- main \"Last Bastion game\":\n  - region \"Game menus\":\n    - heading \"RECORDS\" [level=1]\n    - heading \"CAREER\" [level=2]\n    - term: RUNS FINISHED\n    - definition: \"0\"\n    - term: VICTORIES\n    - definition: \"0\"\n    - term: BEST WAVE / COLUMN\n    - definition: \"0\"\n    - term: BEST EXPEDITION NODES\n    - definition: \"0\"\n    - term: LIFETIME NODES CLEARED\n    - definition: \"0\"\n    - term: ENEMIES DEFEATED\n    - definition: \"0\"\n    - term: TOTAL DAMAGE\n    - definition: \"0\"\n    - term: SCRAP EARNED\n    - definition: \"0\"\n    - heading \"RECENT RUNS\" [level=2]\n    - status: 0–0 of 0\n    - list \"Recent runs\"\n    - paragraph: NO COMPLETED RUNS YET\n    - button \"Newer runs\" [disabled]\n    - button \"Older runs\" [disabled]\n    - button \"Back\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    },
+    {
+      "name": "hero-select",
+      "query": "?flow=hero",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "LAST BASTION\nStart game",
+      "semantics": "- main \"Last Bastion game\":\n  - region \"Game menus\":\n    - heading \"LAST BASTION\" [level=1]\n    - button \"Start game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "map",
+      "query": "?screen=map&mapseed=61061",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "baseline",
+      "query": "?screen=game&hero=marine&theme=bastion-standard&seed=61061&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "floor-kit",
+      "query": "?screen=game&hero=marine&theme=bastion-standard&seed=61061&floorpilot=kit&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "medic-gallery",
+      "query": "?mode=gallery&hero=medic",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "assault-gallery",
+      "query": "?mode=gallery&hero=assault&art=c3",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "equipment",
+      "query": "?scenario=weapon-review&loadout=bastion-service-rifle&sound=0",
+      "width": 1920,
+      "height": 1080,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "name": "dense-cvd",
+      "query": "?scenario=weapon-review&theme=bastion-standard&cvd=deuteranopia&sound=0",
+      "width": 3840,
+      "height": 2160,
+      "errors": [],
+      "failed": [],
+      "dom": "",
+      "semantics": "- main \"Last Bastion game\"",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 3840,
+        "height": 2160
+      }
+    }
+  ]
+}
