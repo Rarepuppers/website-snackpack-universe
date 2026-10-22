@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v50";
+const CACHE = "snackpack-arcade-v51";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
