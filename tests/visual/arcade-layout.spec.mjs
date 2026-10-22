@@ -20,7 +20,7 @@ const games = fs.readdirSync(PLAY, { withFileTypes: true }).filter(e => e.isDire
 
 // The play surface, in priority order; the first that exists is measured.
 const BOARD = [".game-board-wrap", "canvas", "#fc-table", "#gs-cols", ".py-pyramid", ".tp-board", "#mj-board", "#t-hand",
-  "#trivia-options", "#ff-input", ".sw-board", "#sol-table", "#spi-table", "#cw-grid", "#ws-board", "#s-board", ".rm-felt", "#bp-board"];
+  "#trivia-options", "#ff-input", ".sw-board", "#sol-table", "#spi-table", "#cw-grid", "#ws-board", "#s-board", ".rm-felt", "#bp-board", "#ch-board", "#ks-board"];
 
 for (const [label, size] of [["phone", { width: 375, height: 812 }], ["laptop", { width: 1280, height: 800 }]]) {
   test(`every board starts on the first screen (${label})`, async ({ page }) => {

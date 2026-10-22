@@ -19,3 +19,6 @@ Added 2026-10-22: brick-breaker.png / @2x is Vol 2's own painted Brick Breaker i
 (apps/snackpack-brain-games-vol-2/assets/game-icons/brick-breaker.png), not a placeholder.
 social/brick-breaker.png is an interim composite; final art is item 14 of
 CODEX-ASSET-BRIEF-2026-10-17.md.
+
+Added 2026-10-22: chess.png and killer-sudoku.png (+ @2x) are Vol 3's own painted icons, not placeholders.
+Their social cards are interim composites; final art is items 15 and 16 of CODEX-ASSET-BRIEF-2026-10-17.md.
