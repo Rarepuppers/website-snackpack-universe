@@ -50,6 +50,11 @@ const checkOnly = process.argv.includes("--check");
 const PLAY_HOST = "https://play.google.com/store/apps/details";
 const ORIGIN = "https://www.snackpackuniverse.com";
 const BEACON = '{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}';
+// The beacon reports a few ms after window load (measured 2026-10-24), so the
+// redirect normally fires on that report. These are only for when it never
+// shows up: a slow beacon, or a browser without Resource Timing.
+const GO_AFTER_LOAD_MS = 1000;
+const GO_FALLBACK_MS = 2500;
 
 const SKIP_DIRS = new Set([
   ".git", "node_modules", "dev", "desktop", "release", "stage", "art",
@@ -176,12 +181,33 @@ function interstitial({ surface, campaign, pkg, from }) {
         data-cf-beacon='${BEACON}'></script>
 <!-- End Cloudflare Web Analytics -->
 <script>
+  // Leave only once Cloudflare has counted this view: counting it is the whole
+  // point of the page. The beacon above is deferred and reports from the window
+  // load event, so an immediate redirect left before it ever ran (0 /go/ views
+  // in the 28 days to 2026-10-23). Go as soon as its report has been sent, at
+  // once if the beacon is blocked, and never later than ${GO_FALLBACK_MS} ms.
+  //
   // replace(), not assign(): Back from the Play listing should return to the
   // page the visitor came from, not to this one, which would bounce them
   // straight forward again and trap them.
   (function () {
     var a = document.getElementById("go-link");
-    if (a) { window.location.replace(a.href); }
+    if (!a) return;
+    var gone = false;
+    function go() {
+      if (gone) return;
+      gone = true;
+      window.location.replace(a.href);
+    }
+    var beacon = document.querySelector('script[src*="cloudflareinsights"]');
+    if (beacon) beacon.addEventListener("error", go);
+    try {
+      new PerformanceObserver(function (list) {
+        if (list.getEntries().some(function (e) { return e.name.indexOf("/cdn-cgi/rum") !== -1; })) go();
+      }).observe({ type: "resource", buffered: true });
+    } catch (e) {}
+    window.addEventListener("load", function () { setTimeout(go, ${GO_AFTER_LOAD_MS}); });
+    setTimeout(go, ${GO_FALLBACK_MS});
   })();
 </script>
 </body>
