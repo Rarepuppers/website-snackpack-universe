@@ -1,0 +1,61 @@
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+node:internal/modules/cjs/loader:1459
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\snackpack-universe\website-snackpack-universe\play\last-bastion\scripts\run-balance-audit.mjs'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)
+    at Module._load (node:internal/modules/cjs/loader:1242:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.14.1
+ ❯ src/game/telemetry/BalanceAuditCli.test.ts (2 tests | 1 failed) 175ms
+     × executes production simulations and emits deterministic versioned rows 48ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/telemetry/BalanceAuditCli.test.ts > balance audit command > executes production simulations and emits deterministic versioned rows
+Error: Command failed: C:\Program Files\nodejs\node.exe C:\snackpack-universe\website-snackpack-universe\play\last-bastion\scripts\run-balance-audit.mjs --seeds 1 --policies cautious,sustain-first --seconds 0.1
+node:internal/modules/cjs/loader:1459
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\snackpack-universe\website-snackpack-universe\play\last-bastion\scripts\run-balance-audit.mjs'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)
+    at Module._load (node:internal/modules/cjs/loader:1242:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.14.1
+
+ ❯ run src/game/telemetry/BalanceAuditCli.test.ts:8:34
+      6|   it("executes production simulations and emits deterministic versione…
+      7|     const args = [script, "--seeds", "1", "--policies", "cautious,sust…
+      8|     const run = () => JSON.parse(execFileSync(process.execPath, args, …
+       |                                  ^
+      9|     const report = run();
+     10|     expect(run()).toEqual(report);
+ ❯ src/game/telemetry/BalanceAuditCli.test.ts:9:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 6 passed (7)
+   Start at  15:49:06
+   Duration  3.31s (transform 2.06s, setup 0ms, import 2.52s, tests 4.82s, environment 0ms)

@@ -2,6 +2,21 @@
 
 ## Commands
 
+`npm.cmd run balance:audit -- --seeds 12 --policies cautious,sustain-first --seconds 90`
+runs the production wave simulation for all five heroes and emits JSON (schema 2). For clean JSON
+redirection, call `node scripts/run-balance-audit.mjs` with the same arguments. No browser server,
+save writes, production bundle or dependency installation is needed; installed Vite loads TypeScript.
+Defaults are 100 seeds, all four policies and 90 seconds; use a small seed count for a quick check.
+
+`finalLevel` replaces the misleading `bossEntryLevel`; `purchases`, dodges and spawned/lost XP
+are null because this harness does not measure them. Rows distinguish victory/defeat from
+`censored` (still active at the horizon), retain final status and simulated/budget seconds, and
+continue through intermissions. `completedWinRate` excludes censored rows and is null if none
+complete; always inspect counts and horizon alongside it. The damage aggregate includes shield
+damage, and policy names describe fixed heuristics, not human strategies or optimized builds.
+These samples do not establish earned progression, shop economics, fairness or human win rates.
+Schema 1-style historical summaries are not directly comparable. No production balance is altered.
+
 ```powershell
 npm.cmd run dev
 npm.cmd run verify

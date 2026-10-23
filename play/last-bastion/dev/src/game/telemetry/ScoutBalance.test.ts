@@ -8,8 +8,8 @@ describe("Scout balance candidate", () => {
     expect(summary).toHaveLength(5);
     const scout = summary.find(({ heroId }) => heroId === "scout");
     expect(scout).toBeDefined();
-    expect(scout!.bossEntryLevel[1]).toBeGreaterThanOrEqual(1);
-    expect(scout!.bossEntryLevel[1]).toBeLessThanOrEqual(2);
+    expect(scout!.finalLevel[1]).toBeGreaterThanOrEqual(1);
+    expect(scout!.finalLevel[1]).toBeLessThanOrEqual(2);
     expect(scout!.finalScrap[1]).toBeGreaterThanOrEqual(18);
     expect(scout!.finalScrap[1]).toBeLessThanOrEqual(24);
     expect(scout!.damageTaken[1]).toBeGreaterThanOrEqual(7);

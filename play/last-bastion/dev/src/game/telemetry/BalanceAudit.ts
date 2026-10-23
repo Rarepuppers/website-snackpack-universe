@@ -2,10 +2,34 @@ import { CombatSimulation } from "../combat/CombatSimulation";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import { CombatTelemetryAccumulator, type CombatTelemetrySnapshot } from "./CombatTelemetry";
 
-export type BalanceAuditPolicy = "cautious" | "greedy-damage" | "sustain-first" | "random";
+export const BALANCE_AUDIT_POLICIES = ["cautious", "greedy-damage", "sustain-first", "random"] as const;
+export type BalanceAuditPolicy = typeof BALANCE_AUDIT_POLICIES[number];
 export interface BalanceAuditOptions { seeds?: number; policies?: readonly BalanceAuditPolicy[]; maxSeconds?: number; }
-export interface BalanceAuditRow extends CombatTelemetrySnapshot { heroId: string; seed: number; policy: BalanceAuditPolicy; level: number; outcome: string; finalScrap: number; }
-export interface BalanceAuditPercentiles { heroId: string; policy: BalanceAuditPolicy; bossEntryLevel: [number, number, number]; finalScrap: [number, number, number]; purchases: [number, number, number]; damageTaken: [number, number, number]; peakDensity: [number, number, number]; winRate: number; }
+export interface BalanceAuditRow extends Omit<CombatTelemetrySnapshot, "dodges" | "xpSpawned" | "xpLost"> {
+  heroId: string; seed: number; policy: BalanceAuditPolicy; level: number;
+  outcome: "victory" | "defeat" | "censored"; finalStatus: string; finalScrap: number;
+  budgetSeconds: number; simulatedSeconds: number;
+  dodges: null; xpSpawned: null; xpLost: null;
+}
+export interface BalanceAuditPercentiles {
+  heroId: string; policy: BalanceAuditPolicy; finalLevel: [number, number, number];
+  finalScrap: [number, number, number]; purchases: null;
+  damageTaken: [number, number, number]; peakDensity: [number, number, number];
+  runs: number; completed: number; censored: number; wins: number; losses: number;
+  completedWinRate: number | null;
+}
+
+export function normalizeBalanceAuditOptions(options: BalanceAuditOptions = {}): Required<BalanceAuditOptions> {
+  const seeds = options.seeds ?? 100;
+  const policies = options.policies ?? BALANCE_AUDIT_POLICIES;
+  const maxSeconds = options.maxSeconds ?? 90;
+  if (!Number.isSafeInteger(seeds) || seeds < 1 || seeds > 1000) throw new Error("seeds must be an integer from 1 to 1000");
+  if (!Number.isFinite(maxSeconds) || maxSeconds <= 0 || maxSeconds > 3600) throw new Error("maxSeconds must be greater than 0 and at most 3600");
+  if (!policies.length || new Set(policies).size !== policies.length || policies.some(policy => !BALANCE_AUDIT_POLICIES.includes(policy))) {
+    throw new Error("policies must be a nonempty, unique list of supported policies");
+  }
+  return { seeds, policies: [...policies], maxSeconds };
+}
 
 const idle: PlayerIntent = { move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: true, evasiveMovePressed: false, ultimatePressed: false, interactPressed: false, kitPressed: false, pausePressed: false, restartPressed: false };
 
@@ -36,20 +60,27 @@ function choosePolicyOption(simulation: CombatSimulation, policy: BalanceAuditPo
 }
 
 export function runBalanceAudit(options: BalanceAuditOptions = {}): BalanceAuditRow[] {
-  const seeds = Math.max(1, Math.floor(options.seeds ?? 100));
-  const policies = options.policies ?? ["cautious", "greedy-damage", "sustain-first", "random"];
-  const maxSeconds = Math.max(1, options.maxSeconds ?? 90);
+  const { seeds, policies, maxSeconds } = normalizeBalanceAuditOptions(options);
   const rows: BalanceAuditRow[] = [];
   for (const heroId of ["marine", "medic", "assault", "tactician", "scout"] as const) for (let seed = 1; seed <= seeds; seed += 1) for (const policy of policies) {
     const simulation = new CombatSimulation({ heroId, seed, autoStartWaves: true, autoFireEnabled: true });
     const telemetry = new CombatTelemetryAccumulator();
     let snapshot = simulation.snapshot();
-    for (let elapsed = 0; elapsed < maxSeconds && snapshot.status === "combat"; elapsed += 0.05) {
+    let budgetSeconds = 0;
+    for (let tick = 0; tick < Math.ceil(maxSeconds / 0.05) && snapshot.status !== "victory" && snapshot.status !== "defeat"; tick++) {
+      const elapsed = tick * 0.05;
+      const delta = Math.min(0.05, maxSeconds - elapsed);
       if (snapshot.pendingDecision) choosePolicyOption(simulation, policy, snapshot.pendingDecision.options);
-      snapshot = simulation.step(auditIntent(policy, elapsed, seed), 0.05);
-      telemetry.recordSnapshot(0.05, snapshot);
+      const previousSeconds = snapshot.runMetrics.elapsedSeconds;
+      snapshot = simulation.step(auditIntent(policy, elapsed, seed), delta);
+      telemetry.recordSnapshot(snapshot.runMetrics.elapsedSeconds - previousSeconds, snapshot);
+      budgetSeconds = elapsed + delta;
     }
-    rows.push({ ...telemetry.toSnapshot(), heroId, seed, policy, level: snapshot.level, outcome: snapshot.status, finalScrap: snapshot.securedScrap });
+    rows.push({ ...telemetry.toSnapshot(), dodges: null, xpSpawned: null, xpLost: null,
+      heroId, seed, policy, level: snapshot.level,
+      outcome: snapshot.status === "victory" || snapshot.status === "defeat" ? snapshot.status : "censored",
+      finalStatus: snapshot.status, finalScrap: snapshot.securedScrap,
+      budgetSeconds, simulatedSeconds: snapshot.runMetrics.elapsedSeconds });
   }
   return rows;
 }
@@ -69,11 +100,18 @@ export function summarizeBalanceAudit(rows: readonly BalanceAuditRow[]): Balance
   return [...groups.values()].map((group) => ({
     heroId: group[0]?.heroId ?? "unknown",
     policy: group[0]?.policy ?? "cautious",
-    bossEntryLevel: percentiles(group.map((row) => row.level)),
+    finalLevel: percentiles(group.map((row) => row.level)),
     finalScrap: percentiles(group.map((row) => row.finalScrap)),
-    purchases: percentiles(group.map(() => 0)),
+    purchases: null,
     damageTaken: percentiles(group.map((row) => Object.values(row.damageTaken).reduce((sum, value) => sum + value, 0))),
     peakDensity: percentiles(group.map((row) => row.peakLiveEnemies)),
-    winRate: group.filter((row) => row.outcome === "victory").length / group.length,
+    runs: group.length,
+    completed: group.filter(row => row.outcome !== "censored").length,
+    censored: group.filter(row => row.outcome === "censored").length,
+    wins: group.filter(row => row.outcome === "victory").length,
+    losses: group.filter(row => row.outcome === "defeat").length,
+    completedWinRate: group.some(row => row.outcome !== "censored")
+      ? group.filter(row => row.outcome === "victory").length / group.filter(row => row.outcome !== "censored").length
+      : null,
   }));
 }

@@ -5347,3 +5347,17 @@ BAL-01 records the no-op balance CLI and misleading/unobserved summary fields as
 reporting repair, not evidence of game imbalance. Content definitions are not exposure measurements.
 CURRENT-PLAN owns all remaining work; human/variety/art/expansion gates stay open. No publication,
 executable packaging, assets or fleet maintenance. Detailed evidence in 2026-10-23-phase-2.
+
+### Phase 3 balance reporting and assessment — 23 October 2026
+
+BAL-01 connects the offline CLI to production simulation and emits schema-2 reports. Replaced
+misnamed boss-entry level with final level, marked unmeasured fields null, separated completed
+and censored outcomes, validated inputs and continued through intermissions. Added deterministic
+production/CLI regressions; existing Scout/Tactician bands retained. No gameplay/output change.
+Collected 240 rows (12 seeds/five heroes/four policies/90 seconds): 184 defeats, 56 censored, no
+victories. Separate existing level-10 boss preflight wins 14/15. These synthetic results do not
+establish human fairness or earned economy. Reviewed progression/shop/recovery contracts; no
+tuning defect or repeated learning failure established. Executable Phase 3 scope complete;
+human acceptance/practice gates remain open. Evidence in 2026-10-23-phase-3; CURRENT-PLAN sole queue.
+Final verification: PASS 153.3s, 1,794 unit / 314 files, 52 browser and 31 desktop-host tests;
+full portfolio 20/20. Published output remains unchanged and matches source.

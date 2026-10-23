@@ -1,0 +1,31 @@
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ❯ src/game/telemetry/BalanceAudit.test.ts (0 test)
+ ❯ src/game/telemetry/BalanceAuditCli.test.ts (0 test)
+ ❯ src/game/telemetry/TacticianBalance.test.ts (0 test)
+ ❯ src/game/telemetry/ScoutBalance.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/telemetry/BalanceAudit.test.ts [ src/game/telemetry/BalanceAudit.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\.tmp-1792730933275-a9hmeauc6cc' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\9612d13bf86b040697f04c9af0f9afee25ba9e54'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/game/telemetry/BalanceAuditCli.test.ts [ src/game/telemetry/BalanceAuditCli.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\.tmp-1792730933279-jr61kbx7vqr' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\3a44309c8aebdbc04eebd8c84c32570b61dd4f66'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/game/telemetry/ScoutBalance.test.ts [ src/game/telemetry/ScoutBalance.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\.tmp-1792730933294-xr7jriacocp' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\a6ecfa0b67c420a4350dfd5699c2adf53b0fbbe9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/game/telemetry/TacticianBalance.test.ts [ src/game/telemetry/TacticianBalance.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\.tmp-1792730933289-7k9n64la6y7' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{faa6e6d6-b7fb-4add-b1b2-b79421f35bb8}\AC\Temp\B7uve1pwO7MvRk2UmbnaT\ssr\d88ef725684568e42a3dcfb692fd1f7b43dbbdb2'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  no tests
+   Start at  15:48:53
+   Duration  255ms (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)

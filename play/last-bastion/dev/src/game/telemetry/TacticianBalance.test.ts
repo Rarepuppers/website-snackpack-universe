@@ -8,8 +8,8 @@ describe("Tactician balance candidate", () => {
     expect(summary).toHaveLength(5);
     const tactician = summary.find(({ heroId }) => heroId === "tactician");
     expect(tactician).toBeDefined();
-    expect(tactician!.bossEntryLevel[1]).toBeGreaterThanOrEqual(1);
-    expect(tactician!.bossEntryLevel[1]).toBeLessThanOrEqual(2);
+    expect(tactician!.finalLevel[1]).toBeGreaterThanOrEqual(1);
+    expect(tactician!.finalLevel[1]).toBeLessThanOrEqual(2);
     expect(tactician!.finalScrap[1]).toBeGreaterThanOrEqual(1);
     expect(tactician!.finalScrap[1]).toBeLessThanOrEqual(5);
     expect(tactician!.damageTaken[1]).toBeGreaterThanOrEqual(7);
