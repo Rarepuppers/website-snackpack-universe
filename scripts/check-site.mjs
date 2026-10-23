@@ -13,6 +13,7 @@
 //   3. every JSON-LD block parses
 //   4. sitemap matches the indexable pages on disk
 //   5. house rules: canonical, title, description, analytics beacon
+//   7. no trademarked game names (Yahtzee, KenKen, Block Blast) in visible copy
 
 import fs from "node:fs";
 import path from "node:path";
@@ -38,6 +39,13 @@ const htmlFiles = allFiles.filter((f) => f.endsWith(".html") && !f.includes(`${p
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join("/");
 const errors = [];
 const warnings = [];
+// Other companies' game names: say Dice Score, Calcudoku and Block Puzzle.
+const TRADEMARKED = /\b(?:yahtzee|kenken|block blast)\b/gi;
+for (const txt of ["llms.txt"]) {
+  const p = path.join(ROOT, txt);
+  if (!fs.existsSync(p)) continue;
+  for (const m of fs.readFileSync(p, "utf8").matchAll(TRADEMARKED)) errors.push(`${txt}: trademarked game name "${m[0]}"`);
+}
 
 // A URL is servable if the exact file exists, or it is a directory with an
 // index.html (which is how every page on this site is addressed).
@@ -98,6 +106,19 @@ for (const file of htmlFiles) {
       errors.push(`${name}: invalid JSON-LD (${String(e.message).slice(0, 60)})`);
     }
   }
+
+  // ── 7. trademarked game names ──
+  // The apps renamed these games (Dice Score, Calcudoku, Block Puzzle) because
+  // the old names belong to other companies, but the site kept "Yahtzee" and
+  // "KenKen" for weeks after. Checked in what a reader or a search snippet
+  // sees: text, alt/title/meta and JSON-LD. Asset paths (yahtzee.webp), class
+  // names and page scripts are internal and stay as they are.
+  const visible = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<script\b(?![^>]*application\/ld\+json)[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[\s\S]*?<\/style>/gi, "")
+    .replace(/\s(?:src|srcset|href|class|id|data-[\w-]+)="[^"]*"/gi, "");
+  for (const m of visible.matchAll(TRADEMARKED)) errors.push(`${name}: trademarked game name "${m[0]}"`);
 
   // ── 6. <head> integrity ──
   // Every required meta tag can be *present* in the source and still never
