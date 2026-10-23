@@ -1,0 +1,65 @@
+{
+  "upgrade": {
+    "visible": true,
+    "kind": "upgrade",
+    "selectedIndex": 0,
+    "optionIds": [
+      "incendiary-rounds",
+      "cryo-coating",
+      "chain-lightning",
+      "lvl-max-hp"
+    ],
+    "statCardBounds": [],
+    "panelBounds": {
+      "width": 860,
+      "height": 498,
+      "availableWidth": 960,
+      "availableHeight": 540
+    }
+  },
+  "shop": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "optionIds": [
+      "shop-upgrade:rapid-cycling",
+      "shop-item:whetstone",
+      "shop-item:targeting-chip",
+      "shop-item:featherweight-frame",
+      "shop-manage",
+      "shop-leave"
+    ],
+    "statCardBounds": [],
+    "panelBounds": {
+      "width": 760,
+      "height": 516,
+      "availableWidth": 960,
+      "availableHeight": 540
+    }
+  },
+  "manage": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "optionIds": [
+      "shop-lock:shop-upgrade:rapid-cycling",
+      "shop-lock:shop-item:whetstone",
+      "shop-lock:shop-item:targeting-chip",
+      "shop-lock:shop-item:featherweight-frame",
+      "shop-reroll",
+      "shop-ban:shop-upgrade:rapid-cycling",
+      "shop-ban:shop-item:whetstone",
+      "shop-ban:shop-item:targeting-chip",
+      "shop-ban:shop-item:featherweight-frame",
+      "shop-sell-menu",
+      "shop-back"
+    ],
+    "statCardBounds": [],
+    "panelBounds": {
+      "width": 928,
+      "height": 516,
+      "availableWidth": 960,
+      "availableHeight": 540
+    }
+  }
+}

@@ -54,7 +54,8 @@ export function stepDecisionNavigation(input: DecisionNavigationInput): Decision
   if (Math.abs(input.stickY) < STICK_RELEASE) {
     stickReady = true;
   } else if (stickReady && Math.abs(input.stickY) > STICK_ENGAGE) {
-    delta += input.stickY > 0 ? 1 : -1;
+    // Movement intent can include the same keyboard press; count it only once.
+    if (delta === 0) delta = input.stickY > 0 ? 1 : -1;
     stickReady = false;
   }
 

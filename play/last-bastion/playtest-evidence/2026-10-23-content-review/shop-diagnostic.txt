@@ -1,0 +1,55 @@
+
+Running 1 test using 1 worker
+
+
+
+(node:35340) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1/1] tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+shop after confirm { width: 960, height: 540 } {
+  visible: true,
+  kind: 'scrap-shop',
+  selectedIndex: 10,
+  optionIds: [
+    'shop-lock:shop-upgrade:salvage-drones',
+    'shop-lock:shop-weapon:patrol-blade',
+    'shop-lock:shop-item:prospectors-kit',
+    'shop-lock:shop-upgrade:explosive-payload',
+    'shop-reroll',
+    'shop-ban:shop-upgrade:salvage-drones',
+    'shop-ban:shop-weapon:patrol-blade',
+    'shop-ban:shop-item:prospectors-kit',
+    'shop-ban:shop-upgrade:explosive-payload',
+    'shop-sell-menu',
+    'shop-back'
+  ],
+  statCardBounds: [],
+  panelBounds: {
+    width: 928,
+    height: 516,
+    availableWidth: 960,
+    availableHeight: 540
+  }
+}
+
+  1) tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+      27 |     await page.keyboard.press("Enter", { delay: 80 });
+      28 |     console.log("shop after confirm", viewport, await page.evaluate(() => window.__combatDecisionOverlay));
+    > 29 |     await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-manage"));
+         |                ^
+      30 |   }
+      31 | });
+      32 |
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:29:16
+
+    Error Context: test-results\last-bastion-functional-sh-5a238-nd-remain-keyboard-operable\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable

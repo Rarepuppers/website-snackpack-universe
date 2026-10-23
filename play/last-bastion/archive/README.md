@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [24 October shop/input completion and content trace](../playtest-evidence/2026-10-23-content-review/README.md) | SHOP-01/INPUT-03 corrected; Phase 2 consumer review and bounded Phase 4 trace completed. Human acceptance and gated EXPOSURE-01 remain in CURRENT-PLAN. |
 | [23 October Phase 3 reporting and assessment](../playtest-evidence/2026-10-23-phase-3/README.md) | BAL-01 offline reporting repaired and synthetic assessments retained; earned balance/practice acceptance stays in CURRENT-PLAN. |
 | [22 October live audio controls](AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md) | AUDIO-02 gain/mute and scene/retry cleanup implemented; actual listening/device acceptance remains active. |
 | [Pre-audit current-plan snapshot, 22 October](CURRENT-PLAN-BEFORE-AUDIT-2026-10-22.md) | Mixed completed history and old queue wording superseded by the focused current queue; retained for provenance with relative links rebased. |

@@ -4,10 +4,15 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.10.23-event-confirmation`; it is not published or packaged.
+Current prepared local build is `web-2026.10.23-shop-fit`; it is not published or packaged.
 The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
+
+24 October shop correction: at 960×540 and your normal display, read every offered row,
+open management, navigate one step at a time and confirm Back with Enter and a physical pad.
+Exercise earned purchases, reroll, locks, bans and sales; verify focus, stock and balances.
+Record actual readability and transaction outcomes. Automated diagnostic coverage is separate.
 
 23 October event confirmation: hold Select through an event choice and read its result; release
 then press Enter/Space or pad A to continue, or use the visible pointer button. Other buttons and

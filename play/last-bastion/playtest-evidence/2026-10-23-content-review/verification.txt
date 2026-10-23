@@ -1,0 +1,1307 @@
+Last Bastion verification
+Commit: 1557dd91
+Build identity: web-2026.10.23-shop-fit
+Working tree: DIRTY
+
+=== Web static/unit/build/smoke/offline ===
+
+> last-bastion-web@0.0.1 verify
+> npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run ui:audit:text && npm run typecheck && npm run test && npm run test:build-check && npm run build:check && npm run smoke && npm run offline
+
+
+> last-bastion-web@0.0.1 image:audit:webp
+> node scripts/audit-production-images.mjs
+
+PASS 8 lossy + 55 lossless derivatives
+Runtime WebP audit complete: 63 assets; 51.93 MiB -> 27.06 MiB (52.1%).
+
+> last-bastion-web@0.0.1 combat:audit:boundaries
+> node scripts/audit-combat-boundaries.mjs
+
+PASS 33 enemy adapters delegate policy with no inline switch state machines.
+First shared-state seam: ordinary projectile volley geometry; runtime mutation and world effects remain simulation-owned.
+
+> last-bastion-web@0.0.1 content:audit
+> vitest run src/game/content/ContentInventory.test.ts --reporter=verbose
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > 5 heroes; 34 weapons (31 draftable, 1 earned unique, 1 hero-bound, 1 transformation-only); 38 enemy catalogue types (20 regular/treasure, 8 summons/props, 7 mini-bosses, 3 bosses); 7 elite identities; 47 items, 14 relics, 12 artifacts; 20 upgrades, 16 level-stat cards, 29 world objects, 4 objective modes 1ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > partitions every enemy catalogue entry exactly once 1ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > keeps elite and ranked-enemy identities unique 0ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:42:05
+   Duration  1.60s (transform 1.19s, setup 0ms, import 1.38s, tests 3ms, environment 0ms)
+
+
+> last-bastion-web@0.0.1 ui:audit:text
+> node scripts/audit-ui-text-resolution.mjs
+
+UI text-resolution audit passed for 6 release scenes.
+
+> last-bastion-web@0.0.1 typecheck
+> tsc --noEmit
+
+
+> last-bastion-web@0.0.1 test
+> vitest run
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  314 passed (314)
+      Tests  1795 passed (1795)
+   Start at  21:42:09
+   Duration  11.86s (transform 49.50s, setup 0ms, import 88.17s, tests 49.74s, environment 38ms)
+
+
+> last-bastion-web@0.0.1 test:build-check
+> node scripts/check-published-build-regression.mjs
+
+PASS  stale published output fails without mutation.
+
+> last-bastion-web@0.0.1 build:check
+> node scripts/check-published-build.mjs
+
+<script src="../game-ui-controls.js"> in "/index.html" can't be bundled without type="module" attribute
+<script src="../game-ui-assets.js"> in "/index.html" can't be bundled without type="module" attribute
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+PASS  25 published build outputs match dev/src.
+
+> last-bastion-web@0.0.1 smoke
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
+
+
+
+PageStatus       : 200
+AboutStatus      : 200
+ContentType      : text/html; charset=utf-8
+HasGameRoot      : True
+AssetPath        : /play/last-bastion/game-assets/game.js
+AssetStatus      : 200
+AssetBytes       : 119672
+ArtAssetCount    : 120
+ReviewRouteCount : 90
+
+
+
+
+> last-bastion-web@0.0.1 offline
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1
+
+
+
+OfflineDocument      : True
+RemoteImports        : 0
+RemoteStartupCalls   : 0
+LocalAssetReferences : 423
+MissingLocalAssets   : 0
+
+
+
+PASS Web static/unit/build/smoke/offline (33.9s)
+
+=== Website JavaScript and offline core ===
+
+> check:javascript
+> node scripts/check-javascript.mjs
+
+JavaScript syntax check passed (75 files).
+PASS Website JavaScript and offline core (3.2s)
+
+=== Executable browser acceptance ===
+
+> test:last-bastion
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-last-bastion-browser-tests.ps1
+
+
+Running 53 tests using 1 worker
+
+
+(node:7084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/53] tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+  1) tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+      26 |     expect(await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex)).toBe(back);
+      27 |     await page.keyboard.press("Enter", { delay: 80 });
+    > 28 |     console.log("shop after confirm", viewport, await page.evaluate(() => window.__combatDecisionOverlay));
+         |                ^
+      29 |     await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-manage"));
+      30 |   }
+      31 | });
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:28:16
+
+    Error Context: test-results\last-bastion-functional-sh-5a238-nd-remain-keyboard-operable\error-context.md
+
+
+
+(node:22400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[2/53] tests\visual\last-bastion-functional.spec.mjs:32:1 › event results require a fresh confirmation and block underlying choices
+[3/53] tests\visual\last-bastion-functional.spec.mjs:58:1 › combat audio settings control the live output and encounter retry stops old voices
+  2) tests\visual\last-bastion-functional.spec.mjs:58:1 › combat audio settings control the live output and encounter retry stops old voices
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+      111 |   await page.waitForFunction(() => window.__combatAccessibilityAudit.paused === false);
+      112 |   await page.waitForFunction(count => window.__audioProbe.filter(p => p.outputs.some(n => n.liveOutput)).reduce((sum,p) => sum+p.stops,0) > count, stops);
+    > 113 |   await expect.poll(output).toEqual([0.25]);
+          |              ^
+      114 | });
+      115 |
+      116 | test("opt-in local QA session exports active frames, excludes pause, stops and resets", async ({ page }) => {
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:113:14
+
+    Error Context: test-results\last-bastion-functional-co-ee8ad-nter-retry-stops-old-voices\error-context.md
+
+
+
+(node:18712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[4/53] tests\visual\last-bastion-functional.spec.mjs:116:1 › opt-in local QA session exports active frames, excludes pause, stops and resets
+[5/53] tests\visual\last-bastion-functional.spec.mjs:194:3 › Last Bastion executable acceptance › title reaches the main menu by keyboard
+[6/53] tests\visual\last-bastion-functional.spec.mjs:203:3 › Last Bastion executable acceptance › the menu offers Daily, Quick Drop and Expedition, hides LAB, and starts today's Daily
+[7/53] tests\visual\last-bastion-functional.spec.mjs:229:3 › Last Bastion executable acceptance › LAB stays reachable for QA with ?lab=1
+[8/53] tests\visual\last-bastion-functional.spec.mjs:238:3 › Last Bastion executable acceptance › map and combat routes create their runtime state
+[9/53] tests\visual\last-bastion-functional.spec.mjs:264:3 › Last Bastion executable acceptance › the Scrap Shop does not preload unrelated encounter art
+[10/53] tests\visual\last-bastion-functional.spec.mjs:276:3 › Last Bastion executable acceptance › settings can export a versioned save backup
+  3) tests\visual\last-bastion-functional.spec.mjs:276:3 › Last Bastion executable acceptance › settings can export a versioned save backup
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      276 |   test("settings can export a versioned save backup", async ({ page }) => {
+      277 |     const failures = watchRuntime(page);
+    > 278 |     await page.goto("/play/last-bastion/?flow=settings");
+          |                ^
+      279 |     await page.waitForFunction(() => window.__shellState?.screen === "settings");
+      280 |     await page.keyboard.press("ArrowUp");
+      281 |     await page.keyboard.press("ArrowUp");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:278:16
+
+    Error Context: test-results\last-bastion-functional-La-a2ff8-ort-a-versioned-save-backup\error-context.md
+
+
+
+(node:34336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[11/53] tests\visual\last-bastion-functional.spec.mjs:290:3 › Last Bastion executable acceptance › settings exposes the game privacy policy without overflowing the minimum viewport
+  4) tests\visual\last-bastion-functional.spec.mjs:290:3 › Last Bastion executable acceptance › settings exposes the game privacy policy without overflowing the minimum viewport
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      291 |     const failures = watchRuntime(page);
+      292 |     await page.setViewportSize({ width: 960, height: 540 });
+    > 293 |     await page.goto("/play/last-bastion/?flow=settings");
+          |                ^
+      294 |     await page.waitForFunction(() => window.__shellState?.screen === "settings");
+      295 |     await page.keyboard.press("ArrowUp");
+      296 |     expect(await page.evaluate(() => {
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:293:16
+
+    Error Context: test-results\last-bastion-functional-La-ba500-lowing-the-minimum-viewport\error-context.md
+
+
+
+(node:35812) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[12/53] tests\visual\last-bastion-functional.spec.mjs:311:3 › Last Bastion executable acceptance › debrief keyboard navigation updates the selected action
+  5) tests\visual\last-bastion-functional.spec.mjs:311:3 › Last Bastion executable acceptance › debrief keyboard navigation updates the selected action
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1", waiting until "load"
+
+
+      311 |   test("debrief keyboard navigation updates the selected action", async ({ page }) => {
+      312 |     const failures = watchRuntime(page);
+    > 313 |     await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+          |                ^
+      314 |     await page.waitForFunction(() => window.__runSummaryNavigation?.selectedIndex === 1);
+      315 |     await page.keyboard.press("ArrowLeft");
+      316 |     await page.waitForFunction(() => window.__runSummaryNavigation?.selectedIndex === 0);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:313:16
+
+    Error Context: test-results\last-bastion-functional-La-e10dd-updates-the-selected-action\error-context.md
+
+
+
+(node:10348) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[13/53] tests\visual\last-bastion-functional.spec.mjs:324:3 › Last Bastion executable acceptance › run details remain selectable when clipboard access is blocked
+  6) tests\visual\last-bastion-functional.spec.mjs:324:3 › Last Bastion executable acceptance › run details remain selectable when clipboard access is blocked
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1", waiting until "load"
+
+
+      330 |       });
+      331 |     });
+    > 332 |     await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+          |                ^
+      333 |     await page.waitForFunction(() => window.__runSummary?.provenance?.combatSeed === 61061);
+      334 |     await page.keyboard.press("c");
+      335 |     await page.waitForFunction(() => window.__runSummaryCopy?.fallback === true);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:332:16
+
+    Error Context: test-results\last-bastion-functional-La-294d7-clipboard-access-is-blocked\error-context.md
+
+
+
+(node:25300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[14/53] tests\visual\last-bastion-functional.spec.mjs:346:3 › Last Bastion executable acceptance › debrief game link remains selectable when clipboard access is blocked
+  7) tests\visual\last-bastion-functional.spec.mjs:346:3 › Last Bastion executable acceptance › debrief game link remains selectable when clipboard access is blocked
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1", waiting until "load"
+
+
+      352 |       });
+      353 |     });
+    > 354 |     await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+          |                ^
+      355 |     await page.waitForFunction(() => Boolean(window.__runSummary));
+      356 |     await page.keyboard.press("l");
+      357 |     const link = page.locator("#run-details-fallback textarea");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:354:16
+
+    Error Context: test-results\last-bastion-functional-La-b4894-clipboard-access-is-blocked\error-context.md
+
+
+(node:34540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[15/53] tests\visual\last-bastion-functional.spec.mjs:365:3 › Last Bastion executable acceptance › focus loss clears a held irreversible confirmation
+  8) tests\visual\last-bastion-functional.spec.mjs:365:3 › Last Bastion executable acceptance › focus loss clears a held irreversible confirmation
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=transformation-lab
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=transformation-lab", waiting until "load"
+
+
+      365 |   test("focus loss clears a held irreversible confirmation", async ({ page }) => {
+      366 |     const failures = watchRuntime(page);
+    > 367 |     await page.goto("/play/last-bastion/?screen=transformation-lab");
+          |                ^
+      368 |     await page.waitForFunction(() => Boolean(window.__transformationDecisionLab));
+      369 |     await page.keyboard.press("Enter");
+      370 |     await page.waitForFunction(() => Boolean(window.__transformationDecisionLab?.state?.pending));
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:367:16
+
+    Error Context: test-results\last-bastion-functional-La-1efc0-d-irreversible-confirmation\error-context.md
+
+
+
+(node:33844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[16/53] tests\visual\last-bastion-functional.spec.mjs:382:3 › Last Bastion executable acceptance › maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport
+  9) tests\visual\last-bastion-functional.spec.mjs:382:3 › Last Bastion executable acceptance › maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=title
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=title", waiting until "load"
+
+
+      383 |     const failures = watchRuntime(page);
+      384 |     await page.setViewportSize({ width: 1280, height: 800 });
+    > 385 |     await page.goto("/play/last-bastion/?screen=title");
+          |                ^
+      386 |     await page.waitForFunction(() => window.__shellState?.screen === "title");
+      387 |     await page.evaluate(() => {
+      388 |       const state = window.__shellState;
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:385:16
+
+    Error Context: test-results\last-bastion-functional-La-a685d-ork-at-the-minimum-viewport\error-context.md
+
+
+(node:34080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[17/53] tests\visual\last-bastion-functional.spec.mjs:435:3 › Last Bastion executable acceptance › a warmed release boots offline and an unwarmed combat theme fails visibly
+  10) tests\visual\last-bastion-functional.spec.mjs:435:3 › Last Bastion executable acceptance › a warmed release boots offline and an unwarmed combat theme fails visibly
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=1", waiting until "load"
+
+
+      435 |   test("a warmed release boots offline and an unwarmed combat theme fails visibly", async ({ page, context }) => {
+      436 |     const failures = watchRuntime(page);
+    > 437 |     await page.goto("/play/last-bastion/?screen=summary&summarydemo=1");
+          |                ^
+      438 |     await page.waitForFunction(() => Boolean(window.__runSummary));
+      439 |     await page.evaluate(() => navigator.serviceWorker.ready);
+      440 |     await page.reload();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:437:16
+
+    Error Context: test-results\last-bastion-functional-La-11f23--combat-theme-fails-visibly\error-context.md
+
+
+
+(node:11884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[18/53] tests\visual\last-bastion-functional.spec.mjs:456:3 › Last Bastion executable acceptance › storage read failure stays visible and retryable
+  11) tests\visual\last-bastion-functional.spec.mjs:456:3 › Last Bastion executable acceptance › storage read failure stays visible and retryable
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=title
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=title", waiting until "load"
+
+
+      467 |       });
+      468 |     });
+    > 469 |     await page.goto("/play/last-bastion/?screen=title");
+          |                ^
+      470 |     await page.waitForFunction(() => window.__savePersistence?.kind === "failed");
+      471 |     expect(await page.evaluate(() => window.__savePersistence)).toEqual({
+      472 |       kind: "failed",
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:469:16
+
+    Error Context: test-results\last-bastion-functional-La-c5f52-stays-visible-and-retryable\error-context.md
+
+
+
+(node:17884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[19/53] tests\visual\last-bastion-functional.spec.mjs:480:3 › Last Bastion executable acceptance › repeated renderer boots and scene transitions remain crash-free
+  12) tests\visual\last-bastion-functional.spec.mjs:480:3 › Last Bastion executable acceptance › repeated renderer boots and scene transitions remain crash-free
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=title
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=title", waiting until "load"
+
+
+      481 |     const failures = watchRuntime(page);
+      482 |     for (let cycle = 0; cycle < 2; cycle += 1) {
+    > 483 |       await page.goto("/play/last-bastion/?screen=title");
+          |                  ^
+      484 |       await page.waitForFunction(() => window.__shellState?.screen === "title");
+      485 |       await page.keyboard.press("Enter");
+      486 |       await page.waitForFunction(() => window.__shellState?.screen === "menu");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:483:18
+
+    Error Context: test-results\last-bastion-functional-La-ae4ab-ansitions-remain-crash-free\error-context.md
+
+
+
+(node:34216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[20/53] tests\visual\last-bastion-functional.spec.mjs:507:3 › Last Bastion executable acceptance › combat decisions remain keyboard-operable after overlay extraction
+  13) tests\visual\last-bastion-functional.spec.mjs:507:3 › Last Bastion executable acceptance › combat decisions remain keyboard-operable after overlay extraction
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?scenario=weapon-gate
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?scenario=weapon-gate", waiting until "load"
+
+
+      507 |   test("combat decisions remain keyboard-operable after overlay extraction", async ({ page }) => {
+      508 |     const failures = watchRuntime(page);
+    > 509 |     await page.goto("/play/last-bastion/?scenario=weapon-gate");
+          |                ^
+      510 |     await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "weapon-placement");
+      511 |     const initial = await page.evaluate(() => window.__combatDecisionOverlay);
+      512 |     expect(initial.visible).toBe(true);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:509:16
+
+    Error Context: test-results\last-bastion-functional-La-70572-le-after-overlay-extraction\error-context.md
+
+
+
+(node:11332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[21/53] tests\visual\last-bastion-functional.spec.mjs:526:3 › Last Bastion executable acceptance › level-up stat cards fit their rendered text inside the choices
+  14) tests\visual\last-bastion-functional.spec.mjs:526:3 › Last Bastion executable acceptance › level-up stat cards fit their rendered text inside the choices
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?scenario=stat-card-review
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?scenario=stat-card-review", waiting until "load"
+
+
+      528 |     for (const viewport of [{ width: 960, height: 540 }, { width: 1920, height: 1080 }, { width: 3840, height: 2160 }]) {
+      529 |       await page.setViewportSize(viewport);
+    > 530 |       await page.goto("/play/last-bastion/?scenario=stat-card-review");
+          |                  ^
+      531 |       await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "level-stat");
+      532 |       const cards = await page.evaluate(() => window.__combatDecisionOverlay.statCardBounds);
+      533 |       expect(cards).toHaveLength(4);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:530:18
+
+    Error Context: test-results\last-bastion-functional-La-e223a-red-text-inside-the-choices\error-context.md
+
+
+(node:35556) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[22/53] tests\visual\last-bastion-functional.spec.mjs:548:3 › Last Bastion on a touch-only phone › explains the keyboard requirement before boot and still lets a player continue
+  15) tests\visual\last-bastion-functional.spec.mjs:548:3 › Last Bastion on a touch-only phone › explains the keyboard requirement before boot and still lets a player continue
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=title
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=title", waiting until "load"
+
+
+      547 |
+      548 |   test("explains the keyboard requirement before boot and still lets a player continue", async ({ page }) => {
+    > 549 |     await page.goto("/play/last-bastion/?screen=title");
+          |                ^
+      550 |     const notice = page.getByRole("dialog", { name: "Last Bastion needs a keyboard or controller" });
+      551 |     await expect(notice).toBeVisible();
+      552 |     await expect(notice.getByRole("link", { name: "Browse the arcade" })).toHaveAttribute("href", "/play/");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:549:16
+
+    Error Context: test-results\last-bastion-functional-La-982b8-till-lets-a-player-continue\error-context.md
+
+
+(node:26460) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[23/53] tests\visual\last-bastion-functional.spec.mjs:566:3 › October reliability regressions › failed character art stops loading and can recover on explicit retry
+  16) tests\visual\last-bastion-functional.spec.mjs:566:3 › October reliability regressions › failed character art stops loading and can recover on explicit retry
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=menu
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=menu", waiting until "load"
+
+
+      574 |       return fail ? route.fulfill({ status: 404, body: "missing" }) : route.continue();
+      575 |     });
+    > 576 |     await page.goto("/play/last-bastion/?flow=menu");
+          |                ^
+      577 |     await page.waitForFunction(() => window.__shellState?.screen === "menu");
+      578 |     await page.keyboard.press("Enter");
+      579 |     await page.waitForFunction(() => window.__shellState?.screen === "character-select");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:576:16
+
+    Error Context: test-results\last-bastion-functional-Oc-d6687-n-recover-on-explicit-retry\error-context.md
+
+
+
+(node:26708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[24/53] tests\visual\last-bastion-functional.spec.mjs:594:3 › October reliability regressions › failed entry module offers recovery without clearing saves
+  17) tests\visual\last-bastion-functional.spec.mjs:594:3 › October reliability regressions › failed entry module offers recovery without clearing saves
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/", waiting until "load"
+
+
+      594 |   test("failed entry module offers recovery without clearing saves", async ({ page }) => {
+      595 |     await page.route("**/game-assets/game.js", route => route.abort());
+    > 596 |     await page.goto("/play/last-bastion/");
+          |                ^
+      597 |     await expect(page.getByRole("button", { name: "Retry loading" })).toBeVisible();
+      598 |     await expect(page.locator("#boot-message")).toContainText("Your save has not been reset");
+      599 |   });
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:596:16
+
+    Error Context: test-results\last-bastion-functional-Oc-aecf0-very-without-clearing-saves\error-context.md
+
+
+(node:34076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[25/53] tests\visual\last-bastion-functional.spec.mjs:601:3 › October reliability regressions › Daily retry resolves the date when clicked, not when the screen was opened
+  18) tests\visual\last-bastion-functional.spec.mjs:601:3 › October reliability regressions › Daily retry resolves the date when clicked, not when the screen was opened
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=daily
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=summary&summarydemo=daily", waiting until "load"
+
+
+      601 |   test("Daily retry resolves the date when clicked, not when the screen was opened", async ({ page }) => {
+      602 |     await page.clock.install({ time: new Date(2026, 9, 14, 23, 59, 0) });
+    > 603 |     await page.goto("/play/last-bastion/?screen=summary&summarydemo=daily");
+          |                ^
+      604 |     await expect(page.locator("#game-root canvas")).toBeVisible();
+      605 |     await page.waitForFunction(() => window.__runSummary !== undefined);
+      606 |     await page.clock.setSystemTime(new Date(2026, 9, 15, 0, 1, 0));
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:603:16
+
+    Error Context: test-results\last-bastion-functional-Oc-f144d--when-the-screen-was-opened\error-context.md
+
+
+(node:2172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[26/53] tests\visual\last-bastion-functional.spec.mjs:612:1 › build pages are keyboard-operable and include affinity
+  19) tests\visual\last-bastion-functional.spec.mjs:612:1 › build pages are keyboard-operable and include affinity
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build", waiting until "load"
+
+
+      611 |
+      612 | test("build pages are keyboard-operable and include affinity", async ({ page }) => {
+    > 613 |   await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+          |              ^
+      614 |   await page.waitForFunction(() => window.__buildInspection?.page === 0);
+      615 |   await page.keyboard.press("ArrowLeft");
+      616 |   await page.waitForFunction(() => window.__buildInspection?.title.startsWith("TRANSFORMATION AFFINITY"));
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:613:14
+
+    Error Context: test-results\last-bastion-functional-bu-98c07-erable-and-include-affinity\error-context.md
+
+
+
+(node:34804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[27/53] tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 1920x1080
+  20) tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 1920x1080
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build", waiting until "load"
+
+
+      623 |   test(`build controls stay onscreen at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+      624 |     await page.setViewportSize(viewport);
+    > 625 |     await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+          |                ^
+      626 |     await page.waitForFunction(() => window.__buildInspection?.page === 0);
+      627 |     const canvas = await page.locator("#game-root canvas").boundingBox();
+      628 |     // Exercise the visible NEXT control, not a programmatic page transition.
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:625:16
+
+    Error Context: test-results\last-bastion-functional-bu-15547--stay-onscreen-at-1920x1080\error-context.md
+
+
+
+(node:2440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[28/53] tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 3840x2160
+  21) tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 3840x2160
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build", waiting until "load"
+
+
+      623 |   test(`build controls stay onscreen at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+      624 |     await page.setViewportSize(viewport);
+    > 625 |     await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+          |                ^
+      626 |     await page.waitForFunction(() => window.__buildInspection?.page === 0);
+      627 |     const canvas = await page.locator("#game-root canvas").boundingBox();
+      628 |     // Exercise the visible NEXT control, not a programmatic page transition.
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:625:16
+
+    Error Context: test-results\last-bastion-functional-bu-c22a2--stay-onscreen-at-3840x2160\error-context.md
+
+
+(node:34068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[29/53] tests\visual\last-bastion-functional.spec.mjs:634:1 › restart resets the attempt's settings provenance
+  22) tests\visual\last-bastion-functional.spec.mjs:634:1 › restart resets the attempt's settings provenance
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=settings", waiting until "load"
+
+
+      634 | test("restart resets the attempt's settings provenance", async ({ page }) => {
+      635 |   await page.setViewportSize({ width: 960, height: 540 });
+    > 636 |   await page.goto("/play/last-bastion/?screen=game&pausepreview=settings");
+          |              ^
+      637 |   await page.waitForFunction(() => window.__combatAccessibilityAudit?.paused);
+      638 |   await page.mouse.click(480, 304, { delay: 80 }); // Game speed: 1 -> 1.25
+      639 |   await page.waitForFunction(() => window.__combatAccessibilityAudit?.gameSpeedModified);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:636:14
+
+    Error Context: test-results\last-bastion-functional-re-720c2-tempt-s-settings-provenance\error-context.md
+
+
+
+(node:34468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[30/53] tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with evade rebound to B
+  23) tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with evade rebound to B
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build", waiting until "load"
+
+
+      655 |       Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+      656 |     }, action);
+    > 657 |     await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+          |                ^
+      658 |     await page.waitForFunction(() => window.__buildInspection?.page === 0);
+      659 |     const button = async (index) => {
+      660 |       await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; window.__testPad.timestamp++; }, index);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:657:16
+
+    Error Context: test-results\last-bastion-functional-ph-550a5-nce-with-evade-rebound-to-B\error-context.md
+
+
+(node:4580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[31/53] tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with pause rebound to B
+  24) tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with pause rebound to B
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&pausepreview=build", waiting until "load"
+
+
+      655 |       Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+      656 |     }, action);
+    > 657 |     await page.goto("/play/last-bastion/?screen=game&pausepreview=build");
+          |                ^
+      658 |     await page.waitForFunction(() => window.__buildInspection?.page === 0);
+      659 |     const button = async (index) => {
+      660 |       await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; window.__testPad.timestamp++; }, index);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:657:16
+
+    Error Context: test-results\last-bastion-functional-ph-dfaae-nce-with-pause-rebound-to-B\error-context.md
+
+
+
+(node:17416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[32/53] tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot a boots through its real texture loader
+  25) tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot a boots through its real texture loader
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=a
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=a", waiting until "load"
+
+
+      678 |     const loaded = [];
+      679 |     page.on("response", response => { if (response.url().includes("pilot") && response.url().endsWith(".png")) loaded.push({ url: response.url(), status: response.status() }); });
+    > 680 |     await page.goto(`/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=${variant}`);
+          |                ^
+      681 |     await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+      682 |     expect(loaded.some(row => row.url.includes(`floor-pilot-${variant}-runtime`) && row.status === 200)).toBe(true);
+      683 |     expect(loaded.some(row => row.url.includes("scuff-pilot-runtime") && row.status === 200)).toBe(true);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:680:16
+
+    Error Context: test-results\last-bastion-functional-fl-a7237-ugh-its-real-texture-loader\error-context.md
+
+
+
+(node:504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33/53] tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot b boots through its real texture loader
+  26) tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot b boots through its real texture loader
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=b
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=b", waiting until "load"
+
+
+      678 |     const loaded = [];
+      679 |     page.on("response", response => { if (response.url().includes("pilot") && response.url().endsWith(".png")) loaded.push({ url: response.url(), status: response.status() }); });
+    > 680 |     await page.goto(`/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=${variant}`);
+          |                ^
+      681 |     await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+      682 |     expect(loaded.some(row => row.url.includes(`floor-pilot-${variant}-runtime`) && row.status === 200)).toBe(true);
+      683 |     expect(loaded.some(row => row.url.includes("scuff-pilot-runtime") && row.status === 200)).toBe(true);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:680:16
+
+    Error Context: test-results\last-bastion-functional-fl-931ec-ugh-its-real-texture-loader\error-context.md
+
+
+
+(node:5712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[34/53] tests\visual\last-bastion-functional.spec.mjs:688:2 › expanded floor kit and affinity inspect load through real combat
+  27) tests\visual\last-bastion-functional.spec.mjs:688:2 › expanded floor kit and affinity inspect load through real combat
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept", waiting until "load"
+
+
+      691 |    const loaded = [];
+      692 |    page.on("response", response => { if (response.url().includes("kit-runtime")) loaded.push(response.status()); });
+    > 693 |    await page.goto("/play/last-bastion/?screen=game&theme=bastion-standard&seed=61061&floorpilot=kit&transformation=gravity-adept");
+          |               ^
+      694 |    await page.waitForFunction(() => window.__combatAccessibilityAudit !== undefined);
+      695 |    expect(loaded).toEqual([200, 200]);
+      696 |    const canvas = await page.locator("#game-root canvas").boundingBox();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:693:15
+
+    Error Context: test-results\last-bastion-functional-ex-9150b-ct-load-through-real-combat\error-context.md
+
+
+
+(node:25304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[35/53] tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 960x540
+  28) tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 960x540
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?mode=gallery
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?mode=gallery", waiting until "load"
+
+
+      707 |     const failures = watchRuntime(page);
+      708 |     await page.setViewportSize({ width, height });
+    > 709 |     await page.goto("/play/last-bastion/?mode=gallery");
+          |                ^
+      710 |     await page.waitForFunction(() => window.__galleryReview?.pageCount > 0);
+      711 |     const first = await page.evaluate(() => window.__galleryReview);
+      712 |     expect(first.samples).toHaveLength(16);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:709:16
+
+    Error Context: test-results\last-bastion-functional-ga-4c7f1-anifest-page-fit-at-960x540\error-context.md
+
+
+
+(node:33900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[36/53] tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 1920x1080
+  29) tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 1920x1080
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?mode=gallery
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?mode=gallery", waiting until "load"
+
+
+      707 |     const failures = watchRuntime(page);
+      708 |     await page.setViewportSize({ width, height });
+    > 709 |     await page.goto("/play/last-bastion/?mode=gallery");
+          |                ^
+      710 |     await page.waitForFunction(() => window.__galleryReview?.pageCount > 0);
+      711 |     const first = await page.evaluate(() => window.__galleryReview);
+      712 |     expect(first.samples).toHaveLength(16);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:709:16
+
+    Error Context: test-results\last-bastion-functional-ga-1c75d-ifest-page-fit-at-1920x1080\error-context.md
+
+
+
+(node:35128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[37/53] tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 3840x2160
+  30) tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 3840x2160
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?mode=gallery
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?mode=gallery", waiting until "load"
+
+
+      707 |     const failures = watchRuntime(page);
+      708 |     await page.setViewportSize({ width, height });
+    > 709 |     await page.goto("/play/last-bastion/?mode=gallery");
+          |                ^
+      710 |     await page.waitForFunction(() => window.__galleryReview?.pageCount > 0);
+      711 |     const first = await page.evaluate(() => window.__galleryReview);
+      712 |     expect(first.samples).toHaveLength(16);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:709:16
+
+    Error Context: test-results\last-bastion-functional-ga-c9301-ifest-page-fit-at-3840x2160\error-context.md
+
+
+
+(node:31308) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[38/53] tests\visual\last-bastion-functional.spec.mjs:737:1 › hero gallery routes show the requested family and reject unknown heroes
+  31) tests\visual\last-bastion-functional.spec.mjs:737:1 › hero gallery routes show the requested family and reject unknown heroes
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?mode=gallery&hero=marine
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?mode=gallery&hero=marine", waiting until "load"
+
+
+      738 |   const failures = watchRuntime(page);
+      739 |   for (const [hero, frames] of [["marine", 12], ["medic", 20], ["assault", 12], ["tactician", 12], ["scout", 12]]) {
+    > 740 |     await page.goto(`/play/last-bastion/?mode=gallery&hero=${hero}`);
+          |                ^
+      741 |     await page.waitForFunction(hero => window.__galleryReview?.heroId === hero, hero);
+      742 |     const samples = (await page.evaluate(() => window.__galleryReview)).samples;
+      743 |     expect(samples.filter(sample => sample.id === `${hero}-base-v1`)).toHaveLength(frames);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:740:16
+
+    Error Context: test-results\last-bastion-functional-he-d532c-y-and-reject-unknown-heroes\error-context.md
+
+
+
+(node:23064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[39/53] tests\visual\last-bastion-functional.spec.mjs:756:1 › semantic menus activate once and restore focus on return
+  32) tests\visual\last-bastion-functional.spec.mjs:756:1 › semantic menus activate once and restore focus on return
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/", waiting until "load"
+
+
+      756 | test("semantic menus activate once and restore focus on return", async ({ page }) => {
+      757 |   const failures = watchRuntime(page);
+    > 758 |   await page.goto("/play/last-bastion/");
+          |              ^
+      759 |   await expect(page.getByRole("button", { name: "Start game", exact: true })).toBeFocused();
+      760 |   await page.keyboard.press("Enter");
+      761 |   await expect(page.getByRole("button", { name: /QUICK DROP/ })).toBeFocused();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:758:14
+
+    Error Context: test-results\last-bastion-functional-se-64d77-and-restore-focus-on-return\error-context.md
+
+
+
+(node:33800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[40/53] tests\visual\last-bastion-functional.spec.mjs:779:1 › native settings toggle once, retain input focus and persist actual values
+  33) tests\visual\last-bastion-functional.spec.mjs:779:1 › native settings toggle once, retain input focus and persist actual values
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      779 | test("native settings toggle once, retain input focus and persist actual values", async ({ page }) => {
+      780 |   const failures = watchRuntime(page);
+    > 781 |   await page.goto("/play/last-bastion/?flow=settings");
+          |              ^
+      782 |   const shake = page.getByRole("checkbox", { name: "Screen shake", exact: true });
+      783 |   await expect(shake).toBeChecked();
+      784 |   await shake.press("Space");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:781:14
+
+    Error Context: test-results\last-bastion-functional-na-ab0e3-s-and-persist-actual-values\error-context.md
+
+
+
+(node:29864) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[41/53] tests\visual\last-bastion-functional.spec.mjs:807:1 › semantic controls follow the actual canvas box after resize
+  34) tests\visual\last-bastion-functional.spec.mjs:807:1 › semantic controls follow the actual canvas box after resize
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      806 |
+      807 | test("semantic controls follow the actual canvas box after resize", async ({ page }) => {
+    > 808 |   await page.goto("/play/last-bastion/?flow=settings");
+          |              ^
+      809 |   await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+      810 |   for (const [width, height] of [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]) {
+      811 |     await page.setViewportSize({ width, height });
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:808:14
+
+    Error Context: test-results\last-bastion-functional-se-bd7ca-ual-canvas-box-after-resize\error-context.md
+
+
+
+(node:35676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[42/53] tests\visual\last-bastion-functional.spec.mjs:829:1 › native save import reports invalid files and cancellation without changing progress
+  35) tests\visual\last-bastion-functional.spec.mjs:829:1 › native save import reports invalid files and cancellation without changing progress
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      829 | test("native save import reports invalid files and cancellation without changing progress", async ({ page }) => {
+      830 |   const failures = watchRuntime(page);
+    > 831 |   await page.goto("/play/last-bastion/?flow=settings");
+          |              ^
+      832 |   await page.getByRole("button", { name: "Save & privacy", exact: true }).click();
+      833 |   const before = await page.evaluate(() => localStorage.getItem("last-bastion-save"));
+      834 |   const choose = page.waitForEvent("filechooser");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:831:14
+
+    Error Context: test-results\last-bastion-functional-na-fff33-n-without-changing-progress\error-context.md
+
+
+
+(node:2472) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[43/53] tests\visual\last-bastion-functional.spec.mjs:854:1 › menu gamepad selection follows native focus and B returns exactly once
+  36) tests\visual\last-bastion-functional.spec.mjs:854:1 › menu gamepad selection follows native focus and B returns exactly once
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=menu
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=menu", waiting until "load"
+
+
+      858 |     Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+      859 |   });
+    > 860 |   await page.goto("/play/last-bastion/?flow=menu");
+          |              ^
+      861 |   const button = async index => {
+      862 |     await page.evaluate(i => { window.__testPad.buttons[i] = { pressed: true, touched: true, value: 1 }; }, index);
+      863 |     await page.waitForTimeout(120);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:860:14
+
+    Error Context: test-results\last-bastion-functional-me-a9a49--and-B-returns-exactly-once\error-context.md
+
+
+
+(node:34632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[44/53] tests\visual\last-bastion-functional.spec.mjs:884:1 › native help pages activate once, expose instructions and restore menu focus
+  37) tests\visual\last-bastion-functional.spec.mjs:884:1 › native help pages activate once, expose instructions and restore menu focus
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=menu
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=menu", waiting until "load"
+
+
+      884 | test("native help pages activate once, expose instructions and restore menu focus", async ({ page }) => {
+      885 |   const failures = watchRuntime(page);
+    > 886 |   await page.goto("/play/last-bastion/?flow=menu");
+          |              ^
+      887 |   const help = page.getByRole("button", { name: /HOW TO PLAY/ });
+      888 |   await help.click();
+      889 |   await expect(page.getByRole("heading", { name: "HOW TO PLAY", exact: true })).toBeVisible();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:886:14
+
+    Error Context: test-results\last-bastion-functional-na-759a9-ions-and-restore-menu-focus\error-context.md
+
+
+
+(node:15332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[45/53] tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 1
+  38) tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 1
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      934 |     try {
+      935 |       // Seed through the application's actual save, retaining its schema and progress.
+    > 936 |       await page.goto("/play/last-bastion/?flow=settings");
+          |                  ^
+      937 |       await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+      938 |       await page.getByRole("checkbox", { name: "Screen shake", exact: true }).uncheck();
+      939 |       await page.evaluate(() => {
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:936:18
+
+    Error Context: test-results\last-bastion-functional-na-08f39-s-within-its-panel-at-DPR-1\error-context.md
+
+
+(node:14276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[46/53] tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 2
+  39) tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 2
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      934 |     try {
+      935 |       // Seed through the application's actual save, retaining its schema and progress.
+    > 936 |       await page.goto("/play/last-bastion/?flow=settings");
+          |                  ^
+      937 |       await expect(page.getByRole("heading", { name: "SETTINGS", exact: true })).toBeVisible();
+      938 |       await page.getByRole("checkbox", { name: "Screen shake", exact: true }).uncheck();
+      939 |       await page.evaluate(() => {
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:936:18
+
+    Error Context: test-results\last-bastion-functional-na-820f9-s-within-its-panel-at-DPR-2\error-context.md
+
+
+(node:7068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[47/53] tests\visual\last-bastion-functional.spec.mjs:979:1 › help gamepad page controls preserve confirm and back behavior
+  40) tests\visual\last-bastion-functional.spec.mjs:979:1 › help gamepad page controls preserve confirm and back behavior
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=menu
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=menu", waiting until "load"
+
+
+      983 |     Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+      984 |   });
+    > 985 |   await page.goto("/play/last-bastion/?flow=menu");
+          |              ^
+      986 |   const help = page.getByRole("button", { name: /HOW TO PLAY/ });
+      987 |   await help.click();
+      988 |   const press = async index => {
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:985:14
+
+    Error Context: test-results\last-bastion-functional-he-26cfb-e-confirm-and-back-behavior\error-context.md
+
+
+(node:22680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[48/53] tests\visual\last-bastion-functional.spec.mjs:1021:1 › native rebinding swaps duplicates, owns capture input, persists and resets
+  41) tests\visual\last-bastion-functional.spec.mjs:1021:1 › native rebinding swaps duplicates, owns capture input, persists and resets
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      1022 |   const failures = watchRuntime(page);
+      1023 |   await installShellTestPad(page);
+    > 1024 |   await page.goto("/play/last-bastion/?flow=settings");
+           |              ^
+      1025 |   await page.getByRole("button", { name: "Controls", exact: true }).click();
+      1026 |   const entry = page.getByRole("button", { name: "Control bindings", exact: true });
+      1027 |   await entry.click();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1024:14
+
+    Error Context: test-results\last-bastion-functional-na-d90e9-e-input-persists-and-resets\error-context.md
+
+
+
+(node:29276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[49/53] tests\visual\last-bastion-functional.spec.mjs:1079:1 › controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons
+  42) tests\visual\last-bastion-functional.spec.mjs:1079:1 › controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=controls
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=controls", waiting until "load"
+
+
+      1079 | test("controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons", async ({ page }) => {
+      1080 |   await installShellTestPad(page);
+    > 1081 |   await page.goto("/play/last-bastion/?flow=controls");
+           |              ^
+      1082 |   await page.getByRole("button", { name: "Controller", exact: true }).click();
+      1083 |   const movement = page.getByRole("button", { name: "MOVE UP: LEFT STICK", exact: true });
+      1084 |   await expect(movement).toHaveAttribute("aria-disabled", "true");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1081:14
+
+    Error Context: test-results\last-bastion-functional-co-f0c28-nd-swaps-actual-pad-buttons\error-context.md
+
+
+(node:29448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[50/53] tests\visual\last-bastion-functional.spec.mjs:1111:1 › native capture supports Enter and Tab bindings without reopening on release
+  43) tests\visual\last-bastion-functional.spec.mjs:1111:1 › native capture supports Enter and Tab bindings without reopening on release
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=controls
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=controls", waiting until "load"
+
+
+      1110 |
+      1111 | test("native capture supports Enter and Tab bindings without reopening on release", async ({ page }) => {
+    > 1112 |   await page.goto("/play/last-bastion/?flow=controls");
+           |              ^
+      1113 |   await page.getByRole("button", { name: "MOVE UP: W", exact: true }).focus();
+      1114 |   await page.keyboard.down("Enter");
+      1115 |   await expect(page.getByRole("dialog")).toBeFocused();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1112:14
+
+    Error Context: test-results\last-bastion-functional-na-046f3-ithout-reopening-on-release\error-context.md
+
+
+
+(node:22688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[51/53] tests\visual\last-bastion-functional.spec.mjs:1132:1 › native records exposes empty and populated history, clamps navigation and preserves saves
+  44) tests\visual\last-bastion-functional.spec.mjs:1132:1 › native records exposes empty and populated history, clamps navigation and preserves saves
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=menu
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=menu", waiting until "load"
+
+
+      1133 |   const failures = watchRuntime(page);
+      1134 |   await installShellTestPad(page);
+    > 1135 |   await page.goto("/play/last-bastion/?flow=menu");
+           |              ^
+      1136 |   const records = page.getByRole("button", { name: /RECORDS/ });
+      1137 |   await records.click();
+      1138 |   await expect(page.getByRole("heading", { name: "RECORDS", exact: true })).toBeVisible();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1135:14
+
+    Error Context: test-results\last-bastion-functional-na-7c11b-igation-and-preserves-saves\error-context.md
+
+
+
+(node:35128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[52/53] tests\visual\last-bastion-functional.spec.mjs:1191:1 › native controls, capture and records follow canvas bounds across resolution and DPR
+  45) tests\visual\last-bastion-functional.spec.mjs:1191:1 › native controls, capture and records follow canvas bounds across resolution and DPR
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=controls
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=controls", waiting until "load"
+
+
+      1195 |     try {
+      1196 |     for (const flow of ["controls", "records"]) {
+    > 1197 |       await page.goto(`/play/last-bastion/?flow=${flow}`);
+           |                  ^
+      1198 |       await expect(page.locator(".semantic-shell")).toBeVisible();
+      1199 |       const viewports = deviceScaleFactor === 1
+      1200 |         ? [[960, 540], [1280, 800], [1920, 1080], [3840, 2160]]
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1197:18
+
+    Error Context: test-results\last-bastion-functional-na-5eff1-s-across-resolution-and-DPR\error-context.md
+
+
+
+(node:15072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[53/53] tests\visual\last-bastion-functional.spec.mjs:1225:1 › 4K native foreground leaves the canvas background intact
+  46) tests\visual\last-bastion-functional.spec.mjs:1225:1 › 4K native foreground leaves the canvas background intact
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:44175/play/last-bastion/?flow=settings
+    Call log:
+      - navigating to "http://127.0.0.1:44175/play/last-bastion/?flow=settings", waiting until "load"
+
+
+      1225 | test("4K native foreground leaves the canvas background intact", async ({ page }) => {
+      1226 |   await page.setViewportSize({ width: 3840, height: 2160 });
+    > 1227 |   await page.goto("/play/last-bastion/?flow=settings");
+           |              ^
+      1228 |   await expect(page.getByRole("button", { name: "Back", exact: true })).toBeVisible();
+      1229 |   await page.waitForTimeout(500);
+      1230 |   // Chromium previously painted an opaque black copy of Back's bounds into
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1227:14
+
+    Error Context: test-results\last-bastion-functional-4K-9c32e-he-canvas-background-intact\error-context.md
+
+
+  46 failed
+    tests\visual\last-bastion-functional.spec.mjs:3:1 › shop offers and management fit the camera and remain keyboard operable
+    tests\visual\last-bastion-functional.spec.mjs:58:1 › combat audio settings control the live output and encounter retry stops old voices
+    tests\visual\last-bastion-functional.spec.mjs:276:3 › Last Bastion executable acceptance › settings can export a versioned save backup
+    tests\visual\last-bastion-functional.spec.mjs:290:3 › Last Bastion executable acceptance › settings exposes the game privacy policy without overflowing the minimum viewport
+    tests\visual\last-bastion-functional.spec.mjs:311:3 › Last Bastion executable acceptance › debrief keyboard navigation updates the selected action
+    tests\visual\last-bastion-functional.spec.mjs:324:3 › Last Bastion executable acceptance › run details remain selectable when clipboard access is blocked
+    tests\visual\last-bastion-functional.spec.mjs:346:3 › Last Bastion executable acceptance › debrief game link remains selectable when clipboard access is blocked
+    tests\visual\last-bastion-functional.spec.mjs:365:3 › Last Bastion executable acceptance › focus loss clears a held irreversible confirmation
+    tests\visual\last-bastion-functional.spec.mjs:382:3 › Last Bastion executable acceptance › maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport
+    tests\visual\last-bastion-functional.spec.mjs:435:3 › Last Bastion executable acceptance › a warmed release boots offline and an unwarmed combat theme fails visibly
+    tests\visual\last-bastion-functional.spec.mjs:456:3 › Last Bastion executable acceptance › storage read failure stays visible and retryable
+    tests\visual\last-bastion-functional.spec.mjs:480:3 › Last Bastion executable acceptance › repeated renderer boots and scene transitions remain crash-free
+    tests\visual\last-bastion-functional.spec.mjs:507:3 › Last Bastion executable acceptance › combat decisions remain keyboard-operable after overlay extraction
+    tests\visual\last-bastion-functional.spec.mjs:526:3 › Last Bastion executable acceptance › level-up stat cards fit their rendered text inside the choices
+    tests\visual\last-bastion-functional.spec.mjs:548:3 › Last Bastion on a touch-only phone › explains the keyboard requirement before boot and still lets a player continue
+    tests\visual\last-bastion-functional.spec.mjs:566:3 › October reliability regressions › failed character art stops loading and can recover on explicit retry
+    tests\visual\last-bastion-functional.spec.mjs:594:3 › October reliability regressions › failed entry module offers recovery without clearing saves
+    tests\visual\last-bastion-functional.spec.mjs:601:3 › October reliability regressions › Daily retry resolves the date when clicked, not when the screen was opened
+    tests\visual\last-bastion-functional.spec.mjs:612:1 › build pages are keyboard-operable and include affinity
+    tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 1920x1080
+    tests\visual\last-bastion-functional.spec.mjs:623:3 › build controls stay onscreen at 3840x2160
+    tests\visual\last-bastion-functional.spec.mjs:634:1 › restart resets the attempt's settings provenance
+    tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with evade rebound to B
+    tests\visual\last-bastion-functional.spec.mjs:650:3 › physical B goes back once with pause rebound to B
+    tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot a boots through its real texture loader
+    tests\visual\last-bastion-functional.spec.mjs:675:3 › floor pilot b boots through its real texture loader
+    tests\visual\last-bastion-functional.spec.mjs:688:2 › expanded floor kit and affinity inspect load through real combat
+    tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 960x540
+    tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 1920x1080
+    tests\visual\last-bastion-functional.spec.mjs:706:3 › gallery logical sizes and every manifest page fit at 3840x2160
+    tests\visual\last-bastion-functional.spec.mjs:737:1 › hero gallery routes show the requested family and reject unknown heroes
+    tests\visual\last-bastion-functional.spec.mjs:756:1 › semantic menus activate once and restore focus on return
+    tests\visual\last-bastion-functional.spec.mjs:779:1 › native settings toggle once, retain input focus and persist actual values
+    tests\visual\last-bastion-functional.spec.mjs:807:1 › semantic controls follow the actual canvas box after resize
+    tests\visual\last-bastion-functional.spec.mjs:829:1 › native save import reports invalid files and cancellation without changing progress
+    tests\visual\last-bastion-functional.spec.mjs:854:1 › menu gamepad selection follows native focus and B returns exactly once
+    tests\visual\last-bastion-functional.spec.mjs:884:1 › native help pages activate once, expose instructions and restore menu focus
+    tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 1
+    tests\visual\last-bastion-functional.spec.mjs:931:3 › native help uses saved bindings and stays within its panel at DPR 2
+    tests\visual\last-bastion-functional.spec.mjs:979:1 › help gamepad page controls preserve confirm and back behavior
+    tests\visual\last-bastion-functional.spec.mjs:1021:1 › native rebinding swaps duplicates, owns capture input, persists and resets
+    tests\visual\last-bastion-functional.spec.mjs:1079:1 › controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons
+    tests\visual\last-bastion-functional.spec.mjs:1111:1 › native capture supports Enter and Tab bindings without reopening on release
+    tests\visual\last-bastion-functional.spec.mjs:1132:1 › native records exposes empty and populated history, clamps navigation and preserves saves
+    tests\visual\last-bastion-functional.spec.mjs:1191:1 › native controls, capture and records follow canvas bounds across resolution and DPR
+    tests\visual\last-bastion-functional.spec.mjs:1225:1 › 4K native foreground leaves the canvas background intact
+  7 passed (3.9m)
+Last Bastion browser acceptance failed with exit code 1.
+At C:\snackpack-universe\website-snackpack-universe\scripts\run-last-bastion-browser-tests.ps1:47 char:7
++       throw "Last Bastion browser acceptance failed with exit code $L ...
++       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Last Bastion br...th exit code 1.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Last Bastion browser acceptance failed with exit code 1.
+
+FAIL Executable browser acceptance (235.3s)
+NOT-RUN Desktop host build and tests (a previous lane failed)
+
+Report written to play/last-bastion/playtest-evidence/2026-10-23-content-review/verification.json
+
+PASS     Web static/unit/build/smoke/offline
+PASS     Website JavaScript and offline core
+FAIL     Executable browser acceptance
+NOT-RUN  Desktop host build and tests
+
+Manual gates, not covered by anything above:
+  MANUAL   Observed gameplay, visual and audio review
+  MANUAL   Packaged-window hardware checks
+  MANUAL   Steam client acceptance
+
+VERIFICATION FAILED (272.4s)

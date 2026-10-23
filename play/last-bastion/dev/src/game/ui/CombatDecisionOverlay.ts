@@ -86,6 +86,7 @@ export class CombatDecisionOverlay {
       stickReady: this.menuStickReady,
       digitIndex,
       confirmPressed: Phaser.Input.Keyboard.JustDown(this.options.keys.confirm)
+        || intent.restartPressed // The shared Enter edge was already read by combat input.
         || intent.evasiveMovePressed,
     });
 
@@ -141,6 +142,7 @@ export class CombatDecisionOverlay {
       camera.worldView.centerX,
       camera.worldView.centerY,
     );
+    this.publishAudit();
   }
 
   sync(decision: PendingDecision | null): void {
@@ -172,8 +174,8 @@ export class CombatDecisionOverlay {
     // rows — closest existing shape is the shop's two-column offer layout.
     const isStatCards = decision.kind === "level-stat";
     const isPlainList = !isShop && !isPlacement && !isStatCards;
-    const shopColumns = isShop && decision.options.length > 7 ? 2 : 1;
-    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 980 : isPlainList ? 860 : 760;
+    const shopColumns = isShop && decision.options.length > 6 ? 2 : 1;
+    const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 928 : isPlainList ? 860 : 760;
     const panelHeight = decisionPanelHeight(decision.kind, decision.options.length, shopColumns);
     const children: Phaser.GameObjects.GameObject[] = [];
     if (isShop && this.options.useMarineArt) {
@@ -233,14 +235,14 @@ export class CombatDecisionOverlay {
       const shopRow = shopColumns === 2 ? Math.floor(index / 2) : index;
       const x = isPlacement ? -70 + (index % 2) * 330
         : isStatCards ? -190 + (index % 2) * 380
-          : isShop && shopColumns === 2 ? -238 + shopColumn * 476 : isShop ? -78 : 0;
+          : isShop && shopColumns === 2 ? -225 + shopColumn * 450 : isShop ? -78 : 0;
       const y = isPlacement ? -125 + Math.floor(index / 2) * 98
         : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
           : isShop ? titleY + 78 + shopRow * 70 : titleY + 70 + index * 92;
       const enabled = choice.affordable !== false;
       const upgradeTile = this.options.useMarineArt ? upgradeTilePresentation(choice.id) : null;
       const shopWeaponTile = isShop && this.options.useMarineArt ? shopWeaponTilePresentation(choice.id) : null;
-      const shopButtonWidth = shopColumns === 2 ? 444 : 500;
+      const shopButtonWidth = shopColumns === 2 ? 430 : 500;
       const button = this.scene.add.rectangle(
         x, y,
         isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 770,
@@ -325,7 +327,7 @@ export class CombatDecisionOverlay {
     }).setOrigin(0.5).setResolution(uiTextResolution());
     children.push(hint);
 
-    this.overlay = this.scene.add.container(0, 0, children).setDepth(2200);
+    this.overlay = this.scene.add.container(0, 0, children).setSize(panelWidth, panelHeight).setDepth(2200);
     this.updateDecisionSelectionHighlight();
     this.positionDecisionOverlay();
   }
@@ -354,6 +356,12 @@ export class CombatDecisionOverlay {
       selectedIndex: this.selectionIndex,
       optionIds: this.buttons.map((button) => button.choiceId),
       statCardBounds: this.statCardBounds,
+      panelBounds: this.overlay ? {
+        width: this.overlay.width * this.overlay.scaleX,
+        height: this.overlay.height * this.overlay.scaleY,
+        availableWidth: this.scene.cameras.main.worldView.width,
+        availableHeight: this.scene.cameras.main.worldView.height,
+      } : null,
     };
   }
 }

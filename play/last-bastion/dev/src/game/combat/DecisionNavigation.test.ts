@@ -15,6 +15,12 @@ function input(overrides: Partial<DecisionNavigationInput> = {}): DecisionNaviga
 }
 
 describe("stepDecisionNavigation", () => {
+  it("counts keyboard movement mirrored into intent once and consumes the held stick", () => {
+    const result = stepDecisionNavigation(input({ keyboardDelta: 1, stickY: 1 }));
+    expect(result.selectedIndex).toBe(1);
+    expect(result.stickReady).toBe(false);
+    expect(stepDecisionNavigation(input({ selectedIndex: 1, stickY: 1, stickReady: result.stickReady })).selectedIndex).toBe(1);
+  });
   it("moves one option per keypress", () => {
     expect(stepDecisionNavigation(input({ keyboardDelta: 1 })).selectedIndex).toBe(1);
     expect(stepDecisionNavigation(input({ selectedIndex: 1, keyboardDelta: -1 })).selectedIndex).toBe(0);

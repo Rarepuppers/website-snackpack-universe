@@ -1,0 +1,47 @@
+{
+  "upgrade": {
+    "visible": true,
+    "kind": "upgrade",
+    "selectedIndex": 0,
+    "optionIds": [
+      "incendiary-rounds",
+      "cryo-coating",
+      "chain-lightning",
+      "lvl-max-hp"
+    ],
+    "statCardBounds": []
+  },
+  "shop": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "optionIds": [
+      "shop-item:combat-stims",
+      "shop-upgrade:shield-capacitor",
+      "shop-item:scrap-magnet",
+      "shop-item:vital-lattice",
+      "shop-manage",
+      "shop-leave"
+    ],
+    "statCardBounds": []
+  },
+  "manage": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "optionIds": [
+      "shop-lock:shop-item:combat-stims",
+      "shop-lock:shop-upgrade:shield-capacitor",
+      "shop-lock:shop-item:scrap-magnet",
+      "shop-lock:shop-item:vital-lattice",
+      "shop-reroll",
+      "shop-ban:shop-item:combat-stims",
+      "shop-ban:shop-upgrade:shield-capacitor",
+      "shop-ban:shop-item:scrap-magnet",
+      "shop-ban:shop-item:vital-lattice",
+      "shop-sell-menu",
+      "shop-back"
+    ],
+    "statCardBounds": []
+  }
+}

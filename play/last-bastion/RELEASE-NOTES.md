@@ -1,5 +1,14 @@
 # Last Bastion release notes
 
+## 24 October 2026 — shop layout and keyboard operation
+
+**Prepared locally:** `web-2026.10.23-shop-fit`; not published or packaged.
+
+- Shop offers and management fit the 960×540 minimum viewport using existing art and text sizes.
+- Arrow navigation counts a keyboard press once; Enter confirms the selected decision reliably.
+- Prices, rewards, balance, save schema and simulation compatibility are unchanged.
+- Human readability, earned purchases/sales and physical-controller acceptance remain open.
+
 ## 23 October 2026 — deliberate event confirmation
 
 **Prepared locally:** `web-2026.10.23-event-confirmation`; not published or packaged.

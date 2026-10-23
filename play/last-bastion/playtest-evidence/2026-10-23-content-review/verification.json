@@ -1,0 +1,42 @@
+﻿{
+    "commit":  "1557dd91",
+    "buildIdentity":  "web-2026.10.23-shop-fit",
+    "workingTree":  "dirty",
+    "finishedAt":  "2026-10-23T21:46:35.2243581+11:00",
+    "totalSeconds":  272.4,
+    "result":  "FAIL",
+    "lanes":  [
+                  {
+                      "lane":  "web",
+                      "title":  "Web static/unit/build/smoke/offline",
+                      "status":  "PASS",
+                      "seconds":  33.9,
+                      "error":  null
+                  },
+                  {
+                      "lane":  "site-js",
+                      "title":  "Website JavaScript and offline core",
+                      "status":  "PASS",
+                      "seconds":  3.2,
+                      "error":  null
+                  },
+                  {
+                      "lane":  "browser",
+                      "title":  "Executable browser acceptance",
+                      "status":  "FAIL",
+                      "seconds":  235.3,
+                      "error":  null
+                  },
+                  {
+                      "lane":  "desktop",
+                      "title":  "Desktop host build and tests",
+                      "status":  "NOT-RUN",
+                      "seconds":  0
+                  }
+              ],
+    "manualGates":  [
+                        "Observed gameplay, visual and audio review",
+                        "Packaged-window hardware checks",
+                        "Steam client acceptance"
+                    ]
+}

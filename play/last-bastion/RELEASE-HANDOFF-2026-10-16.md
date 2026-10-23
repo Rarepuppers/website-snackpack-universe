@@ -1,7 +1,7 @@
 # Last Bastion release handoff — 16 October 2026
 
-**Current prepared local build:** `web-2026.10.23-event-confirmation`, adding deliberate event
-result confirmation and pointer Continue. See [current evidence](playtest-evidence/2026-10-23-phase-2/README.md)
+**Current prepared local build (24 October review):** `web-2026.10.23-shop-fit`, adding minimum-size
+shop layout and keyboard navigation/confirmation corrections. See [current evidence](playtest-evidence/2026-10-23-content-review/README.md)
 and CURRENT-PLAN. Full game/portfolio checks pass; no human/device/Steam acceptance or publication.
 Claude remains the separately assigned packaging owner. Prepared-build notes below are historical.
 

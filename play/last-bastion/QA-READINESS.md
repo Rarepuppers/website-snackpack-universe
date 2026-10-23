@@ -1,6 +1,6 @@
 # Local QA and package provenance
 
-Prepared local release: `web-2026.10.23-event-confirmation`; schema 16, simulation compatibility 3.
+Prepared local release: `web-2026.10.23-shop-fit`; schema 16, simulation compatibility 3.
 These tools prepare evidence. They do not complete human, hardware, Steam or release acceptance.
 
 ## Session reports
@@ -57,7 +57,7 @@ manifest can be written; a mixed bundle cannot be accepted merely by retaining i
 To inspect a prepared Windows package without rebuilding or launching it:
 
 ```powershell
-npm run check:package -- release/win-unpacked web-2026.10.23-event-confirmation
+npm run check:package -- release/win-unpacked web-2026.10.23-shop-fit
 ```
 
 This runs the compiled checker already produced by the build owner. If `dist/PackageProvenance.js`

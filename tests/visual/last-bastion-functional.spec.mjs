@@ -1,5 +1,34 @@
 import { test, expect } from "@playwright/test";
 
+test("shop offers and management fit the camera and remain keyboard operable", async ({ page }) => {
+  for (const viewport of [{ width: 960, height: 540 }, { width: 1280, height: 800 }, { width: 3840, height: 2160 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/play/last-bastion/?scenario=scrap-shop&sound=0");
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "scrap-shop");
+    const assertFit = async () => {
+      await expect.poll(() => page.evaluate(() => {
+        const b = window.__combatDecisionOverlay?.panelBounds;
+        return !!b && b.width <= b.availableWidth - 23 && b.height <= b.availableHeight - 23;
+      })).toBe(true);
+    };
+    await assertFit();
+    const manage = await page.evaluate(() => window.__combatDecisionOverlay.optionIds.indexOf("shop-manage"));
+    await page.keyboard.press(String(manage + 1), { delay: 80 });
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-back"));
+    await assertFit();
+    const back = await page.evaluate(() => window.__combatDecisionOverlay.optionIds.indexOf("shop-back"));
+    for (let i = 0; i < 15; i++) {
+      if (await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex) === back) break;
+      const previous = await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex);
+      await page.keyboard.press("ArrowDown", { delay: 80 });
+      await page.waitForFunction(previous => window.__combatDecisionOverlay.selectedIndex !== previous, previous);
+    }
+    expect(await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex)).toBe(back);
+    await page.keyboard.press("Enter", { delay: 80 });
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-manage"));
+  }
+});
+
 test("event results require a fresh confirmation and block underlying choices", async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 540 });
   await page.goto("/play/last-bastion/?screen=event&eventdemo=1");
