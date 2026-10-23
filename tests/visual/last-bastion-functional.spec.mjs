@@ -1,5 +1,31 @@
 import { test, expect } from "@playwright/test";
 
+test("event results require a fresh confirmation and block underlying choices", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?screen=event&eventdemo=1");
+  await page.waitForFunction(() => window.__expeditionEvent !== undefined);
+  const clickGame = async (x, y) => {
+    const box = await page.locator("#game-root canvas").boundingBox();
+    await page.mouse.click(box.x + x * box.width / 960, box.y + y * box.height / 540, { delay: 80 });
+  };
+  await page.keyboard.down("Enter");
+  await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
+  const choice = await page.evaluate(() => window.__expeditionEvent.choiceId);
+  await page.keyboard.down("Enter"); // Real repeat keydown while the opener is still held.
+  await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
+  await page.keyboard.up("Enter");
+  await clickGame(100, 295); // A different choice beneath the result overlay.
+  expect(await page.evaluate(() => window.__expeditionEvent.choiceId)).toBe(choice);
+  await page.keyboard.press("ArrowDown");
+  expect(await page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
+  await page.keyboard.press("Enter");
+  await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(false);
+  await page.keyboard.press("Enter");
+  await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
+  await clickGame(480, 344);
+  await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(false);
+});
+
 test("combat audio settings control the live output and encounter retry stops old voices", async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 540 });
   await page.addInitScript(() => {

@@ -1,5 +1,14 @@
 # Last Bastion release notes
 
+## 23 October 2026 — deliberate event confirmation
+
+**Prepared locally:** `web-2026.10.23-event-confirmation`; not published or packaged.
+
+- Holding Select no longer skips an expedition event result. Continue requires a fresh
+  Enter/Space, pad A or the visible pointer button; other keys/buttons preserve the result.
+- The result overlay blocks covered choices. Event costs, rewards and probabilities are unchanged.
+- Real controller, event travel and readability acceptance remain open.
+
 ## 22 October 2026 — live audio controls and cleanup
 
 **Prepared locally:** `web-2026.10.22-audio-controls` — not pushed, deployed or desktop-packaged.

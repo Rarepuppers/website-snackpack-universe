@@ -5334,3 +5334,16 @@ tests plus static/output/offline/site checks. Reviewed coverage against the six 
 no new automated defect reproduced, no runtime changes. Dated evidence includes exact provenance,
 coverage limits and the first available human-session handoff. Human/device/Steam acceptance
 remains NOT RUN; floors opt-in and content gates unchanged. No package, publication or new assets.
+
+### Phase 2 event confirmation and later-phase preflight — 23 October 2026
+
+Reproduced held Enter skipping an event result in the production demo route. EVENT-01 now ignores
+repeat, restricts result confirmation to Enter/Space/pad A, blocks covered choice handlers and
+provides pointer Continue. Reuses existing UI; no event/balance changes. Prepared identity
+`web-2026.10.23-event-confirmation`. Browser before/after regression and minimum-size capture retained.
+Fresh full verifier passes 118.9s: 1,790 unit / 313 files, 52 browser, 31 desktop-host tests;
+portfolio 20/20. Existing map previews, terrain mechanics and debrief damage explanations reviewed.
+BAL-01 records the no-op balance CLI and misleading/unobserved summary fields as the next executable
+reporting repair, not evidence of game imbalance. Content definitions are not exposure measurements.
+CURRENT-PLAN owns all remaining work; human/variety/art/expansion gates stay open. No publication,
+executable packaging, assets or fleet maintenance. Detailed evidence in 2026-10-23-phase-2.

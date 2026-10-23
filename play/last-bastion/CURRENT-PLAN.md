@@ -1,12 +1,20 @@
 # Last Bastion — current plan
 
 **Updated:** 23 October 2026. **Sole active execution queue.**
-Prepared local identity: `web-2026.10.22-audio-controls`; audio implementation based on `328cc8d3`; earlier audit checkpoint `4238b130`. Save schema 16, simulation compatibility 3. Later concurrent website commits did not change the audited game files at review time.
+Prepared local identity: `web-2026.10.23-event-confirmation`; Phase 2 patch based on `b8d22963`; audio implementation `a5313291`; earlier audit checkpoint `4238b130`. Save schema 16, simulation compatibility 3.
 Last verified published identity: `web-2026.10.17-qa-readiness` (historical evidence, not rechecked live here).
 
 Read the [22 October audit](AUDIT-REVIEW-2026-10-22.md) for each item's problem/evidence, benefit/scope, effort/risk, asset decision, implementation steps and acceptance checks. Read the [fresh evidence](playtest-evidence/2026-10-22-audit-review/README.md), [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md), [QA guide](QA-READINESS.md) and [release handoff](RELEASE-HANDOFF-2026-10-16.md) before execution. The audit was planning-only. Subsequent continuation authorizes and implements AUDIO-02; see [completed audio scope](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). Other gated proposals remain planning only.
 
 ## Current evidence and closed work
+
+**Phase 2 onwards begun:** EVENT-01 fixes held-key result dismissal, covered choice activation
+and unintended pad confirmation; adds pointer Continue using existing UI. Fresh verifier
+**PASS 118.9s; 1,790 unit / 313 files, 52 browser, 31 desktop-host tests; portfolio 20/20**.
+See [Phase 2 evidence and Phase 3–5 preflight](playtest-evidence/2026-10-23-phase-2/README.md).
+Map previews and debrief damage explanations already exist. No duplicate implementations planned.
+Human acceptance remains open. BAL-01 reporting integrity is the next executable Phase 3 task;
+its documented source defects must be corrected before synthetic reports inform balance decisions.
 
 **23 October Phase 1:** Mark approved the phased recommendations and starting Phase 1.
 Human testing is unavailable now. Phase 1 is in progress, not accepted; automated evidence and
@@ -38,6 +46,8 @@ Native title/menu/settings/How to Play/rebinding/records, capture ownership/repe
 | 5 CLARITY-01 / LB-07 | P1, evidence-gated correction | Observe earned mixed/bonus racks, hostile tells, hazards and nine map meanings | Safe lanes and node states understood, no obscured tell; preserve timing/radii |
 | 6 ACCESS-01 / ACCESS-02 | P1; native acceptance open, further slice proposed | Real AT/controller test existing six surfaces; separately scope hero/threat selection next | Names/state/order, one activation, capture/focus/scrolling verified; no whole-game accessibility claim |
 | 7 AUDIO-01 | P2, listening gate | Listen to production warnings/hits/outcomes and dense mix after AUDIO-02 | Named cue/mix failure before tuning or generating; preserve fallback/limits |
+| 7a Phase 2 clarity follow-up | P2, partial implementation | EVENT-01 delivered locally; inspect remaining upgrade/shop comparison consumers; retain map/terrain/debrief human review | Trace actual missing information before changing UI; event travel/pad/result readability acceptance still open |
+| 7b BAL-01 | P2, executable reporting repair | Wire balance command to production harness; correct misleading final-level/purchase/completion summaries | Deterministic real rows, validated inputs, honest horizon/censored outcomes; see Phase 2 evidence for scope/tests; no balance tuning implied |
 | 8 PERF-02 / RELEASE-01 | P1 for release, external | Claude packages only when assigned; hardware/Steam owners test exact bytes | Manifest/hash/smoke, named-device pacing/display/input/save/audio and actual Steam evidence |
 | 9 LEARN-01 | P2, closed to implementation pending evidence | Repeated observed learning failure + standing scope gate | One production-system practice sequence, no progression/Daily/achievement/metrics contamination |
 | 10 VARIETY-01 | P3, closed to implementation pending evidence | Runs 1–5 + two weeks of verified live measurement | One existing-region variant, safe/fair/replay/save acceptance before production selection |
@@ -66,7 +76,7 @@ dependencies, reuse versus generation decision and measurable acceptance before 
 Use production regressions plus full game/portfolio checks for runtime changes; human/device
 checks stay separate. Review/specification work is available now; content activation is gated.
 
-- **Now:** perform AUDIO-02 listening acceptance; start native AT acceptance and observed play using the existing worksheet and disposable/exported saves. No further QA tool is needed. Automation, inventory checking and local captures are executable without Steam access. This audit's documentation cleanup is complete.
+- **Now:** BAL-01 reporting repair and remaining Phase 2 consumer review are executable. When a tester becomes available, perform AUDIO-02/event acceptance, native AT and observed runs using the existing worksheet and disposable/exported saves. Existing QA tools suffice for those human sessions; BAL-01 is a separate reporting correctness issue.
 - **Mark / human tester:** return Runs 1–5 with build/commit, hero/threat/weapon IDs, controller/remaps, display/DPR/scaling, sound output, confusion/damage findings and clips. Sign or explicitly accept touched S1/S2 presentation issues; Run 0 and diagnostics do not count.
 - **AT/controller/audio tester:** return actual spoken control output, focus/capture failures, physical hot-plug/navigation and listening notes by cue/screen. Automated semantic trees and simulated pads are separate evidence.
 - **Claude, when specifically assigned:** from `desktop/`, use existing `npm run package:win` and `npm run smoke:package:win` after reading release guidance/current changes. Return source/dirty status, build identity, manifest, executable SHA-256, package path/time and complete smoke log. No packaging command has run in this audit.
@@ -77,4 +87,4 @@ checks stay separate. Review/specification work is available now; content activa
 
 ## Boundaries
 
-Preserve other sessions' edits and retained masters. Commit only scoped AUDIO-02 code, generated browser output, tests and documentation/evidence in the nested website repository. No generated art, floor adoption, balance changes or fleet dependency maintenance. AUDIO-02 changes existing playback only. Acceptance of this plan supplies none of the missing observed/hardware/Steam/analytics evidence. [The five-run matrix](local-playtest-plan-2026-08-21.md), [presentation register](presentation-defect-plan-2026-08-23.md) and [asset specifications](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) define procedures; this file owns queue state.
+Preserve other sessions' edits and retained masters. Commit only scoped fixes/review, generated browser output, tests and documentation/evidence in the nested website repository. No generated art, floor adoption, balance changes or fleet dependency maintenance without their documented gates. Acceptance of this plan supplies none of the missing observed/hardware/Steam/analytics evidence. [The five-run matrix](local-playtest-plan-2026-08-21.md), [presentation register](presentation-defect-plan-2026-08-23.md) and [asset specifications](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) define procedures; this file owns queue state.

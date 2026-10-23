@@ -1,5 +1,10 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Current prepared local build:** `web-2026.10.23-event-confirmation`, adding deliberate event
+result confirmation and pointer Continue. See [current evidence](playtest-evidence/2026-10-23-phase-2/README.md)
+and CURRENT-PLAN. Full game/portfolio checks pass; no human/device/Steam acceptance or publication.
+Claude remains the separately assigned packaging owner. Prepared-build notes below are historical.
+
 **Prepared local build — audio continuation:** `web-2026.10.22-audio-controls`. AUDIO-02 is
 implemented: active gain/mute, rotary-tail cancellation and scene/retry cleanup. Use
 [completed scope](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md) and

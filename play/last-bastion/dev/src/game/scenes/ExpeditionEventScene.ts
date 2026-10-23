@@ -142,8 +142,9 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   private readonly handleKeyDown = (event: KeyboardEvent): void => {
     if (["ArrowUp", "ArrowDown", "Enter", "Space", "Escape"].includes(event.code)) event.preventDefault();
+    if (event.repeat) return;
     if (this.outcome) {
-      this.commitOutcome();
+      if (event.code === "Enter" || event.code === "Space") this.commitOutcome();
       return;
     }
     if (event.code === "ArrowUp") this.moveChoice(-1);
@@ -152,7 +153,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   };
 
   private handlePadDown(index: number): void {
-    if (this.outcome) { this.commitOutcome(); return; }
+    if (this.outcome) { if (index === 0) this.commitOutcome(); return; }
     if (index === 12) this.moveChoice(-1);
     else if (index === 13) this.moveChoice(1);
     else if (index === 0) this.resolveSelected();
@@ -165,6 +166,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   }
 
   private resolveSelected(): void {
+    if (this.outcome) return;
     const choice = this.event.choices[this.choiceIndex];
     if (!choice || !isChoiceAvailable(this.build, this.maxHealth, choice)) return;
     this.outcome = { choice, resolution: resolveEventChoice(this.build, this.maxHealth, choice, this.roll) };
@@ -238,7 +240,11 @@ export class ExpeditionEventScene extends Phaser.Scene {
       const card = this.add.rectangle(48, y, WIDTH - 96, 62, fill).setOrigin(0, 0)
         .setStrokeStyle(selected ? 2 : 1, selected ? 0x68e4e8 : 0x3b4d63)
         .setInteractive()
-        .on("pointerdown", () => { this.choiceIndex = index; if (available) this.resolveSelected(); else this.render(); });
+        .on("pointerdown", () => {
+          if (this.outcome) return;
+          this.choiceIndex = index;
+          if (available) this.resolveSelected(); else this.render();
+        });
       this.root.add(card);
       this.root.add(this.text(64, y + 10, choice.label.toUpperCase(), !available ? MUTED : selected ? IVORY : "#c4ccd6", "14px"));
       const detail = choice.detail ?? (choice.randomOutcomes ? "Uncertain outcome" : "");
@@ -253,7 +259,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   private renderOutcome(): void {
     const { resolution } = this.outcome!;
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 0x05090e, 0.82));
+    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 0x05090e, 0.82).setInteractive());
     this.root.add(this.add.rectangle(190, 170, 580, 200, PANEL).setOrigin(0, 0).setStrokeStyle(3, 0x68e4e8));
     this.root.add(this.text(WIDTH / 2, 190, "RESULT", TEAL, "18px", true));
     this.root.add(this.text(214, 226, resolution.resultText || "You move on.", IVORY, "13px", false, false, 530));
@@ -261,7 +267,11 @@ export class ExpeditionEventScene extends Phaser.Scene {
       ? "You are ambushed — into combat!"
       : summarizeEffects(this.build, resolution);
     this.root.add(this.text(214, 300, line, resolution.effects.ambush ? ORANGE : GREEN, "12px", false, false, 530));
-    this.root.add(this.text(WIDTH / 2, 344, "ANY KEY / A  CONTINUE", MUTED, "11px", true));
+    const continueButton = this.add.rectangle(WIDTH / 2, 348, 320, 32, PANEL_SELECTED)
+      .setStrokeStyle(1, 0x68e4e8).setInteractive({ useHandCursor: true })
+      .on("pointerdown", () => this.commitOutcome());
+    this.root.add(continueButton);
+    this.root.add(this.text(WIDTH / 2, 344, "ENTER / SPACE / A  CONTINUE", IVORY, "11px", true));
   }
 
   private publishState(): void {

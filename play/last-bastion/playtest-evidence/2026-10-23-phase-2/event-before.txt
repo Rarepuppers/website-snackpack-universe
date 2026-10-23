@@ -1,0 +1,35 @@
+
+[WebServer] (node:25676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:9476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:3:1 › event results require a fresh confirmation and block underlying choices
+  1) tests\visual\last-bastion-functional.spec.mjs:3:1 › event results require a fresh confirmation and block underlying choices
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+       9 |   const choice = await page.evaluate(() => window.__expeditionEvent.choiceId);
+      10 |   await page.keyboard.down("Enter"); // Real repeat keydown while the opener is still held.
+    > 11 |   await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
+         |                                                                                       ^
+      12 |   await page.keyboard.up("Enter");
+      13 |   await page.mouse.click(100, 295); // A different choice beneath the result overlay.
+      14 |   expect(await page.evaluate(() => window.__expeditionEvent.choiceId)).toBe(choice);
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:11:87
+
+    Error Context: test-results\last-bastion-functional-ev-e40c0-nd-block-underlying-choices\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:3:1 › event results require a fresh confirmation and block underlying choices

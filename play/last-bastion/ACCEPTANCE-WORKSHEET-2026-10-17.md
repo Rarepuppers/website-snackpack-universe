@@ -4,10 +4,15 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.10.22-audio-controls`; it is not published or packaged.
+Current prepared local build is `web-2026.10.23-event-confirmation`; it is not published or packaged.
 The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
+
+23 October event confirmation: hold Select through an event choice and read its result; release
+then press Enter/Space or pad A to continue, or use the visible pointer button. Other buttons and
+covered cards must not dismiss/change the result. Verify normal event travel and a real ambush
+with a disposable save. Automated demo-route coverage does not establish those human results.
 
 22 October audit adds AUDIO-02: an active production sample retains gain after master zero/mute.
 The authorized correction is now implemented locally. Specifically listen while muting active rotary/damage/reward cues,

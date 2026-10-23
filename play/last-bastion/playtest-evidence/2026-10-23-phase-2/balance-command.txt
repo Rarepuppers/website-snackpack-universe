@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 balance:audit
+> node scripts/run-balance-audit.mjs --seeds 2 --policies cautious
+
+{
+  "command": "balance:audit",
+  "seeds": 2,
+  "policies": [
+    "cautious"
+  ],
+  "note": "Use the BalanceAudit module from the application test/runtime harness for seeded rows."
+}
