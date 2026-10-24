@@ -3,6 +3,10 @@
 **Updated 25 October 2026. Sole active execution queue.**
 Current committed implementation: `f2c41b86`; prepared identity `web-2026.10.24-decision-pages`.
 Save schema 16 / simulation compatibility 3. No human testers are available now.
+25 October: decision recommendations accepted; the four DECISION-02 subtasks below are the next
+implementation scope. No additional speculative content is needed. Authorized remote publication
+is to review branch `codex/last-bastion-decision-plan-2026-10-25`; integration with diverged main
+is separate from this coding queue and does not imply live deployment or packaged acceptance.
 The executable queue is underway: oversized sell-list pagination is implemented locally.
 Other investigations remain scoped proposals, not newly confirmed bugs.
 Demonstrated crash, save-loss or input dead-end defects take precedence.
