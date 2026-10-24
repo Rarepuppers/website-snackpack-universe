@@ -1,7 +1,7 @@
 # Last Bastion — current plan
 
 **Updated 25 October 2026. Sole active execution queue.**
-Current committed baseline: `5a1c7aaf`; new prepared identity `web-2026.10.24-decision-pages`.
+Current committed implementation: `f2c41b86`; prepared identity `web-2026.10.24-decision-pages`.
 Save schema 16 / simulation compatibility 3. No human testers are available now.
 The executable queue is underway: oversized sell-list pagination is implemented locally.
 Other investigations remain scoped proposals, not newly confirmed bugs.
@@ -51,6 +51,28 @@ contracts. Acceptance: all enumerated supported cases fit or expose an operable 
 selection remains visible and each activation applies once. Extend actual renderer regressions and
 production navigation tests; run full game verification and portfolio guards after runtime edits.
 Human readability/physical-pad acceptance remains unclaimed.
+
+#### Accepted execution order within DECISION-02
+
+Mark accepted the decision recommendations on 25 October. This refinement is planning only;
+it neither repeats completed pagination nor supplies external acceptance. Complete the following
+bounded slices in order before ACCESS-03. Preserve one active queue; these are subtasks of item 1.
+
+| Order / ID | Evidence and benefit | Implementation, acceptance and validation | Effort / risk / dependencies |
+|---|---|---|---|
+| 1a DECISION-COVERAGE | The 231-case harness uses plain panels, mostly first pages; the art-enabled regression covers one 12-weapon rack. Unknown catalogue/last-page overflow remains a coverage gap. | Enumerate actual upgrade ranks, stat choices, weapon placement, eligible shop item/weapon offers and rack/stash sell lists through production factories. Record visited IDs and exclusions; traverse every generated page. Measure text, title, hint, focus stroke and hit-area bounds with production art at 960×540, 1280×800 and 4K. Exercise resize while open. Include 12/13-option boundary, short final pages and the actual supported rack/stash maximum; do not invent impossible inventories. Fix only reproducible layout failures. Exit: explicit coverage manifest, no unexplained overflow/overlap or offscreen enabled action in enumerated cases, and screenshots for worst cases. Add renderer/browser regressions for failures. | P1; M; low for harness, medium for fixes. Depends on catalogue/production-consumer inventory. Reuse current trace and textures; no generation. |
+| 1b DECISION-EDGES | Current browser paging regression uses released arrows/Enter; it does not establish held-input, pointer or simulated-pad safety. A page transition exposes a different item under the same input. This is a risk to test, not a reproduced double sale. | Drive Next/Previous and choice transitions with held Enter/digit/pad confirm, pointer down/up, mixed devices, neutral/re-engage stick and blur/refocus. Observe actual transaction callbacks and state; a page action must never purchase/sell, a held opening action must not activate the destination item, and one fresh activation must commit once. Verify disabled first/last-page controls and digit keys apply only to the visible page. Add edge suppression only where a production failure is reproduced; preserve remap/menu semantics. | P1; M; medium input risk. Depends on 1a fixtures. Reuse DecisionNavigation/input lifecycle; no assets. Browser integration plus focused production navigation tests; full checks for fixes. Physical controller acceptance remains separate. |
+| 1c DECISION-SELECTION | Overlay sync currently resets selection/page when the source key changes; its key includes kind/title/IDs/affordability, but not displayed descriptions/cost fields. Unexpected selection jumps or stale text are hypotheses until a real state transition demonstrates them. | Trace buy/sell/lock/reroll and non-transaction redraws. Verify all visible names, descriptions, prices and availability match the latest source decision. If a stale display or disruptive jump is reproduced, use stable choice IDs to retain the surviving choice/page; after removal select the nearest enabled surviving choice or Back, and clamp page count. Do not persist UI page state into saves. Real new decisions still start deliberately. Exit: no stale visible state, no invalid selection/page and no unintended commit after refresh. | P2; S–M; medium. Depends on 1a/1b and real transaction fixtures; STATE-02 retains persistence/failure testing. Reuse overlay state and existing decision objects; test actual redraw/removal/affordability transitions. |
+| 1d DECISION-POLISH | Final sell captures show a row over the decorative frame, page navigation with the same fallback tile as sale rows, and unnumbered tenth choices while hints advertise 1–9. These are observations; no inability to operate them was demonstrated. | Reuse existing UI to give navigation a distinct treatment (text-only is acceptable), place controls inside a consistent content inset, and make the hint explicitly distinguish visible quick picks from arrow/pad navigation. Keep all descriptions and prices readable without smaller text. Review whether a stable footer/Back on every page removes unnecessary travel; implement only a bounded layout compatible with the measured viewport budget, without changing sale semantics. Avoid new confirmation dialogs for every purchase. Exit: navigation cannot be mistaken for a sell option in labels/actions, no text/frame interference in captures, and all unnumbered choices remain reachable. | P2 optional polish; S–M; medium layout risk. Depends on 1a measurements and 1b activation tests. Existing panels/styles/icons only; no art generation. Capture both sparse/full pages and validate keyboard/pointer/simulated pad at all three sizes. Human visual preference is not claimed. |
+
+**Done definition for DECISION-02:** publish the scoped catalogue/viewport/input matrix with exact
+passes, exclusions and unresolved observations; complete justified fixes and chosen bounded polish,
+then run the full game verifier and current portfolio guard set after the final runtime change.
+Do not mark it catalogue-wide complete from a seed sample alone. A documented no-change finding can
+close an investigation subtask. Retain failures as dated evidence and archive the completed slice in
+the existing evidence/index rather than creating another active plan. No repeated full run is needed
+for documentation-only updates. Actual readability, physical devices and assistive technology remain
+unaccepted, but their absence does not block the coding and automated work above.
 
 ### 2. ACCESS-03 — native hero and threat selection
 

@@ -5387,3 +5387,13 @@ traverses both pages and Back. Inspected final art-enabled captures. Full verifi
 viewport and input coverage remains in DECISION-02; no human acceptance claimed. No publication.
 
 Finalized 25 October: complete portfolio run passed all 22 current guards.
+
+### Decision implementation scope accepted and refined — 25 October 2026
+
+Mark accepted decision recommendations and requested a clear plan before implementation. Updated
+CURRENT-PLAN to checkpoint f2c41b86 and split remaining DECISION-02 into production catalogue/page
+coverage, transition input safety, conditional stable selection/current text, and bounded navigation/
+frame/hint polish. Distinguished observed visuals, coverage gaps and unproven behavioral risks.
+Included dependencies, effort/risk, asset reuse, exit criteria and automated checks. No runtime or
+asset changes; no new content or human-testing requirement added. Existing external gates remain.
+Documentation references and diff checked; historical test passes were not rerun or relabelled fresh.
