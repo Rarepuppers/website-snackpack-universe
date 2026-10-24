@@ -6,6 +6,8 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [Pre-refresh queue, 24 October](CURRENT-PLAN-BEFORE-EXECUTABLE-QUEUE-2026-10-24.md) | Completed implementation history and unavailable human tasks replaced by the focused executable/design queue; evidence gates retained. |
+| [21 October baseline audit](AUDIT-REVIEW-2026-10-21.md), [21 October follow-up](AUDIT-FOLLOWUP-2026-10-21.md), [22 October audit](AUDIT-REVIEW-2026-10-22.md) | Dated audit baselines and recommendations superseded as queues; findings retained with rebased evidence links. |
 | [24 October shop/input completion and content trace](../playtest-evidence/2026-10-23-content-review/README.md) | SHOP-01/INPUT-03 corrected; Phase 2 consumer review and bounded Phase 4 trace completed. Human acceptance and gated EXPOSURE-01 remain in CURRENT-PLAN. |
 | [23 October Phase 3 reporting and assessment](../playtest-evidence/2026-10-23-phase-3/README.md) | BAL-01 offline reporting repaired and synthetic assessments retained; earned balance/practice acceptance stays in CURRENT-PLAN. |
 | [22 October live audio controls](AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md) | AUDIO-02 gain/mute and scene/retry cleanup implemented; actual listening/device acceptance remains active. |

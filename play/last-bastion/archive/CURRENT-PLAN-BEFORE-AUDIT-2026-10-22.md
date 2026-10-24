@@ -67,7 +67,7 @@ balance or production packaging/deployment work follows from this implementation
 
 ## Latest post-implementation audit — 21 October
 
-The [follow-up review](../AUDIT-FOLLOWUP-2026-10-21.md) records detailed asset, animation, mode and
+The [follow-up review](AUDIT-FOLLOWUP-2026-10-21.md) records detailed asset, animation, mode and
 polish recommendations against `7780ba86`. Fresh checks: **41 browser regressions pass (1.2m)**;
 twelve new local captures cover all settings groups, baseline/kit combat, dense 4K CVD, map and
 Marine/Medic/Assault galleries. No new runtime defect or essential asset-generation task was
@@ -83,7 +83,7 @@ mention placeholders. Release notes remain unchanged because this audit changes 
 
 ## 21 October accepted follow-through — executable scope complete
 
-Mark accepted the [audit and prioritized proposal](../AUDIT-REVIEW-2026-10-21.md). Implementation
+Mark accepted the [audit and prioritized proposal](AUDIT-REVIEW-2026-10-21.md). Implementation
 commits `637f6ec8` and `6472ceeb` deliver QA-03, QA-04 and the scoped ACCESS-01 slice. The
 [completed implementation record](MENU-REVIEW-IMPLEMENTATION-2026-10-21.md) and
 [current evidence](../playtest-evidence/2026-10-21-menu-review/README.md) preserve scope and limitations.

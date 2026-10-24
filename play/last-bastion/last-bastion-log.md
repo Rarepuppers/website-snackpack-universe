@@ -5361,3 +5361,16 @@ tuning defect or repeated learning failure established. Executable Phase 3 scope
 human acceptance/practice gates remain open. Evidence in 2026-10-23-phase-3; CURRENT-PLAN sole queue.
 Final verification: PASS 153.3s, 1,794 unit / 314 files, 52 browser and 31 desktop-host tests;
 full portfolio 20/20. Published output remains unchanged and matches source.
+
+### Executable queue refresh and archive cleanup — 24 October 2026
+
+User confirmed no human testers are available and requested only coding/design tasks. CURRENT-PLAN
+now orders decision-layout coverage, semantic hero/threat selection, transaction/resume integration,
+content exposure tracing, semantic armory, cue lifecycle diagnostics, regional-finale compatibility
+design and one conditional existing-object design. Proposed investigations are not confirmed bugs.
+Prior shop/input completion remains commit 5a1c7aaf with its dated evidence. Archived the three dated
+21/22 October audits and preserved the superseded queue snapshot; rebased references. Active asset
+specifications, QA procedures, release handoff and completed-work history remain references.
+No runtime, asset, save-format or production-content changes. Local Markdown references and staged
+diff checked; game/portfolio suites not rerun for this documentation-only refresh. Human/device/
+Steam/analytics acceptance remains external; floor/practice/variety/expansion gates preserved.

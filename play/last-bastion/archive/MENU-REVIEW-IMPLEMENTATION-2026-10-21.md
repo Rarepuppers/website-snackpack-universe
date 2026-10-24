@@ -3,7 +3,7 @@
 This records delivered implementation, not a new queue. Continue from
 [CURRENT-PLAN](../CURRENT-PLAN.md) and its external acceptance owners.
 
-Mark accepted the [audit proposal](../AUDIT-REVIEW-2026-10-21.md). Baseline review/evidence was
+Mark accepted the [audit proposal](AUDIT-REVIEW-2026-10-21.md). Baseline review/evidence was
 committed as `18e14e56`; implementation is `637f6ec8`, with the 4K composition correction in `6472ceeb`. No assets were generated. Runtime defaults,
 floor selection, progression, schema 16 and simulation compatibility 3 remain unchanged.
 Prepared identity is `web-2026.10.21-menu-review` / worker `2026-10-21-menu-review`.

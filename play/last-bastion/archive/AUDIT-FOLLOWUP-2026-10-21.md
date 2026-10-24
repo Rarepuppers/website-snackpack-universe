@@ -1,15 +1,16 @@
+<!-- Archived dated audit; CURRENT-PLAN.md owns all active work. -->
 # Last Bastion — current audit and prioritized recommendations
 
 Reviewed 21 October 2026 against `7780ba86` plus the pre-existing dirty working tree.
 This is the post-implementation review; [the earlier audit](AUDIT-REVIEW-2026-10-21.md)
-is the pre-fix baseline. [CURRENT-PLAN](CURRENT-PLAN.md) remains the only execution queue.
+is the pre-fix baseline. [CURRENT-PLAN](../CURRENT-PLAN.md) remains the only execution queue.
 
 **22 October follow-through:** Mark authorized executable implementation. The next bounded
 ACCESS-01 slice, native How to Play, is now implemented locally; see the
-[completed record](archive/HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md). The canvas-only help
+[completed record](HELP-ACCESSIBILITY-IMPLEMENTATION-2026-10-22.md). The canvas-only help
 limitation below describes the audit baseline. Other human/content/hardware gates remain open.
 Subsequent authorized continuation also delivers native rebinding/records and demonstrated
-capture-navigation fixes; see [completed scope](archive/CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md).
+capture-navigation fixes; see [completed scope](CONTROLS-RECORDS-IMPLEMENTATION-2026-10-22.md).
 
 ## Verdict and evidence
 
@@ -26,7 +27,7 @@ Fresh evidence at this checkpoint:
   floor loaders, gallery pages, native settings/import/focus/controller simulation and 4K composition.
 - Twelve new captures: all five settings groups at 960×540; baseline/kit combat, map and three hero
   galleries at 1920×1080; a deuteranopia/HUD 1.2/radar 1.25 stress diagnostic at 3840×2160.
-  No page errors were recorded. [Evidence and exact routes](playtest-evidence/2026-10-21-followup-review/README.md).
+  No page errors were recorded. [Evidence and exact routes](../playtest-evidence/2026-10-21-followup-review/README.md).
 - Source review checked native-control layout/ownership, grouped settings, actual hero review routes,
   existing teaching diagrams and the asset/consumer inventory. Art inventory numbers are the retained
   16 October report, **not a freshly regenerated filesystem census**.
@@ -109,8 +110,8 @@ For browser publication, obtain the specific authorization required by CURRENT-P
 whole outgoing nested-repo range and verify served identity/offline upgrade after deployment.
 Dashboard owner must verify receipt/settings and measurement start before the two-week gate.
 
-The concrete external handoff is the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md),
-[QA operator guide](QA-READINESS.md) and [release handoff](RELEASE-HANDOFF-2026-10-16.md).
+The concrete external handoff is the [acceptance worksheet](../ACCEPTANCE-WORKSHEET-2026-10-17.md),
+[QA operator guide](../QA-READINESS.md) and [release handoff](../RELEASE-HANDOFF-2026-10-16.md).
 Return clips/screens with exact build, state, input, hardware and asset IDs; for packaging also
 return the executable hash and package manifest. No new diagnostics tool, production packaging,
 push/deploy or content implementation is implied by completing this review.

@@ -1,9 +1,10 @@
+<!-- Archived dated audit; CURRENT-PLAN.md owns all active work. -->
 # Last Bastion audit and prioritized polish proposal — 21 October 2026
 
 This is the detailed review/acceptance specification linked from CURRENT-PLAN, not a second
 execution queue. Mark accepted it on 21 October. QA-03, QA-04 and the limited title/menu/settings
 ACCESS-01 implementation are delivered locally in `637f6ec8`; see the
-[implementation record](archive/MENU-REVIEW-IMPLEMENTATION-2026-10-21.md).
+[implementation record](MENU-REVIEW-IMPLEMENTATION-2026-10-21.md).
 The audit evidence and findings below describe the pre-change baseline. Remaining motion,
 audio, assistive-technology, hardware, Steam and conditional-content gates still apply.
 
@@ -37,7 +38,7 @@ was reproduced. This is a sampled audit, not proof that every run and configurat
   `?screen=game&hero=assault&art=c3` (add fixed theme/seed for comparison). Unsupported gallery
   hero queries silently display Marine. Do not use those captures as Medic/Assault acceptance.
 - Fresh full portfolio runner: all 20 guards pass, including game logic and asset delivery.
-- [Evidence and limits](playtest-evidence/2026-10-21-audit/README.md) retain current images/results.
+- [Evidence and limits](../playtest-evidence/2026-10-21-audit/README.md) retain current images/results.
   No human full run, physical-controller/audio review, hardware benchmark, Steam session,
   fresh packaged executable or analytics-dashboard verification was performed.
 
@@ -112,7 +113,7 @@ helpers do not expose operable menu buttons, settings values and focus to assist
 This is an existing confirmed limitation, not a new regression or a whole-game accessibility claim.
 
 Recommended first slice: title → menu → settings → back. Follow the existing
-[contract inventory](SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md): one ScreenFlow state/effect
+[contract inventory](../SHELL-ACCESSIBILITY-CONTRACT-2026-10-17.md): one ScreenFlow state/effect
 owner, actual controls, stable focus, correct names/states, and exactly one Enter/Space action.
 Then separately assess help, records, armory, hero/threat selection, map and debrief.
 Acceptance: real keyboard + screen-reader operation, pointer/controller parity, no duplicate

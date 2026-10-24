@@ -1,112 +1,200 @@
 # Last Bastion — current plan
 
-**Updated:** 24 October 2026. **Sole active execution queue.**
-Prepared local identity: `web-2026.10.23-shop-fit`; shop/input continuation based on `1557dd91`, verified against HEAD `83ce5a07` with scoped working changes; audio implementation `a5313291`; earlier audit checkpoint `4238b130`. Save schema 16, simulation compatibility 3.
-Last verified published identity: `web-2026.10.17-qa-readiness` (historical evidence, not rechecked live here).
+**Updated 24 October 2026. Sole active execution queue.**
+Current implementation checkpoint: `5a1c7aaf`; prepared identity `web-2026.10.23-shop-fit`.
+Save schema 16 / simulation compatibility 3. No human testers are available now.
+This refresh adds coding, automated investigation and design tasks only. It implements no runtime
+change. Items below are scoped proposals ready for execution in order, not newly confirmed bugs.
+Demonstrated crash, save-loss or input dead-end defects take precedence.
 
-Read the [22 October audit](AUDIT-REVIEW-2026-10-22.md) for each item's problem/evidence, benefit/scope, effort/risk, asset decision, implementation steps and acceptance checks. Read the [fresh evidence](playtest-evidence/2026-10-22-audit-review/README.md), [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md), [QA guide](QA-READINESS.md) and [release handoff](RELEASE-HANDOFF-2026-10-16.md) before execution. The audit was planning-only. Subsequent continuation authorizes and implements AUDIO-02; see [completed audio scope](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). Other gated proposals remain planning only.
+## Completed baseline
 
-## Current evidence and closed work
+Shop viewport/input fixes, event confirmation, live audio controls, native title/menu/settings/help/
+rebinding/records and BAL-01 reporting are delivered. Do not repeat them. Last runtime evidence:
+1,795 unit / 314 files, 53 browser and 31 desktop-host tests passed in 139.9s. The portfolio run
+passed 20/20 during that continuation, before its final input corrections. These are dated results,
+not checks rerun for this documentation change. See [completion evidence](playtest-evidence/2026-10-23-content-review/README.md)
+and [archive index](archive/README.md). The old queue and dated audits are archived; asset/design
+specifications and QA procedures remain reference material, not competing execution queues.
 
-**24 October executable continuation completed:** SHOP-01 corrects minimum-viewport shop clipping;
-INPUT-03 fixes duplicate keyboard navigation and consumed Enter confirmation. Phase 2 upgrade/shop
-consumer review and a bounded Phase 4 production-exposure trace are complete. See the
-[completed evidence and conditional recommendation](playtest-evidence/2026-10-23-content-review/README.md).
-Final verifier **PASS 139.9s: 1,795 unit / 314 files, 53 browser, 31 desktop-host tests** plus
-static/output/offline/site checks. Portfolio **20/20 PASS** ran during this continuation, before
-final input corrections; the final game verifier covers those corrections. No fleet maintenance.
-EXPOSURE-01 identifies a regional-finale route gap; activation remains gated, not a quick fix.
-Earlier verification paragraphs below are dated history, not evidence for this new identity.
+## Ordered coding and design queue
 
-**Phase 3 executable scope completed:** BAL-01 now runs the real simulation from the CLI,
-validates inputs, reports final level honestly, marks unmeasured fields null, continues through
-intermissions and separates completed/censored outcomes. The 240-row synthetic sample and
-15-row boss preflight are retained in [Phase 3 evidence](playtest-evidence/2026-10-23-phase-3/README.md).
-Economy/unlock and fairness contracts were reviewed; no demonstrated gameplay tuning defect or
-repeated learning failure warrants balance/practice changes. Human-dependent Phase 3 acceptance
-remains open. Browser identity/output are unchanged; this is offline tooling/tests/documentation.
-Fresh full verifier: **PASS 153.3s; 1,794 unit / 314 files, 52 browser, 31 desktop-host tests**,
-including unchanged published-output comparison and offline/site checks.
-The completed Phase 3 portfolio run passes **all 20 guards**; no fleet maintenance performed.
+Effort: S = roughly one focused session; M = several sessions; L = multiple bounded slices.
+Estimates exclude external acceptance. Each implementation must first inspect current consumers
+and tests, reuse existing systems, and stop or narrow the task if the proposed gap is already covered.
 
-**Phase 2 onwards begun:** EVENT-01 fixes held-key result dismissal, covered choice activation
-and unintended pad confirmation; adds pointer Continue using existing UI. Fresh verifier
-**PASS 118.9s; 1,790 unit / 313 files, 52 browser, 31 desktop-host tests; portfolio 20/20**.
-See [Phase 2 evidence and Phase 3–5 preflight](playtest-evidence/2026-10-23-phase-2/README.md).
-Map previews and debrief damage explanations already exist. No duplicate implementations planned.
-Human acceptance remains open. BAL-01 reporting repair is now complete as described above;
-the original Phase 2 evidence retains the pre-fix findings and limitations.
+### 1. DECISION-02 — catalogue-wide decision layout and input hardening
 
-**23 October Phase 1:** Mark approved the phased recommendations and starting Phase 1.
-Human testing is unavailable now. Phase 1 is in progress, not accepted; automated evidence and
-the remaining owner actions are recorded in [Phase 1 evidence](playtest-evidence/2026-10-23-phase-1/README.md).
-Approval supplies no missing listening, observed-run, AT, hardware, Steam or analytics evidence.
-Fresh full verifier at `3a1073c6`: **PASS, 122.2s; 1,790 unit / 313 files, 51 browser,
-31 desktop-host tests**, static/output/offline/site checks. No new automated failure reproduced.
-No runtime changes in this phase start. Prior portfolio results below remain dated, not rerun here.
+**P1; M effort; medium risk. Executable now.** SHOP-01 exposed actual fixed-size clipping;
+its new browser case covers sampled offers/management at three sizes. `DecisionOverlayLayout.ts`
+still derives height from option count. A panel-bound assertion does not prove every description,
+focus border or hint fits. Further overflow is a coverage hypothesis, not a reproduced defect.
 
-**Audio continuation:** full verifier PASS in **130.8s**, **1,790 unit tests / 313 files,
-51 browser cases and 31 desktop-host tests**, plus static/output/offline/site checks.
-The completed continuation portfolio run also passes **all 20 guards**; no fleet dependency edits.
-The [audio evidence](playtest-evidence/2026-10-22-audio-controls/README.md) records exact scope.
-AUDIO-02 implementation is complete locally; real listening remains the first acceptance action.
-The audit results in the next paragraph predate this runtime patch.
+Benefit/scope: readable, operable choices across upgrade, stat, placement and shop variants.
+Enumerate real maximum-count/longest-label choices using production factories; capture them at
+960×540, 1280×800 and 4K with existing display settings. Measure actual text/choice/hint bounds and
+focus. Exercise arrows, digits, Enter, pointer and simulated pad, including held input across transitions.
+Fix only reproduced clipping or duplicate activation. Prefer wrapping/spacing; introduce paging or
+scrolling only if required, retaining selected-item visibility and stable choice IDs.
 
-Fresh full verifier: **PASS, 117.9s; 1,783 unit / 312 files, 50 browser, 31 desktop-host tests**, static/content/image/output, HTTP/offline and site checks. Fresh portfolio: **20/20 PASS**, superseding the earlier 19/20 observation for this run; no fleet dependency work performed. Inventory: 227 definitions / 310 source references match hashes. These checks do not establish real device, audio, screen-reader, Steam or observed-run acceptance.
+Reuse existing overlay, panel art and text; no generated assets. Dependencies: current layout/input
+contracts. Acceptance: all enumerated supported cases fit or expose an operable overflow mechanism;
+selection remains visible and each activation applies once. Extend actual renderer regressions and
+production navigation tests; run full game verification and portfolio guards after runtime edits.
+Human readability/physical-pad acceptance remains unclaimed.
 
-Native title/menu/settings/How to Play/rebinding/records, capture ownership/repeat fixes, gallery repairs, 4K composition repair, affinity/map/build polish and QA/provenance tools are **implemented**. Do not reimplement them. Completed details remain in [archive](archive/README.md), [release notes](RELEASE-NOTES.md) and the [pre-audit plan snapshot](archive/CURRENT-PLAN-BEFORE-AUDIT-2026-10-22.md). Earlier dated audits and asset/presentation plans are supporting specifications/history, not parallel queues.
+### 2. ACCESS-03 — native hero and threat selection
 
-## Ordered remaining queue
+**P1 usability improvement; M effort; medium risk. Executable now.** The shell accessibility contract
+and `SemanticShell.ts` identify hero/threat selection as remaining canvas surfaces. Existing native
+shell slices supply the implementation pattern; they do not make these screens semantic.
 
-| Order / ID | Priority and state | Next action / owner | Gate to close |
-|---|---|---|---|
-| 1 AUDIO-02 acceptance | P1, implementation complete locally | Human tester listens to live gain/mute, rotary tails and restart/exit behavior | Actual headphone/speaker acceptance; automated implementation checks are recorded separately |
-| 2 ACCEPT-02 / UX-01 | P1 observation; P2 conditional fixes | Mark/tester completes exact Runs 1–5 with earned unlocks; record teaching, mode purpose, fairness and replay intent | Existing five-run thresholds and signed findings; repeat affected combinations after fixes |
-| 3 ART-01 | P1, acceptance open | Human + hardware tester compares baseline/A/B/kit on standard seed 61061 | Motion/readability/pacing accept/revise/reject; **keep floors opt-in** until passed |
-| 4 ART-02 / LB-04 | P1, evidence-gated correction | Inspect hero/equipment state transitions and facings; identify failed frame/anchor | Signed motion acceptance; fix registration before generating frames |
-| 5 CLARITY-01 / LB-07 | P1, evidence-gated correction | Observe earned mixed/bonus racks, hostile tells, hazards and nine map meanings | Safe lanes and node states understood, no obscured tell; preserve timing/radii |
-| 6 ACCESS-01 / ACCESS-02 | P1; native acceptance open, further slice proposed | Real AT/controller test existing six surfaces; separately scope hero/threat selection next | Names/state/order, one activation, capture/focus/scrolling verified; no whole-game accessibility claim |
-| 7 AUDIO-01 | P2, listening gate | Listen to production warnings/hits/outcomes and dense mix after AUDIO-02 | Named cue/mix failure before tuning or generating; preserve fallback/limits |
-| 7a Phase 2 clarity follow-up | P2, executable review/fixes complete | EVENT-01, SHOP-01 and INPUT-03 delivered locally; upgrade/shop consumers reviewed; retain map/terrain/debrief human review | Human shop purchases/sales, minimum-size reading, event travel/pad/result acceptance still open |
-| 7b Phase 3 acceptance | P2, executable preflight complete; observations pending | Use repaired BAL-01 reports as synthetic context; collect earned build/economy/unlock/fairness observations | No tuning on synthetic win counts alone; repeat comparable affected runs after demonstrated fixes; practice retains LEARN-01 gate |
-| 8 PERF-02 / RELEASE-01 | P1 for release, external | Claude packages only when assigned; hardware/Steam owners test exact bytes | Manifest/hash/smoke, named-device pacing/display/input/save/audio and actual Steam evidence |
-| 9 LEARN-01 | P2, closed to implementation pending evidence | Repeated observed learning failure + standing scope gate | One production-system practice sequence, no progression/Daily/achievement/metrics contamination |
-| 10 VARIETY-01 | P3, closed to implementation pending evidence | Runs 1–5 + two weeks of verified live measurement | One existing-region variant, safe/fair/replay/save acceptance before production selection |
-| 10a EXPOSURE-01 | P2 finding, gated activation | Existing regional finales are absent from the ordinary generated terminal path; define versioned selection policy only after VARIETY-01 gates | Preserve old seeded saves/replays; generator-to-combat witnesses, earned routes, counterplay/hardware checks; M effort/high risk, existing art/audio reused; [full scope](playtest-evidence/2026-10-23-content-review/README.md) |
-| 11 EXPAND-01 | Deferred | Separate case for heroes/regions/tiers/multiplayer/leaderboards/touch/overhauls | Existing evidence gates plus explicit scope; no speculative asset batch |
+Benefit/scope: keyboard-operable character/difficulty selection with explicit locked, selected and
+available states. Trace `ScreenFlow` and `ShellScene` actions; derive visible native controls from
+that same state. Include hero description/unlock reason, threat modifiers, Back and Deploy. Preserve
+portraits, earned unlock rules, mode-specific restrictions and deployment behavior. Synchronize
+controller selection with DOM focus; remove semantic nodes/listeners on exit and restore return focus.
 
-P0 crash/save loss/input dead ends interrupt this order if demonstrated. No new P0 was reproduced. Effort/risk and exact validation contracts are in the audit; every future runtime change requires relevant production regressions, full game verification and portfolio guards. No blanket refactor or performance downgrade without a measured problem.
+Reuse native shell styles, authored copy and existing portraits. No unlock shortcuts or new heroes.
+Acceptance: accessible names/state exist, locked options cannot deploy, selection survives redraw,
+Enter/Space activate once, Escape returns once and every visible control works. Add production-flow
+and browser coverage for fresh/earned profiles, all modes, minimum size/4K and simulated pad/remaps;
+full game/portfolio verification. Real AT speech and physical-device acceptance stays external.
 
-## Executable now and external handoff
+### 3. STATE-02 — shop/event transaction and resume integration
 
-### Approved phases and additional review scopes
+**P1 reliability investigation; M effort; medium risk. Executable now.** Unit tests and browser
+recovery tests already exist. The latest shop diagnostic primarily checks fit/navigation and the
+content trace explicitly does not exercise every event effect end-to-end. No new save-loss defect
+is asserted. First inventory coverage and add only missing cross-system cases.
 
-The ordered queue above retains its priority and gates. These approved subscopes make the
-23 October recommendations explicit; they are not a second execution queue or confirmed defects.
-Executable reviews and demonstrated fixes are recorded above. Remaining implementation must meet the applicable evidence and scope gates.
+Benefit/scope: prevent double spending, duplicated rewards and lost choices on resume. Exercise
+production shop buy/sell/reroll/lock/ban and event cost/reward/ambush/leave paths with disposable
+profiles; assert balances, inventories, node state and pending decisions across reload. Inject storage
+write failure at meaningful transitions and test documented recovery without touching real saves.
+Check import/export round trips through existing UI; do not invent a new save format or undo system.
 
-| Phase | Scope, in priority order | Entry/exit and asset policy |
-|---|---|---|
-| 1 — acceptance and demonstrated fixes | Audio listening; Runs 1–5; hostile/hazard/earned-rack readability; hero/equipment transitions; native AT/controller acceptance; exact-package hardware/save acceptance | Fresh executable checks support each area; humans sign perceptual/device results. Reproduce and fix demonstrated defects only. No new art required. |
-| 2 — clarity and quality of life | Reward/card comparisons; nine map-node meanings; destructible/terrain readability; useful debrief information; minimum-size text/focus; cue/mix polish | Record the failed player decision or missing information, trace existing production consumers, then bound copy/layout/feedback fixes. Reuse inspection, symbols, atlases and samples; no separate card system. |
-| 3 — balance and progression | Earned build viability; reward economy/unlock pacing; enemy-combination fairness; conditional practice | Comparable seeds/threats and observed outcomes; pick rate alone is not imbalance. Change one variable and repeat affected runs. Practice retains LEARN-01 gate and progression isolation. |
-| 4 — existing-content variety | Production exposure of existing content; one regional encounter variant; one terrain/destructible variant; one event/reward variant; floor decision | VARIETY-01 requires Runs 1–5 and two weeks of verified measurement. A catalogue entry is not proof of shipping reachability. Test navigation/collision/replay/rewards and every offered effect. Floors remain opt-in pending motion/hardware acceptance. Reuse first. |
-| 5 — expansion | One missing monster role; small differentiated item/relic/upgrade set; one world interaction; one genuinely distinct map node; one hero; then region/large expansion | Separate design/cost case after earlier gates. Specify counterplay, deterministic behavior, saves, progression, semantics, animation/audio and asset provenance. Unimplemented interaction effects stay unavailable. No speculative generation or production activation. |
+Reuse save store, transaction consumers and fixtures; no assets. Dependencies: actual supported
+save/resume boundaries, catalogue choice eligibility and existing failure policy. Acceptance: each
+committed transaction applies once; reload agrees with the last committed state, unavailable choices
+cannot spend, and failed persistence follows visible recoverable policy. Add real-consumer integration
+and browser tests, then full game/portfolio checks for fixes. Desktop crash/power-loss/Steam-cloud
+acceptance remains outside simulated storage tests.
 
-For every resulting change, attach problem/evidence, player benefit, bounded steps, effort/risk,
-dependencies, reuse versus generation decision and measurable acceptance before implementation.
-Use production regressions plus full game/portfolio checks for runtime changes; human/device
-checks stay separate. Review/specification work is available now; content activation is gated.
+### 4. CONTENT-02 — enemy, item and event exposure ledger
 
-- **Now:** approved executable review/fix slices are complete. Further read-only tracing of regular enemy spawns, item acquisition and event effects is possible if a concrete exposure question needs answering; the bounded sample is not a full census. No remaining demonstrated ungated runtime defect is queued. Human audio/shop/event/native AT and earned progression/fairness acceptance await a tester. Phase 4 variety (including EXPOSURE-01) and Phase 5 expansion retain their gates; approval alone does not open them.
-- **Mark / human tester:** return Runs 1–5 with build/commit, hero/threat/weapon IDs, controller/remaps, display/DPR/scaling, sound output, confusion/damage findings and clips. Sign or explicitly accept touched S1/S2 presentation issues; Run 0 and diagnostics do not count.
-- **AT/controller/audio tester:** return actual spoken control output, focus/capture failures, physical hot-plug/navigation and listening notes by cue/screen. Automated semantic trees and simulated pads are separate evidence.
-- **Claude, when specifically assigned:** from `desktop/`, use existing `npm run package:win` and `npm run smoke:package:win` after reading release guidance/current changes. Return source/dirty status, build identity, manifest, executable SHA-256, package path/time and complete smoke log. No packaging command has run in this audit.
-- **Hardware owner:** test that exact package at Full HD/4K, ultrawide/Deck shape and Windows 100/125/150/200%; record GPU/driver, 15-minute dense p95/p99/hitches/memory, input/audio/focus/resume/display and offline save recovery. Agree numeric thresholds from baselines. Native 4K60 remains a target.
-- **Steam owner:** supply real App/Depot IDs, partner access and controller configuration exports; validate achievements, cloud conflicts/recovery, overlay and Steam-down fallback in actual client. No substitute App 480 acceptance.
-- **Dashboard owner:** verify opened/start/wave-1/wave-5/end/next-local-day return, optional individual pageviews disabled, and record first verified measurement date. Two weeks start there, not at an old deploy date.
-- **Release owner:** obtain specific publication authorization, review the whole outgoing nested-repo range including concurrent commits, then verify served identity/privacy/offline upgrade and CI. This audit authorizes no push/deploy/package/submit.
+**P2; M effort; low risk as offline tooling. Executable now.** The previous trace covered 100 maps,
+all nine node types, seven mini-bosses and 22 eligible world objects, but not every regular spawn,
+item acquisition or event-effect consumer. It also found EXPOSURE-01: ordinary generated finales
+select Bastion Eater rather than the existing regional alternatives.
 
-## Boundaries
+Benefit/scope: identify genuinely unreachable or incomplete existing content before designing more.
+Extend the existing trace using production selectors/resolvers. Report each ID's eligibility,
+selection witness (seed/node/threat/mode), downstream consumer and intentional exclusion. Distinguish
+catalogued, eligible, selected and actually executed; never call a finite-sample absence unreachable.
+Target missing witnesses with bounded deterministic searches and source tracing. Record unsupported
+cases explicitly. Verify event branch effects against existing runtime consumers rather than
+reimplementing effects in the report.
 
-Preserve other sessions' edits and retained masters. Commit only scoped fixes/review, generated browser output, tests and documentation/evidence in the nested website repository. No generated art, floor adoption, balance changes or fleet dependency maintenance without their documented gates. Acceptance of this plan supplies none of the missing observed/hardware/Steam/analytics evidence. [The five-run matrix](local-playtest-plan-2026-08-21.md), [presentation register](presentation-defect-plan-2026-08-23.md) and [asset specifications](ASSET-IMPROVEMENT-PLAN-2026-10-16.md) define procedures; this file owns queue state.
+Reuse catalogue data and Vite trace harness; no new enemies/items/assets or activation. Acceptance:
+reproducible machine-readable ledger, stable ordering, explicit sample bounds, and no progression or
+analytics writes. Check CLI determinism/error handling and selected witnesses through production
+integration tests; no balance claims from synthetic frequency. Runtime defects, if reproduced,
+receive separate bounded fixes and full checks. Real exposure/replay appeal remains unmeasured.
+
+### 5. ACCESS-04 — native armory browsing and inspection
+
+**P2 optional quality of life; M effort; medium risk. Ready after ACCESS-03 establishes the pattern.**
+The accessibility contract lists Armory as canvas-only. Existing build pages already expose affinity;
+this task must reuse that information rather than create another comparison or card system.
+
+Benefit/scope: browse owned/locked equipment with clear names, effects and unlock state. Inventory
+current armory actions and inspector consumers; bind semantic controls and details to existing IDs.
+Preserve filters/pages if already implemented, stable selection on return, focus visibility and
+single-action controller/pointer/keyboard behavior. Do not add search/filter features without a
+catalogue-size and navigation case showing their value.
+
+Reuse SemanticShell, inspection copy and icons; no art. Acceptance: every current armory action and
+item detail is reachable without pointer, locked state is accurate, focus survives page changes and
+no preview grants equipment. Test production navigation, sparse/full profiles, viewport changes,
+shutdown cleanup and simulated pad; full game/portfolio checks. AT/device acceptance stays separate.
+
+### 6. AUDIO-03 — production cue coverage and lifecycle diagnostics
+
+**P2 investigation/polish; S–M effort; low risk for reporting, medium for fixes. Executable now.**
+Live mute/gain and cleanup are already corrected. Listening is unavailable, so subjective mixing,
+new cue selection and claims that feedback sounds good cannot be accepted. Existing cue catalogues,
+maps, mixer and feedback tests provide objective contracts to inspect.
+
+Benefit/scope: detect missing cue mappings/assets and leaked voices/timers. Trace actual emitted
+combat/event/UI outcomes to mapped samples or intentional silence/fallback. Build a small coverage
+report from production definitions and extend only missing lifecycle cases: mute/restore, scene exit,
+retry, decode failure and concurrency limits. Fix proven missing dispatch or resource cleanup only.
+
+Reuse all samples/synth fallback; no generated audio and no speculative volume rebalance. Acceptance:
+all scoped emitted outcomes have documented routing or deliberate silence; muted/exited scenes leave
+no unintended scheduled playback; fallbacks and limits retain behavior. Verify production audio
+classes plus instrumented browser lifecycle and full checks for changes. Headphone/speaker quality
+and masking remain unassessed.
+
+### 7. EXPOSURE-01-DESIGN — regional finale compatibility design
+
+**P2 design only; S–M effort; high implementation risk. Executable design now; activation gated.**
+The [confirmed route gap](playtest-evidence/2026-10-23-content-review/README.md) justifies a concrete
+compatibility proposal. Existing maps regenerate from seeds, so changing terminal selection could
+change a saved run. Benefit: safely reuse existing regional bosses when variety gates eventually open.
+
+Trace all finale callers, saved run fields and generation versions. Specify a versioned authored
+selection policy, preservation of legacy seeds, migration/fallback behavior, map preview consistency,
+rewards and replay expectations. Produce old/new fixture examples and a generator-to-descriptor-to-
+combat test matrix. Compare minimally invasive options and document the selected design's tradeoffs.
+Do not wire new production selection or migrate saves in this task.
+
+Reuse existing bosses/art/audio. Acceptance: design accounts for every persisted input and caller,
+legacy outcomes remain specified, and activation checklist names tests and rollback behavior.
+Validate examples against current generation and save readers. Future implementation requires
+VARIETY-01 gates (Runs 1–5 plus two weeks verified analytics), full checks and earned-route/hardware
+acceptance. Design approval supplies none of that evidence.
+
+### 8. CONTENT-03-DESIGN — one existing world-interaction specification
+
+**P3 optional design; S effort; medium eventual implementation risk. Depends on CONTENT-02.**
+Seven world interactions are intentionally unavailable; the trace must not treat their assets as
+finished mechanics. Select at most one existing object whose missing behavior can be clearly bounded
+from the ledger. If none has a worthwhile distinct use, record no-go rather than invent content.
+
+Benefit/scope: a reviewable future interaction using existing art. Specify player verb, cost/reward,
+counterplay, placement/collision, disabled state, input/accessibility text, feedback, deterministic
+seed behavior, save/resume and exploit limits. Compare it with existing nodes/objects to avoid a
+reskin with no new decision. Include a small state diagram, fixture scenarios and implementation
+file map; estimate art/audio gaps explicitly without generating anything.
+
+Acceptance: implementable design with observable success/failure states, measurable invariants,
+existing-asset reuse decision and a clear no-go/activation gate. Validate references against actual
+catalogue/placement/runtime code. Later coding requires separate scope and applicable variety/
+expansion evidence gates, production tests and full checks; fun/readability stays unaccepted.
+No new hero, card system, monster, region or terrain pack is added to the implementation queue.
+
+## Acceptance dependencies — reference only, no available tester
+
+These are not tasks assigned to Codex in the queue above and must not be reported as completed:
+real listening; Runs 1–5/earned balance and learning observations; real screen-reader/controller;
+motion and hardware acceptance of floors, equipment and hostile tells; packaged-device pacing,
+save recovery and actual Steam/cloud behavior; verified live analytics.
+See the [acceptance worksheet](ACCEPTANCE-WORKSHEET-2026-10-17.md),
+[five-run procedure](local-playtest-plan-2026-08-21.md), [QA guide](QA-READINESS.md) and
+[release handoff](RELEASE-HANDOFF-2026-10-16.md). Do not repeatedly request testers while unavailable.
+Floors stay opt-in. Practice retains repeated-learning-failure gates. Variety retains observed runs
+and two weeks of verified analytics. Expansion/new art retains its evidence and scope gates.
+Claude owns specifically assigned packaging; Steam credentials/IDs and release authorization remain
+external dependencies. No push, deployment, packaging or submission is authorized by this refresh.
+
+## Execution and archive rules
+
+Implement one bounded item at a time and record changed behavior, evidence, tests and residual limits.
+Only reproduce/fix demonstrated defects within investigation tasks. Automated completion may close
+a coding task while its external acceptance remains open in the worksheet. No synthetic human sign-off.
+Preserve concurrent edits; stage explicit task paths and commit inside the nested website repository.
+Do not modify the Expo fleet. Existing asset inventory, art bible, content specifications, release
+notes and completed-work log are retained references. See [archive](archive/README.md) for superseded
+queues/audits; their historical proposals do not reactivate themselves.

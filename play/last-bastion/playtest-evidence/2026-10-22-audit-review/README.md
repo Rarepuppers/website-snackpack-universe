@@ -1,6 +1,6 @@
 # Audit evidence — 22 October 2026
 
-Runtime checkpoint `4238b130`, identity `web-2026.10.22-controls-records`. Pre-existing dirty About/privacy/social and unrelated files are excluded from audit changes. Concurrent website HEAD advanced; Last Bastion tracked files did not change in that range. Reports retain actual starting provenance. See [audit](../../AUDIT-REVIEW-2026-10-22.md) and [sole queue](../../CURRENT-PLAN.md).
+Runtime checkpoint `4238b130`, identity `web-2026.10.22-controls-records`. Pre-existing dirty About/privacy/social and unrelated files are excluded from audit changes. Concurrent website HEAD advanced; Last Bastion tracked files did not change in that range. Reports retain actual starting provenance. See [audit](../../archive/AUDIT-REVIEW-2026-10-22.md) and [sole queue](../../CURRENT-PLAN.md).
 
 ## Fresh checks
 

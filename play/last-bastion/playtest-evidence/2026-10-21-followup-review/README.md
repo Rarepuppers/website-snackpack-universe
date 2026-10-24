@@ -32,4 +32,4 @@ regressions. Unit/host/portfolio checks were not rerun for this documentation-on
 The capture utility is retained as `capture.mjs`; run it from the website root with the same
 browser-path environment. It starts and stops a local static server on port 44272.
 
-See [findings and recommendations](../../AUDIT-FOLLOWUP-2026-10-21.md).
+See [findings and recommendations](../../archive/AUDIT-FOLLOWUP-2026-10-21.md).

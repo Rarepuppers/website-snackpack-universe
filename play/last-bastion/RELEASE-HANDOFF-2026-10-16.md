@@ -12,7 +12,7 @@ implemented: active gain/mute, rotary-tail cancellation and scene/retry cleanup.
 physical/Steam/release gates remain open; Claude owns separately assigned packaging.
 The audit and older prepared-build sections below are historical.
 
-**22 October audit:** see [CURRENT-PLAN](CURRENT-PLAN.md) and the [fresh audit](AUDIT-REVIEW-2026-10-22.md).
+**22 October audit:** see [CURRENT-PLAN](CURRENT-PLAN.md) and the [fresh audit](archive/AUDIT-REVIEW-2026-10-22.md).
 Runtime checkpoint `4238b130` passes all game verification lanes; the new portfolio run passes 20/20.
 Active-voice volume/mute persistence is reproduced (AUDIO-02) and needs correction/acceptance before
 audio release sign-off. No runtime fix, package, deployment or human/device acceptance is supplied

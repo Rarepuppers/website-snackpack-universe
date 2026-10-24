@@ -1,9 +1,10 @@
+<!-- Archived dated audit; CURRENT-PLAN.md owns all active work. -->
 # Last Bastion audit — 22 October 2026
 
-Supporting evidence and recommendation specifications. [CURRENT-PLAN](CURRENT-PLAN.md) is the sole active queue. This review authorizes no runtime implementation, asset generation, packaging or publication.
+Supporting evidence and recommendation specifications. [CURRENT-PLAN](../CURRENT-PLAN.md) is the sole active queue. This review authorizes no runtime implementation, asset generation, packaging or publication.
 
 **Subsequent continuation:** AUDIO-02 is implemented locally in the audio-controls build;
-see [completed record](archive/AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). The defect/evidence
+see [completed record](AUDIO-CONTROLS-IMPLEMENTATION-2026-10-22.md). The defect/evidence
 below describe the audited baseline. Human listening acceptance remains open.
 
 ## Checkpoint and method
@@ -12,7 +13,7 @@ Started at nested website HEAD `4238b130`, following `5974c948`; source identity
 
 Read root AGENTS.md and release guidance; no additional AGENTS.md was found along the website/play/game path or within the game. Reviewed the former current plan, acceptance worksheet, release handoff, QA guide, shell contract, 21 October audits, asset proposal/inventory notes, five-run matrix, presentation register, release notes, completed implementation records and work log. Historical planning language is not evidence that a feature remains unimplemented.
 
-Fresh evidence is in [the dated evidence folder](playtest-evidence/2026-10-22-audit-review/README.md):
+Fresh evidence is in [the dated evidence folder](../playtest-evidence/2026-10-22-audit-review/README.md):
 
 - Full verifier passes in **117.9 seconds**: **1,783 unit tests / 312 files; 50 browser cases; 31 desktop-host tests**, image/content/text/boundary checks, source/output comparison, HTTP/offline smoke and site checks. All 25 published outputs match source. The first sandbox attempt stopped at a temporary-cache rename denial before content tests; retained separately.
 - Full portfolio runner passes **20/20 guards**, including Expo dependencies and shared-asset delivery. This supersedes the historical 19/20 observation for this run only. No dependency maintenance was performed here; concurrent work means this is not attribution of a fleet fix to this audit.

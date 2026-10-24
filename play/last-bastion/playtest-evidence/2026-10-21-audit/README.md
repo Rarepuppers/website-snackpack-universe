@@ -1,6 +1,6 @@
 # Current audit evidence — 21 October 2026
 
-Review scope and tasks: [detailed audit](../../AUDIT-REVIEW-2026-10-21.md).
+Review scope and tasks: [detailed audit](../../archive/AUDIT-REVIEW-2026-10-21.md).
 Starting nested-repository HEAD `1d592afd`; published identity remains
 `web-2026.10.17-qa-readiness`. No game implementation changed during this audit.
 
