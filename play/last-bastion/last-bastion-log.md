@@ -5374,3 +5374,16 @@ specifications, QA procedures, release handoff and completed-work history remain
 No runtime, asset, save-format or production-content changes. Local Markdown references and staged
 diff checked; game/portfolio suites not rerun for this documentation-only refresh. Human/device/
 Steam/analytics acceptance remains external; floor/practice/variety/expansion gates preserved.
+
+### DECISION-02 oversized sell list — 24 October 2026
+
+Reproduced a 586px shop sell panel at the 540px minimum viewport using the production maximum
+12-weapon rack. Added presentation-only paging for lists exceeding 12 options; ten source choices
+plus Previous/Next preserve source IDs and never dispatch navigation into transactions. Retained
+existing art/font sizes and save/compatibility versions. Current identity web-2026.10.24-decision-pages.
+Bounded production renderer audit: 231 cases with no reported overflow after fix; browser regression
+traverses both pages and Back. Inspected final art-enabled captures. Full verification PASS 152.7s:
+1,795 unit/314 files, 54 browser, 31 desktop-host plus static/output/offline checks. Broader catalogue,
+viewport and input coverage remains in DECISION-02; no human acceptance claimed. No publication.
+
+Finalized 25 October: complete portfolio run passed all 22 current guards.

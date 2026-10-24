@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 24 October 2026 — oversized shop lists
+
+Prepared locally: `web-2026.10.24-decision-pages`; not published or packaged.
+Shop lists with more than twelve choices now page through existing items, retaining text size
+and access to Back at the minimum viewport. Page navigation does not spend or sell anything.
+
+
 ## 24 October 2026 — shop layout and keyboard operation
 
 **Prepared locally:** `web-2026.10.23-shop-fit`; not published or packaged.

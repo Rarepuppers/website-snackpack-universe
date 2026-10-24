@@ -1,0 +1,49 @@
+{
+  "first": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "pageIndex": 0,
+    "optionIds": [
+      "shop-sell:1",
+      "shop-sell:2",
+      "shop-sell:3",
+      "shop-sell:4",
+      "shop-sell:5",
+      "shop-sell:6",
+      "shop-sell:7",
+      "shop-sell:8",
+      "shop-sell:9",
+      "shop-sell:10",
+      "decision-page-previous",
+      "decision-page-next"
+    ],
+    "statCardBounds": [],
+    "panelBounds": {
+      "width": 928,
+      "height": 516,
+      "availableWidth": 960,
+      "availableHeight": 540
+    }
+  },
+  "second": {
+    "visible": true,
+    "kind": "scrap-shop",
+    "selectedIndex": 0,
+    "pageIndex": 1,
+    "optionIds": [
+      "shop-sell:11",
+      "shop-sell:12",
+      "shop-back",
+      "decision-page-previous",
+      "decision-page-next"
+    ],
+    "statCardBounds": [],
+    "panelBounds": {
+      "width": 760,
+      "height": 446,
+      "availableWidth": 960,
+      "availableHeight": 540
+    }
+  }
+}

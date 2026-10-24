@@ -1,5 +1,35 @@
 import { test, expect } from "@playwright/test";
 
+test("full shop racks page without spending and keep Back reachable", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?scenario=scrap-shop&weapons=12&seed=61061&sound=0");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "scrap-shop");
+  const activate = async (id) => {
+    const index = await page.evaluate(id => window.__combatDecisionOverlay.optionIds.indexOf(id), id);
+    expect(index).toBeGreaterThanOrEqual(0);
+    for (let n = 0; n < 15; n++) {
+      if (await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex) === index) break;
+      await page.keyboard.press("ArrowDown", { delay: 50 });
+    }
+    expect(await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex)).toBe(index);
+    await page.keyboard.press("Enter", { delay: 50 });
+  };
+  await activate("shop-manage");
+  await activate("shop-sell-menu");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("decision-page-next"));
+  const first = await page.evaluate(() => window.__combatDecisionOverlay);
+  expect(first.panelBounds.height).toBeLessThanOrEqual(516);
+  expect(first.optionIds.filter(id => id.startsWith("shop-sell:"))).toHaveLength(10);
+  await activate("decision-page-next");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.pageIndex === 1);
+  expect(await page.evaluate(() => window.__combatDecisionOverlay.optionIds.filter(id => id.startsWith("shop-sell:")).length)).toBe(2);
+  await activate("decision-page-previous");
+  expect(await page.evaluate(() => window.__combatDecisionOverlay.optionIds)).toEqual(first.optionIds);
+  await activate("decision-page-next");
+  await activate("shop-back");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-manage"));
+});
+
 test("shop offers and management fit the camera and remain keyboard operable", async ({ page }) => {
   for (const viewport of [{ width: 960, height: 540 }, { width: 1280, height: 800 }, { width: 3840, height: 2160 }]) {
     await page.setViewportSize(viewport);

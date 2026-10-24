@@ -1,11 +1,15 @@
 # Last Bastion — current plan
 
-**Updated 24 October 2026. Sole active execution queue.**
-Current implementation checkpoint: `5a1c7aaf`; prepared identity `web-2026.10.23-shop-fit`.
+**Updated 25 October 2026. Sole active execution queue.**
+Current committed baseline: `5a1c7aaf`; new prepared identity `web-2026.10.24-decision-pages`.
 Save schema 16 / simulation compatibility 3. No human testers are available now.
-This refresh adds coding, automated investigation and design tasks only. It implements no runtime
-change. Items below are scoped proposals ready for execution in order, not newly confirmed bugs.
+The executable queue is underway: oversized sell-list pagination is implemented locally.
+Other investigations remain scoped proposals, not newly confirmed bugs.
 Demonstrated crash, save-loss or input dead-end defects take precedence.
+
+Latest pagination verification: **PASS 152.7s; 1,795 unit / 314 files, 54 browser,
+31 desktop-host tests**, plus static/output/offline/site checks. This supersedes the prior counts
+for the prepared pagination identity; earlier evidence remains dated. Portfolio: **22/22 PASS**.
 
 ## Completed baseline
 
@@ -25,7 +29,12 @@ and tests, reuse existing systems, and stop or narrow the task if the proposed g
 
 ### 1. DECISION-02 — catalogue-wide decision layout and input hardening
 
-**P1; M effort; medium risk. Executable now.** SHOP-01 exposed actual fixed-size clipping;
+**P1; M effort; medium risk. In progress.** The 24 October continuation reproduces and fixes
+oversized sell lists through presentation-only pagination. [Evidence and exact remaining coverage](playtest-evidence/2026-10-24-decision-review/README.md).
+The bounded renderer and browser checks do not close this whole task. Next: art-enabled catalogue
+text bounds and held/pointer/simulated-pad transitions across supported viewports.
+
+SHOP-01 exposed actual fixed-size clipping;
 its new browser case covers sampled offers/management at three sizes. `DecisionOverlayLayout.ts`
 still derives height from option count. A panel-bound assertion does not prove every description,
 focus border or hint fits. Further overflow is a coverage hypothesis, not a reproduced defect.

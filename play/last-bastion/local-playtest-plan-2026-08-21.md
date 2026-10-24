@@ -5,7 +5,7 @@
 
 ## Current handoff — 22 October 2026
 
-Use the prepared local `web-2026.10.23-shop-fit` build for the next observed runs;
+Use the prepared local `web-2026.10.24-decision-pages` build for the next observed runs;
 verify identity against [CURRENT-PLAN](CURRENT-PLAN.md), the sole active queue. This matrix is an acceptance procedure.
 The implementation and sampled
 1080p/4K palette/HUD checks are complete; the five human runs are not. The older package readiness

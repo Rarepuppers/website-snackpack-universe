@@ -1,0 +1,1599 @@
+{
+  "viewport": "960x540",
+  "source": "production simulation and overlay, useMarineArt=false",
+  "rows": [
+    {
+      "tag": "scrap-shop:1",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:1",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:1",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:1",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:1",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:1",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:2",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:2",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:2",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:2",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:2",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:2",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:3",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:3",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:3",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:3",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:3",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:3",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:4",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:4",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:4",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:4",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:4",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:4",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:5",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:5",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:5",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:5",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:5",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:5",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:6",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:6",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:6",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:6",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:6",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:6",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:7",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:7",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:7",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:7",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:7",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:7",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:8",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:8",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:8",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:8",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:8",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:8",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:9",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:9",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:9",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:9",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:9",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:9",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:10",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:10",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:10",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:10",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:10",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:10",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:11",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:11",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:11",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:11",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:11",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:11",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:12",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:12",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:12",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:12",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:12",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:12",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:13",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:13",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:13",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:13",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:13",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:13",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:14",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:14",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:14",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:14",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:14",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:14",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:15",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:15",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:15",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:15",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:15",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:15",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:16",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:16",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:16",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:16",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:16",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:16",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:17",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:17",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:17",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:17",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:17",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:17",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:18",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:18",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:18",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:18",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:18",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:18",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:19",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:19",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:19",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:19",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:19",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:19",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:20",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:20",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:20",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:20",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:20",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:20",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:21",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:21",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:21",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:21",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:21",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:21",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:22",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:22",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:22",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:22",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:22",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:22",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:23",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:23",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:23",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:23",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:23",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:23",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:24",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:24",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:24",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:24",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:24",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:24",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:25",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:25",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:25",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:25",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:25",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:25",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:26",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:26",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:26",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:26",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:26",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:26",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:27",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:27",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:27",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:27",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:27",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:27",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:28",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:28",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:28",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:28",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:28",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:28",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:29",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:29",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:29",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:29",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:29",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:29",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:30",
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:30",
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:30",
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:30",
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:30",
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:30",
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "sell-rack:4",
+      "kind": "scrap-shop",
+      "options": 5,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "sell-rack:8",
+      "kind": "scrap-shop",
+      "options": 9,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "sell-rack:12",
+      "kind": "scrap-shop",
+      "options": 13,
+      "issues": [
+        {
+          "panelOverflow": true
+        }
+      ],
+      "panelHeight": 586
+    },
+    {
+      "tag": "upgrade:rapid-cycling:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:rapid-cycling:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:rapid-cycling:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:twin-shot:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:twin-shot:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-magnet:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-magnet:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:adrenal-servos:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:adrenal-servos:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:4",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:marksman-barrels:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:marksman-barrels:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:kinetic-buffer:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:kinetic-buffer:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:capacitor-array:1",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:capacitor-array:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-transfusion:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-transfusion:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:salvage-drones:2",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:salvage-drones:3",
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    }
+  ]
+}

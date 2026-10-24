@@ -41,6 +41,9 @@ export class CombatDecisionOverlay {
   private selectionIndex = 0;
   private menuStickReady = true;
   private visibleDecisionKey = "";
+  private sourceDecisionKey = "";
+  private sourceDecision: PendingDecision | null = null;
+  private pageIndex = 0;
   private activeDecisionKind: PendingDecision["kind"] | null = null;
   private statCardBounds: { id: string; width: number; height: number; fontSize: number; overflowed: boolean }[] = [];
 
@@ -105,6 +108,11 @@ export class CombatDecisionOverlay {
     if (!selected?.enabled) {
       return;
     }
+    if (selected.choiceId === "decision-page-next" || selected.choiceId === "decision-page-previous") {
+      this.pageIndex += selected.choiceId === "decision-page-next" ? 1 : -1;
+      this.sync(this.sourceDecision);
+      return;
+    }
     if (this.options.chooseOption(selected.choiceId)) {
       this.options.onConfirmed();
     }
@@ -146,9 +154,13 @@ export class CombatDecisionOverlay {
   }
 
   sync(decision: PendingDecision | null): void {
-    const nextKey = decision
+    const sourceKey = decision
       ? `${decision.kind}|${decision.title}|${decision.options.map((option) => `${option.id}:${option.affordable ?? true}`).join("|")}`
       : "";
+    if (sourceKey !== this.sourceDecisionKey) this.pageIndex = 0;
+    this.sourceDecisionKey = sourceKey;
+    this.sourceDecision = decision;
+    const nextKey = `${sourceKey}|page:${this.pageIndex}`;
     if (nextKey === this.visibleDecisionKey) {
       this.positionDecisionOverlay();
       return;
@@ -168,6 +180,15 @@ export class CombatDecisionOverlay {
       return;
     }
 
+    // Page controls are presentation-only: never pass them to the transaction resolver.
+    if (decision.kind === "scrap-shop" && decision.options.length > 12) {
+      const pages = Math.ceil(decision.options.length / 10);
+      decision = { ...decision, title: `${decision.title} — ${this.pageIndex + 1}/${pages}`, options: [
+        ...decision.options.slice(this.pageIndex * 10, (this.pageIndex + 1) * 10),
+        { id: "decision-page-previous", name: "Previous Page", description: "Show earlier choices.", affordable: this.pageIndex > 0 },
+        { id: "decision-page-next", name: "Next Page", description: "Show more choices.", affordable: this.pageIndex + 1 < pages },
+      ] };
+    }
     const isShop = decision.kind === "scrap-shop";
     const isPlacement = decision.kind === "weapon-placement";
     // Level-up stat cards read as a 2x2 grid of cards rather than a list of
@@ -335,6 +356,9 @@ export class CombatDecisionOverlay {
 
   reset(): void {
     this.visibleDecisionKey = "";
+    this.sourceDecisionKey = "";
+    this.sourceDecision = null;
+    this.pageIndex = 0;
     this.overlay?.destroy(true);
     this.overlay = null;
     this.buttons = [];
@@ -354,6 +378,7 @@ export class CombatDecisionOverlay {
       visible: this.overlay !== null,
       kind: this.activeDecisionKind,
       selectedIndex: this.selectionIndex,
+      pageIndex: this.pageIndex,
       optionIds: this.buttons.map((button) => button.choiceId),
       statCardBounds: this.statCardBounds,
       panelBounds: this.overlay ? {
