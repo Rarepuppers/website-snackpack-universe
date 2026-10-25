@@ -1,5 +1,40 @@
 import { test, expect } from "@playwright/test";
 
+test("shop pagination survives resizing an open decision", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?scenario=scrap-shop&weapons=12&seed=61061&sound=0");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "scrap-shop");
+  const activate = async (id) => {
+    const target = await page.evaluate(id => window.__combatDecisionOverlay.optionIds.indexOf(id), id);
+    expect(target).toBeGreaterThanOrEqual(0);
+    for (let step = 0; step < 15; step++) {
+      if (await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex) === target) break;
+      await page.keyboard.press("ArrowDown", { delay: 80 });
+    }
+    expect(await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex)).toBe(target);
+    await page.keyboard.press("Enter", { delay: 80 });
+  };
+  await activate("shop-manage");
+  await activate("shop-sell-menu");
+  await activate("decision-page-next");
+  const before = await page.evaluate(() => window.__combatDecisionOverlay);
+  expect(before.pageIndex).toBe(1);
+  for (const viewport of [{width:1280,height:800},{width:3840,height:2160},{width:960,height:540}]) {
+    await page.setViewportSize(viewport);
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await expect.poll(() => page.evaluate(() => {
+      const b = window.__combatDecisionOverlay.panelBounds;
+      return b.width <= b.availableWidth && b.height <= b.availableHeight;
+    })).toBe(true);
+    const after = await page.evaluate(() => window.__combatDecisionOverlay);
+    expect(after.pageIndex).toBe(1);
+    expect(after.optionIds).toEqual(before.optionIds);
+    expect(after.selectedIndex).toBe(before.selectedIndex);
+  }
+  await activate("shop-back");
+  await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("shop-manage"));
+});
+
 test("full shop racks page without spending and keep Back reachable", async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 540 });
   await page.goto("/play/last-bastion/?scenario=scrap-shop&weapons=12&seed=61061&sound=0");

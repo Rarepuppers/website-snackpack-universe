@@ -51,3 +51,15 @@ Remaining DECISION-COVERAGE: production-scale
 1280×800/4K and open-overlay resize, title/hint/focus/hit-area assertions. Input edges, pointer/pad
 transitions and conditional selection fixes remain separate accepted subtasks. Real readability,
 screen-reader, controller and hardware acceptance remain unavailable, not passed.
+
+
+## Follow-up: live resize regression
+
+After runtime commit 5c410310, added a production-browser regression opening page 2 of a full sell
+rack, resizing through 1280x800, 3840x2160 and 960x540, waiting two browser render frames, checking
+panel fit, unchanged page/choice IDs/selection, then activating Back. Targeted final test passes
+(resize-final.txt). No runtime/source/output changes in this follow-up. The previous full verifier
+covered 54 browser cases; the suite now contains 55, with the added case run separately. Do not
+present this as a fresh full-suite run. This test covers live page continuity and panel fit, not
+all catalogue text, physical hardware or real controller behavior. No new portfolio run needed for
+this test/documentation-only continuation; the preceding 23/23 result remains dated.

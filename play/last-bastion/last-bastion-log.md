@@ -5410,3 +5410,6 @@ offline/site checks. See 2026-10-25-decision-coverage evidence. Current identity
 DECISION-02 viewport/resize, broader bounds, input/selection/polish remain open. No human acceptance.
 
 Completed portfolio verification: all 23 current guards passed.
+
+Decision resize follow-up: actual page-2 shop selection/IDs and Back survive 1280x800, 4K and
+960x540 resizing. New targeted browser regression passes; no runtime change or new full-suite claim.

@@ -1,7 +1,7 @@
 # Last Bastion — current plan
 
 **Updated 25 October 2026. Sole active execution queue.**
-Current committed implementation: `f2c41b86`; prepared identity `web-2026.10.25-decision-labels`.
+Current committed implementation: `5c410310`; prepared identity `web-2026.10.25-decision-labels`.
 Save schema 16 / simulation compatibility 3. No human testers are available now.
 25 October: decision recommendations accepted; the four DECISION-02 subtasks below are the next
 implementation scope. No additional speculative content is needed. Authorized remote publication
@@ -41,7 +41,9 @@ oversized sell lists through presentation-only pagination. [Evidence and exact r
 The 25 October art-enabled catalogue pass adds 313 enumerated cases and fixes four-line shop
 labels extending below their buttons; [evidence and coverage limits](playtest-evidence/2026-10-25-decision-coverage/README.md).
 Additional rack/stash and 12/13-choice boundary fixtures pass (318 total cases). This remains
-partial: supported viewport/resize and broader bounds checks precede input and selection subtasks.
+partial: an added production-browser test preserves page/selection through 1280×800, 4K and
+960×540 resize and returns via Back. Catalogue-wide measurements at those sizes and broader
+bounds assertions still precede completion of input and selection subtasks.
 
 SHOP-01 exposed actual fixed-size clipping;
 its new browser case covers sampled offers/management at three sizes. `DecisionOverlayLayout.ts`
