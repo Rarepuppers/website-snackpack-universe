@@ -5421,3 +5421,11 @@ Updated the stale DECISION-COVERAGE row to completed 318-case art-enabled/bounda
 not new speculative content. Added a concise coding/design phase index excluding local-device
 acceptance tasks. User requested commit/push; publication targets the existing review branch,
 preserving remote main and unrelated dirty edits. Documentation-only checks; no fresh runtime claim.
+
+### Decision shortfall and held Enter follow-through — 25 October 2026
+
+399 art-enabled cases pass after applying production affordability at zero/150 Scrap with locked
+offers. Extended published full-rack regression with held Enter and explicit repeated keydowns
+across Next Page; destination inventory IDs and Back remain intact. Targeted checks pass, no
+runtime defect reproduced or runtime change made. Other input edges and broader geometry remain
+open; full verification/portfolio evidence is historical rather than rerun. See decision-shortfall.

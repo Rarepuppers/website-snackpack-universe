@@ -47,7 +47,16 @@ test("full shop racks page without spending and keep Back reachable", async ({ p
       await page.keyboard.press("ArrowDown", { delay: 50 });
     }
     expect(await page.evaluate(() => window.__combatDecisionOverlay.selectedIndex)).toBe(index);
-    await page.keyboard.press("Enter", { delay: 50 });
+    if (id === "decision-page-next") {
+      await page.keyboard.down("Enter");
+      await page.waitForFunction(() => window.__combatDecisionOverlay?.pageIndex === 1);
+      // Explicit repeated keydowns emulate an OS repeat while the key stays held.
+      for (let repeat = 0; repeat < 3; repeat++) await page.keyboard.down("Enter");
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      await page.keyboard.up("Enter");
+    } else {
+      await page.keyboard.press("Enter", { delay: 50 });
+    }
   };
   await activate("shop-manage");
   await activate("shop-sell-menu");
