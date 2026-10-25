@@ -1,7 +1,7 @@
 # Last Bastion — current plan
 
 **Updated 25 October 2026. Sole active execution queue.**
-Current committed implementation: `5c410310`; prepared identity `web-2026.10.25-decision-labels`.
+Current runtime implementation: `5c410310`; resize regression: `1447baf6`; prepared identity `web-2026.10.25-decision-labels`.
 Save schema 16 / simulation compatibility 3. No human testers are available now.
 25 October: decision recommendations accepted; the four DECISION-02 subtasks below are the next
 implementation scope. No additional speculative content is needed. Authorized remote publication
@@ -65,13 +65,13 @@ Human readability/physical-pad acceptance remains unclaimed.
 
 #### Accepted execution order within DECISION-02
 
-Mark accepted the decision recommendations on 25 October. This refinement is planning only;
-it neither repeats completed pagination nor supplies external acceptance. Complete the following
+Mark accepted the decision recommendations on 25 October. Pagination, measured shop labels and
+the live resize regression are completed; further expansion is unnecessary. Complete the following
 bounded slices in order before ACCESS-03. Preserve one active queue; these are subtasks of item 1.
 
 | Order / ID | Evidence and benefit | Implementation, acceptance and validation | Effort / risk / dependencies |
 |---|---|---|---|
-| 1a DECISION-COVERAGE | The 231-case harness uses plain panels, mostly first pages; the art-enabled regression covers one 12-weapon rack. Unknown catalogue/last-page overflow remains a coverage gap. | Enumerate actual upgrade ranks, stat choices, weapon placement, eligible shop item/weapon offers and rack/stash sell lists through production factories. Record visited IDs and exclusions; traverse every generated page. Measure text, title, hint, focus stroke and hit-area bounds with production art at 960×540, 1280×800 and 4K. Exercise resize while open. Include 12/13-option boundary, short final pages and the actual supported rack/stash maximum; do not invent impossible inventories. Fix only reproducible layout failures. Exit: explicit coverage manifest, no unexplained overflow/overlap or offscreen enabled action in enumerated cases, and screenshots for worst cases. Add renderer/browser regressions for failures. | P1; M; low for harness, medium for fixes. Depends on catalogue/production-consumer inventory. Reuse current trace and textures; no generation. |
+| 1a DECISION-COVERAGE | Completed: 318 art-enabled catalogue/page/boundary cases at 960×540; 12-rack/4-stash maximum; published page continuity across 1280×800/4K/minimum resize. Still open: catalogue-wide scaled text, title/hint/focus/hit-area bounds and dynamic label variants. | Reuse the existing production-factory fixtures, visited IDs, all-page traversal and boundary cases. Extend assertions to title, hint, focus stroke and hit areas; measure all catalogue labels through the actual 1280×800 and 4K presentation paths. Add production-valid long price/shortfall/locked/rank label variants and state explicit exclusions. Do not repeat completed pagination, inventory-boundary or resize work without a changed case. Fix only reproducible layout failures. Exit: explicit coverage manifest, no unexplained overflow/overlap or offscreen enabled action in enumerated cases, and screenshots for worst cases. Add renderer/browser regressions for failures. | P1; M; low for harness, medium for fixes. Depends on catalogue/production-consumer inventory. Reuse current trace and textures; no generation. |
 | 1b DECISION-EDGES | Current browser paging regression uses released arrows/Enter; it does not establish held-input, pointer or simulated-pad safety. A page transition exposes a different item under the same input. This is a risk to test, not a reproduced double sale. | Drive Next/Previous and choice transitions with held Enter/digit/pad confirm, pointer down/up, mixed devices, neutral/re-engage stick and blur/refocus. Observe actual transaction callbacks and state; a page action must never purchase/sell, a held opening action must not activate the destination item, and one fresh activation must commit once. Verify disabled first/last-page controls and digit keys apply only to the visible page. Add edge suppression only where a production failure is reproduced; preserve remap/menu semantics. | P1; M; medium input risk. Depends on 1a fixtures. Reuse DecisionNavigation/input lifecycle; no assets. Browser integration plus focused production navigation tests; full checks for fixes. Physical controller acceptance remains separate. |
 | 1c DECISION-SELECTION | Overlay sync currently resets selection/page when the source key changes; its key includes kind/title/IDs/affordability, but not displayed descriptions/cost fields. Unexpected selection jumps or stale text are hypotheses until a real state transition demonstrates them. | Trace buy/sell/lock/reroll and non-transaction redraws. Verify all visible names, descriptions, prices and availability match the latest source decision. If a stale display or disruptive jump is reproduced, use stable choice IDs to retain the surviving choice/page; after removal select the nearest enabled surviving choice or Back, and clamp page count. Do not persist UI page state into saves. Real new decisions still start deliberately. Exit: no stale visible state, no invalid selection/page and no unintended commit after refresh. | P2; S–M; medium. Depends on 1a/1b and real transaction fixtures; STATE-02 retains persistence/failure testing. Reuse overlay state and existing decision objects; test actual redraw/removal/affordability transitions. |
 | 1d DECISION-POLISH | Final sell captures show a row over the decorative frame, page navigation with the same fallback tile as sale rows, and unnumbered tenth choices while hints advertise 1–9. These are observations; no inability to operate them was demonstrated. | Reuse existing UI to give navigation a distinct treatment (text-only is acceptable), place controls inside a consistent content inset, and make the hint explicitly distinguish visible quick picks from arrow/pad navigation. Keep all descriptions and prices readable without smaller text. Review whether a stable footer/Back on every page removes unnecessary travel; implement only a bounded layout compatible with the measured viewport budget, without changing sale semantics. Avoid new confirmation dialogs for every purchase. Exit: navigation cannot be mistaken for a sell option in labels/actions, no text/frame interference in captures, and all unnumbered choices remain reachable. | P2 optional polish; S–M; medium layout risk. Depends on 1a measurements and 1b activation tests. Existing panels/styles/icons only; no art generation. Capture both sparse/full pages and validate keyboard/pointer/simulated pad at all three sizes. Human visual preference is not claimed. |
@@ -216,6 +216,24 @@ existing-asset reuse decision and a clear no-go/activation gate. Validate refere
 catalogue/placement/runtime code. Later coding requires separate scope and applicable variety/
 expansion evidence gates, production tests and full checks; fun/readability stays unaccepted.
 No new hero, card system, monster, region or terrain pack is added to the implementation queue.
+
+## Remaining implementation phases (excluding local-device testing)
+
+This is a concise index of the ordered tasks above, not a second queue:
+
+1. Finish DECISION-02: scaled catalogue/dynamic-label bounds → input edges → conditional
+   selection/current-text corrections → navigation and spacing polish.
+2. ACCESS-03: implement native hero/threat selection using existing shell state and unlock rules.
+3. STATE-02: production transaction/resume/failure integration; fix demonstrated defects.
+4. CONTENT-02: enemy/item/event exposure ledger with reproducible selection/execution witnesses.
+5. ACCESS-04: native armory browsing and equipment inspection, after the selection pattern.
+6. AUDIO-03: cue routing and voice/timer/fallback lifecycle diagnostics; objective fixes only.
+7. EXPOSURE-01-DESIGN: save-compatible regional-finale policy and test design; no activation.
+8. CONTENT-03-DESIGN: at most one justified existing-object specification, following the ledger.
+
+No new asset batch, hero, monster, card system or terrain expansion is added. Items 1–6 are
+coding/automated investigation; 7–8 are design-only under existing activation gates. Publication
+of the review branch does not complete these tasks or authorize a merge into diverged main.
 
 ## Acceptance dependencies — reference only, no available tester
 

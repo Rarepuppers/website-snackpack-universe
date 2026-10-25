@@ -5413,3 +5413,11 @@ Completed portfolio verification: all 23 current guards passed.
 
 Decision resize follow-up: actual page-2 shop selection/IDs and Back survive 1280x800, 4K and
 960x540 resizing. New targeted browser regression passes; no runtime change or new full-suite claim.
+
+### Remaining-task reconciliation and requested review-branch push — 25 October 2026
+
+Updated the stale DECISION-COVERAGE row to completed 318-case art-enabled/boundary coverage and
+1447baf6 resize results. Remaining additions are scoped dynamic-label/scaled bounds assertions,
+not new speculative content. Added a concise coding/design phase index excluding local-device
+acceptance tasks. User requested commit/push; publication targets the existing review branch,
+preserving remote main and unrelated dirty edits. Documentation-only checks; no fresh runtime claim.
