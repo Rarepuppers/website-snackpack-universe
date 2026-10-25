@@ -1,5 +1,53 @@
 import { test, expect } from "@playwright/test";
 
+for (const device of ["pointer", "simulated-pad", "simulated-pad-blur"]) {
+  test(`shop page transition does not sell on held ${device} confirmation`, async ({ page }) => {
+    await page.setViewportSize({width:960,height:540});
+    if (device !== "pointer") await page.addInitScript(() => {
+      const pad = { id:"Standard test controller", index:0, connected:true, mapping:"standard", timestamp:1,
+        axes:[0,0,0,0], buttons:Array.from({length:17},()=>({pressed:false,touched:false,value:0})) };
+      window.__testPad = pad;
+      Object.defineProperty(navigator,"getGamepads",{value:()=>{pad.timestamp=performance.now();return [pad];}});
+    });
+    await page.goto("/play/last-bastion/?scenario=scrap-shop&weapons=12&seed=61061&sound=0");
+    await page.waitForFunction(()=>window.__combatDecisionOverlay?.kind==="scrap-shop");
+    const select = async id => {
+      const target=await page.evaluate(id=>window.__combatDecisionOverlay.optionIds.indexOf(id),id);
+      expect(target).toBeGreaterThanOrEqual(0);
+      for(let step=0;step<15;step++) {
+        if(await page.evaluate(()=>window.__combatDecisionOverlay.selectedIndex)===target) break;
+        await page.keyboard.press("ArrowDown",{delay:80});
+      }
+      expect(await page.evaluate(()=>window.__combatDecisionOverlay.selectedIndex)).toBe(target);
+    };
+    for(const id of ["shop-manage","shop-sell-menu"]) { await select(id);await page.keyboard.press("Enter",{delay:80}); }
+    const original=await page.evaluate(()=>window.__combatDecisionOverlay.optionIds);
+    await select("decision-page-next");
+    const canvas=await page.locator("#game-root canvas").boundingBox();
+    if(device==="pointer") {
+      await page.mouse.move(canvas.x+canvas.width*705/960,canvas.y+canvas.height*480/540);
+      await page.mouse.down();
+    } else await page.evaluate(()=>{window.__testPad.buttons[0]={pressed:true,touched:true,value:1};});
+    await page.waitForFunction(()=>window.__combatDecisionOverlay?.pageIndex===1);
+    const destination=await page.evaluate(()=>window.__combatDecisionOverlay.optionIds);
+    expect(destination.filter(id=>id.startsWith("shop-sell:"))).toHaveLength(2);
+    if(device==="pointer") await page.mouse.move(canvas.x+canvas.width*400/960,canvas.y+canvas.height*165/540);
+    if(device==="simulated-pad-blur") {
+      await page.evaluate(()=>window.dispatchEvent(new Event("blur")));
+      await page.waitForTimeout(120);
+      await page.evaluate(()=>window.dispatchEvent(new Event("focus")));
+    }
+    await page.waitForTimeout(250); // Hold across multiple production input polls.
+    expect(await page.evaluate(()=>window.__combatDecisionOverlay.optionIds)).toEqual(destination);
+    if(device==="pointer") await page.mouse.up();
+    else await page.evaluate(()=>{window.__testPad.buttons[0]={pressed:false,touched:false,value:0};});
+    await page.waitForTimeout(120);
+    expect(await page.evaluate(()=>window.__combatDecisionOverlay.optionIds)).toEqual(destination);
+    await select("decision-page-previous");await page.keyboard.press("Enter",{delay:80});
+    expect(await page.evaluate(()=>window.__combatDecisionOverlay.optionIds)).toEqual(original);
+  });
+}
+
 test("shop pagination survives resizing an open decision", async ({ page }) => {
   await page.setViewportSize({ width: 960, height: 540 });
   await page.goto("/play/last-bastion/?scenario=scrap-shop&weapons=12&seed=61061&sound=0");

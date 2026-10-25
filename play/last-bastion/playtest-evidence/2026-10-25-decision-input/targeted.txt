@@ -1,0 +1,13 @@
+
+[WebServer] (node:10368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+
+(node:29512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\visual\last-bastion-functional.spec.mjs:4:3 › shop page transition does not sell on held pointer confirmation
+[2/2] tests\visual\last-bastion-functional.spec.mjs:4:3 › shop page transition does not sell on held simulated-pad confirmation
+  2 passed (9.8s)

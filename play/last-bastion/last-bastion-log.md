@@ -5429,3 +5429,11 @@ offers. Extended published full-rack regression with held Enter and explicit rep
 across Next Page; destination inventory IDs and Back remain intact. Targeted checks pass, no
 runtime defect reproduced or runtime change made. Other input edges and broader geometry remain
 open; full verification/portfolio evidence is historical rather than rerun. See decision-shortfall.
+
+### Decision pointer/pad/focus transition regressions — 25 October 2026
+
+Three new targeted browser cases pass (13.6s): held pointer dragged over destination sale item,
+held simulated pad confirm, and held pad through synthetic blur/focus. Destination and original
+page item IDs remain unchanged and return navigation works. No runtime defect reproduced or
+runtime change made. Recorded limits and remaining input edges in CURRENT-PLAN; real controller/
+OS focus acceptance is separate. Earlier full verifier/portfolio results were not rerun.
