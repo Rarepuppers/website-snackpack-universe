@@ -5397,3 +5397,16 @@ frame/hint polish. Distinguished observed visuals, coverage gaps and unproven be
 Included dependencies, effort/risk, asset reuse, exit criteria and automated checks. No runtime or
 asset changes; no new content or human-testing requirement added. Existing external gates remain.
 Documentation references and diff checked; historical test passes were not rerun or relabelled fresh.
+
+### DECISION-COVERAGE authored shop text — 25 October 2026
+
+Art-enabled production catalogue audit reproduced four-line descriptions extending 16px below
+shop choice buttons. Centred labels using their actual measured height, preserving font/copy/art.
+Before 313 cases/81 failures (repeated companion stock included); after 313/0. Expanded production
+inventory boundary pass covers 318 cases/0 failures including 12 rack + 4 stash and all pages.
+Retained exact catalogue IDs and inspected long-description capture. No content/balance activation.
+Full verifier passes 166.1s: 1,795 unit/314 files, 54 browser, 31 desktop-host plus static/output/
+offline/site checks. See 2026-10-25-decision-coverage evidence. Current identity decision-labels;
+DECISION-02 viewport/resize, broader bounds, input/selection/polish remain open. No human acceptance.
+
+Completed portfolio verification: all 23 current guards passed.

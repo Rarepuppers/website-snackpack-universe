@@ -1,0 +1,4869 @@
+{
+  "viewport": "960x540",
+  "source": "production simulation, catalogue candidate factories and overlay with production art",
+  "rows": [
+    {
+      "tag": "scrap-shop:1",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:catalyst-array",
+        "shop-item:whetstone",
+        "shop-item:track-shoes",
+        "shop-item:adrenaline-pump",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:1",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:catalyst-array",
+        "shop-lock:shop-item:whetstone",
+        "shop-lock:shop-item:track-shoes",
+        "shop-lock:shop-item:adrenaline-pump",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:catalyst-array",
+        "shop-ban:shop-item:whetstone",
+        "shop-ban:shop-item:track-shoes",
+        "shop-ban:shop-item:adrenaline-pump",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:1",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:1",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:1",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:1",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:2",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:catalyst-array",
+        "shop-item:plate-fragment",
+        "shop-upgrade:composite-plating",
+        "shop-item:sawn-off-stock",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:2",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:catalyst-array",
+        "shop-lock:shop-item:plate-fragment",
+        "shop-lock:shop-upgrade:composite-plating",
+        "shop-lock:shop-item:sawn-off-stock",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:catalyst-array",
+        "shop-ban:shop-item:plate-fragment",
+        "shop-ban:shop-upgrade:composite-plating",
+        "shop-ban:shop-item:sawn-off-stock",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:2",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:2",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:2",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:2",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:3",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scrap-magnet",
+        "shop-item:bulwark-plating",
+        "shop-item:prospectors-kit",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:3",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scrap-magnet",
+        "shop-lock:shop-item:bulwark-plating",
+        "shop-lock:shop-item:prospectors-kit",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scrap-magnet",
+        "shop-ban:shop-item:bulwark-plating",
+        "shop-ban:shop-item:prospectors-kit",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:3",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:3",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:3",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:3",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:4",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:thermal-core",
+        "shop-item:scrap-magnet",
+        "shop-item:field-toolkit",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:4",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:thermal-core",
+        "shop-lock:shop-item:scrap-magnet",
+        "shop-lock:shop-item:field-toolkit",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:thermal-core",
+        "shop-ban:shop-item:scrap-magnet",
+        "shop-ban:shop-item:field-toolkit",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:4",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:4",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:4",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:4",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:5",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:long-barrel",
+        "shop-upgrade:catalyst-array",
+        "shop-item:focusing-lens",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:5",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:long-barrel",
+        "shop-lock:shop-upgrade:catalyst-array",
+        "shop-lock:shop-item:focusing-lens",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:long-barrel",
+        "shop-ban:shop-upgrade:catalyst-array",
+        "shop-ban:shop-item:focusing-lens",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:5",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:5",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:5",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:5",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:6",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:field-toolkit",
+        "shop-item:cursed-idol",
+        "shop-item:loaded-dice",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:6",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:field-toolkit",
+        "shop-lock:shop-item:cursed-idol",
+        "shop-lock:shop-item:loaded-dice",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:field-toolkit",
+        "shop-ban:shop-item:cursed-idol",
+        "shop-ban:shop-item:loaded-dice",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:6",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:6",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:6",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:6",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:7",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:titan-serum",
+        "shop-item:bayonet",
+        "shop-item:cursed-idol",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:7",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:titan-serum",
+        "shop-lock:shop-item:bayonet",
+        "shop-lock:shop-item:cursed-idol",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:titan-serum",
+        "shop-ban:shop-item:bayonet",
+        "shop-ban:shop-item:cursed-idol",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:7",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:7",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:7",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:7",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:8",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-repair",
+        "shop-upgrade:salvage-drones",
+        "shop-item:kill-clock",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:8",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-repair",
+        "shop-lock:shop-upgrade:salvage-drones",
+        "shop-lock:shop-item:kill-clock",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-repair",
+        "shop-ban:shop-upgrade:salvage-drones",
+        "shop-ban:shop-item:kill-clock",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:8",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:8",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:8",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:8",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:9",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:cryo-coating",
+        "shop-item:tithe-collector",
+        "shop-repair",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:9",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:cryo-coating",
+        "shop-lock:shop-item:tithe-collector",
+        "shop-lock:shop-repair",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:cryo-coating",
+        "shop-ban:shop-item:tithe-collector",
+        "shop-ban:shop-repair",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:9",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:9",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:9",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:9",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:10",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:field-magnet",
+        "shop-item:evasion-servos",
+        "shop-armour-retrofit",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:10",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:field-magnet",
+        "shop-lock:shop-item:evasion-servos",
+        "shop-lock:shop-armour-retrofit",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:field-magnet",
+        "shop-ban:shop-item:evasion-servos",
+        "shop-ban:shop-armour-retrofit",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:10",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:10",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:10",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:10",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:11",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:field-transfusion",
+        "shop-item:whetstone",
+        "shop-upgrade:twin-shot",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:11",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:field-transfusion",
+        "shop-lock:shop-item:whetstone",
+        "shop-lock:shop-upgrade:twin-shot",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:field-transfusion",
+        "shop-ban:shop-item:whetstone",
+        "shop-ban:shop-upgrade:twin-shot",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:11",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:11",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:11",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:11",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:12",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:whetstone",
+        "shop-armour-retrofit",
+        "shop-upgrade:chain-lightning",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:12",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:whetstone",
+        "shop-lock:shop-armour-retrofit",
+        "shop-lock:shop-upgrade:chain-lightning",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:whetstone",
+        "shop-ban:shop-armour-retrofit",
+        "shop-ban:shop-upgrade:chain-lightning",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:12",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:12",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:12",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:12",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:13",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:plate-fragment",
+        "shop-item:long-barrel",
+        "shop-upgrade:adrenal-servos",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:13",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:plate-fragment",
+        "shop-lock:shop-item:long-barrel",
+        "shop-lock:shop-upgrade:adrenal-servos",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:plate-fragment",
+        "shop-ban:shop-item:long-barrel",
+        "shop-ban:shop-upgrade:adrenal-servos",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:13",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:13",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:13",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:13",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:14",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scrap-magnet",
+        "shop-item:targeting-chip",
+        "shop-upgrade:composite-plating",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:14",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scrap-magnet",
+        "shop-lock:shop-item:targeting-chip",
+        "shop-lock:shop-upgrade:composite-plating",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scrap-magnet",
+        "shop-ban:shop-item:targeting-chip",
+        "shop-ban:shop-upgrade:composite-plating",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:14",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:14",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:14",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:14",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:15",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scope-mount",
+        "shop-upgrade:cryo-coating",
+        "shop-upgrade:catalyst-array",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:15",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scope-mount",
+        "shop-lock:shop-upgrade:cryo-coating",
+        "shop-lock:shop-upgrade:catalyst-array",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scope-mount",
+        "shop-ban:shop-upgrade:cryo-coating",
+        "shop-ban:shop-upgrade:catalyst-array",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:15",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:15",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:15",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:15",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:16",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:long-barrel",
+        "shop-item:prospectors-kit",
+        "shop-upgrade:marksman-barrels",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:16",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:long-barrel",
+        "shop-lock:shop-item:prospectors-kit",
+        "shop-lock:shop-upgrade:marksman-barrels",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:long-barrel",
+        "shop-ban:shop-item:prospectors-kit",
+        "shop-ban:shop-upgrade:marksman-barrels",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:16",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:16",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:16",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:16",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:17",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:field-toolkit",
+        "shop-item:plate-fragment",
+        "shop-upgrade:field-transfusion",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:17",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:field-toolkit",
+        "shop-lock:shop-item:plate-fragment",
+        "shop-lock:shop-upgrade:field-transfusion",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:field-toolkit",
+        "shop-ban:shop-item:plate-fragment",
+        "shop-ban:shop-upgrade:field-transfusion",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:17",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:17",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:17",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:17",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:18",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:fabricator-core",
+        "shop-upgrade:adrenal-servos",
+        "shop-weapon:patrol-blade",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:18",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:fabricator-core",
+        "shop-lock:shop-upgrade:adrenal-servos",
+        "shop-lock:shop-weapon:patrol-blade",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:fabricator-core",
+        "shop-ban:shop-upgrade:adrenal-servos",
+        "shop-ban:shop-weapon:patrol-blade",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:18",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:18",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:18",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:18",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:19",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-repair",
+        "shop-item:glass-cannon",
+        "shop-item:whetstone",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:19",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-repair",
+        "shop-lock:shop-item:glass-cannon",
+        "shop-lock:shop-item:whetstone",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-repair",
+        "shop-ban:shop-item:glass-cannon",
+        "shop-ban:shop-item:whetstone",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:19",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:19",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:19",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:19",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:20",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:cryo-coating",
+        "shop-item:track-shoes",
+        "shop-item:targeting-chip",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:20",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:cryo-coating",
+        "shop-lock:shop-item:track-shoes",
+        "shop-lock:shop-item:targeting-chip",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:cryo-coating",
+        "shop-ban:shop-item:track-shoes",
+        "shop-ban:shop-item:targeting-chip",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:20",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:20",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:20",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:20",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:21",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:composite-plating",
+        "shop-upgrade:shield-capacitor",
+        "shop-item:plate-fragment",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:21",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:composite-plating",
+        "shop-lock:shop-upgrade:shield-capacitor",
+        "shop-lock:shop-item:plate-fragment",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:composite-plating",
+        "shop-ban:shop-upgrade:shield-capacitor",
+        "shop-ban:shop-item:plate-fragment",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:21",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:21",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:21",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:21",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:22",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-upgrade:field-transfusion",
+        "shop-item:loaded-dice",
+        "shop-item:combat-stims",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:22",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-upgrade:field-transfusion",
+        "shop-lock:shop-item:loaded-dice",
+        "shop-lock:shop-item:combat-stims",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-upgrade:field-transfusion",
+        "shop-ban:shop-item:loaded-dice",
+        "shop-ban:shop-item:combat-stims",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:22",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:22",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:22",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:22",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:23",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:whetstone",
+        "shop-item:field-dressing",
+        "shop-item:track-shoes",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:23",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:whetstone",
+        "shop-lock:shop-item:field-dressing",
+        "shop-lock:shop-item:track-shoes",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:whetstone",
+        "shop-ban:shop-item:field-dressing",
+        "shop-ban:shop-item:track-shoes",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:23",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:23",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:23",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:23",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:24",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:plate-fragment",
+        "shop-upgrade:marksman-barrels",
+        "shop-item:field-dressing",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:24",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:plate-fragment",
+        "shop-lock:shop-upgrade:marksman-barrels",
+        "shop-lock:shop-item:field-dressing",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:plate-fragment",
+        "shop-ban:shop-upgrade:marksman-barrels",
+        "shop-ban:shop-item:field-dressing",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:24",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:24",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:24",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:24",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:25",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scrap-magnet",
+        "shop-item:hollow-reliquary",
+        "shop-item:field-dressing",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:25",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scrap-magnet",
+        "shop-lock:shop-item:hollow-reliquary",
+        "shop-lock:shop-item:field-dressing",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scrap-magnet",
+        "shop-ban:shop-item:hollow-reliquary",
+        "shop-ban:shop-item:field-dressing",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:25",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:25",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:25",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:25",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:26",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scope-mount",
+        "shop-item:bayonet",
+        "shop-item:thermal-core",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:26",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scope-mount",
+        "shop-lock:shop-item:bayonet",
+        "shop-lock:shop-item:thermal-core",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scope-mount",
+        "shop-ban:shop-item:bayonet",
+        "shop-ban:shop-item:thermal-core",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:26",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:26",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:26",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:26",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:27",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:long-barrel",
+        "shop-upgrade:salvage-drones",
+        "shop-item:evasion-servos",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:27",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:long-barrel",
+        "shop-lock:shop-upgrade:salvage-drones",
+        "shop-lock:shop-item:evasion-servos",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:long-barrel",
+        "shop-ban:shop-upgrade:salvage-drones",
+        "shop-ban:shop-item:evasion-servos",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:27",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:27",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:27",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:27",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:28",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:field-toolkit",
+        "shop-item:battlefield-triage",
+        "shop-item:leech-rounds",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:28",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:field-toolkit",
+        "shop-lock:shop-item:battlefield-triage",
+        "shop-lock:shop-item:leech-rounds",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:field-toolkit",
+        "shop-ban:shop-item:battlefield-triage",
+        "shop-ban:shop-item:leech-rounds",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:28",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:28",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:28",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:28",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:29",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:fabricator-core",
+        "shop-item:evasion-servos",
+        "shop-item:long-barrel",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:29",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:fabricator-core",
+        "shop-lock:shop-item:evasion-servos",
+        "shop-lock:shop-item:long-barrel",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:fabricator-core",
+        "shop-ban:shop-item:evasion-servos",
+        "shop-ban:shop-item:long-barrel",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:29",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:29",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:29",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:29",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "scrap-shop:30",
+      "pageIndex": 0,
+      "ids": [
+        "shop-upgrade:reactive-plating",
+        "shop-item:scavengers-rite",
+        "shop-item:whetstone",
+        "shop-item:prospectors-kit",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "manage:30",
+      "pageIndex": 0,
+      "ids": [
+        "shop-lock:shop-upgrade:reactive-plating",
+        "shop-lock:shop-item:scavengers-rite",
+        "shop-lock:shop-item:whetstone",
+        "shop-lock:shop-item:prospectors-kit",
+        "shop-reroll",
+        "shop-ban:shop-upgrade:reactive-plating",
+        "shop-ban:shop-item:scavengers-rite",
+        "shop-ban:shop-item:whetstone",
+        "shop-ban:shop-item:prospectors-kit",
+        "shop-sell-menu",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 11,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell:30",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "level-up-review:30",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "twin-shot",
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 498
+    },
+    {
+      "tag": "stat-card-review:30",
+      "pageIndex": 0,
+      "ids": [
+        "lvl-damage",
+        "lvl-armour",
+        "lvl-luck",
+        "lvl-elemental"
+      ],
+      "kind": "level-stat",
+      "options": 4,
+      "issues": [],
+      "panelHeight": 440
+    },
+    {
+      "tag": "weapon-gate:30",
+      "pageIndex": 0,
+      "ids": [
+        "place:rack:rack-3",
+        "place:rack:rack-4",
+        "place:inventory:0",
+        "place:inventory:1",
+        "place:inventory:2",
+        "place:inventory:3",
+        "place:discard"
+      ],
+      "kind": "weapon-placement",
+      "options": 7,
+      "issues": [],
+      "panelHeight": 520
+    },
+    {
+      "tag": "sell-rack:4",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 5,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "sell-rack:8",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-sell:5",
+        "shop-sell:6",
+        "shop-sell:7",
+        "shop-sell:8",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 9,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "sell-rack:12",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-sell:5",
+        "shop-sell:6",
+        "shop-sell:7",
+        "shop-sell:8",
+        "shop-sell:9",
+        "shop-sell:10",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 12,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell-rack:12",
+      "pageIndex": 1,
+      "ids": [
+        "shop-sell:11",
+        "shop-sell:12",
+        "shop-back",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 5,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "upgrade:rapid-cycling:1",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:rapid-cycling:2",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:rapid-cycling:3",
+      "pageIndex": 0,
+      "ids": [
+        "rapid-cycling",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:twin-shot:1",
+      "pageIndex": 0,
+      "ids": [
+        "twin-shot",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:twin-shot:2",
+      "pageIndex": 0,
+      "ids": [
+        "twin-shot",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:1",
+      "pageIndex": 0,
+      "ids": [
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:2",
+      "pageIndex": 0,
+      "ids": [
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:piercing-rounds:3",
+      "pageIndex": 0,
+      "ids": [
+        "piercing-rounds",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:1",
+      "pageIndex": 0,
+      "ids": [
+        "explosive-payload",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:2",
+      "pageIndex": 0,
+      "ids": [
+        "explosive-payload",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:explosive-payload:3",
+      "pageIndex": 0,
+      "ids": [
+        "explosive-payload",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:1",
+      "pageIndex": 0,
+      "ids": [
+        "heavy-calibre",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:2",
+      "pageIndex": 0,
+      "ids": [
+        "heavy-calibre",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:heavy-calibre:3",
+      "pageIndex": 0,
+      "ids": [
+        "heavy-calibre",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-magnet:1",
+      "pageIndex": 0,
+      "ids": [
+        "field-magnet",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-magnet:2",
+      "pageIndex": 0,
+      "ids": [
+        "field-magnet",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-magnet:3",
+      "pageIndex": 0,
+      "ids": [
+        "field-magnet",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:1",
+      "pageIndex": 0,
+      "ids": [
+        "chain-lightning",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:2",
+      "pageIndex": 0,
+      "ids": [
+        "chain-lightning",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:chain-lightning:3",
+      "pageIndex": 0,
+      "ids": [
+        "chain-lightning",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:adrenal-servos:1",
+      "pageIndex": 0,
+      "ids": [
+        "adrenal-servos",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:adrenal-servos:2",
+      "pageIndex": 0,
+      "ids": [
+        "adrenal-servos",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:adrenal-servos:3",
+      "pageIndex": 0,
+      "ids": [
+        "adrenal-servos",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:1",
+      "pageIndex": 0,
+      "ids": [
+        "composite-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:2",
+      "pageIndex": 0,
+      "ids": [
+        "composite-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:3",
+      "pageIndex": 0,
+      "ids": [
+        "composite-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:composite-plating:4",
+      "pageIndex": 0,
+      "ids": [
+        "composite-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:1",
+      "pageIndex": 0,
+      "ids": [
+        "shield-capacitor",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:2",
+      "pageIndex": 0,
+      "ids": [
+        "shield-capacitor",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:shield-capacitor:3",
+      "pageIndex": 0,
+      "ids": [
+        "shield-capacitor",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:1",
+      "pageIndex": 0,
+      "ids": [
+        "catalyst-array",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:2",
+      "pageIndex": 0,
+      "ids": [
+        "catalyst-array",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:catalyst-array:3",
+      "pageIndex": 0,
+      "ids": [
+        "catalyst-array",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:marksman-barrels:1",
+      "pageIndex": 0,
+      "ids": [
+        "marksman-barrels",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:marksman-barrels:2",
+      "pageIndex": 0,
+      "ids": [
+        "marksman-barrels",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:1",
+      "pageIndex": 0,
+      "ids": [
+        "reactive-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:2",
+      "pageIndex": 0,
+      "ids": [
+        "reactive-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:reactive-plating:3",
+      "pageIndex": 0,
+      "ids": [
+        "reactive-plating",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:kinetic-buffer:1",
+      "pageIndex": 0,
+      "ids": [
+        "kinetic-buffer",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:kinetic-buffer:2",
+      "pageIndex": 0,
+      "ids": [
+        "kinetic-buffer",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:capacitor-array:1",
+      "pageIndex": 0,
+      "ids": [
+        "capacitor-array",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:capacitor-array:2",
+      "pageIndex": 0,
+      "ids": [
+        "capacitor-array",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-transfusion:1",
+      "pageIndex": 0,
+      "ids": [
+        "field-transfusion",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-transfusion:2",
+      "pageIndex": 0,
+      "ids": [
+        "field-transfusion",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:field-transfusion:3",
+      "pageIndex": 0,
+      "ids": [
+        "field-transfusion",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:salvage-drones:1",
+      "pageIndex": 0,
+      "ids": [
+        "salvage-drones",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:salvage-drones:2",
+      "pageIndex": 0,
+      "ids": [
+        "salvage-drones",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "upgrade:salvage-drones:3",
+      "pageIndex": 0,
+      "ids": [
+        "salvage-drones",
+        "lvl-damage"
+      ],
+      "kind": "upgrade",
+      "options": 2,
+      "issues": [],
+      "panelHeight": 314
+    },
+    {
+      "tag": "catalogue:shop-weapon:bastion-service-rifle",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-weapon:arc-carbine",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:marauder-ar",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:marauder-ar",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:scattergun",
+        "shop-weapon:arc-carbine",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:scattergun",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:scattergun",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:arc-carbine",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:arc-carbine",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:arc-carbine",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:patrol-blade",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:patrol-blade",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:bolt-carbine",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:bolt-carbine",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:bulwark-rotary-cannon",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:bulwark-rotary-cannon",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:grenade-tube",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:grenade-tube",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:injector-carbine",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:injector-carbine",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:railspike",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:railspike",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:seeker-swarm",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:seeker-swarm",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:cryo-lance",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:cryo-lance",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:tesla-coil",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:tesla-coil",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:flamethrower",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:flamethrower",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:sawblade",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:sawblade",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:event-horizon",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:event-horizon",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:combat-knife",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:combat-knife",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:machete",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:machete",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:fire-axe",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:fire-axe",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:shock-baton",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:shock-baton",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:breaching-maul",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:breaching-maul",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:plasma-saber",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:plasma-saber",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:corrosive-lobber",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:corrosive-lobber",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:scourge-repeater",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:scourge-repeater",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:bile-lance",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:bile-lance",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:rime-cleaver",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:rime-cleaver",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:hoarfrost-scatter",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:hoarfrost-scatter",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:glacier-ward",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:glacier-ward",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:tether-harpoon",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:tether-harpoon",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:sentry-stake",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:sentry-stake",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:auxiliary-drone",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:auxiliary-drone",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:emberlance",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:emberlance",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:storm-coil-beam",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:storm-coil-beam",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-weapon:blight-scythe",
+      "pageIndex": 0,
+      "ids": [
+        "shop-weapon:blight-scythe",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:whetstone",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:whetstone",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:targeting-chip",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:targeting-chip",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:ration-pack",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:ration-pack",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:plate-fragment",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:plate-fragment",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:combat-stims",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:combat-stims",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:track-shoes",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:track-shoes",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:scrap-magnet",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:scrap-magnet",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:field-dressing",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:field-dressing",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:bayonet",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:bayonet",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:scope-mount",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:scope-mount",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:thermal-core",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:thermal-core",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:evasion-servos",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:evasion-servos",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:leech-rounds",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:leech-rounds",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:weighted-boots",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:weighted-boots",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:adrenaline-pump",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:adrenaline-pump",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:long-barrel",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:long-barrel",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:sawn-off-stock",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:sawn-off-stock",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:lucky-token",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:lucky-token",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:prospectors-kit",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:prospectors-kit",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:coolant-sheath",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:coolant-sheath",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:field-toolkit",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:field-toolkit",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:glass-cannon",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:glass-cannon",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:sniper-scope",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:sniper-scope",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:berserkers-brand",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:berserkers-brand",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:focusing-lens",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:focusing-lens",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:reflex-sight",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:reflex-sight",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:featherweight-frame",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:featherweight-frame",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:bulwark-plating",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:bulwark-plating",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:loaded-dice",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:loaded-dice",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:reactive-weave",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:reactive-weave",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:vital-lattice",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:vital-lattice",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:fabricator-core",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:fabricator-core",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:titan-serum",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:titan-serum",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:bloodthirster",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:bloodthirster",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:overclock-module",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:overclock-module",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:fortunes-ledger",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:fortunes-ledger",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:executioners-loadout",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:executioners-loadout",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:cursed-idol",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:cursed-idol",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:blood-pact",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:blood-pact",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:martyrs-chain",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:martyrs-chain",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:hollow-reliquary",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:hollow-reliquary",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:wave-rations",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:wave-rations",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:kill-clock",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:kill-clock",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:tithe-collector",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:tithe-collector",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:battlefield-triage",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:battlefield-triage",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:deadmans-switch",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:deadmans-switch",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "catalogue:shop-item:scavengers-rite",
+      "pageIndex": 0,
+      "ids": [
+        "shop-item:scavengers-rite",
+        "shop-weapon:bastion-service-rifle",
+        "shop-weapon:marauder-ar",
+        "shop-weapon:scattergun",
+        "shop-manage",
+        "shop-leave"
+      ],
+      "kind": "scrap-shop",
+      "options": 6,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell-boundary:11",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-sell:5",
+        "shop-sell:6",
+        "shop-sell:7",
+        "shop-sell:8",
+        "shop-sell:9",
+        "shop-sell:10",
+        "shop-sell:11",
+        "shop-back"
+      ],
+      "kind": "scrap-shop",
+      "options": 12,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell-boundary:12",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-sell:5",
+        "shop-sell:6",
+        "shop-sell:7",
+        "shop-sell:8",
+        "shop-sell:9",
+        "shop-sell:10",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 12,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell-boundary:12",
+      "pageIndex": 1,
+      "ids": [
+        "shop-sell:11",
+        "shop-sell:12",
+        "shop-back",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 5,
+      "issues": [],
+      "panelHeight": 446
+    },
+    {
+      "tag": "sell-boundary:16",
+      "pageIndex": 0,
+      "ids": [
+        "shop-sell:1",
+        "shop-sell:2",
+        "shop-sell:3",
+        "shop-sell:4",
+        "shop-sell:5",
+        "shop-sell:6",
+        "shop-sell:7",
+        "shop-sell:8",
+        "shop-sell:9",
+        "shop-sell:10",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 12,
+      "issues": [],
+      "panelHeight": 516
+    },
+    {
+      "tag": "sell-boundary:16",
+      "pageIndex": 1,
+      "ids": [
+        "shop-sell:11",
+        "shop-sell:12",
+        "shop-sell:13",
+        "shop-sell:14",
+        "shop-sell:15",
+        "shop-sell:16",
+        "shop-back",
+        "decision-page-previous",
+        "decision-page-next"
+      ],
+      "kind": "scrap-shop",
+      "options": 9,
+      "issues": [],
+      "panelHeight": 446
+    }
+  ]
+}

@@ -319,6 +319,9 @@ export class CombatDecisionOverlay {
           wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 620 } : { width: 710 },
           lineSpacing: isShop ? 2 : 5,
         }).setResolution(uiTextResolution());
+      // Shop descriptions can wrap to four lines. Centre the measured label,
+      // rather than assuming every offer is the original two-line height.
+      if (isShop) label.setY(y - label.height / 2);
       if (statCardFit) {
         this.statCardBounds.push({
           id: choice.id,

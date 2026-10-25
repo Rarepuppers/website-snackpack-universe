@@ -1,5 +1,11 @@
 # Last Bastion release notes
 
+## 25 October 2026 — long shop descriptions
+
+Prepared locally: `web-2026.10.25-decision-labels`; not published or packaged.
+Shop labels now centre their measured text height so four-line weapon descriptions stay inside
+their choice buttons. Existing font size, authored copy, prices and rewards are unchanged.
+
 ## 24 October 2026 — oversized shop lists
 
 Prepared locally: `web-2026.10.24-decision-pages`; not published or packaged.
