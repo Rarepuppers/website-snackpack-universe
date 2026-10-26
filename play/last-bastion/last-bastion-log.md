@@ -5437,3 +5437,14 @@ held simulated pad confirm, and held pad through synthetic blur/focus. Destinati
 page item IDs remain unchanged and return navigation works. No runtime defect reproduced or
 runtime change made. Recorded limits and remaining input edges in CURRENT-PLAN; real controller/
 OS focus acceptance is separate. Earlier full verifier/portfolio results were not rerun.
+
+### Gameplay-first audit and queue replacement — 26 October 2026
+
+User requested coding, game improvements/content and quality rather than a test-heavy roadmap.
+Fresh production witness confirms a stashed Scattergun disappears across expedition build handoff:
+serializer carries rack only, next simulation reconstructs empty stash. No runtime edit made.
+CURRENT-PLAN prioritizes stash continuity, offered transformation-effect truthfulness, existing
+build/reward explanations, decision polish and hero/threat/armory operation. Content reuse and
+regional-finale/world-interaction designs retain standing activation gates. Tests serve acceptance.
+Archived four superseded plans and prior queue, rebased linked references, retained durable specs.
+No new art, balance activation, package or publication. Full suites not rerun for this planning pass.

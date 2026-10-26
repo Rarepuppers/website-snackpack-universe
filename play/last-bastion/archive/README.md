@@ -6,6 +6,10 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [Pre-gameplay-review queue, 26 October](CURRENT-PLAN-BEFORE-GAMEPLAY-REVIEW-2026-10-26.md) | Superseded test-heavy queue; current plan prioritizes inventory continuity, truthful effects and player-facing quality. |
+| [August content plan](last-bastion-content-design-plan-2026-08-07.md), [August improvement/Steam plan](last-bastion-improvement-and-steam-plan-2026-08-07.md) | Historical delivery/proposals; current queue retains applicable content and release gates. Regional-finale delivery claims do not establish ordinary route reachability. |
+| [July asset review](asset-next-production-review-2026-07-26.md) | Storefront priorities delivered or superseded; inspect current inventory before commissioning art. |
+| [Transformation production plan](transformation-path-production-plan.md) | Stale plan-of-record/next-step wording, including an affinity HUD now implemented. Design rationale retained; G2 owns current effect-truthfulness work. |
 | [Pre-refresh queue, 24 October](CURRENT-PLAN-BEFORE-EXECUTABLE-QUEUE-2026-10-24.md) | Completed implementation history and unavailable human tasks replaced by the focused executable/design queue; evidence gates retained. |
 | [21 October baseline audit](AUDIT-REVIEW-2026-10-21.md), [21 October follow-up](AUDIT-FOLLOWUP-2026-10-21.md), [22 October audit](AUDIT-REVIEW-2026-10-22.md) | Dated audit baselines and recommendations superseded as queues; findings retained with rebased evidence links. |
 | [24 October shop/input completion and content trace](../playtest-evidence/2026-10-23-content-review/README.md) | SHOP-01/INPUT-03 corrected; Phase 2 consumer review and bounded Phase 4 trace completed. Human acceptance and gated EXPOSURE-01 remain in CURRENT-PLAN. |

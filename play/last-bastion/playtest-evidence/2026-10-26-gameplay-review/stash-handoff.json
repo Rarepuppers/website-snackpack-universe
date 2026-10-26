@@ -1,0 +1,55 @@
+{
+  "seed": 61061,
+  "choice": {
+    "id": "place:inventory:0",
+    "name": "Store in stash 1",
+    "description": "Hold for a later swap or merge. It does not fire."
+  },
+  "accepted": true,
+  "stashBefore": [
+    null,
+    null,
+    null,
+    null
+  ],
+  "stashAfter": [
+    {
+      "instanceId": 2,
+      "weaponId": "scattergun",
+      "weaponClass": "heavy",
+      "tier": 1
+    },
+    null,
+    null,
+    null
+  ],
+  "serializedBuildKeys": [
+    "health",
+    "shield",
+    "level",
+    "experience",
+    "scrap",
+    "weapons",
+    "upgrades",
+    "transformation",
+    "relicIds",
+    "ownedItemIds",
+    "itemStats",
+    "bannedShopIds",
+    "equippedArtifactId",
+    "maxHealthBonus",
+    "weaponSlotBonus"
+  ],
+  "carriedWeapons": [
+    {
+      "weaponId": "bastion-service-rifle",
+      "tier": 1
+    }
+  ],
+  "stashNextEncounter": [
+    null,
+    null,
+    null,
+    null
+  ]
+}

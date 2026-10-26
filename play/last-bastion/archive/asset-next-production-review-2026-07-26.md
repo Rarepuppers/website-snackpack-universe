@@ -1,3 +1,4 @@
+<!-- Archived 26 October 2026: historical specifications and delivery claims; ../CURRENT-PLAN.md owns current work and gates. -->
 # Last Bastion next asset review — 26 July 2026
 
 > Inventory correction, 16 October 2026: current code enables `HELD_WEAPONS_IN_POOL` and
@@ -7,7 +8,7 @@
 > **Storefront priority complete, 11 October 2026:** the arcade tile, guide screenshots,
 > social share card, and short WebM loop exist and are wired into their pages. The
 > 11 September priority list below is historical. Further game art follows observed
-> LB-04/LB-07 or playtest findings; see [the current plan](CURRENT-PLAN.md).
+> LB-04/LB-07 or playtest findings; see [the current plan](../CURRENT-PLAN.md).
 
 > ## PRIORITY REDIRECTED — 11 September 2026
 >
@@ -27,7 +28,7 @@
 > 4. **A short loop or GIF** of a run, for the communities where a browser roguelite
 >    actually spreads.
 >
-> Rationale in [`product-strategy-plan-2026-09-11.md`](archive/product-strategy-plan-2026-09-11.md).
+> Rationale in [`product-strategy-plan-2026-09-11.md`](product-strategy-plan-2026-09-11.md).
 > Content art is frozen alongside the content design plan; presentation-defect art
 > (LB-04's helmet, LB-07's node icons) is **not** frozen — that is fixing what exists.
 

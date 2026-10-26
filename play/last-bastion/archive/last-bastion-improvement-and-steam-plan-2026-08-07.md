@@ -1,12 +1,13 @@
+<!-- Archived 26 October 2026: historical specifications and delivery claims; ../CURRENT-PLAN.md owns current work and gates. -->
 # Last Bastion — improvement and Steam plan
 
-> **Current order, 11 October 2026:** see [the current plan](CURRENT-PLAN.md). The
+> **Current order, 11 October 2026:** see [the current plan](../CURRENT-PLAN.md). The
 > sections below retain detailed contracts and dated delivery evidence; they are not
 > a second implementation queue.
 
 ## Audit update — 7 September 2026
 
-The [quality audit and implementation queue](archive/quality-audit-2026-09-07.md) adds twelve
+The [quality audit and implementation queue](quality-audit-2026-09-07.md) adds twelve
 prioritized tasks with source evidence, dependencies and acceptance checks. Start with
 visible save failures, expedition-save validation, and debrief controller/hint correctness;
 then add executable browser acceptance and strengthen replay continuity before broad file
@@ -19,7 +20,7 @@ map confirmation are complete locally. QA-02 has its first validation/topology s
 its retired-content policy remains recorded in the audit. `npm run verify:last-bastion` now
 covers five browser scenarios alongside the web and desktop suites.
 
-The [23 August presentation defect plan](presentation-defect-plan-2026-08-23.md) remains
+The [23 August presentation defect plan](../presentation-defect-plan-2026-08-23.md) remains
 the presentation register: recheck and close those LB items before commissioning more art
 or expanding content. The September audit records 1,615 passing game tests and 28 passing
 desktop tests, but does not claim observed gameplay, visual, offline-launch or Steam acceptance.

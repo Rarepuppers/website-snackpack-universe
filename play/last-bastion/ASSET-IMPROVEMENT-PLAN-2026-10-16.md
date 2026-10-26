@@ -25,7 +25,7 @@ and more understandable build progression. Preserve the established modern pixel
 - The 3 October headless resolution preflight recorded poor 4K pacing. It explicitly is not a
   hardware verdict. Native 4K at 60 fps remains a target to validate, not an established claim.
 
-Sources: [art bible](last-bastion-art-bible.md), [historical asset review](asset-next-production-review-2026-07-26.md),
+Sources: [art bible](last-bastion-art-bible.md), [historical asset review](archive/asset-next-production-review-2026-07-26.md),
 [presentation register](presentation-defect-plan-2026-08-23.md),
 [resolution preflight](performance-reports/2026-10-03-resolution-preflight.md),
 [current plan](CURRENT-PLAN.md). Inspect current code when these documents disagree.

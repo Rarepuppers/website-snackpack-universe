@@ -1,3 +1,4 @@
+<!-- Archived 26 October 2026: historical specifications and delivery claims; ../CURRENT-PLAN.md owns current work and gates. -->
 # Last Bastion transformation-path production plan
 
 > **STATUS — STILL THE PLAN OF RECORD, 31 July 2026.** Steps 1–4 shipped: the seven-path

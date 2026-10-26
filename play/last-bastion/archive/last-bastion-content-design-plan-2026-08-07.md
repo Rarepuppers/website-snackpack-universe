@@ -1,3 +1,4 @@
+<!-- Archived 26 October 2026: historical specifications and delivery claims; ../CURRENT-PLAN.md owns current work and gates. -->
 # Last Bastion — content design plan
 
 > ## FROZEN — 11 September 2026
@@ -5,7 +6,7 @@
 > **Do not build new content from this plan.** Everything below is parked by decision,
 > not cancelled: the proposals stay on record and the reasoning stays valid, but nothing
 > here should be implemented until the funnel in
-> [`product-strategy-plan-2026-09-11.md`](archive/product-strategy-plan-2026-09-11.md) reports a
+> [`product-strategy-plan-2026-09-11.md`](product-strategy-plan-2026-09-11.md) reports a
 > number.
 >
 > The reason is in §1 of that plan. Until 11 September the game had **no inbound link from
