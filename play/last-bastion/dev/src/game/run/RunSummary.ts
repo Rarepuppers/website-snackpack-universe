@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.25-decision-labels";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.27-stash-persistence";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

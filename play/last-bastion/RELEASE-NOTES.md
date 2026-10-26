@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 27 October 2026 — stashed weapons survive travel
+
+Prepared locally: `web-2026.10.27-stash-persistence`; not published or packaged.
+Stored weapons now retain their slots and merge tiers between expedition encounters and
+after save/reload. They remain in the stash until used or sold. Schema 17 reads older saves;
+weapons lost before this fix cannot be recovered.
+
+
 ## 25 October 2026 — long shop descriptions
 
 Prepared locally: `web-2026.10.25-decision-labels`; not published or packaged.

@@ -1,3 +1,4 @@
+import { normalizeCarriedWeaponStash, type CarriedWeaponStash } from "../equipment/CarriedWeaponStash";
 import { dailyParticipation, type DailyParticipation, readDailyRecords, recordDailyAttempt, type DailyRecord } from "../run/DailyDrop";
 import { isPerkId, unlockedPerkIds, type PerkId } from "../perks/perkCatalog";
 import type { HeroDefinition } from "../hero/HeroDefinition";
@@ -147,6 +148,7 @@ export interface ExpeditionSave {
     experience: number;
     scrap: number;
     weapons: { weaponId: string; tier: number }[];
+    weaponStash?: CarriedWeaponStash;
     upgrades: { upgradeId: string; level: number }[];
     transformation?: TransformationAffinityState;
     relicIds?: readonly RelicId[];
@@ -167,7 +169,7 @@ export interface ExpeditionSave {
  * Current schema version. Single source of truth — the cloud-save policy and the
  * platform adapter gate on it, so bumping it here is the only edit a migration needs.
  */
-export const SAVE_SCHEMA_VERSION = 16;
+export const SAVE_SCHEMA_VERSION = 17;
 
 export interface SaveData {
   version: typeof SAVE_SCHEMA_VERSION;
@@ -271,7 +273,7 @@ export type SaveImportResult =
   | { ok: false; error: string };
 
 const SUPPORTED_SAVE_VERSIONS = Object.freeze([
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 ]);
 
 /**
@@ -827,6 +829,7 @@ function readBuild(value: unknown, heroStartingWeaponId: WeaponId): ExpeditionSa
     experience: readBoundedCount(candidate.experience, 0, 1_000_000_000),
     scrap: readBoundedCount(candidate.scrap, 0, 1_000_000_000),
     weapons,
+    ...(candidate.weaponStash !== undefined ? { weaponStash: normalizeCarriedWeaponStash(candidate.weaponStash) } : {}),
     upgrades: [...upgradeLevels].map(([upgradeId, level]) => ({ upgradeId, level })),
     transformation: normalizeTransformationAffinityState(candidate.transformation),
     ...readBuildRewards(candidate),
@@ -909,6 +912,7 @@ function cloneExpedition(expedition: ExpeditionSave): ExpeditionSave {
     build: expedition.build === null ? null : {
       ...expedition.build,
       weapons: expedition.build.weapons.map((weapon) => ({ ...weapon })),
+      ...(expedition.build.weaponStash ? { weaponStash: normalizeCarriedWeaponStash(expedition.build.weaponStash) } : {}),
       upgrades: expedition.build.upgrades.map((upgrade) => ({ ...upgrade })),
       transformation: cloneTransformationAffinityState(expedition.build.transformation),
       ...(expedition.build.relicIds ? { relicIds: [...expedition.build.relicIds] } : {}),

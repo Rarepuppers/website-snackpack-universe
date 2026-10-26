@@ -1,5 +1,14 @@
 # Last Bastion completed-work log
 
+## 27 October 2026 — G1 stash persistence
+
+Implemented the confirmed expedition stash-loss fix with schema-17 migration, ordered slots,
+unique encounter-local IDs, safe legacy handling and capacity-perk preservation. Full game
+verifier and 23 portfolio guards pass; final eight integration cases and typecheck pass.
+See [evidence](playtest-evidence/2026-10-27-stash-persistence/README.md). G2 is next in CURRENT-PLAN.
+No deployment, packaging, generated assets or human acceptance.
+
+
 This is the archive of finished, verified work, split out of `archive/last-bastion-model.md` on 18 July 2026 so the tracker reads as a plan. Both Claude and Codex treat this file as the authoritative record of what is already implemented: check here before re-planning or re-generating anything, and append each newly completed checkpoint here (newest at the bottom) with its date, scope, and verification evidence.
 
 Numbered-step completion notes remain inline in the model file's "Revised implementation order"; production batch statuses remain in its "Production batch status" section until a later archival pass.

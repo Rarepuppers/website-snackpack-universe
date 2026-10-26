@@ -1,5 +1,13 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Current prepared local build (27 October):** `web-2026.10.27-stash-persistence`, schema 17,
+simulation compatibility 3. G1 passes full game verification and all 23 portfolio guards;
+[stash evidence](playtest-evidence/2026-10-27-stash-persistence/README.md). Not pushed or packaged.
+Older executables do not support schema 17; retain a pre-upgrade backup for rollback testing.
+Human/hardware/Steam acceptance stays open; Claude owns specifically assigned packaging.
+The prepared-build entries below are historical.
+
+
 **Current prepared local build (24 October review):** `web-2026.10.25-decision-labels`, adding minimum-size
 shop layout, keyboard corrections, pagination and measured shop-label centring. See [current evidence](playtest-evidence/2026-10-25-decision-coverage/README.md)
 and CURRENT-PLAN. Full game/portfolio checks pass; no human/device/Steam acceptance or publication.

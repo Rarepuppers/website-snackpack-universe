@@ -1,3 +1,4 @@
+import { restoreCarriedWeaponStash } from "../equipment/CarriedWeaponStash";
 import { QUICK_DROP_WAVES } from "../run/DailyDrop";
 import type { PlayerIntent } from "../input/PlayerIntent";
 import type { Vector2Data } from "../math/Vector2Data";
@@ -2104,6 +2105,7 @@ export class CombatSimulation {
 
     if (options.startingBuild) {
       this.restoreExpeditionBuild(options.startingBuild);
+      restoreCarriedWeaponStash(this.weaponInventory, options.startingBuild.weaponStash);
     } else if (this.perkModifiers.startingLevel > 1) {
       this.level = this.perkModifiers.startingLevel;
       this.applyLevelGrowth();

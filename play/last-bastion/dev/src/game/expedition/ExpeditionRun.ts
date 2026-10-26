@@ -36,6 +36,8 @@ export interface ExpeditionBuildSnapshot {
   scrap: number;
   /** Equipped weapon ids with their merge tiers, rack order preserved. */
   weapons: readonly { weaponId: string; tier: number }[];
+  /** Optional only for pre-schema-17 saves; empty slots retain their positions. */
+  weaponStash?: import("../equipment/CarriedWeaponStash").CarriedWeaponStash;
   /** Taken upgrade ids with levels. */
   upgrades: readonly { upgradeId: string; level: number }[];
   /** Optional only for migration compatibility; every newly completed node writes it. */
@@ -247,6 +249,7 @@ function cloneBuild(build: ExpeditionBuildSnapshot): ExpeditionBuildSnapshot {
   return {
     ...build,
     weapons: build.weapons.map((weapon) => ({ ...weapon })),
+    ...(build.weaponStash ? { weaponStash: build.weaponStash.map((tile) => tile ? { ...tile } : null) } : {}),
     upgrades: build.upgrades.map((upgrade) => ({ ...upgrade })),
     transformation: cloneTransformationAffinityState(build.transformation),
     ...(build.relicIds ? { relicIds: [...build.relicIds] } : {}),

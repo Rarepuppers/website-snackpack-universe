@@ -1,14 +1,13 @@
 # Last Bastion — current development plan
 
-**Updated 26 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
+**Updated 27 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current runtime: `5c410310`, identity `web-2026.10.25-decision-labels`; later test/evidence commits
-through `ac66f5ec`. Check Git before implementation; shared checkout has concurrent edits.
-No human testers available. This pass is audit/planning only, not authorization to bypass gates.
+Current prepared runtime: `web-2026.10.27-stash-persistence`, schema 17; G1 implemented and verified locally. Check Git before implementation; shared checkout has concurrent edits.
+No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
 
-- **Confirmed production handoff defect — G1:** selecting Store in stash in weapon-gate accepts
+- **Fixed production handoff defect — G1:** selecting Store in stash in weapon-gate accepts
   a Scattergun, but `expeditionBuildFromCombatSnapshot` serializes only rack weapons. A new
   CombatSimulation constructed from that build has an empty stash. Fresh executable witness:
   [26 October review](playtest-evidence/2026-10-26-gameplay-review/README.md).
@@ -34,23 +33,13 @@ real devices or a complete run. The new stash witness is fresh; earlier tests re
 
 ## Phase A — fix lost progress and make existing builds understandable
 
-### G1 — preserve stashed equipment between encounters (first implementation)
+### G1 — completed: preserve stashed equipment between encounters
 
-**P1 confirmed bug; M effort; high save/compatibility risk.** Benefit: stored weapons remain available
-for the later swap/merge promised by the choice. Dependencies: ExpeditionBuildSnapshot/ExpeditionRun,
-CombatSimulation reconstruction, save normalization/validation, map and event build mutations.
-
-Add an explicit versioned stash representation preserving weapon identity/tier and slot ordering,
-without equipping stashed weapons. Trace every build copier, reward transform, save reader/writer
-and resume path. Old saves without stash default safely to empty; never infer missing historical
-weapons. Respect base/perk inventory capacity, illegal IDs/tiers and unique identity rules. Decide
-migration/schema changes from actual readers, not a guessed version. Preserve old rack behavior.
-
-Acceptance: production store → encounter handoff → next encounter → save/reload retains all
-legal stash weapons and tiers exactly once; they do not fire, duplicate or vanish. Include full
-stash, merge, sell, no-stash legacy save and capacity-changing perk cases. Use real serialization
-and constructors plus one renderer path; run full game/portfolio checks. Hardware crash/cloud
-acceptance remains separate. **Code fix only; no assets or balance changes.**
+Implemented schema-17 ordered stash persistence and combat restoration, including safe legacy
+loading and occupied bonus-slot retention. Eight targeted integration cases pass; the full game
+verifier, 59 browser checks and all 23 portfolio guards pass. See
+[implementation evidence](playtest-evidence/2026-10-27-stash-persistence/README.md).
+No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G2.**
 
 ### G2 — make offered transformation boons and costs truthful
 

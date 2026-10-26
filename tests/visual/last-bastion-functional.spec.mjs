@@ -405,7 +405,7 @@ test.describe("Last Bastion executable acceptance", () => {
     const downloadPromise = page.waitForEvent("download");
     await page.keyboard.press("Enter");
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe("last-bastion-save-v16.json");
+    expect(download.suggestedFilename()).toBe("last-bastion-save-v17.json");
     await expectHealthyCanvas(page, failures);
   });
 
@@ -1367,4 +1367,32 @@ test("4K native foreground leaves the canvas background intact", async ({ page }
     return black / (data.length / 4);
   }, screenshot);
   expect(blackFraction).toBeLessThan(0.01);
+});
+
+
+test("saved expedition stash is visible after renderer reload", async ({ page }) => {
+  await page.goto("/play/last-bastion/?screen=map&mapseed=2026");
+  await page.waitForFunction(() => window.__expeditionState?.seed === 2026);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => Number.isInteger(window.__expeditionState?.armedNodeId));
+  const node = await page.evaluate(() => window.__expeditionState.armedNodeId);
+  await page.keyboard.press("Enter");
+  await page.waitForURL(url => ["game", "event"].includes(url.searchParams.get("screen")));
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save"));
+    save.expedition.build = {
+      health: 10, shield: 0, level: 1, experience: 0, scrap: 0,
+      weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [],
+      weaponStash: [null, { weaponId: "scattergun", tier: 2 }, null, null],
+    };
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.goto(`/play/last-bastion/?screen=game&expedition=1&node=${node}&ambush=10&pausepreview=build&sound=0`);
+  for (let visit = 0; visit < 2; visit++) {
+    await page.waitForFunction(() => window.__buildInspection?.page === 0);
+    await page.keyboard.press("ArrowRight");
+    await page.waitForFunction(() => window.__buildInspection?.title.startsWith("STASH"));
+    expect(await page.evaluate(() => window.__buildInspection.lines.join(" "))).toContain("Scattergun T2");
+    if (visit === 0) await page.reload();
+  }
 });

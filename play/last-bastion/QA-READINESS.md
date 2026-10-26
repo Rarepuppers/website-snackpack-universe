@@ -1,6 +1,6 @@
 # Local QA and package provenance
 
-Prepared local release: `web-2026.10.25-decision-labels`; schema 16, simulation compatibility 3.
+Prepared local release: `web-2026.10.27-stash-persistence`; schema 17, simulation compatibility 3.
 These tools prepare evidence. They do not complete human, hardware, Steam or release acceptance.
 
 ## Session reports

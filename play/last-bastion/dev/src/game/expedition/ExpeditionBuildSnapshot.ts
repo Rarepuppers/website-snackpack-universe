@@ -13,6 +13,8 @@ export function expeditionBuildFromCombatSnapshot(snapshot: CombatSnapshot): Exp
     weapons: snapshot.weaponInventory.rack.flatMap((slot) => slot.tile
       ? [{ weaponId: slot.tile.weaponId, tier: slot.tile.tier }]
       : []),
+    weaponStash: snapshot.weaponInventory.stash.map((tile) => tile
+      ? { weaponId: tile.weaponId, tier: tile.tier } : null),
     upgrades: snapshot.upgradeLevels.map((upgrade) => ({
       upgradeId: upgrade.id,
       level: upgrade.level,
