@@ -1,8 +1,8 @@
 # Last Bastion — current development plan
 
-**Updated 27 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
+**Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.27-build-effects`, schema 17; G1–G3 complete and verified locally. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.27-shop-polish`, schema 17; G1–G4 complete and verified locally. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -37,7 +37,7 @@ Implemented schema-17 ordered stash persistence and combat restoration, includin
 loading and occupied bonus-slot retention. Eight targeted integration cases pass; the full game
 verifier, 59 browser checks and all 23 portfolio guards pass. See
 [implementation evidence](playtest-evidence/2026-10-27-stash-persistence/README.md).
-No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G4 (G2/G3 complete).**
+No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G5 (G2–G4 complete).**
 
 ### G2 — completed: truthful production transformation offers
 
@@ -46,7 +46,7 @@ retained Shield Lattice/Leave and preserved saved Targeting Suite histories and 
 Acidic Secretions has no normal production grant. Corrected Regenerative Glands copy to
 match the existing passive healing tick. No speculative replacement costs or combat tuning.
 [Source/consumer map and evidence](playtest-evidence/2026-10-27-transformation-offers/README.md).
-Full game verification and all 23 portfolio guards pass. G3 is also complete; next implementation is G4.
+Full game verification and all 23 portfolio guards pass. G3 is also complete; next implementation is G5.
 
 ### G3 — completed: explain current build effects and ownership
 
@@ -54,28 +54,19 @@ Existing build inspector now includes paged owned items with copy counts and per
 penalties, plus authored relic/artifact effects. Shop item offers show NEW/OWNED N and preserve
 LOCKED status. Upgrade rewards already show next rank; estimated DPS stays labelled estimated.
 No new inventory system, score, assets or balance changes. Production renderer bounds pass
-318 cases, including locked offers with two-digit copy counts. Full game verification and all 23 portfolio guards pass. Next: G4.
+318 cases, including locked offers with two-digit copy counts. Full game verification and all 23 portfolio guards pass. G4 is also complete; next: G5.
 [Implementation evidence](playtest-evidence/2026-10-27-build-effects/README.md).
 
 ## Phase B — improve selection, shopping and run flow
 
-### G4 — finish decision navigation and spacing polish
+### G4 — completed: shop navigation, spacing and refresh continuity
 
-**P2; M effort; medium risk.** Replace ambiguous page-control sale tiles with a distinct existing
-UI/text treatment; put content inside consistent panel insets and clarify 1–9 quick picks versus
-arrow/pad navigation. Prefer Back reachable on every page if the measured layout supports it.
-Preserve font size, descriptions and transaction behavior; do not add purchase confirmation spam.
-
-Keep a surviving selected choice visible across meaningful shop refreshes; on removal choose a
-nearby enabled choice or Back, clamp pages and refresh displayed cost/description/state. Reproduce
-stale-text or selection faults before changing the sync policy. Current source key omits some
-presentation fields; that is a hypothesis until an actual transition demonstrates stale output.
-
-Acceptance: navigation is visibly distinct, no frame/text interference, no hidden choice, no stale
-price or unintended sale after redraw. Targeted tests include remaining digit/stick/mixed-input
-edges only where this change touches them; reuse completed 399-case and pointer/pad/resize coverage.
-Measure title/hint/focus bounds at minimum/1280×800/4K within this delivery, not as an unbounded
-standalone testing phase. Full game/portfolio checks. Existing art/code only; human preference unclaimed.
+Navigation now uses text-only controls; compact footer and bounded pages keep choices inside the
+frame without cutting copy or shrinking fonts. Back/Leave repeats on every oversized page.
+Fresh renderer evidence confirmed stale text on same-ID updates; full presentation changes now
+refresh labels while retaining a surviving enabled selection, clamping pages and falling back to
+Back/Leave when it disappears. Full game verification and all 23 portfolio guards pass; 352 renderer cases pass. [Implementation evidence](playtest-evidence/2026-10-27-shop-polish/README.md).
+Next executable work: G5 native hero/threat selection, then armory.
 
 ### G5 — improve hero/threat selection and armory operation
 

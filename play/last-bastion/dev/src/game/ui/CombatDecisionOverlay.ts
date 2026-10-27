@@ -1,3 +1,4 @@
+import { shopDecisionPages, isShopNavigation } from "./ShopDecisionPages";
 import Phaser from "phaser";
 import type { PendingDecision } from "../combat/CombatSimulation";
 import type { PlayerIntent } from "../input/PlayerIntent";
@@ -154,10 +155,20 @@ export class CombatDecisionOverlay {
   }
 
   sync(decision: PendingDecision | null): void {
-    const sourceKey = decision
-      ? `${decision.kind}|${decision.title}|${decision.options.map((option) => `${option.id}:${option.affordable ?? true}`).join("|")}`
-      : "";
-    if (sourceKey !== this.sourceDecisionKey) this.pageIndex = 0;
+    const sourceKey = decision ? JSON.stringify(decision) : "";
+    const selectedId = this.buttons[this.selectionIndex]?.choiceId;
+    const sameShop = decision?.kind === "scrap-shop" && this.sourceDecision?.kind === "scrap-shop"
+      && decision.shopMode === this.sourceDecision.shopMode;
+    const changed = sourceKey !== this.sourceDecisionKey;
+    const pages = decision ? shopDecisionPages(decision) : [];
+    if (changed) {
+      if (!sameShop) this.pageIndex = 0;
+      else if (selectedId && !isShopNavigation(selectedId)) {
+        const containingPage = pages.findIndex(options => options.some(option => option.id === selectedId));
+        if (containingPage >= 0) this.pageIndex = containingPage;
+      }
+    }
+    this.pageIndex = Math.max(0, Math.min(this.pageIndex, pages.length - 1));
     this.sourceDecisionKey = sourceKey;
     this.sourceDecision = decision;
     const nextKey = `${sourceKey}|page:${this.pageIndex}`;
@@ -181,13 +192,13 @@ export class CombatDecisionOverlay {
     }
 
     // Page controls are presentation-only: never pass them to the transaction resolver.
-    if (decision.kind === "scrap-shop" && decision.options.length > 12) {
-      const pages = Math.ceil(decision.options.length / 10);
-      decision = { ...decision, title: `${decision.title} — ${this.pageIndex + 1}/${pages}`, options: [
-        ...decision.options.slice(this.pageIndex * 10, (this.pageIndex + 1) * 10),
-        { id: "decision-page-previous", name: "Previous Page", description: "Show earlier choices.", affordable: this.pageIndex > 0 },
-        { id: "decision-page-next", name: "Next Page", description: "Show more choices.", affordable: this.pageIndex + 1 < pages },
-      ] };
+    if (pages.length > 1) {
+      decision = { ...decision, title: `${decision.title} — ${this.pageIndex + 1}/${pages.length}`, options: pages[this.pageIndex]! };
+    }
+    if (changed && sameShop) {
+      const surviving = decision.options.findIndex(option => option.id === selectedId && option.affordable !== false);
+      const back = decision.options.findIndex(option => option.id === "shop-back" || option.id === "shop-leave");
+      this.selectionIndex = surviving >= 0 ? surviving : back >= 0 ? back : Math.max(0, decision.options.findIndex(option => option.affordable !== false));
     }
     const isShop = decision.kind === "scrap-shop";
     const isPlacement = decision.kind === "weapon-placement";
@@ -195,7 +206,9 @@ export class CombatDecisionOverlay {
     // rows — closest existing shape is the shop's two-column offer layout.
     const isStatCards = decision.kind === "level-stat";
     const isPlainList = !isShop && !isPlacement && !isStatCards;
-    const shopColumns = isShop && decision.options.length > 6 ? 2 : 1;
+    const compactShopFooter = isShop && decision.options.length === 6
+      && decision.options.slice(-2).every(choice => isShopNavigation(choice.id));
+    const shopColumns = isShop && (decision.options.length > 6 || (decision.options.length === 6 && !compactShopFooter)) ? 2 : 1;
     const panelWidth = isPlacement ? 860 : isStatCards ? 820 : shopColumns === 2 ? 928 : isPlainList ? 860 : 760;
     const panelHeight = decisionPanelHeight(decision.kind, decision.options.length, shopColumns);
     const children: Phaser.GameObjects.GameObject[] = [];
@@ -234,7 +247,7 @@ export class CombatDecisionOverlay {
     children.push(title);
     if (this.options.useMarineArt) {
       if (isShop) {
-        children.push(this.scene.add.image(-325, titleY, "scrap-shop-hud-v1", 0).setDisplaySize(54, 54));
+        children.push(this.scene.add.image(-panelWidth / 2 + 42, titleY, "scrap-shop-hud-v1", 0).setDisplaySize(54, 54));
       } else if (!isPlacement) {
         const decisionFrame = decision.kind === "weapon-chest" ? 1 : decision.kind === "supply-depot" ? 4 : 12;
         children.push(this.scene.add.image(-325, titleY, "batch-c-rewards-v1", decisionFrame).setScale(0.62));
@@ -257,9 +270,10 @@ export class CombatDecisionOverlay {
       const x = isPlacement ? -70 + (index % 2) * 330
         : isStatCards ? -190 + (index % 2) * 380
           : isShop && shopColumns === 2 ? -225 + shopColumn * 450 : isShop ? -78 : 0;
+      const compactControl = compactShopFooter && index >= 4;
       const y = isPlacement ? -125 + Math.floor(index / 2) * 98
         : isStatCards ? titleY + 96 + Math.floor(index / 2) * 132
-          : isShop ? titleY + 78 + shopRow * 70 : titleY + 70 + index * 92;
+          : isShop ? titleY + 78 + (compactControl ? 270 + (index - 4) * 46 : shopRow * 70) : titleY + 70 + index * 92;
       const enabled = choice.affordable !== false;
       const upgradeTile = this.options.useMarineArt ? upgradeTilePresentation(choice.id) : null;
       const shopWeaponTile = isShop && this.options.useMarineArt ? shopWeaponTilePresentation(choice.id) : null;
@@ -267,12 +281,12 @@ export class CombatDecisionOverlay {
       const button = this.scene.add.rectangle(
         x, y,
         isPlacement ? 300 : isStatCards ? 344 : isShop ? shopButtonWidth : 770,
-        isPlacement ? 78 : isStatCards ? 116 : isShop ? 62 : 82,
+        isPlacement ? 78 : isStatCards ? 116 : isShop ? (compactControl ? 38 : 62) : 82,
         0x1b2d42, 0.98,
       ).setStrokeStyle(2, isStatCards ? 0x68e4e8 : 0x5d7892).setInteractive({ useHandCursor: enabled });
       const price = choice.cost && choice.cost > 0 ? ` — ${choice.cost} SCRAP${enabled ? "" : " (SHORT)"}` : "";
       children.push(button);
-      if (isShop && this.options.useMarineArt) {
+      if (isShop && this.options.useMarineArt && !isShopNavigation(choice.id)) {
         children.push(this.scene.add.image(
           x - shopButtonWidth / 2 + 34,
           y,
@@ -312,11 +326,11 @@ export class CombatDecisionOverlay {
           wordWrap: { width: statCardFit!.wrapWidth },
           lineSpacing: 4,
         }).setOrigin(0.5).setResolution(uiTextResolution())
-        : this.scene.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + 76 : upgradeTile ? -305 : -365, y - (isPlacement ? 26 : isShop ? 15 : 26), `${quickKey}${choice.name}${price}\n${choice.description}`, {
+        : this.scene.add.text(isPlacement ? x - 78 : isShop ? x - shopButtonWidth / 2 + (isShopNavigation(choice.id) ? 18 : 76) : upgradeTile ? -305 : -365, y - (isPlacement ? 26 : isShop ? 15 : 26), `${quickKey}${choice.name}${price}\n${choice.description}`, {
           color: enabled ? "#edf4ff" : "#758493",
           fontFamily: "Consolas, Courier New, monospace",
           fontSize: isPlacement ? "13px" : isShop ? "13px" : "15px",
-          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - 92 } : upgradeTile ? { width: 620 } : { width: 710 },
+          wordWrap: isPlacement ? { width: 202 } : isShop ? { width: shopButtonWidth - (isShopNavigation(choice.id) ? 36 : 92) } : upgradeTile ? { width: 620 } : { width: 710 },
           lineSpacing: isShop ? 2 : 5,
         }).setResolution(uiTextResolution());
       // Shop descriptions can wrap to four lines. Centre the measured label,
@@ -344,7 +358,7 @@ export class CombatDecisionOverlay {
     });
 
     const quickPickCount = Math.min(9, decision.options.length);
-    const hint = this.scene.add.text(0, decisionHintY(decision.kind, panelHeight, titleY), `↑↓ SELECT   •   ENTER CONFIRM   •   1-${quickPickCount} QUICK PICK`, {
+    const hint = this.scene.add.text(0, decisionHintY(decision.kind, panelHeight, titleY), `ARROWS / D-PAD: ALL CHOICES   •   ENTER / A: CONFIRM   •   1-${quickPickCount}: QUICK PICK`, {
       color: "#9fb3c8",
       fontFamily: "Consolas, Courier New, monospace",
       fontSize: "11px",

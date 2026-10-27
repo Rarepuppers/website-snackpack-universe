@@ -1,7 +1,8 @@
 import type { DecisionKind } from "../combat/CombatSimulation";
 
 export function decisionPanelHeight(kind: DecisionKind, optionCount: number, shopColumns = 1): number {
-  if (kind === "scrap-shop") return Math.max(446, 96 + Math.ceil(optionCount / shopColumns) * 70);
+  if (kind === "scrap-shop" && optionCount === 6 && shopColumns === 1) return 510;
+  if (kind === "scrap-shop") return Math.max(446, 160 + Math.ceil(optionCount / shopColumns) * 70);
   if (kind === "weapon-placement") return 520;
   if (kind === "level-stat") return Math.max(360, 176 + Math.ceil(optionCount / 2) * 132);
   return 130 + optionCount * 92;

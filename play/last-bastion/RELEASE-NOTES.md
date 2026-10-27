@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 27 October 2026 — clearer shop navigation
+
+Prepared locally: `web-2026.10.27-shop-polish`; not published or packaged.
+Shop navigation has distinct text controls and consistent frame insets. Back/Leave stays
+available on every page. Updated prices and descriptions redraw correctly, preserving a
+surviving selection and falling back to Back/Leave when that action is removed.
+
+
 ## 27 October 2026 — inspect owned effects
 
 Prepared locally: `web-2026.10.27-build-effects`; not published or packaged.

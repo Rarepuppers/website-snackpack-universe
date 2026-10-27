@@ -25,12 +25,12 @@ for (const device of ["pointer", "simulated-pad", "simulated-pad-blur"]) {
     await select("decision-page-next");
     const canvas=await page.locator("#game-root canvas").boundingBox();
     if(device==="pointer") {
-      await page.mouse.move(canvas.x+canvas.width*705/960,canvas.y+canvas.height*480/540);
+      await page.mouse.move(canvas.x+canvas.width*705/960,canvas.y+canvas.height*414/540);
       await page.mouse.down();
     } else await page.evaluate(()=>{window.__testPad.buttons[0]={pressed:true,touched:true,value:1};});
     await page.waitForFunction(()=>window.__combatDecisionOverlay?.pageIndex===1);
     const destination=await page.evaluate(()=>window.__combatDecisionOverlay.optionIds);
-    expect(destination.filter(id=>id.startsWith("shop-sell:"))).toHaveLength(2);
+    expect(destination.filter(id=>id.startsWith("shop-sell:"))).toHaveLength(5);
     if(device==="pointer") await page.mouse.move(canvas.x+canvas.width*400/960,canvas.y+canvas.height*165/540);
     if(device==="simulated-pad-blur") {
       await page.evaluate(()=>window.dispatchEvent(new Event("blur")));
@@ -111,10 +111,11 @@ test("full shop racks page without spending and keep Back reachable", async ({ p
   await page.waitForFunction(() => window.__combatDecisionOverlay?.optionIds.includes("decision-page-next"));
   const first = await page.evaluate(() => window.__combatDecisionOverlay);
   expect(first.panelBounds.height).toBeLessThanOrEqual(516);
-  expect(first.optionIds.filter(id => id.startsWith("shop-sell:"))).toHaveLength(10);
+  expect(first.optionIds).toContain("shop-back");
+  expect(first.optionIds.filter(id => id.startsWith("shop-sell:"))).toHaveLength(7);
   await activate("decision-page-next");
   await page.waitForFunction(() => window.__combatDecisionOverlay?.pageIndex === 1);
-  expect(await page.evaluate(() => window.__combatDecisionOverlay.optionIds.filter(id => id.startsWith("shop-sell:")).length)).toBe(2);
+  expect(await page.evaluate(() => window.__combatDecisionOverlay.optionIds.filter(id => id.startsWith("shop-sell:")).length)).toBe(5);
   await activate("decision-page-previous");
   expect(await page.evaluate(() => window.__combatDecisionOverlay.optionIds)).toEqual(first.optionIds);
   await activate("decision-page-next");

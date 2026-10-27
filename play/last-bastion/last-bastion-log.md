@@ -1,5 +1,13 @@
 # Last Bastion completed-work log
 
+## 27 October 2026 — G4 shop polish
+
+Added compact text navigation, Back/Leave on every page, frame insets and explicit quick-pick
+versus all-choice hints. Reproduced and fixed stale same-ID labels; preserves surviving focus
+and selects a safe exit when the action disappears. No transaction or balance changes.
+[Evidence](playtest-evidence/2026-10-27-shop-polish/README.md). G5 is next; no push/package.
+
+
 ## 27 October 2026 — G3 owned effect explanations
 
 Added item copy counts and per-copy descriptions to the existing build inspector, relic/artifact

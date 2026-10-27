@@ -1,6 +1,6 @@
 # Local QA and package provenance
 
-Prepared local release: `web-2026.10.27-build-effects`; schema 17, simulation compatibility 3.
+Prepared local release: `web-2026.10.27-shop-polish`; schema 17, simulation compatibility 3.
 These tools prepare evidence. They do not complete human, hardware, Steam or release acceptance.
 
 ## Session reports
