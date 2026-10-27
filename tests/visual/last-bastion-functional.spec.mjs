@@ -1371,6 +1371,7 @@ test("4K native foreground leaves the canvas background intact", async ({ page }
 
 
 test("saved expedition stash is visible after renderer reload", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
   await page.goto("/play/last-bastion/?screen=map&mapseed=2026");
   await page.waitForFunction(() => window.__expeditionState?.seed === 2026);
   await page.keyboard.press("Enter");
@@ -1383,6 +1384,8 @@ test("saved expedition stash is visible after renderer reload", async ({ page })
     save.expedition.build = {
       health: 10, shield: 0, level: 1, experience: 0, scrap: 0,
       weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [],
+      ownedItemIds: ["weighted-boots", "weighted-boots"],
+      relicIds: ["rel-kinetic-greaves"], equippedArtifactId: "art-last-bastion-protocol",
       weaponStash: [null, { weaponId: "scattergun", tier: 2 }, null, null],
     };
     localStorage.setItem("last-bastion-save", JSON.stringify(save));
@@ -1393,6 +1396,19 @@ test("saved expedition stash is visible after renderer reload", async ({ page })
     await page.keyboard.press("ArrowRight");
     await page.waitForFunction(() => window.__buildInspection?.title.startsWith("STASH"));
     expect(await page.evaluate(() => window.__buildInspection.lines.join(" "))).toContain("Scattergun T2");
-    if (visit === 0) await page.reload();
+    const effectLines = [];
+    for (let next = 0; next < 15; next++) {
+      await page.keyboard.press("ArrowRight", { delay: 80 });
+      const current = await page.evaluate(() => window.__buildInspection);
+      effectLines.push(...current.lines);
+      if (current.title.startsWith("OWNED ITEMS")) break;
+    }
+    expect(effectLines.join(" ")).toContain("Weighted Boots x2 — Each: +3 armour, -8% move speed.");
+    expect(effectLines.join(" ")).toContain("Your evasive move travels further, but its recovery is slightly longer.");
+    expect(effectLines.join(" ")).toContain("At critical health your weapons brace into a tighter, faster formation; long cooldown.");
+    if (visit === 0) {
+      await page.setViewportSize({ width: 3840, height: 2160 });
+      await page.reload();
+    }
   }
 });

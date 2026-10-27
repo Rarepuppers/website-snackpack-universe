@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.27-transformation-offers";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.27-build-effects";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

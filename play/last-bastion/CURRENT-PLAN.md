@@ -2,7 +2,7 @@
 
 **Updated 27 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.27-transformation-offers`, schema 17; G1 and G2 completed and verified locally. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.27-build-effects`, schema 17; G1–G3 complete and verified locally. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -14,9 +14,8 @@ No human testers available. Implementation is approved; evidence gates remain un
 - **Resolved production exposure — G2:** Cybernetics Bay no longer grants Targeting Suite
   with an inert Shock drawback. Acidic Secretions has no production event grant. Legacy IDs and
   effects remain intact; unsupported review/legacy costs are not claimed as implemented.
-- **Confirmed presentation limitation — G3:** BuildOverlay lists relic/artifact names while its
-  other sections already expose weapons, stash, stats, synergies and affinity. Better effect
-  explanations can reuse this inspector; another inventory/affinity screen would duplicate work.
+- **Implemented presentation improvement — G3:** existing BuildOverlay now exposes item copy
+  counts and per-copy effects, plus relic/artifact descriptions. No duplicate inspector was added.
 - **Observed polish — G4:** shop navigation shares sale-item fallback tiles, final rows cross the
   decorative frame and long descriptions fit tightly. Pagination/text overflow fixes are already
   delivered. Target these visible shortcomings, not endless permutations of the same passing test.
@@ -38,7 +37,7 @@ Implemented schema-17 ordered stash persistence and combat restoration, includin
 loading and occupied bonus-slot retention. Eight targeted integration cases pass; the full game
 verifier, 59 browser checks and all 23 portfolio guards pass. See
 [implementation evidence](playtest-evidence/2026-10-27-stash-persistence/README.md).
-No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G3 after G2 verification.**
+No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G4 (G2/G3 complete).**
 
 ### G2 — completed: truthful production transformation offers
 
@@ -47,22 +46,16 @@ retained Shield Lattice/Leave and preserved saved Targeting Suite histories and 
 Acidic Secretions has no normal production grant. Corrected Regenerative Glands copy to
 match the existing passive healing tick. No speculative replacement costs or combat tuning.
 [Source/consumer map and evidence](playtest-evidence/2026-10-27-transformation-offers/README.md).
-Full game verification and all 23 portfolio guards pass. Next implementation is G3.
+Full game verification and all 23 portfolio guards pass. G3 is also complete; next implementation is G4.
 
-### G3 — explain the current build and reward consequences in existing UI
+### G3 — completed: explain current build effects and ownership
 
-**P2 improvement; M effort; medium UI risk.** Benefit: understand why an item/relic matters without
-leaving a run. Extend BuildViewModel/BuildOverlay with existing relic/artifact effect descriptions
-and owned item benefits/penalties where absent; verify current consumers first. Preserve paged
-navigation and existing affinity explanations. Label estimated DPS as estimated; do not pretend it
-captures every proc, target count or damage type.
-
-Add a compact owned/new or next-rank cue to reward/shop choices only where existing information is
-insufficient; reuse catalogue text and current rank data. Avoid a new card system or speculative
-recommendation score. Acceptance: all owned effect-bearing items/relics/artifact can be inspected,
-copy matches exported definitions, no silent truncation and all controls remain operable. Check
-production view models and renderer worst cases; full checks for changes. Existing icons/panels,
-no generated art. Depends on G1's final stash contract for inventory copy.
+Existing build inspector now includes paged owned items with copy counts and per-copy benefits/
+penalties, plus authored relic/artifact effects. Shop item offers show NEW/OWNED N and preserve
+LOCKED status. Upgrade rewards already show next rank; estimated DPS stays labelled estimated.
+No new inventory system, score, assets or balance changes. Production renderer bounds pass
+318 cases, including locked offers with two-digit copy counts. Full game verification and all 23 portfolio guards pass. Next: G4.
+[Implementation evidence](playtest-evidence/2026-10-27-build-effects/README.md).
 
 ## Phase B — improve selection, shopping and run flow
 

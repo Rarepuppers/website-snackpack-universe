@@ -94,3 +94,15 @@ describe("ScrapShopDecisionPresentation", () => {
     ]);
   });
 });
+
+
+it("labels new and duplicate items from actual owned copies, retaining lock state and authored effects", () => {
+  const result = presentScrapShopOffersDecision({
+    offers: [{ id: "shop-item:whetstone", name: "Whetstone", description: "+8% damage.", cost: 15 },
+      { id: "shop-item:weighted-boots", name: "Weighted Boots", description: "+3 armour, -8% move speed." }],
+    ownedItemIds: ["whetstone", "whetstone"], profileName: "Shop", securedScrap: 100,
+    lockedOfferId: "shop-item:whetstone", rerollUsed: false, rerollCost: 15,
+  });
+  expect(result.options[0]).toMatchObject({ name: "Whetstone [OWNED 2] [LOCKED]", description: "+8% damage.", cost: 15 });
+  expect(result.options[1]).toMatchObject({ name: "Weighted Boots [NEW]", description: "+3 armour, -8% move speed." });
+});

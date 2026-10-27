@@ -28,6 +28,7 @@ export function hydrateScrapShopDecision(input: {
 }
 
 export function presentScrapShopOffersDecision(input: {
+  readonly ownedItemIds?: readonly string[];
   readonly offers: readonly ScrapShopDecisionOption[];
   readonly profileName: string;
   readonly securedScrap: number;
@@ -35,10 +36,15 @@ export function presentScrapShopOffersDecision(input: {
   readonly rerollUsed: boolean;
   readonly rerollCost: number;
 }): ScrapShopDecisionPresentation {
-  const options: ScrapShopDecisionOption[] = input.offers.map((offer) => ({
-    ...offer,
-    name: offer.id === input.lockedOfferId ? `${offer.name} [LOCKED]` : offer.name,
-  }));
+  const options: ScrapShopDecisionOption[] = input.offers.map((offer) => {
+    const itemId = offer.id.startsWith("shop-item:") ? offer.id.slice("shop-item:".length) : null;
+    const owned = itemId ? (input.ownedItemIds ?? []).filter(id => id === itemId).length : 0;
+    const ownership = itemId ? (owned ? ` [OWNED ${owned}]` : " [NEW]") : "";
+    return {
+      ...offer,
+      name: `${offer.name}${ownership}${offer.id === input.lockedOfferId ? " [LOCKED]" : ""}`,
+    };
+  });
   options.push({
     id: "shop-manage",
     name: "Manage Stock",

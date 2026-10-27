@@ -3662,6 +3662,7 @@ export class CombatSimulation {
     if (hydrated.route === "sell") return this.buildScrapShopSellDecision();
 
     return presentScrapShopOffersDecision({
+      ownedItemIds: this.ownedItemIds,
       offers: this.shopOffers,
       profileName: shopProfileById(this.shopProfileId).name,
       securedScrap: this.securedScrap,

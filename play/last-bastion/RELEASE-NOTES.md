@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 27 October 2026 — inspect owned effects
+
+Prepared locally: `web-2026.10.27-build-effects`; not published or packaged.
+The build inspector now explains owned item, relic and artifact effects. Duplicate items show
+copy counts and per-copy benefits/penalties. Shop items show NEW or OWNED N alongside lock state.
+Existing paging, controls, catalogue effects, prices and balance remain unchanged.
+
+
 ## 27 October 2026 — truthful transformation offers
 
 Prepared locally: `web-2026.10.27-transformation-offers`; not published or packaged.

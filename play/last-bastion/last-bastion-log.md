@@ -1,5 +1,13 @@
 # Last Bastion completed-work log
 
+## 27 October 2026 — G3 owned effect explanations
+
+Added item copy counts and per-copy descriptions to the existing build inspector, relic/artifact
+effect descriptions, and NEW/OWNED labels on shop item offers. No balance or asset changes.
+Full verifier and 23 portfolio guards pass; 318 renderer bounds cases show no choice overflow.
+[Evidence](playtest-evidence/2026-10-27-build-effects/README.md). G4 is next; no push/package.
+
+
 ## 27 October 2026 — G2 transformation offer correction
 
 Withheld Cybernetics Bay's unsupported Targeting Suite offer; preserved legacy histories and

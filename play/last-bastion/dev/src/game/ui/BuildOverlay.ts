@@ -1,3 +1,4 @@
+import { itemById } from "../content/itemCatalog";
 import { RELIC_CATALOG, ARTIFACT_CATALOG } from "../content/relicCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
 import { createTransformationCodexSnapshot } from "../transformations/TransformationSnapshot";
@@ -15,9 +16,12 @@ export interface BuildOverlayModel {
   statLines: readonly string[];
   synergyLines: readonly string[];
   relicLines: readonly string[];
+  itemLines: readonly string[];
 }
 
 export function buildOverlayModel(view: BuildViewModel): BuildOverlayModel {
+  const itemCounts = new Map<string, number>();
+  for (const id of view.ownedItemIds) itemCounts.set(id, (itemCounts.get(id) ?? 0) + 1);
   return {
     title: "CURRENT BUILD",
     heroLine: `${view.hero.name}${view.perkId ? ` / ${PERK_CATALOG.find(perk => perk.id === view.perkId)?.name ?? "Unknown perk"}` : ""}`,
@@ -44,9 +48,19 @@ export function buildOverlayModel(view: BuildViewModel): BuildOverlayModel {
     ],
     synergyLines: [...view.synergyTags],
     relicLines: [
-      ...view.relicIds.map((id) => `Relic: ${RELIC_CATALOG.find(relic => relic.id === id)?.name ?? "Unknown relic"}`),
-      ...(view.artifactId ? [`Artifact: ${ARTIFACT_CATALOG.find(artifact => artifact.id === view.artifactId)?.name ?? "Unknown artifact"}`] : []),
+      ...view.relicIds.map((id) => {
+        const relic = RELIC_CATALOG.find(relic => relic.id === id);
+        return relic ? `Relic: ${relic.name} — ${relic.description}` : "Unknown relic — effect unavailable.";
+      }),
+      ...(view.artifactId ? [(() => {
+        const artifact = ARTIFACT_CATALOG.find(artifact => artifact.id === view.artifactId);
+        return artifact ? `Artifact: ${artifact.name} — ${artifact.description}` : "Unknown artifact — effect unavailable.";
+      })()] : []),
     ],
+    itemLines: [...itemCounts].map(([id, count]) => {
+      const item = itemById(id);
+      return item ? `${item.name} x${count} — Each: ${item.description}` : `Unknown item x${count} — effect unavailable.`;
+    }),
   };
 }
 
@@ -56,7 +70,7 @@ export function buildPages(build: BuildOverlayModel): BuildPage[] {
   const sections = [
     ["EQUIPPED WEAPONS", build.weaponLines], ["STASH", build.stashLines],
     ["COMBAT STATS", build.statLines], ["RELICS / ARTIFACT", build.relicLines],
-    ["SYNERGIES", build.synergyLines], ["TRANSFORMATION AFFINITY", build.affinityLines],
+    ["OWNED ITEMS", build.itemLines], ["SYNERGIES", build.synergyLines], ["TRANSFORMATION AFFINITY", build.affinityLines],
   ] as const;
   return sections.flatMap(([title, sourceLines]) => {
     // Reserve physical rows for wrapped copy so long catalogue names never overlap.
