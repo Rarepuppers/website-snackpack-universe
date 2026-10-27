@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Play Browser Games Offline (Install Any Site as an App)</title>
-<meta name="description" content="You can install a website like an app and keep using it with no connection. Here's how to do it in Chrome, Edge and Safari, why it works, and which browser games actually keep running on a plane.">
+<title>How to Play Browser Games Offline: Setup and Airplane-Mode Test</title>
+<meta name="description" content="Learn which browser games work offline, how to save them before a flight, and how to test in airplane mode. Installing a website alone does not make it work offline.">
 <meta name="theme-color" content="#de6a38">
 <link rel="canonical" href="https://www.snackpackuniverse.com/guides/play-browser-games-offline/">
 <link rel="icon" type="image/png" href="/assets/favicon-32.png">
-<meta property="og:title" content="How to Play Browser Games Offline (Install Any Site as an App)">
-<meta property="og:description" content="Install a website like an app and keep playing with no connection. How to do it in Chrome, Edge and Safari — and how to tell which sites will actually work.">
+<meta property="og:title" content="How to Play Browser Games Offline: Setup and Airplane-Mode Test">
+<meta property="og:description" content="Choose games with offline support, save them while online, and test in airplane mode before you travel. Installing a site alone is not enough.">
 <meta property="og:image" content="https://www.snackpackuniverse.com/snackpack-social-share.png">
 <meta property="og:url" content="https://www.snackpackuniverse.com/guides/play-browser-games-offline/">
 <meta property="og:type" content="article">
@@ -22,10 +22,10 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "How to Play Browser Games Offline (Install Any Site as an App)",
-  "description": "Install a website like an app and keep playing with no connection. How to do it in Chrome, Edge and Safari, and how to tell which sites will actually work.",
+  "headline": "How to Play Browser Games Offline: Setup and Airplane-Mode Test",
+  "description": "Choose games with offline support, save them while online, and test in airplane mode before you travel. Installing a site alone is not enough.",
   "datePublished": "2026-08-06",
-  "dateModified": "2026-08-06",
+  "dateModified": "2026-10-27",
   "author": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" },
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" },
   "mainEntityOfPage": "https://www.snackpackuniverse.com/guides/play-browser-games-offline/"
@@ -35,12 +35,12 @@
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "Install a website as an app so it works offline",
+  "name": "Prepare a browser game for offline play",
   "step": [
-    { "@type": "HowToStep", "name": "Open the site in a supported browser", "text": "Chrome or Edge on desktop and Android, or Safari on iPhone and iPad. Visit the site normally first." },
-    { "@type": "HowToStep", "name": "Find the install control", "text": "In Chrome or Edge, look for the install icon in the address bar, or open the browser menu and choose Install. On iOS, tap Share then Add to Home Screen." },
-    { "@type": "HowToStep", "name": "Let it cache once", "text": "Open the pages you want available offline at least once while you still have a connection, so the browser stores a copy." },
-    { "@type": "HowToStep", "name": "Test in airplane mode", "text": "Turn on airplane mode and open the installed app. If the pages you visited still load, it will work on a flight." }
+    { "@type": "HowToStep", "name": "Choose a game with offline support", "text": "Check that the game supports offline play. Installing a website alone does not add this feature. Open the game while connected." },
+    { "@type": "HowToStep", "name": "Optionally install for easier access", "text": "Use your browser's install or Add to Home Screen control if available. Installation is optional and does not guarantee offline support." },
+    { "@type": "HowToStep", "name": "Prepare the games you want", "text": "Follow the site's offline instructions and open each game while connected. Let its files finish loading." },
+    { "@type": "HowToStep", "name": "Test in airplane mode", "text": "Turn on airplane mode and disable any remaining network connection. Reopen the game, reload it, and try playing a round. Test every game you plan to use." }
   ]
 }
 </script>
@@ -52,17 +52,17 @@
     {
       "@type": "Question",
       "name": "Can browser games really work with no internet?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes, if the site uses a service worker — a small script the browser keeps and runs on the site's behalf. It stores a copy of the pages and files you've visited, so the browser can serve them from your device instead of the network. The site has to opt into this; most don't." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes, when the site saves the files the game needs and the game does not require a live server. A service worker can provide that offline support. Installing the site alone does not add it." }
     },
     {
       "@type": "Question",
       "name": "How can I tell whether a site will work offline before I need it?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Visit the pages you care about once while online, then switch on airplane mode and reload. If they still open, they're cached. Do this before the flight, not on it — a site can only cache what you've actually visited." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Follow the site's offline instructions and open each game while online. Then disconnect fully, reopen and reload each game, and try playing a round. Repeat the test before travelling because stored files can be cleared or evicted." }
     },
     {
       "@type": "Question",
       "name": "Does installing a website take up much space?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Far less than a native app. An installed site is typically a few megabytes because it's just HTML, CSS, scripts and images, with no platform runtime bundled in. You can clear it any time from your browser's site settings." }
+      "acceptedAnswer": { "@type": "Answer", "text": "It depends on the files the site saves. Images, audio and offline game packs can take substantial storage. Check your browser's site settings for usage; clearing that storage also removes saved offline files and may erase local game progress." }
     },
     {
       "@type": "Question",
@@ -93,7 +93,7 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "How to Play Browser Games Offline (Install Any Site as an App)",
+      "name": "How to Play Browser Games Offline: Setup and Airplane-Mode Test",
       "item": "https://www.snackpackuniverse.com/guides/play-browser-games-offline/"
     }
   ]
@@ -159,9 +159,9 @@
   <section class="app-hero">
     <div class="shell">
       <div class="app-hero-card">
-        <span class="eyebrow">Guide · Updated August 2026</span>
+        <span class="eyebrow">Guide · Updated October 2026</span>
         <h1>How to play browser games offline</h1>
-        <p class="lead">"You need an internet connection" is the default assumption about anything in a browser tab — and it hasn't been strictly true for years. A website can be installed like an app and keep working with the connection off entirely. Here's how that works, how to set it up, and how to check a site will actually hold up before you're at 30,000 feet.</p>
+        <p class="lead">Some browser games keep working without an internet connection because their creators built in offline support. Installing a site gives it a convenient icon, but does not add that support. Here's how to prepare your games and test them before you're at 30,000 feet.</p>
       </div>
     </div>
   </section>
@@ -171,8 +171,8 @@
       <article class="content-card">
         <h2>Why a website can work with no connection</h2>
         <p class="section-copy">The mechanism is a <strong>service worker</strong>: a small script a site can register, which the browser keeps and runs on that site's behalf — even when no tab is open. It sits between the page and the network. When you ask for a page, the service worker can answer from a copy stored on your device instead of going out to the internet.</p>
-        <p class="section-copy">That's the whole trick. There's no app store, no download, no install size to speak of. But it only works if the site's authors chose to add it, and it can only serve pages you have already visited at least once. A service worker can't guess what you might want later.</p>
-        <p class="section-copy">This is also why "installing" a site is less dramatic than it sounds. You're not downloading a program — you're telling the browser to give an existing site its own window, its own icon, and permission to keep its cache around.</p>
+        <p class="section-copy">The site has to choose which files to save. Some save files as you visit; others download an offline pack in advance. Those files use data and device storage. Follow the site's instructions, and check that the games you want are available before you disconnect.</p>
+        <p class="section-copy">Installing gives a supported site an icon and its own app window. Offline support can also work in a normal browser tab. Neither installation nor a service worker guarantees that every page or game has been saved.</p>
       </article>
       <article class="content-card">
         <h2>How to install a site, per browser</h2>
@@ -180,9 +180,9 @@
           <li><strong>Chrome / Edge, desktop:</strong> look for a small install icon at the right-hand end of the address bar, or open the browser menu and pick <em>Install this site as an app</em> (Edge) or <em>Cast, save and share &rarr; Install page as app</em> (Chrome).</li>
           <li><strong>Chrome, Android:</strong> menu &rarr; <em>Add to Home screen</em>. It will say "Install" rather than "Add" when the site supports it properly.</li>
           <li><strong>Safari, iPhone / iPad:</strong> tap the Share button, then <em>Add to Home Screen</em>. iOS has supported offline caching this way for a long time.</li>
-          <li><strong>Firefox, desktop:</strong> no install button, but offline caching still works in a normal tab.</li>
+          <li><strong>Other browsers:</strong> installation options vary, but a game with offline support may also work in a normal tab. Test it in the browser you plan to use.</li>
         </ul>
-        <p class="section-copy">If no install option appears anywhere, the site hasn't set itself up for it — and it almost certainly won't work offline either.</p>
+        <p class="section-copy">An install option tells you how to launch a site, not whether it works offline. A site without that option can still support offline play in a tab. The reliable check is to disconnect and try the game.</p>
       </article>
     </div>
   </section>
@@ -191,8 +191,8 @@
     <div class="shell">
       <article class="content-card">
         <h2>The part everyone gets wrong: visit the pages first</h2>
-        <p class="section-copy">This is the single most common reason "offline mode" appears broken. A service worker caches what you actually load. If you install a games site and then fly, you'll get whatever pages you happened to open — not the whole catalogue.</p>
-        <p class="section-copy">So the routine is: install it, then <strong>open each game you might want once</strong> while you're still on wifi. Ten seconds each. Then switch on airplane mode and reload one of them as a test. If it opens, you're set; if you get an error page, that game never got cached and you've found out at the gate rather than in the air.</p>
+        <p class="section-copy">A game can only run offline if the files it needs are saved on your device. Installing a games site does not mean its whole catalogue is ready. Some sites offer a download control; others save games after you open them.</p>
+        <p class="section-copy">Follow the site's instructions, then <strong>open each game you might want</strong> while you're still on wifi and let it finish loading. Switch on airplane mode, turn off any remaining network connection, and reopen and reload each game. Try a round as well: a loaded page does not prove the game itself works offline. Repeat this check before travelling, since browser storage can be cleared or evicted.</p>
         <p class="section-copy">One more caveat worth knowing: anything a game fetches live — a leaderboard, a daily puzzle pulled from a server, an ad — will still fail offline even when the page itself loads. Games that keep everything on the device are the ones that survive.</p>
       </article>
     </div>
@@ -214,11 +214,11 @@
     <div class="shell">
       <article class="content-card">
         <h2>Common questions</h2>
-        <details class="faq-item"><summary>Can browser games really work with no internet?</summary><p>Yes, when the site uses a service worker. It stores a copy of the pages and files you've visited so the browser can serve them from your device. The site has to opt into this, and most don't — which is why the assumption that browser means online is usually right in practice.</p></details>
-        <details class="faq-item"><summary>How do I check before I actually need it?</summary><p>Visit the pages you care about while online, then switch on airplane mode and reload. If they open, they're cached. Do this the day before, not at the gate — a site can only serve what you've already visited.</p></details>
-        <details class="faq-item"><summary>Does installing a website use much storage?</summary><p>Far less than a native app — usually a few megabytes, because it's just HTML, CSS, scripts and images with no platform runtime bundled in. You can clear it any time from your browser's site settings.</p></details>
+        <details class="faq-item"><summary>Can browser games really work with no internet?</summary><p>Yes, when the site saves the files the game needs and the game does not require a live server. A service worker can provide that offline support. Installing the site alone does not add it.</p></details>
+        <details class="faq-item"><summary>How do I check before I actually need it?</summary><p>Follow the site's offline instructions and open each game while online. Then disconnect fully, reopen and reload each game, and try playing a round. Repeat the test before travelling because stored files can be cleared or evicted.</p></details>
+        <details class="faq-item"><summary>Does installing a website use much storage?</summary><p>It depends on the files the site saves. Images, audio and offline game packs can take substantial storage. Check your browser's site settings for usage; clearing that storage also removes saved offline files and may erase local game progress.</p></details>
         <details class="faq-item"><summary>Is an installed site as private as an offline app?</summary><p>That depends on the site, not on installing it. Installing changes how it launches, not what it does — a site that ran trackers in a tab still runs them in its own window. Check what it collects before committing either way.</p></details>
-        <details class="faq-item"><summary>Will it update, or am I stuck on an old version?</summary><p>It updates. A well-built service worker checks the network first and only falls back to its cache when there's nothing available, so you get the current version whenever you're online and the stored copy purely as a safety net.</p></details>
+        <details class="faq-item"><summary>Will it update, or am I stuck on an old version?</summary><p>Update behaviour depends on the site. Some files are fetched from the network first; others load from a cache and update in the background. Reconnect before travelling, follow any update prompt, and test your games offline again.</p></details>
       </article>
     </div>
   </section>
