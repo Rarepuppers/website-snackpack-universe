@@ -1,5 +1,13 @@
 # Last Bastion completed-work log
 
+## 27 October 2026 — G2 transformation offer correction
+
+Withheld Cybernetics Bay's unsupported Targeting Suite offer; preserved legacy histories and
+supported choices. Corrected regeneration copy without retuning combat. Full verifier and all
+23 portfolio guards pass. [Evidence](playtest-evidence/2026-10-27-transformation-offers/README.md).
+G3 build-effect explanations are next. No push, package or human acceptance.
+
+
 ## 27 October 2026 — G1 stash persistence
 
 Implemented the confirmed expedition stash-loss fix with schema-17 migration, ordered slots,

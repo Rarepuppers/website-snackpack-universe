@@ -485,11 +485,9 @@ describe("Phase 3 event cards", () => {
     });
   });
 
-  it("Cybernetics Bay grants Cybernetic Ascension Affinity either by max health or by a weapon", () => {
+  it("Cybernetics Bay grants supported Shield Lattice affinity for a weapon", () => {
     const bay = encounterEventById("event-cybernetics-bay")!;
-    const healthResult = resolveEventChoice(build({ health: 18 }), 18, choiceById(bay, "graft-implant"), 0);
-    expect(healthResult.effects.maxHealthDelta).toBe(-4);
-    expect(healthResult.build.transformation?.paths[0]?.choiceIds).toEqual(["targeting-suite"]);
+    expect(bay.choices.some(choice => choice.id === "graft-implant")).toBe(false);
 
     const weaponResult = resolveEventChoice(build({ weapons: [{ weaponId: "scattergun", tier: 1 }] }), 18, choiceById(bay, "feed-weapon"), 0);
     expect(weaponResult.build.weapons).toEqual([]);

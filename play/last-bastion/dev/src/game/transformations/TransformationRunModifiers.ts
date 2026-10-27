@@ -207,10 +207,10 @@ export function resolveTransformationModifiers(
           case "gravity-pulse-radius":
             modifiers.gravityPulseRadiusMetres = applyPoints(modifiers.gravityPulseRadiusMetres, effect, rank);
             break;
-          // Genuinely unattachable today, and deliberately left so:
+          // Legacy/review-only effects; production events never grant these choices:
           //  - `fire-damage-received` / `shock-buildup-received` are *scars*; the
-          //    player never takes typed elemental damage, and deleting a downside
-          //    would strictly buff those paths rather than fix them.
+          //    player never takes typed elemental damage. Preserve saved choice
+          //    identities and behavior rather than inventing a replacement cost.
           default:
             break;
         }

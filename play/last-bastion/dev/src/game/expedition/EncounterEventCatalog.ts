@@ -1259,17 +1259,11 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
     id: "event-cybernetics-bay",
     kind: "event",
     name: "Cybernetics Bay",
-    text: "A surgical cradle, still powered, waits for a donor limb or a willing patient.",
+    text: "A surgical cradle, still powered, can weave salvaged weapon parts into rechargeable shielding.",
     minColumn: 3,
     choices: [
-      {
-        id: "graft-implant",
-        label: "Take the implant",
-        detail: "-4 max health → Cybernetic Ascension Affinity (Targeting Suite)",
-        requirement: { minMaxHealthAfterCost: 10 },
-        outcomes: [{ type: "maxHealth", delta: -4 }, { type: "grantTransformationAffinity", choiceId: "targeting-suite" }],
-        resultText: "The cradle hums, and something cold slots in behind your eyes.",
-      },
+      // Targeting Suite's Shock scar has no player combat consumer. Keep its
+      // catalogue/save identity, but do not offer new ranks through this event.
       {
         id: "feed-weapon",
         label: "Feed it a weapon instead",

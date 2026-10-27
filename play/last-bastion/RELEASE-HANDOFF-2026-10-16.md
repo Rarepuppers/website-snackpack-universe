@@ -1,5 +1,11 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Latest prepared local build (27 October):** `web-2026.10.27-transformation-offers`, schema 17,
+simulation compatibility 3. G2 passes full verification and 23 portfolio guards; see
+[offer evidence](playtest-evidence/2026-10-27-transformation-offers/README.md). Not pushed or packaged.
+Earlier prepared-build entries below are historical. Human/hardware/Steam gates remain open.
+
+
 **Current prepared local build (27 October):** `web-2026.10.27-stash-persistence`, schema 17,
 simulation compatibility 3. G1 passes full game verification and all 23 portfolio guards;
 [stash evidence](playtest-evidence/2026-10-27-stash-persistence/README.md). Not pushed or packaged.

@@ -80,7 +80,7 @@ const trait = (name: string, summary: string, ...effects: TransformationEffectDe
 
 export const TRANSFORMATION_CHOICE_CATALOG: readonly TransformationChoiceDefinition[] = Object.freeze([
   choice("regenerative-glands", "mutagenic-evolution", "Regenerator",
-    trait("Regenerative Glands", "Regenerate health after four seconds without taking health damage.", effect("health-regeneration-per-second", "increase", "health-per-second", ranks(0.12, 0.18, 0.24), "Begins after 4 seconds without health damage.")),
+    trait("Regenerative Glands", "Increase passive health regeneration.", effect("health-regeneration-per-second", "increase", "health-per-second", ranks(0.12, 0.18, 0.24), "Adds to passive regeneration on the shared ten-second healing tick.")),
     trait("Shield Rejection", "Mutated tissue interferes with shield recharge.", effect("shield-recharge-rate", "decrease", "percent", ranks(15, 22, 30))), 19, 11),
   choice("dense-tissue", "mutagenic-evolution", "Juggernaut",
     trait("Dense Tissue", "Increase maximum health.", effect("maximum-health", "increase", "percent", ranks(12, 18, 25))),

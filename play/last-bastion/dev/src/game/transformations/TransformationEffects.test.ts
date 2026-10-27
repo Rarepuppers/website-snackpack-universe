@@ -1,3 +1,4 @@
+import { ENCOUNTER_EVENT_CATALOG, encounterEventById } from "../expedition/EncounterEventCatalog";
 import { describe, expect, it } from "vitest";
 import {
   NO_TRANSFORMATION_MODIFIERS,
@@ -34,7 +35,7 @@ const CONSUMED: readonly TransformationEffectMetric[] = [
 const KNOWN_UNCONSUMED: Readonly<Record<string, string>> = Object.freeze({
   // Scars. The player never takes typed elemental damage or status buildup, so
   // these cannot be honoured — but they are DOWNSIDES, and deleting them would
-  // strictly buff their paths rather than fix anything. Left deliberately.
+  // alter legacy builds. Neither choice is granted by production events.
   "fire-damage-received": "player takes no typed elemental damage",
   "shock-buildup-received": "player receives no status buildup",
 });
@@ -108,5 +109,39 @@ describe("newly wired transformation metrics", () => {
 
   it("leaves a neutral bag completely untouched", () => {
     expect(resolveTransformationModifiers(null)).toEqual(NO_TRANSFORMATION_MODIFIERS);
+  });
+});
+
+
+describe("production transformation offer contract", () => {
+  it("never grants a choice with an unsupported boon or scar from fixed or random event outcomes", () => {
+    const granted = new Set<string>();
+    for (const event of ENCOUNTER_EVENT_CATALOG) {
+      for (const choice of event.choices) {
+        const outcomes = [...(choice.outcomes ?? []), ...(choice.randomOutcomes ?? []).flatMap(branch => branch.outcomes)];
+        for (const outcome of outcomes) {
+          if (outcome.type !== "grantTransformationAffinity") continue;
+          granted.add(outcome.choiceId);
+          const definition = TRANSFORMATION_CHOICE_CATALOG.find(row => row.id === outcome.choiceId)!;
+          expect(definition).toBeDefined();
+          for (const trait of [definition.boon, definition.scar]) {
+            for (const effect of trait.effects) {
+              expect(CONSUMED, `${event.id}/${choice.id}: ${effect.metric}`).toContain(effect.metric);
+            }
+          }
+        }
+      }
+    }
+    expect(granted.size).toBeGreaterThan(0);
+    expect(granted.has("targeting-suite")).toBe(false);
+    expect(granted.has("acidic-secretions")).toBe(false);
+  });
+
+  it("retains Cybernetics Bay's supported trade and Leave without rewriting legacy choices", () => {
+    expect(encounterEventById("event-cybernetics-bay")!.choices.map(choice => choice.id)).toEqual(["feed-weapon", "leave"]);
+    const legacy = resolveTransformationModifiers({ committedPathId: "cybernetic-ascension",
+      paths: [{ pathId: "cybernetic-ascension", affinity: 3, choiceIds: ["targeting-suite", "targeting-suite", "targeting-suite"] }] });
+    expect(legacy.projectileSpeedMultiplier).toBe(1.35);
+    expect(legacy.weaponSpreadMultiplier).toBe(0.8);
   });
 });

@@ -2,7 +2,7 @@
 
 **Updated 27 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.27-stash-persistence`, schema 17; G1 implemented and verified locally. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.27-transformation-offers`, schema 17; G1 and G2 completed and verified locally. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -11,10 +11,9 @@ No human testers available. Implementation is approved; evidence gates remain un
   a Scattergun, but `expeditionBuildFromCombatSnapshot` serializes only rack weapons. A new
   CombatSimulation constructed from that build has an empty stash. Fresh executable witness:
   [26 October review](playtest-evidence/2026-10-26-gameplay-review/README.md).
-- **Source-confirmed dormant drawbacks, reachability not yet established — G2:**
-  TransformationRunModifiers explicitly ignores fire-damage-received/shock-buildup-received scars
-  because typed incoming elemental damage is absent. Determine which authored choices are offered
-  before claiming affected player builds. Do not silently remove a downside or invent global damage types.
+- **Resolved production exposure — G2:** Cybernetics Bay no longer grants Targeting Suite
+  with an inert Shock drawback. Acidic Secretions has no production event grant. Legacy IDs and
+  effects remain intact; unsupported review/legacy costs are not claimed as implemented.
 - **Confirmed presentation limitation — G3:** BuildOverlay lists relic/artifact names while its
   other sections already expose weapons, stash, stats, synergies and affinity. Better effect
   explanations can reuse this inspector; another inventory/affinity screen would duplicate work.
@@ -39,22 +38,16 @@ Implemented schema-17 ordered stash persistence and combat restoration, includin
 loading and occupied bonus-slot retention. Eight targeted integration cases pass; the full game
 verifier, 59 browser checks and all 23 portfolio guards pass. See
 [implementation evidence](playtest-evidence/2026-10-27-stash-persistence/README.md).
-No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G2.**
+No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G3 after G2 verification.**
 
-### G2 — make offered transformation boons and costs truthful
+### G2 — completed: truthful production transformation offers
 
-**P1 investigation then bounded correction; M effort; high balance risk.** Benefit: a build choice
-means what its text promises. Existing ignored scar metrics are evidence for tracing, not permission
-to enable new combat systems. Enumerate offered choices and follow each boon/scar to its consumer.
-
-Produce a compact authoring-to-runtime map as part of implementation. For an actually selectable
-unsupported effect, choose a compatible supported consequence or prevent offering that choice;
-justify cost/parity and preserve already-saved choices. If all affected choices are gated, close
-with no runtime change. Do not add typed player damage just to satisfy an old description.
-Acceptance: every newly offered effect has an executed consequence or explicit non-offered status;
-old saves remain valid and no free power is accidentally granted. Production resolver/simulation
-regressions, save compatibility and full checks required. Quantitative tuning stays conditional on
-balance evidence. Reuse authored paths/art/audio; no new transformations.
+Removed Cybernetics Bay's Targeting Suite offer because its Shock drawback is unsupported;
+retained Shield Lattice/Leave and preserved saved Targeting Suite histories and effects.
+Acidic Secretions has no normal production grant. Corrected Regenerative Glands copy to
+match the existing passive healing tick. No speculative replacement costs or combat tuning.
+[Source/consumer map and evidence](playtest-evidence/2026-10-27-transformation-offers/README.md).
+Full game verification and all 23 portfolio guards pass. Next implementation is G3.
 
 ### G3 — explain the current build and reward consequences in existing UI
 

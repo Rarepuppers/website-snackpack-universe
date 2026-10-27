@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 27 October 2026 — truthful transformation offers
+
+Prepared locally: `web-2026.10.27-transformation-offers`; not published or packaged.
+Cybernetics Bay now offers Shield Lattice or Leave; its Targeting Suite offer is withheld
+until the advertised Shock drawback is supported. Existing saved choices retain their effects.
+Regenerative Glands text now describes its actual passive healing tick.
+
+
 ## 27 October 2026 — stashed weapons survive travel
 
 Prepared locally: `web-2026.10.27-stash-persistence`; not published or packaged.
