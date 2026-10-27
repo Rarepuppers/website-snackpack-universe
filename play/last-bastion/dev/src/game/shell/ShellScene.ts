@@ -163,6 +163,11 @@ export class ShellScene extends Phaser.Scene {
       },
       retrySave: () => { this.saveStore.retryPersistence(); this.render(); },
       device: device => { if (this.state.controlDevice !== device) this.apply("right"); },
+      selection: (field, index) => {
+        const count = field === "rosterIndex" ? ROSTER.length : field === "perkIndex" ? PERK_CATALOG.length : THREAT_TIERS.length;
+        if (!Number.isInteger(index) || index < 0 || index >= count) return;
+        this.state = { ...this.state, [field]: index }; this.render();
+      },
       resetBindings: () => this.resetControlBindings(),
       cancelBinding: () => this.cancelBindingCapture(),
     });
@@ -193,6 +198,10 @@ export class ShellScene extends Phaser.Scene {
         return;
       }
       const intent = padButtonToIntent(button.index);
+      if (intent === "confirm" && ["character-select", "threat-select"].includes(this.state.screen)
+        && this.semantic?.owns(document.activeElement) && document.activeElement instanceof HTMLButtonElement) {
+        document.activeElement.click(); return;
+      }
       if (intent) { this.focusSemanticSelection = true; this.apply(intent); }
   };
 
@@ -394,6 +403,7 @@ export class ShellScene extends Phaser.Scene {
       feedback: this.saveTransferFeedback ?? this.fullscreenFeedback, formatValue: formatSettingValue,
       bindingCapture: this.bindingCapture, bindingFeedback: this.bindingFeedback,
       history: this.saveStore.load().runHistory,
+      characterLoading: this.loadingAssetGroup !== null, characterLoadFailed: this.characterLoadFailed,
     }, this.focusSemanticSelection);
     this.focusSemanticSelection = false;
   }
@@ -452,6 +462,7 @@ export class ShellScene extends Phaser.Scene {
       .setDisplaySize(WIDTH, 640)
       .setAlpha(0.48));
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, NAVY, 0.74));
+    if (this.semantic) return;
     this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, 360, 94, PANEL)
       .setStrokeStyle(2, TEAL_HEX));
     this.root.add(this.text(WIDTH / 2, HEIGHT / 2 - 10, this.characterLoadFailed ? "CHARACTER ART UNAVAILABLE" : "PREPARING DOSSIERS", TEAL, "18px", true));
@@ -915,7 +926,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderCharacterSelect(): void {
-    this.root.add(this.text(70, 48, "CHARACTER SELECT", IVORY, "28px"));
+    this.root.add(this.text(70, 48, "CHARACTER SELECT", IVORY, "28px").setVisible(!this.semantic));
     this.root.add(this.text(890, 52, runModeLabel(this.state.runMode), TEAL, "14px").setOrigin(1, 0));
     const hero = ROSTER[this.state.rosterIndex]!;
     const perk = PERK_CATALOG[this.state.perkIndex]!;
@@ -940,6 +951,7 @@ export class ShellScene extends Phaser.Scene {
       this.root.add(this.add.rectangle(250, 250, 120, 220, 0x232c3a)
         .setStrokeStyle(2, 0x3b4d63));
     }
+    if (this.semantic) return; // Native selectors and dossier own the foreground.
     this.root.add(this.text(250, 415, hero.status === "playable" ? `${hero.name}${heroUnlocked ? "" : " — LOCKED"}`
       : hero.status === "in-development" ? `${hero.name} — IN DEVELOPMENT` : "????", IVORY, "16px", true));
 
@@ -1011,6 +1023,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderThreatSelect(): void {
+    if (this.semantic) return;
     this.root.add(this.text(70, 48, "THREAT TIER", IVORY, "28px"));
     this.root.add(this.text(70, 84, "Modifiers stack. Clear a tier to unlock the next.", MUTED, "12px"));
     THREAT_TIERS.forEach((definition, index) => {

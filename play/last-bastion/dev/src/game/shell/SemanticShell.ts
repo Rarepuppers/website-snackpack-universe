@@ -1,3 +1,9 @@
+import { ROSTER } from "./ScreenFlow";
+import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
+import { PERK_CATALOG } from "../perks/perkCatalog";
+import { isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
+import { THREAT_TIERS } from "../expedition/ThreatTier";
+import { heroDossierCopy } from "./HeroDossierCopy";
 import type { GameProgress } from "../save/LocalSaveStore";
 import { localDayKey } from "../run/LocalDayKey";
 import { howToPlayPages, menuCardSubtitle, SETTINGS_GROUPS, settingsGroup, type ShellIntent, type ShellState } from "./ScreenFlow";
@@ -27,6 +33,7 @@ interface ShellActions {
   setting(index: number, value: unknown): void;
   retrySave(): void;
   device(device: "keyboard" | "gamepad"): void;
+  selection(field: "rosterIndex" | "perkIndex" | "threatTierIndex", index: number): void;
   resetBindings(): void;
   cancelBinding(): void;
 }
@@ -41,6 +48,8 @@ export interface SemanticShellView {
   bindingCapture: BindingCapture | null;
   bindingFeedback: string | null;
   history: readonly RunHistoryEntry[];
+  characterLoading: boolean;
+  characterLoadFailed: boolean;
 }
 
 /** Visible native controls, positioned over the existing canvas chrome.
@@ -53,6 +62,7 @@ export class SemanticShell {
   private readonly nodes = new Map<string, HTMLElement>();
   private readonly observer: ResizeObserver;
   private capturing = false;
+  private characterStatus = "";
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly actions: ShellActions) {
     this.root.className = "semantic-shell";
@@ -83,7 +93,10 @@ export class SemanticShell {
 
   render(view: SemanticShellView, focusSelection = false): void {
     const { state } = view;
-    const supported = ["title", "menu", "settings", "how-to-play", "controls", "records"].includes(state.screen);
+    const characterStatus = state.screen === "character-select" ? view.characterLoadFailed ? "failed" : view.characterLoading ? "loading" : "ready" : "";
+    const characterStatusChanged = characterStatus !== this.characterStatus;
+    this.characterStatus = characterStatus;
+    const supported = ["title", "menu", "settings", "how-to-play", "controls", "records", "character-select", "threat-select"].includes(state.screen);
     const changed = this.screen !== state.screen;
     const hadFocus = this.owns(document.activeElement);
     if (changed) {
@@ -144,6 +157,57 @@ export class SemanticShell {
       });
       selectedKey = `menu-${state.menuCards[state.menuIndex]!.id}`;
       button("back", "Back", 825, 496, 84, 28, () => this.actions.intent("back"));
+    } else if (state.screen === "character-select" || state.screen === "threat-select") {
+      const hero = ROSTER[state.rosterIndex]!;
+      const perk = PERK_CATALOG[state.perkIndex]!;
+      const heroUnlocked = hero.status === "playable" && isHeroId(hero.id)
+        && isHeroDeploymentUnlocked(hero.id, state.purchasedArmoryNodeIds);
+      const perkUnlocked = state.unlockedPerkIds.includes(perk.id);
+      const chooser = (key: "rosterIndex" | "perkIndex" | "threatTierIndex", label: string,
+        options: readonly string[], x: number, y: number, width: number) => {
+        const caption = text(`${key}-label`, label, x, y, width, 20, "label") as HTMLLabelElement;
+        const select = node<HTMLSelectElement>(key, "select", x, y + 24, width, 36);
+        select.id = `shell-${key}`; caption.htmlFor = select.id;
+        if (select.options.length !== options.length) select.replaceChildren(...options.map(() => document.createElement("option")));
+        options.forEach((label, index) => { select.options[index]!.textContent = label; select.options[index]!.value = String(index); });
+        select.value = String(state[key]);
+        select.onchange = () => this.actions.selection(key, Number(select.value));
+        return select;
+      };
+      text("heading", state.screen === "character-select" ? "CHARACTER SELECT" : "THREAT TIER", 70, 30, 650, 40, "h1");
+      if (state.screen === "character-select" && (view.characterLoading || view.characterLoadFailed)) {
+        text("load-status", view.characterLoadFailed ? "Character art unavailable. Retry loading or return to the menu." : "Loading character art…", 250, 210, 500, 60).setAttribute("role", "status");
+        if (view.characterLoadFailed) button("retry", "Retry", 500, 300, 120, 40, () => this.actions.intent("confirm"));
+        button("back", "Back", 340, 300, 120, 40, () => this.actions.intent("back"));
+        selectedKey = view.characterLoadFailed ? "retry" : "back";
+      } else if (state.screen === "character-select") {
+        chooser("rosterIndex", "Hero", ROSTER.map(entry => `${entry.name}${entry.status !== "playable" ? " — In development" : isHeroId(entry.id) && isHeroDeploymentUnlocked(entry.id, state.purchasedArmoryNodeIds) ? "" : " — Locked"}`), 70, 420, 320);
+        const dossier = text("dossier", isHeroId(hero.id) ? heroDossierCopy(heroDefinition(hero.id), heroUnlocked, true) : "Hero unavailable.", 445, 90, 440, 200);
+        dossier.className = "semantic-dossier"; dossier.tabIndex = 0; dossier.dataset.nativeScroll = "true";
+        dossier.setAttribute("role", "region"); dossier.setAttribute("aria-label", "Hero abilities and starting equipment");
+        chooser("perkIndex", "Starting perk", PERK_CATALOG.map(entry => `${entry.name}${state.unlockedPerkIds.includes(entry.id) ? "" : " — Locked"}`), 445, 305, 440);
+        const detail = text("perk-detail", perkUnlocked ? perk.description : perk.unlockText, 445, 373, 440, 45);
+        detail.id = "shell-perk-detail"; this.nodes.get("perkIndex")!.setAttribute("aria-describedby", detail.id);
+        const deploy = button("deploy", state.runMode === "expedition" && state.unlockedThreatTiers.length > 1 ? "Choose threat tier" : "Deploy", 665, 435, 220, 42,
+          () => { if (heroUnlocked && perkUnlocked) this.actions.intent("confirm"); });
+        deploy.setAttribute("aria-disabled", String(!heroUnlocked || !perkUnlocked));
+        button("back", "Back", 445, 435, 170, 42, () => this.actions.intent("back"));
+        text("selection-hint", "LEFT/RIGHT HERO • UP/DOWN PERK • TAB CONTROLS • ESC/B BACK", 70, 502, 820, 22);
+        selectedKey = "deploy";
+      } else {
+        chooser("threatTierIndex", "Expedition threat tier", THREAT_TIERS.map(tier => `Tier ${tier.tier}: ${tier.name}${state.unlockedThreatTiers.includes(tier.tier) ? "" : " — Locked"}`), 130, 125, 700);
+        const tier = THREAT_TIERS[state.threatTierIndex]!;
+        const unlocked = state.unlockedThreatTiers.includes(tier.tier);
+        const detail = text("threat-detail", `${tier.modifier}\n\n${unlocked ? `Best: ${view.progress.threatTierBestNodes[tier.tier]} nodes` : `Clear Tier ${tier.tier - 1} to unlock.`}\n\nModifiers stack. Clear a tier to unlock the next.`, 130, 210, 700, 150);
+        detail.className = "semantic-dossier"; detail.id = "shell-threat-detail";
+        this.nodes.get("threatTierIndex")!.setAttribute("aria-describedby", detail.id);
+        const deploy = button("deploy", "Begin expedition", 580, 420, 250, 44, () => {
+          if (heroUnlocked && perkUnlocked && unlocked) this.actions.intent("confirm");
+        });
+        deploy.setAttribute("aria-disabled", String(!heroUnlocked || !perkUnlocked || !unlocked));
+        button("back", "Back", 130, 420, 160, 44, () => this.actions.intent("back"));
+        selectedKey = "deploy";
+      }
     } else if (state.screen === "how-to-play") {
       const pages = howToPlayPages(state.controls);
       const page = pages[state.howToPlayPage]!;
@@ -321,7 +385,7 @@ export class SemanticShell {
     if (back && !view.bindingCapture && back !== this.root.lastElementChild && back !== document.activeElement) this.root.append(back);
     if (view.bindingCapture) {
       if (!this.capturing || changed) this.nodes.get("capture-dialog")?.focus({ preventScroll: true });
-    } else if (changed || focusSelection || this.capturing) this.nodes.get(selectedKey)?.focus({ preventScroll: true });
+    } else if (changed || focusSelection || this.capturing || characterStatusChanged) this.nodes.get(selectedKey)?.focus({ preventScroll: true });
     this.capturing = Boolean(view.bindingCapture);
     this.position();
   }

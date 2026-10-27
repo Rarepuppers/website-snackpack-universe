@@ -173,3 +173,6 @@ canvas {
 .semantic-run-list p { margin: 0; font: 10px/15px Consolas, monospace; overflow-wrap: anywhere; }
 .semantic-run-list p + p { color: #b1bfcd; }
 .semantic-shell [data-shell-key="save-warning"] { background: #4a211c; color: #ffb885; text-align: center; line-height: 28px; }
+
+.semantic-shell .semantic-dossier { white-space: pre-line; line-height: 1.45; overflow: auto; pointer-events: auto; padding: 10px; background: #152333; border: 1px solid #405a72; }
+.semantic-shell .semantic-dossier:focus-visible { outline: 2px solid #ff9a52; outline-offset: 3px; }

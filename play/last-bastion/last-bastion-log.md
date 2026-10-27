@@ -1,5 +1,13 @@
 # Last Bastion completed-work log
 
+## 28 October 2026 — G5 native selection slice
+
+Implemented native hero/perk/threat controls, readable dossier/locks, separate deployment and Back,
+and loading/failure focus recovery. Reused ScreenFlow, metadata and portraits. Native armory remains.
+Full verification passes: 1,808 unit tests, 61 browser checks, 31 desktop-host tests and 23 portfolio guards.
+[Evidence](playtest-evidence/2026-10-28-native-selection/README.md). No push or package.
+
+
 ## 27 October 2026 — G4 shop polish
 
 Added compact text navigation, Back/Leave on every page, frame insets and explicit quick-pick

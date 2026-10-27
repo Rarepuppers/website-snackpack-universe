@@ -894,8 +894,8 @@ test("semantic menus activate once and restore focus on return", async ({ page }
   expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
   await page.getByRole("button", { name: /QUICK DROP/ }).click();
   await page.waitForFunction(() => window.__shellState.screen === "character-select" && window.__shellAssetsReady);
-  await expect(page.locator(".semantic-shell")).toBeHidden();
-  await expect(page.locator("#game-root canvas")).not.toHaveAttribute("aria-hidden", "true");
+  await expect(page.getByLabel("Hero", { exact: true })).toBeVisible();
+  await expect(page.locator("#game-root canvas")).toHaveAttribute("aria-hidden", "true");
   expect(failures).toEqual([]);
 });
 
@@ -1412,4 +1412,85 @@ test("saved expedition stash is visible after renderer reload", async ({ page })
       await page.reload();
     }
   }
+});
+
+
+test("native hero and threat selectors preserve locks, focus, mode and deployment", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.getByRole("button", { name: /QUICK DROP/ }).click();
+  await page.waitForFunction(() => window.__shellAssetsReady);
+  const hero = page.getByLabel("Hero", { exact: true });
+  const perk = page.getByLabel("Starting perk", { exact: true });
+  await hero.selectOption("4");
+  await expect(page.getByRole("button", { name: "Deploy", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await page.getByRole("button", { name: "Deploy", exact: true }).click({ force: true });
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("character-select");
+  await expect(page.getByRole("region", { name: "Hero abilities and starting equipment" })).toContainText("UNLOCK");
+  await hero.selectOption("0");
+  await perk.selectOption("9");
+  await expect(page.getByRole("button", { name: "Deploy", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await perk.selectOption("0");
+  await hero.focus();
+  await hero.selectOption("1");
+  await expect(hero).toBeFocused();
+  await hero.selectOption("0");
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: /QUICK DROP/ })).toBeFocused();
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save")) || { version: 17 };
+    save.progress = { ...save.progress, threatTierVictories: { 0: 1, 1: 0, 2: 0 } };
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByRole("button", { name: /EXPEDITION/ }).click();
+  await page.waitForFunction(() => window.__shellAssetsReady);
+  await page.getByRole("button", { name: "Choose threat tier", exact: true }).click();
+  const threat = page.getByLabel("Expedition threat tier", { exact: true });
+  await threat.selectOption("2");
+  await expect(page.getByRole("button", { name: "Begin expedition", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await expect(page.locator('[data-shell-key="threat-detail"]')).toContainText("Clear Tier 1");
+  await threat.selectOption("1");
+  await page.setViewportSize({ width: 3840, height: 2160 });
+  await expect(threat).toHaveValue("1");
+  await page.getByRole("button", { name: "Begin expedition", exact: true }).click();
+  await page.waitForURL(url => url.searchParams.get("screen") === "map");
+  await page.waitForFunction(() => window.__expeditionState?.threatTier === 1);
+});
+
+
+test("native selection panels fit all heroes and pad confirmation respects focused Back", async ({ page }, testInfo) => {
+  await page.addInitScript(() => {
+    const pad = { id: "Standard test controller", index: 0, connected: true, mapping: "standard", timestamp: 1,
+      axes: [0,0,0,0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+    window.__testPad = pad;
+    Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+  });
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.getByRole("button", { name: /QUICK DROP/ }).click();
+  await page.waitForFunction(() => window.__shellAssetsReady);
+  for (const viewport of [{ width: 960, height: 540 }, { width: 3840, height: 2160 }]) {
+    await page.setViewportSize(viewport);
+    for (const index of [0, 1, 2, 3, 4]) {
+      await page.getByLabel("Hero", { exact: true }).selectOption(String(index));
+      const issues = await page.evaluate(() => {
+        const panel = document.querySelector(".semantic-shell").getBoundingClientRect();
+        return [...document.querySelectorAll(".semantic-shell > *")].filter(el => {
+          const box = el.getBoundingClientRect();
+          return box.left < panel.left - 1 || box.right > panel.right + 1 || box.top < panel.top - 1 || box.bottom > panel.bottom + 1;
+        }).map(el => el.dataset.shellKey);
+      });
+      expect(issues).toEqual([]);
+      await expect(page.getByRole("region", { name: "Hero abilities and starting equipment" })).toContainText("WEAPON");
+    }
+  }
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.getByLabel("Hero", { exact: true }).selectOption("0");
+  await page.screenshot({ path: testInfo.outputPath("hero.png") });
+  await page.getByRole("button", { name: "Back", exact: true }).focus();
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: true, touched: true, value: 1 }; });
+  await page.waitForFunction(() => window.__shellState.screen === "menu");
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: false, touched: false, value: 0 }; });
+  await page.waitForTimeout(100);
+  expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
 });

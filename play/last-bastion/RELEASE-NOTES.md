@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 28 October 2026 — native hero and threat selection
+
+Prepared locally: `web-2026.10.28-native-selection`; not published or packaged.
+Choose heroes, perks and expedition threat tiers using native labelled controls. Inspect abilities,
+starting equipment and unlock requirements; Deploy and Back remain separate actions. Character-art
+loading and retry now expose native controls. Existing progression and mode restrictions remain.
+
+
 ## 27 October 2026 — clearer shop navigation
 
 Prepared locally: `web-2026.10.27-shop-polish`; not published or packaged.

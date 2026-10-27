@@ -2,7 +2,7 @@
 
 **Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.27-shop-polish`, schema 17; G1–G4 complete and verified locally. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-native-selection`, schema 17; G1–G4 complete; G5 selection verified; native armory next. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -16,11 +16,10 @@ No human testers available. Implementation is approved; evidence gates remain un
   effects remain intact; unsupported review/legacy costs are not claimed as implemented.
 - **Implemented presentation improvement — G3:** existing BuildOverlay now exposes item copy
   counts and per-copy effects, plus relic/artifact descriptions. No duplicate inspector was added.
-- **Observed polish — G4:** shop navigation shares sale-item fallback tiles, final rows cross the
-  decorative frame and long descriptions fit tightly. Pagination/text overflow fixes are already
-  delivered. Target these visible shortcomings, not endless permutations of the same passing test.
-- **Source-confirmed shell gap — G5:** hero/threat and armory surfaces remain canvas controls;
-  native title/menu/settings/help/rebinding/records already exist.
+- **Resolved polish — G4:** shop navigation now uses text controls and bounded rows/pages;
+  frame spacing and same-ID refresh continuity are fixed. Dated implementation evidence is below.
+- **Partly resolved shell gap — G5:** hero/threat controls are now native; armory remains canvas.
+  Native title/menu/settings/help/rebinding/records already exist.
 - **Existing-content route gap — G7:** the map's final ARENA_THEMES entry selects Bastion Eater.
   Existing Choir/Sovereign selectors do not receive an ordinary generated finale through that path.
   Earlier fixtures passing is not proof of normal route exposure. Existing content should be considered
@@ -66,19 +65,33 @@ frame without cutting copy or shrinking fonts. Back/Leave repeats on every overs
 Fresh renderer evidence confirmed stale text on same-ID updates; full presentation changes now
 refresh labels while retaining a surviving enabled selection, clamping pages and falling back to
 Back/Leave when it disappears. Full game verification and all 23 portfolio guards pass; 352 renderer cases pass. [Implementation evidence](playtest-evidence/2026-10-27-shop-polish/README.md).
-Next executable work: G5 native hero/threat selection, then armory.
+Next executable work: G5 native armory, selection slice complete.
 
-### G5 — improve hero/threat selection and armory operation
+### G5 — native hero/threat selection implemented; armory remains
 
-**P2; M per slice; medium risk.** First implement visible native hero/threat controls from existing
-ScreenFlow state: selected/locked state, actual unlock condition, starting equipment, threat modifiers,
-Back and Deploy. Preserve earned unlocks and mode restrictions. Then apply the same proven pattern
-to armory inspection/purchases; do not grant equipment from a preview or create another progression tree.
+First slice adds visible native hero/perk selectors, complete hero dossier, actual lock reasons,
+threat modifiers and guarded Deploy/Back. Existing ScreenFlow/earned unlock rules and portraits
+are reused. Loading/failure/retry also has native controls and correct focus transitions.
+Targeted browser tests pass at minimum/4K, including locked deployment and earned threat launch.
+[Implementation evidence](playtest-evidence/2026-10-28-native-selection/README.md).
+Full game verification passes (1,808 unit, 61 browser, 31 desktop-host tests), as do all 23 portfolio guards.
+Real AT/controller acceptance remains external.
 
-Acceptance: each existing action works once with keyboard/pointer/simulated pad, focus survives
-redraw/return, locked deployment/purchases remain guarded and labels reflect real requirements.
-Test fresh/earned profiles and UI size changes, then full checks. No new hero/portraits; reuse native
-shell styles and metadata. Real AT/device acceptance remains external, not a blocker to coding.
+**Next slice: native armory inspection and purchases. P2; M effort; medium risk.** Reuse keyed DOM
+controls and existing progression rules. Show costs, balance, prerequisites, owned/equipped state,
+and Back. Never grant equipment from a preview. Acceptance: keyboard/pointer/simulated pad activate
+once; focus survives purchase/equip/return; locked purchases remain guarded; fresh/earned profiles,
+viewport changes and full checks pass. No new progression tree, hero art or unlock shortcuts.
+
+Implementation order for the armory slice:
+1. Extend SemanticShell's keyed controls to inspect the six released ARMORY_NODES; reuse catalog
+   descriptions and prerequisite names, with a distinct purchase/equip action and native Back.
+2. Route actions through ScreenFlow.stepArmory and canPurchaseArmoryNode/canSelectArmoryNode;
+   keep ShellScene's existing save effects. Inspection must never spend marks or equip a kit.
+3. Cover insufficient marks, unmet prerequisites, one-time purchase, owned-kit selection, hero
+   clearance, reload persistence and focus continuity through the production renderer and store.
+4. Check minimum/4K layout, keyboard/pointer/simulated-pad activation and complete verification.
+   Real assistive-technology/controller acceptance stays pending without blocking this code slice.
 
 ### G6 — transaction and reward reliability alongside gameplay changes
 

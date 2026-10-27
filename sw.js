@@ -17,7 +17,7 @@ const CACHE = "snackpack-arcade-v52";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
-const LAST_BASTION_RELEASE = "2026-10-27-shop-polish";
+const LAST_BASTION_RELEASE = "2026-10-28-native-selection";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
 // Stable public filenames make a partial cache refresh unsafe: a new scene can
