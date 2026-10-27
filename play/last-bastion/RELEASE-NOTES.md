@@ -1,5 +1,13 @@
 # Last Bastion release notes
 
+## 28 October 2026 — Native armory controls
+
+Inspect equipment and hero clearances with a labelled native selector. Costs, prerequisites,
+remaining marks and owned/equipped state are visible beside a separate purchase/equip action.
+Keyboard focus survives updates; controller confirmation respects Back. Existing progression
+and save rules are unchanged. Evidence: [native armory](playtest-evidence/2026-10-28-native-armory/README.md).
+
+
 ## 28 October 2026 — native hero and threat selection
 
 Prepared locally: `web-2026.10.28-native-selection`; not published or packaged.

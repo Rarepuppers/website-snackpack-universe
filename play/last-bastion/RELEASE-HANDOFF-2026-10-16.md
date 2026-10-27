@@ -1,5 +1,11 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Latest prepared local build (28 October):** `web-2026.10.28-native-armory`, schema 17,
+simulation compatibility 3. Completes G5 implementation; verification recorded in
+[native armory evidence](playtest-evidence/2026-10-28-native-armory/README.md).
+Not pushed or packaged. Earlier identities are historical. Human/device/Steam gates remain open.
+
+
 **Latest prepared local build (28 October):** `web-2026.10.28-native-selection`, schema 17,
 simulation compatibility 3. G5 selection slice; native armory remains next. Verification is in
 [native-selection evidence](playtest-evidence/2026-10-28-native-selection/README.md).

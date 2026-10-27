@@ -2,7 +2,7 @@
 
 **Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.28-native-selection`, schema 17; G1–G4 complete; G5 selection verified; native armory next. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-native-armory`, schema 17; G1–G5 complete; next: G6 targeted reliability and G7 integration design. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -18,7 +18,7 @@ No human testers available. Implementation is approved; evidence gates remain un
   counts and per-copy effects, plus relic/artifact descriptions. No duplicate inspector was added.
 - **Resolved polish — G4:** shop navigation now uses text controls and bounded rows/pages;
   frame spacing and same-ID refresh continuity are fixed. Dated implementation evidence is below.
-- **Partly resolved shell gap — G5:** hero/threat controls are now native; armory remains canvas.
+- **Resolved shell gap — G5:** hero/perk/threat and armory controls are now native.
   Native title/menu/settings/help/rebinding/records already exist.
 - **Existing-content route gap — G7:** the map's final ARENA_THEMES entry selects Bastion Eater.
   Existing Choir/Sovereign selectors do not receive an ordinary generated finale through that path.
@@ -36,7 +36,7 @@ Implemented schema-17 ordered stash persistence and combat restoration, includin
 loading and occupied bonus-slot retention. Eight targeted integration cases pass; the full game
 verifier, 59 browser checks and all 23 portfolio guards pass. See
 [implementation evidence](playtest-evidence/2026-10-27-stash-persistence/README.md).
-No new assets, balance changes or hardware/cloud acceptance. **Next implementation: G5 (G2–G4 complete).**
+No new assets, balance changes or hardware/cloud acceptance. **Next: G6 transaction reliability and G7 integration design after G5 completion.**
 
 ### G2 — completed: truthful production transformation offers
 
@@ -45,7 +45,7 @@ retained Shield Lattice/Leave and preserved saved Targeting Suite histories and 
 Acidic Secretions has no normal production grant. Corrected Regenerative Glands copy to
 match the existing passive healing tick. No speculative replacement costs or combat tuning.
 [Source/consumer map and evidence](playtest-evidence/2026-10-27-transformation-offers/README.md).
-Full game verification and all 23 portfolio guards pass. G3 is also complete; next implementation is G5.
+Full game verification and all 23 portfolio guards pass. G3 is also complete; next is G6/G7 after G5 completion.
 
 ### G3 — completed: explain current build effects and ownership
 
@@ -53,7 +53,7 @@ Existing build inspector now includes paged owned items with copy counts and per
 penalties, plus authored relic/artifact effects. Shop item offers show NEW/OWNED N and preserve
 LOCKED status. Upgrade rewards already show next rank; estimated DPS stays labelled estimated.
 No new inventory system, score, assets or balance changes. Production renderer bounds pass
-318 cases, including locked offers with two-digit copy counts. Full game verification and all 23 portfolio guards pass. G4 is also complete; next: G5.
+318 cases, including locked offers with two-digit copy counts. Full game verification and all 23 portfolio guards pass. G4 is also complete; next: G6/G7 after G5 completion.
 [Implementation evidence](playtest-evidence/2026-10-27-build-effects/README.md).
 
 ## Phase B — improve selection, shopping and run flow
@@ -65,38 +65,29 @@ frame without cutting copy or shrinking fonts. Back/Leave repeats on every overs
 Fresh renderer evidence confirmed stale text on same-ID updates; full presentation changes now
 refresh labels while retaining a surviving enabled selection, clamping pages and falling back to
 Back/Leave when it disappears. Full game verification and all 23 portfolio guards pass; 352 renderer cases pass. [Implementation evidence](playtest-evidence/2026-10-27-shop-polish/README.md).
-Next executable work: G5 native armory, selection slice complete.
+G5 is complete below; next is G6/G7.
 
-### G5 — native hero/threat selection implemented; armory remains
+### G5 — completed: native selection and armory
 
-First slice adds visible native hero/perk selectors, complete hero dossier, actual lock reasons,
-threat modifiers and guarded Deploy/Back. Existing ScreenFlow/earned unlock rules and portraits
-are reused. Loading/failure/retry also has native controls and correct focus transitions.
-Targeted browser tests pass at minimum/4K, including locked deployment and earned threat launch.
-[Implementation evidence](playtest-evidence/2026-10-28-native-selection/README.md).
-Full game verification passes (1,808 unit, 61 browser, 31 desktop-host tests), as do all 23 portfolio guards.
-Real AT/controller acceptance remains external.
+Hero/perk/threat selection provides readable dossiers, actual locks, guarded deployment and native
+loading/retry controls. [Selection evidence](playtest-evidence/2026-10-28-native-selection/README.md).
 
-**Next slice: native armory inspection and purchases. P2; M effort; medium risk.** Reuse keyed DOM
-controls and existing progression rules. Show costs, balance, prerequisites, owned/equipped state,
-and Back. Never grant equipment from a preview. Acceptance: keyboard/pointer/simulated pad activate
-once; focus survives purchase/equip/return; locked purchases remain guarded; fresh/earned profiles,
-viewport changes and full checks pass. No new progression tree, hero art or unlock shortcuts.
-
-Implementation order for the armory slice:
-1. Extend SemanticShell's keyed controls to inspect the six released ARMORY_NODES; reuse catalog
-   descriptions and prerequisite names, with a distinct purchase/equip action and native Back.
-2. Route actions through ScreenFlow.stepArmory and canPurchaseArmoryNode/canSelectArmoryNode;
-   keep ShellScene's existing save effects. Inspection must never spend marks or equip a kit.
-3. Cover insufficient marks, unmet prerequisites, one-time purchase, owned-kit selection, hero
-   clearance, reload persistence and focus continuity through the production renderer and store.
-4. Check minimum/4K layout, keyboard/pointer/simulated-pad activation and complete verification.
-   Real assistive-technology/controller acceptance stays pending without blocking this code slice.
+Native armory now exposes all six released nodes with separate inspection and purchase/equip,
+actual costs, balance, prerequisite/shortfall explanations, owned/equipped/clearance status and Back.
+Reuses existing ScreenFlow progression and save effects. Three targeted browser tests pass:
+locked purchases, one-time spending, all nodes, equip/reload persistence, minimum/4K layout,
+simulated pad, and failed-write retry without duplicate charges.
+[Armory evidence](playtest-evidence/2026-10-28-native-armory/README.md).
+Full verification passes: 1,808 unit tests, 64 browser checks, 31 desktop-host tests and all 23
+portfolio guards. Real AT/controller acceptance remains external.
+No new tree, art, unlock shortcuts or progression tuning.
 
 ### G6 — transaction and reward reliability alongside gameplay changes
 
 **P1 when a defect is reproduced; otherwise support task, M effort/medium risk.** Attach cross-system
 checks to G1–G5: buy/sell/lock/ban/reroll, event costs/rewards, reward-before-travel and write failure.
+Armory one-time spending, purchase/equip reload and failed-write retry now have fresh passing
+production-browser evidence in G5; do not repeat that completed slice.
 Assert inventory/currency/node state through actual save/resume boundaries. Fix demonstrated loss,
 duplication, invisible failures or incorrect reward application. Do not replace an already-working
 save system or build another generic QA framework. No new assets. Full checks for runtime fixes;

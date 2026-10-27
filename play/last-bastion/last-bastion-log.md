@@ -1,5 +1,15 @@
 # Last Bastion completed-work log
 
+## 28 October 2026 — G5 native armory slice
+
+Added native inspection and separate purchase/equip/Back controls using existing progression
+and persistence. Includes costs, balance, prerequisites, owned/equipped and clearance status.
+Three targeted browser cases pass, including failed storage-write retry without duplicate charge.
+Full verification: 1,808 unit tests, 64 browser checks, 31 desktop-host tests and 23 portfolio guards pass.
+Full game/portfolio results: [evidence](playtest-evidence/2026-10-28-native-armory/README.md).
+No content, balance or asset changes; no push or package.
+
+
 ## 28 October 2026 — G5 native selection slice
 
 Implemented native hero/perk/threat controls, readable dossier/locks, separate deployment and Back,

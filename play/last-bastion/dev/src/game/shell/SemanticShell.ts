@@ -1,7 +1,7 @@
 import { ROSTER } from "./ScreenFlow";
 import { heroDefinition, isHeroId } from "../hero/HeroCatalog";
 import { PERK_CATALOG } from "../perks/perkCatalog";
-import { isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
+import { ARMORY_NODES, COMMAND_MARKS_LABEL, armoryNode, canPurchaseArmoryNode, canSelectArmoryNode, isHeroDeploymentUnlocked } from "../progression/ArmoryProgression";
 import { THREAT_TIERS } from "../expedition/ThreatTier";
 import { heroDossierCopy } from "./HeroDossierCopy";
 import type { GameProgress } from "../save/LocalSaveStore";
@@ -33,7 +33,7 @@ interface ShellActions {
   setting(index: number, value: unknown): void;
   retrySave(): void;
   device(device: "keyboard" | "gamepad"): void;
-  selection(field: "rosterIndex" | "perkIndex" | "threatTierIndex", index: number): void;
+  selection(field: "rosterIndex" | "perkIndex" | "threatTierIndex" | "armoryIndex", index: number): void;
   resetBindings(): void;
   cancelBinding(): void;
 }
@@ -96,7 +96,7 @@ export class SemanticShell {
     const characterStatus = state.screen === "character-select" ? view.characterLoadFailed ? "failed" : view.characterLoading ? "loading" : "ready" : "";
     const characterStatusChanged = characterStatus !== this.characterStatus;
     this.characterStatus = characterStatus;
-    const supported = ["title", "menu", "settings", "how-to-play", "controls", "records", "character-select", "threat-select"].includes(state.screen);
+    const supported = ["title", "menu", "settings", "how-to-play", "controls", "records", "character-select", "threat-select", "armory"].includes(state.screen);
     const changed = this.screen !== state.screen;
     const hadFocus = this.owns(document.activeElement);
     if (changed) {
@@ -157,6 +157,40 @@ export class SemanticShell {
       });
       selectedKey = `menu-${state.menuCards[state.menuIndex]!.id}`;
       button("back", "Back", 825, 496, 84, 28, () => this.actions.intent("back"));
+    } else if (state.screen === "armory") {
+      const entry = ARMORY_NODES[state.armoryIndex]!;
+      const owned = state.purchasedArmoryNodeIds.includes(entry.id);
+      const equipped = state.selectedArmoryNodeId === entry.id;
+      const canBuy = canPurchaseArmoryNode(entry.id, state.commandMarksLifetime, state.purchasedArmoryNodeIds);
+      const canEquip = owned && canSelectArmoryNode(entry.id) && !equipped;
+      text("heading", "ARMORY", 70, 30, 650, 40, "h1");
+      text("balance", `${COMMAND_MARKS_LABEL}: ${state.commandMarksBalance}`, 70, 82, 820, 28).setAttribute("role", "status");
+      text("armory-help", "Permanent purchases • no refunds • selected kit applies to new runs", 70, 120, 820, 24);
+      const caption = text("armory-label", "Inspect equipment or clearance", 130, 165, 700, 22, "label") as HTMLLabelElement;
+      const select = node<HTMLSelectElement>("armory-select", "select", 130, 193, 700, 40);
+      select.id = "shell-armory-select"; caption.htmlFor = select.id;
+      if (select.options.length !== ARMORY_NODES.length) select.replaceChildren(...ARMORY_NODES.map(() => document.createElement("option")));
+      ARMORY_NODES.forEach((item, index) => {
+        const status = state.selectedArmoryNodeId === item.id ? "Equipped" : state.purchasedArmoryNodeIds.includes(item.id) ? "Owned" : `${item.cost} marks`;
+        select.options[index]!.textContent = `${item.name} — ${status}`;
+        select.options[index]!.value = String(index);
+      });
+      select.value = String(state.armoryIndex);
+      select.onchange = () => this.actions.selection("armoryIndex", Number(select.value));
+      const missing = entry.prerequisiteIds.filter(id => !state.purchasedArmoryNodeIds.includes(id));
+      const status = equipped ? "Equipped for new runs." : owned ? canSelectArmoryNode(entry.id) ? "Owned. Ready to equip." : "Clearance granted. Hero available for deployment."
+        : [missing.length ? `Requires: ${missing.map(id => armoryNode(id).name).join(", ")}.` : "Prerequisites met.",
+          state.commandMarksBalance < entry.cost ? `Need ${entry.cost - state.commandMarksBalance} more marks.` : "Enough marks available."].join(" ");
+      const detail = text("armory-detail", `${entry.description}\n\nCost: ${entry.cost} marks${owned ? " (already purchased)" : ""}\n${status}`, 130, 250, 700, 132);
+      detail.className = "semantic-dossier"; detail.id = "shell-armory-detail";
+      select.setAttribute("aria-describedby", detail.id);
+      const label = equipped ? "Equipped" : owned ? canSelectArmoryNode(entry.id) ? "Equip kit" : "Clearance owned" : `Purchase for ${entry.cost} marks`;
+      const action = button("armory-action", label, 530, 410, 300, 44, () => { if (canBuy || canEquip) this.actions.intent("confirm"); });
+      action.setAttribute("aria-disabled", String(!canBuy && !canEquip));
+      action.setAttribute("aria-describedby", detail.id);
+      button("back", "Back", 130, 410, 160, 44, () => this.actions.intent("back"));
+      text("armory-hint", "ARROWS INSPECT • TAB CONTROLS • ENTER/A ACTIVATE • ESC/B BACK", 70, 490, 820, 24);
+      selectedKey = "armory-action";
     } else if (state.screen === "character-select" || state.screen === "threat-select") {
       const hero = ROSTER[state.rosterIndex]!;
       const perk = PERK_CATALOG[state.perkIndex]!;

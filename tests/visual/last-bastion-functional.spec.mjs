@@ -1494,3 +1494,128 @@ test("native selection panels fit all heroes and pad confirmation respects focus
   await page.waitForTimeout(100);
   expect(await page.evaluate(() => window.__shellState.screen)).toBe("menu");
 });
+
+test("native armory guards purchases, separates inspection and persists earned equipment", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  const inspect = page.getByLabel("Inspect equipment or clearance", { exact: true });
+  const action = page.locator('[data-shell-key="armory-action"]');
+  const detail = page.locator('[data-shell-key="armory-detail"]');
+  await expect(action).toHaveAttribute("aria-disabled", "true");
+  await expect(detail).toContainText("Need 5 more marks");
+  await action.click({ force: true });
+  expect(await page.evaluate(() => window.__shellState.purchasedArmoryNodeIds)).toEqual([]);
+  await inspect.selectOption("1");
+  await expect(detail).toContainText("Requires: CLOSE-QUARTERS KIT");
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByRole("button", { name: /ARMORY/ })).toBeFocused();
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save")) || { version: 17 };
+    save.progress = { ...save.progress, commandMarksLifetime: 100, purchasedArmoryNodeIds: [] };
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  await inspect.selectOption("1");
+  await expect(action).toHaveAttribute("aria-disabled", "true"); // Affordable, but missing prerequisite.
+  await action.click({ force: true });
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(100);
+  await inspect.selectOption("0");
+  await action.focus();
+  await page.keyboard.press("Enter");
+  await expect(action).toHaveText("Equipped");
+  await expect(action).toBeFocused();
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(95);
+  await page.keyboard.press("Enter");
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(95);
+  const ids = ["armory-scattergun", "armory-arc-carbine", "armory-patrol-blade", "armory-assault-clearance", "armory-tactician-clearance", "armory-scout-clearance"];
+  for (const index of [1, 2, 3, 4, 5]) {
+    const before = await page.evaluate(() => window.__shellState.commandMarksBalance);
+    await inspect.focus();
+    await inspect.selectOption(String(index));
+    await expect(inspect).toBeFocused();
+    expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(before);
+    await action.click();
+    await expect(action).toBeFocused();
+  }
+  await expect(action).toHaveText("Clearance owned");
+  await expect(action).toHaveAttribute("aria-disabled", "true");
+  expect(await page.evaluate(() => window.__shellState.purchasedArmoryNodeIds)).toEqual(ids);
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(15);
+  await inspect.selectOption("0");
+  expect(await page.evaluate(() => window.__shellState.selectedArmoryNodeId)).toBe("armory-patrol-blade");
+  await page.getByRole("button", { name: "Equip kit", exact: true }).click();
+  await page.screenshot({ path: testInfo.outputPath("armory.png") });
+  await page.reload();
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  expect(await page.evaluate(() => window.__shellState.purchasedArmoryNodeIds)).toEqual(ids);
+  expect(await page.evaluate(() => window.__shellState.selectedArmoryNodeId)).toBe("armory-scattergun");
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(15);
+  for (const viewport of [{ width: 960, height: 540 }, { width: 3840, height: 2160 }]) {
+    await page.setViewportSize(viewport);
+    for (const index of [0, 1, 2, 3, 4, 5]) {
+      await inspect.selectOption(String(index));
+      expect(await page.evaluate(() => {
+        const panel = document.querySelector(".semantic-shell").getBoundingClientRect();
+        return [...document.querySelectorAll(".semantic-shell > *")].filter(el => {
+          const box = el.getBoundingClientRect();
+          return box.left < panel.left - 1 || box.right > panel.right + 1 || box.top < panel.top - 1 || box.bottom > panel.bottom + 1 || el.scrollHeight > el.clientHeight + 1;
+        }).map(el => el.dataset.shellKey);
+      })).toEqual([]);
+    }
+  }
+});
+
+test("native armory simulated pad spends once and focused Back returns once", async ({ page }) => {
+  await page.addInitScript(() => {
+    const pad = { id: "Standard test controller", index: 0, connected: true, mapping: "standard", timestamp: 1,
+      axes: [0,0,0,0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
+    window.__testPad = pad;
+    Object.defineProperty(navigator, "getGamepads", { value: () => { pad.timestamp = performance.now(); return [pad]; } });
+    localStorage.setItem("last-bastion-save", JSON.stringify({ version: 17, progress: { commandMarksLifetime: 10 } }));
+  });
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: true, touched: true, value: 1 }; });
+  await page.waitForFunction(() => window.__shellState.commandMarksBalance === 5);
+  await page.waitForTimeout(150);
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: false, touched: false, value: 0 }; });
+  expect(await page.evaluate(() => window.__shellState.purchasedArmoryNodeIds)).toEqual(["armory-scattergun"]);
+  await page.getByRole("button", { name: "Back", exact: true }).focus();
+  await page.waitForTimeout(100);
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: true, touched: true, value: 1 }; });
+  await page.waitForFunction(() => window.__shellState.screen === "menu");
+  await page.evaluate(() => { window.__testPad.buttons[0] = { pressed: false, touched: false, value: 0 }; });
+  await expect(page.getByRole("button", { name: /ARMORY/ })).toBeFocused();
+});
+
+test("native armory exposes failed persistence and retries without charging twice", async ({ page }) => {
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save")) || { version: 17 };
+    save.progress = { ...save.progress, commandMarksLifetime: 10, purchasedArmoryNodeIds: [] };
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  await page.evaluate(() => {
+    window.__originalStorageWrite = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (key === "last-bastion-save") throw new DOMException("Test storage failure", "QuotaExceededError");
+      return window.__originalStorageWrite.call(this, key, value);
+    };
+  });
+  await page.getByRole("button", { name: "Purchase for 5 marks", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Save error. Retry saving", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(5);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).progress.purchasedArmoryNodeIds)).toEqual([]);
+  await page.evaluate(() => { Storage.prototype.setItem = window.__originalStorageWrite; });
+  await page.getByRole("button", { name: "Save error. Retry saving", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Save error. Retry saving", exact: true })).toHaveCount(0);
+  await page.reload();
+  await page.getByRole("button", { name: /ARMORY/ }).click();
+  expect(await page.evaluate(() => window.__shellState.purchasedArmoryNodeIds)).toEqual(["armory-scattergun"]);
+  expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(5);
+  await expect(page.locator('[data-shell-key="armory-action"]')).toHaveText("Equipped");
+});

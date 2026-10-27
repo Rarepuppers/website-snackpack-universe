@@ -164,7 +164,7 @@ export class ShellScene extends Phaser.Scene {
       retrySave: () => { this.saveStore.retryPersistence(); this.render(); },
       device: device => { if (this.state.controlDevice !== device) this.apply("right"); },
       selection: (field, index) => {
-        const count = field === "rosterIndex" ? ROSTER.length : field === "perkIndex" ? PERK_CATALOG.length : THREAT_TIERS.length;
+        const count = field === "armoryIndex" ? ARMORY_NODES.length : field === "rosterIndex" ? ROSTER.length : field === "perkIndex" ? PERK_CATALOG.length : THREAT_TIERS.length;
         if (!Number.isInteger(index) || index < 0 || index >= count) return;
         this.state = { ...this.state, [field]: index }; this.render();
       },
@@ -198,7 +198,7 @@ export class ShellScene extends Phaser.Scene {
         return;
       }
       const intent = padButtonToIntent(button.index);
-      if (intent === "confirm" && ["character-select", "threat-select"].includes(this.state.screen)
+      if (intent === "confirm" && ["character-select", "threat-select", "armory"].includes(this.state.screen)
         && this.semantic?.owns(document.activeElement) && document.activeElement instanceof HTMLButtonElement) {
         document.activeElement.click(); return;
       }
@@ -876,6 +876,7 @@ export class ShellScene extends Phaser.Scene {
   }
 
   private renderArmory(): void {
+    if (this.semantic) return;
     const scoutReleased = ARMORY_NODES.some(({ id }) => id === "armory-scout-clearance");
     this.root.add(this.text(70, 42, "ARMORY", IVORY, "28px"));
     this.root.add(this.text(70, 78, `${COMMAND_MARKS_LABEL}  ${this.state.commandMarksBalance}`, TEAL, "16px"));
