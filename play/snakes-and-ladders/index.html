@@ -374,6 +374,7 @@
   if (["classic", "2p", "4p", "chaos"].indexOf(mode) < 0) mode = "classic";
   var players, snakes, ladders, current, busy, over;
   var resume = null;
+  var gameGeneration = 0;
   function winsKey() { return "sp_snakes_and_ladders_wins_" + mode; }
   function showWins() { var n = 0; try { n = +(localStorage.getItem(winsKey()) || 0); } catch (e) {} winsEl.textContent = n; }
 
@@ -489,9 +490,11 @@
   }
 
   function rollTurn() {
+    var generation = gameGeneration;
     busy = true; setTurnReadout();
     var frames = 0;
     var anim = setInterval(function () {
+      if (generation !== gameGeneration) { clearInterval(anim); return; }
       setDice(Math.floor(Math.random() * 6) + 1);
       frames++;
       if (frames >= 8) {
@@ -508,19 +511,21 @@
   }
 
   function moveCurrent(dice) {
+    var generation = gameGeneration;
     var p = players[current];
     var start = p.pos;
-    var target = start + dice;
-    if (target > 100) target = 100 - (target - 100);
     statusEl.textContent = p.name + " rolled " + dice + ".";
     statusEl.className = "game-status";
 
     var steps = [];
-    if (start < target) for (var s = start + 1; s <= target; s++) steps.push(s);
-    else for (var s2 = start - 1; s2 >= target; s2--) steps.push(s2);
+    for (var step = 1; step <= dice; step++) {
+      var square = start + step;
+      steps.push(square > 100 ? 200 - square : square);
+    }
 
     var i = 0;
     var stepTimer = setInterval(function () {
+      if (generation !== gameGeneration) { clearInterval(stepTimer); return; }
       if (i >= steps.length) {
         clearInterval(stepTimer);
         resolveLanding();
@@ -536,6 +541,7 @@
   function act(p, verb) { return p.name === "You" ? "You " + verb : p.name + " " + verb + "s"; }
 
   function resolveLanding() {
+    var generation = gameGeneration;
     var p = players[current];
     var landed = p.pos;
     var msg = "";
@@ -543,6 +549,7 @@
     else if (ladders[landed]) { p.pos = ladders[landed]; msg = "Ladder! " + act(p, "climb") + " to " + p.pos + "."; }
 
     setTimeout(function () {
+      if (generation !== gameGeneration) return;
       renderTokens(); renderPlayers();
       if (msg) { statusEl.textContent = msg; }
       if (p.pos >= 100) { finish(p); return; }
@@ -551,7 +558,7 @@
       setTurnReadout();
       if (!players[current].isHuman) {
         statusEl.textContent = players[current].name + " is rolling…";
-        setTimeout(function () { if (!over) rollTurn(); }, 700);
+        setTimeout(function () { if (generation === gameGeneration && !over) rollTurn(); }, 700);
       } else if (!msg) {
         statusEl.textContent = "Your turn — roll.";
       }
@@ -580,6 +587,7 @@
   }
 
   function newGame() {
+    gameGeneration++;
     var board = mode === "chaos" ? chaosBoard() : { snakes: STANDARD_SNAKES, ladders: STANDARD_LADDERS };
     snakes = board.snakes; ladders = board.ladders;
     players = makePlayers(mode);
@@ -626,6 +634,7 @@
       serialize: function () { return { players: players, current: current, snakes: snakes, ladders: ladders }; },
       validate: validSave,
       restore: function (p) {
+        gameGeneration++;
         players = p.players; current = p.current; snakes = p.snakes; ladders = p.ladders;
         busy = false; over = false;
         buildBoard(); drawOverlay(); renderTokens(); renderPlayers(); setTurnReadout(); showWins();
