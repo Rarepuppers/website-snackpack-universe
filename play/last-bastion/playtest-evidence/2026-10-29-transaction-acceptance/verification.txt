@@ -1,0 +1,284 @@
+Last Bastion verification
+Commit: cec87477
+Build identity: web-2026.10.28-run-save-recovery
+Working tree: DIRTY
+
+=== Web static/unit/build/smoke/offline ===
+
+> last-bastion-web@0.0.1 verify
+> npm run image:audit:webp && npm run combat:audit:boundaries && npm run content:audit && npm run ui:audit:text && npm run typecheck && npm run test && npm run test:build-check && npm run build:check && npm run smoke && npm run offline
+
+
+> last-bastion-web@0.0.1 image:audit:webp
+> node scripts/audit-production-images.mjs
+
+PASS 8 lossy + 55 lossless derivatives
+Runtime WebP audit complete: 63 assets; 51.93 MiB -> 27.06 MiB (52.1%).
+
+> last-bastion-web@0.0.1 combat:audit:boundaries
+> node scripts/audit-combat-boundaries.mjs
+
+PASS 33 enemy adapters delegate policy with no inline switch state machines.
+First shared-state seam: ordinary projectile volley geometry; runtime mutation and world effects remain simulation-owned.
+
+> last-bastion-web@0.0.1 content:audit
+> vitest run src/game/content/ContentInventory.test.ts --reporter=verbose
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > 5 heroes; 34 weapons (31 draftable, 1 earned unique, 1 hero-bound, 1 transformation-only); 38 enemy catalogue types (20 regular/treasure, 8 summons/props, 7 mini-bosses, 3 bosses); 7 elite identities; 47 items, 14 relics, 12 artifacts; 20 upgrades, 16 level-stat cards, 29 world objects, 4 objective modes 1ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > partitions every enemy catalogue entry exactly once 0ms
+ ✓ src/game/content/ContentInventory.test.ts > generated content inventory > keeps elite and ranked-enemy identities unique 0ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:35:48
+   Duration  807ms (transform 602ms, setup 0ms, import 711ms, tests 2ms, environment 0ms)
+
+
+> last-bastion-web@0.0.1 ui:audit:text
+> node scripts/audit-ui-text-resolution.mjs
+
+UI text-resolution audit passed for 6 release scenes.
+
+> last-bastion-web@0.0.1 typecheck
+> tsc --noEmit
+
+
+> last-bastion-web@0.0.1 test
+> vitest run
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  317 passed (317)
+      Tests  1810 passed (1810)
+   Start at  00:35:50
+   Duration  10.14s (transform 30.41s, setup 0ms, import 63.62s, tests 28.08s, environment 36ms)
+
+
+> last-bastion-web@0.0.1 test:build-check
+> node scripts/check-published-build-regression.mjs
+
+PASS  stale published output fails without mutation.
+
+> last-bastion-web@0.0.1 build:check
+> node scripts/check-published-build.mjs
+
+<script src="../game-ui-controls.js"> in "/index.html" can't be bundled without type="module" attribute
+<script src="../game-ui-assets.js"> in "/index.html" can't be bundled without type="module" attribute
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+PASS  25 published build outputs match dev/src.
+
+> last-bastion-web@0.0.1 smoke
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-test.ps1
+
+
+
+PageStatus       : 200
+AboutStatus      : 200
+ContentType      : text/html; charset=utf-8
+HasGameRoot      : True
+AssetPath        : /play/last-bastion/game-assets/game.js
+AssetStatus      : 200
+AssetBytes       : 120297
+ArtAssetCount    : 120
+ReviewRouteCount : 90
+
+
+
+
+> last-bastion-web@0.0.1 offline
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1
+
+
+
+OfflineDocument      : True
+RemoteImports        : 0
+RemoteStartupCalls   : 0
+LocalAssetReferences : 423
+MissingLocalAssets   : 0
+
+
+
+PASS Web static/unit/build/smoke/offline (25.9s)
+
+=== Website JavaScript and offline core ===
+
+> check:javascript
+> node scripts/check-javascript.mjs
+
+JavaScript syntax check passed (75 files).
+PASS Website JavaScript and offline core (2.3s)
+
+=== Executable browser acceptance ===
+
+> test:last-bastion
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-last-bastion-browser-tests.ps1
+
+
+Running 69 tests using 1 worker
+
+(node:24488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/69] tests\visual\last-bastion-functional.spec.mjs:4:3 › shop page transition does not sell on held pointer confirmation
+[2/69] tests\visual\last-bastion-functional.spec.mjs:4:3 › shop page transition does not sell on held simulated-pad confirmation
+[3/69] tests\visual\last-bastion-functional.spec.mjs:4:3 › shop page transition does not sell on held simulated-pad-blur confirmation
+[4/69] tests\visual\last-bastion-functional.spec.mjs:51:1 › shop pagination survives resizing an open decision
+[5/69] tests\visual\last-bastion-functional.spec.mjs:86:1 › full shop racks page without spending and keep Back reachable
+[6/69] tests\visual\last-bastion-functional.spec.mjs:126:1 › shop offers and management fit the camera and remain keyboard operable
+[7/69] tests\visual\last-bastion-functional.spec.mjs:155:1 › event results require a fresh confirmation and block underlying choices
+[8/69] tests\visual\last-bastion-functional.spec.mjs:181:1 › combat audio settings control the live output and encounter retry stops old voices
+[9/69] tests\visual\last-bastion-functional.spec.mjs:239:1 › opt-in local QA session exports active frames, excludes pause, stops and resets
+[10/69] tests\visual\last-bastion-functional.spec.mjs:317:3 › Last Bastion executable acceptance › title reaches the main menu by keyboard
+[11/69] tests\visual\last-bastion-functional.spec.mjs:326:3 › Last Bastion executable acceptance › the menu offers Daily, Quick Drop and Expedition, hides LAB, and starts today's Daily
+[12/69] tests\visual\last-bastion-functional.spec.mjs:352:3 › Last Bastion executable acceptance › LAB stays reachable for QA with ?lab=1
+[13/69] tests\visual\last-bastion-functional.spec.mjs:361:3 › Last Bastion executable acceptance › map and combat routes create their runtime state
+[14/69] tests\visual\last-bastion-functional.spec.mjs:387:3 › Last Bastion executable acceptance › the Scrap Shop does not preload unrelated encounter art
+[15/69] tests\visual\last-bastion-functional.spec.mjs:399:3 › Last Bastion executable acceptance › settings can export a versioned save backup
+[16/69] tests\visual\last-bastion-functional.spec.mjs:413:3 › Last Bastion executable acceptance › settings exposes the game privacy policy without overflowing the minimum viewport
+[17/69] tests\visual\last-bastion-functional.spec.mjs:434:3 › Last Bastion executable acceptance › debrief keyboard navigation updates the selected action
+[18/69] tests\visual\last-bastion-functional.spec.mjs:447:3 › Last Bastion executable acceptance › run details remain selectable when clipboard access is blocked
+[19/69] tests\visual\last-bastion-functional.spec.mjs:469:3 › Last Bastion executable acceptance › debrief game link remains selectable when clipboard access is blocked
+[20/69] tests\visual\last-bastion-functional.spec.mjs:488:3 › Last Bastion executable acceptance › focus loss clears a held irreversible confirmation
+[21/69] tests\visual\last-bastion-functional.spec.mjs:505:3 › Last Bastion executable acceptance › maximum HUD scale, reduced motion, and remapped movement work at the minimum viewport
+[22/69] tests\visual\last-bastion-functional.spec.mjs:558:3 › Last Bastion executable acceptance › a warmed release boots offline and an unwarmed combat theme fails visibly
+[23/69] tests\visual\last-bastion-functional.spec.mjs:579:3 › Last Bastion executable acceptance › storage read failure stays visible and retryable
+[24/69] tests\visual\last-bastion-functional.spec.mjs:603:3 › Last Bastion executable acceptance › repeated renderer boots and scene transitions remain crash-free
+[25/69] tests\visual\last-bastion-functional.spec.mjs:630:3 › Last Bastion executable acceptance › combat decisions remain keyboard-operable after overlay extraction
+[26/69] tests\visual\last-bastion-functional.spec.mjs:649:3 › Last Bastion executable acceptance › level-up stat cards fit their rendered text inside the choices
+[27/69] tests\visual\last-bastion-functional.spec.mjs:671:3 › Last Bastion on a touch-only phone › explains the keyboard requirement before boot and still lets a player continue
+[28/69] tests\visual\last-bastion-functional.spec.mjs:689:3 › October reliability regressions › failed character art stops loading and can recover on explicit retry
+[29/69] tests\visual\last-bastion-functional.spec.mjs:717:3 › October reliability regressions › failed entry module offers recovery without clearing saves
+[30/69] tests\visual\last-bastion-functional.spec.mjs:724:3 › October reliability regressions › Daily retry resolves the date when clicked, not when the screen was opened
+[31/69] tests\visual\last-bastion-functional.spec.mjs:735:1 › build pages are keyboard-operable and include affinity
+[32/69] tests\visual\last-bastion-functional.spec.mjs:746:3 › build controls stay onscreen at 1920x1080
+[33/69] tests\visual\last-bastion-functional.spec.mjs:746:3 › build controls stay onscreen at 3840x2160
+[34/69] tests\visual\last-bastion-functional.spec.mjs:757:1 › restart resets the attempt's settings provenance
+[35/69] tests\visual\last-bastion-functional.spec.mjs:773:3 › physical B goes back once with evade rebound to B
+[36/69] tests\visual\last-bastion-functional.spec.mjs:773:3 › physical B goes back once with pause rebound to B
+[37/69] tests\visual\last-bastion-functional.spec.mjs:798:3 › floor pilot a boots through its real texture loader
+[38/69] tests\visual\last-bastion-functional.spec.mjs:798:3 › floor pilot b boots through its real texture loader
+[39/69] tests\visual\last-bastion-functional.spec.mjs:811:2 › expanded floor kit and affinity inspect load through real combat
+[40/69] tests\visual\last-bastion-functional.spec.mjs:829:3 › gallery logical sizes and every manifest page fit at 960x540
+[41/69] tests\visual\last-bastion-functional.spec.mjs:829:3 › gallery logical sizes and every manifest page fit at 1920x1080
+[42/69] tests\visual\last-bastion-functional.spec.mjs:829:3 › gallery logical sizes and every manifest page fit at 3840x2160
+[43/69] tests\visual\last-bastion-functional.spec.mjs:860:1 › hero gallery routes show the requested family and reject unknown heroes
+[44/69] tests\visual\last-bastion-functional.spec.mjs:879:1 › semantic menus activate once and restore focus on return
+[45/69] tests\visual\last-bastion-functional.spec.mjs:902:1 › native settings toggle once, retain input focus and persist actual values
+[46/69] tests\visual\last-bastion-functional.spec.mjs:930:1 › semantic controls follow the actual canvas box after resize
+[47/69] tests\visual\last-bastion-functional.spec.mjs:952:1 › native save import reports invalid files and cancellation without changing progress
+[48/69] tests\visual\last-bastion-functional.spec.mjs:977:1 › menu gamepad selection follows native focus and B returns exactly once
+[49/69] tests\visual\last-bastion-functional.spec.mjs:1007:1 › native help pages activate once, expose instructions and restore menu focus
+[50/69] tests\visual\last-bastion-functional.spec.mjs:1054:3 › native help uses saved bindings and stays within its panel at DPR 1
+[51/69] tests\visual\last-bastion-functional.spec.mjs:1054:3 › native help uses saved bindings and stays within its panel at DPR 2
+[52/69] tests\visual\last-bastion-functional.spec.mjs:1102:1 › help gamepad page controls preserve confirm and back behavior
+[53/69] tests\visual\last-bastion-functional.spec.mjs:1144:1 › native rebinding swaps duplicates, owns capture input, persists and resets
+[54/69] tests\visual\last-bastion-functional.spec.mjs:1202:1 › controller capture ignores keyboard navigation, cancels safely and swaps actual pad buttons
+[55/69] tests\visual\last-bastion-functional.spec.mjs:1234:1 › native capture supports Enter and Tab bindings without reopening on release
+[56/69] tests\visual\last-bastion-functional.spec.mjs:1255:1 › native records exposes empty and populated history, clamps navigation and preserves saves
+[57/69] tests\visual\last-bastion-functional.spec.mjs:1314:1 › native controls, capture and records follow canvas bounds across resolution and DPR
+[58/69] tests\visual\last-bastion-functional.spec.mjs:1348:1 › 4K native foreground leaves the canvas background intact
+[59/69] tests\visual\last-bastion-functional.spec.mjs:1374:1 › saved expedition stash is visible after renderer reload
+[60/69] tests\visual\last-bastion-functional.spec.mjs:1418:1 › native hero and threat selectors preserve locks, focus, mode and deployment
+[61/69] tests\visual\last-bastion-functional.spec.mjs:1462:1 › native selection panels fit all heroes and pad confirmation respects focused Back
+[62/69] tests\visual\last-bastion-functional.spec.mjs:1498:1 › native armory guards purchases, separates inspection and persists earned equipment
+[63/69] tests\visual\last-bastion-functional.spec.mjs:1570:1 › native armory simulated pad spends once and focused Back returns once
+[64/69] tests\visual\last-bastion-functional.spec.mjs:1593:1 › native armory exposes failed persistence and retries without charging twice
+[65/69] tests\visual\last-bastion-functional.spec.mjs:1623:1 › event reward stays available after failed saving and retry commits exactly once
+[66/69] tests\visual\last-bastion-functional.spec.mjs:1665:1 › map travel waits for save recovery before launching the selected encounter
+[67/69] tests\visual\last-bastion-functional.spec.mjs:1692:1 › run end retains records until failed saving recovers without duplicate credit
+[68/69] tests\visual\last-bastion-functional.spec.mjs:1724:3 › expedition safe-node-victory retains its save through failure and retry
+[69/69] tests\visual\last-bastion-functional.spec.mjs:1724:3 › expedition abandonment retains its save through failure and retry
+  69 passed (3.1m)
+PASS Executable browser acceptance (184.9s)
+
+=== Desktop host build and tests ===
+
+> last-bastion-desktop@0.0.1 test
+> npm run build && node --test dist/*.test.js
+
+
+> last-bastion-desktop@0.0.1 build
+> tsc -p tsconfig.json
+
+▶ atomic desktop save storage
+  ✔ returns null before the first save and writes a valid primary (5.0421ms)
+  ✔ rotates one known-good backup on replacement (5.4811ms)
+  ✔ falls back to the backup when the primary is corrupt (5.5156ms)
+  ✔ does not overwrite a good backup with a corrupt primary (10.0414ms)
+  ✔ stores cloud-sync metadata atomically in an isolated fixed slot (11.5129ms)
+  ✔ rejects arbitrary keys, malformed JSON, and oversized payloads (12.2455ms)
+✔ atomic desktop save storage (51.8413ms)
+▶ desktop bridge validation
+  ✔ accepts only current achievement ids (0.6652ms)
+  ✔ confines cloud I/O to the versioned save slot (0.1105ms)
+  ✔ bounds serialized cloud payloads (8.736ms)
+✔ desktop bridge validation (10.1504ms)
+▶ desktop display transition policy
+  ✔ centres the preserved window size on the requested display (1.282ms)
+  ✔ falls back to the current display and clamps oversized windows (0.1912ms)
+  ✔ returns null when the host reports no displays (0.1108ms)
+✔ desktop display transition policy (3.2121ms)
+▶ desktop packaging assets
+  ✔ wires each platform to a source-controlled application icon (0.6232ms)
+  ✔ retains a square source and a seven-resolution Windows ICO (8.8179ms)
+  ✔ keeps valid Linux PNG and macOS ICNS derivatives (8.3488ms)
+✔ desktop packaging assets (18.5608ms)
+▶ desktop packaged paths
+  ✔ reads staged web content from Electron resources when packaged (0.5926ms)
+  ✔ keeps source development rooted at the parent game directory (0.1423ms)
+  ✔ honours the explicit test override in either mode (0.9182ms)
+✔ desktop packaged paths (2.4761ms)
+✔ hashes packaged bytes, retains dirty provenance and checks without rewriting (16.9075ms)
+✔ rejects missing/extra files, mixed build identities and sensitive local files (27.3725ms)
+✔ stamps actual staged hashes and relevant dirty source from a disposable checkout (226.6026ms)
+▶ Steam Input action manifest
+  ✔ defines the complete localized action contract without placeholder App IDs (5.7605ms)
+✔ Steam Input action manifest (6.3918ms)
+▶ SteamPipe source templates
+  ✔ keeps credentials and unassigned Steam IDs out of source control (1.4416ms)
+  ✔ maps the complete packaged directory and excludes debug symbols (0.477ms)
+✔ SteamPipe source templates (2.7923ms)
+▶ Steamworks host
+  ✔ uses steam_appid.txt when the environment override is absent (0.8179ms)
+  ✔ maps achievements, stats and the missing-cloud-file result (0.615ms)
+  ✔ reports the connected Steam controller type and degrades safely (0.3826ms)
+  ✔ turns false native results into retryable bridge failures (0.2228ms)
+✔ Steamworks host (3.576ms)
+▶ desktop web protocol
+  ✔ maps only the published game prefix beneath its root (0.9284ms)
+  ✔ rejects traversal and malformed URL input (0.1831ms)
+  ✔ allows a loopback HTTP origin only for development (0.9753ms)
+✔ desktop web protocol (2.9832ms)
+ℹ tests 31
+ℹ suites 9
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 382.8182
+PASS Desktop host build and tests (1.1s)
+
+Report written to play/last-bastion/.qa-runtime/transaction-acceptance-verification.json
+
+PASS     Web static/unit/build/smoke/offline
+PASS     Website JavaScript and offline core
+PASS     Executable browser acceptance
+PASS     Desktop host build and tests
+
+Manual gates, not covered by anything above:
+  MANUAL   Observed gameplay, visual and audio review
+  MANUAL   Packaged-window hardware checks
+  MANUAL   Steam client acceptance
+
+ALL REQUIRED LANES PASSED (214.2s)

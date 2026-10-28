@@ -2,7 +2,7 @@
 
 **Updated 29 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.28-run-save-recovery`, schema 17; G1–G5 complete; G6 event/map fixes verified; run-end fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-run-save-recovery`, schema 17; G1–G5 complete; G6 recovery fixes verified; transaction acceptance verified; next: G7 integration design. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -99,8 +99,14 @@ retains records until retry succeeds, without duplicate credit. Automatic naviga
 Restart use the existing recovery helper, also wired to expedition completion. Only Quick Drop
 abandonment has an independent runtime failure witness so far. Full verification passes: 1,808
 unit tests, 67 browser checks, 31 desktop-host tests and all 23 portfolio guards. [Evidence](playtest-evidence/2026-10-28-run-save-recovery/README.md).
-Next bounded checks: independent expedition completion failure witnesses, then remaining shop/event
-transaction boundaries. Similar source patterns are leads, not independently confirmed failures.
+**Additional acceptance completed and verified:** production browser cases cover
+non-final supply-depot victory and expedition abandonment under failed writes, repeated retry and
+Restart. Two integration cases cover purchased-item stats/spend over three real save round-trips
+and locked reroll → ban → next-shop exclusion. No new defect found; no runtime change.
+[29 October evidence](playtest-evidence/2026-10-29-transaction-acceptance/README.md).
+Full checks pass: 1,810 unit tests, 69 browser checks, 31 desktop-host tests and all 23 portfolio guards.
+Next: G7 design. G6 remains support work for reproduced defects; final-boss
+victory under failed writes is a bounded coverage follow-up, not claimed as tested here.
 
 **P1 when a defect is reproduced; otherwise support task, M effort/medium risk.** Attach cross-system
 checks to G1–G5: buy/sell/lock/ban/reroll, event costs/rewards, reward-before-travel and write failure.

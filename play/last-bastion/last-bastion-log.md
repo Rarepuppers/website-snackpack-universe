@@ -1,5 +1,14 @@
 # Last Bastion completed-work log
 
+## 29 October 2026 — G6 expedition and transaction acceptance
+
+Added real-browser failed-save cases for supply-depot victory and expedition abandonment, plus
+production save round-trips for item purchases, locked reroll spending and bans. No runtime defect
+found in these cases. [Evidence](playtest-evidence/2026-10-29-transaction-acceptance/README.md).
+Runtime identity remains web-2026.10.28-run-save-recovery. Full verification passes: 1,810 unit
+tests, 69 browser checks, 31 desktop-host tests and all 23 portfolio guards.
+
+
 ## 28 October 2026 — G6 run-end save recovery
 
 Guarded terminal and expedition completion navigation with existing save recovery. Quick Drop
