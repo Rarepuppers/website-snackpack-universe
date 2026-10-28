@@ -1,5 +1,9 @@
 # Last Bastion completed-work log
 
+## 29 October 2026 — G7/G8 design and G9 feedback closeout
+
+Completed versioned-finale and bounded teleporter designs; captured five production maps and seven excluded interactions. Fresh targeted audio/interaction/encounter/presenter checks: 38 tests pass. A subsequent final-boss browser regression exposed and fixed Enter/Restart bypassing reward persistence. [Evidence](playtest-evidence/2026-10-29-design-closeout/README.md). Superseded implementation queue archived; final-boss failed-write coverage now passes; only gated/conditional work remains in CURRENT-PLAN. Full checks pass: 1,810 unit tests, 70 browser checks, 31 desktop-host tests and 23 portfolio guards. Runtime: `web-2026.10.29-boss-reward-confirm`.
+
 ## 29 October 2026 — G6 expedition and transaction acceptance
 
 Added real-browser failed-save cases for supply-depot victory and expedition abandonment, plus

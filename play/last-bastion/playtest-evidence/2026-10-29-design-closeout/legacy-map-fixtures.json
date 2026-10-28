@@ -1,0 +1,1232 @@
+[
+  {
+    "seed": 1,
+    "map": {
+      "seed": 1,
+      "columns": 8,
+      "lanes": 3,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "combat",
+          "column": 0,
+          "lane": 1,
+          "next": [
+            3,
+            4,
+            2
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 2,
+          "type": "combat",
+          "column": 1,
+          "lane": 0,
+          "next": [
+            5,
+            6
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 3,
+          "type": "combat",
+          "column": 1,
+          "lane": 1,
+          "next": [
+            6,
+            7
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 4,
+          "type": "combat",
+          "column": 1,
+          "lane": 2,
+          "next": [
+            7
+          ],
+          "themeId": "starship-transit"
+        },
+        {
+          "id": 5,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 0,
+          "next": [
+            8
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 6,
+          "type": "weapon-cache",
+          "column": 2,
+          "lane": 1,
+          "next": [
+            9
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 7,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 2,
+          "next": [
+            10
+          ],
+          "themeId": "bastion-logistics"
+        },
+        {
+          "id": 8,
+          "type": "shrine",
+          "column": 3,
+          "lane": 0,
+          "next": [
+            11,
+            12
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 9,
+          "type": "combat",
+          "column": 3,
+          "lane": 1,
+          "next": [
+            12
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 10,
+          "type": "combat",
+          "column": 3,
+          "lane": 2,
+          "next": [
+            13,
+            12
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 11,
+          "type": "mini-boss",
+          "column": 4,
+          "lane": 0,
+          "next": [
+            14,
+            15
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 12,
+          "type": "mini-boss",
+          "column": 4,
+          "lane": 1,
+          "next": [
+            15
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 13,
+          "type": "elite",
+          "column": 4,
+          "lane": 2,
+          "next": [
+            16,
+            15
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 14,
+          "type": "event",
+          "column": 5,
+          "lane": 0,
+          "next": [
+            17
+          ],
+          "themeId": "bastion-logistics"
+        },
+        {
+          "id": 15,
+          "type": "liberation",
+          "column": 5,
+          "lane": 1,
+          "next": [
+            18,
+            19
+          ],
+          "themeId": "arctic-relay",
+          "shopProfileId": "science-lab"
+        },
+        {
+          "id": 16,
+          "type": "event",
+          "column": 5,
+          "lane": 2,
+          "next": [
+            19,
+            18
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 17,
+          "type": "liberation",
+          "column": 6,
+          "lane": 0,
+          "next": [
+            20
+          ],
+          "themeId": "surface-frontier",
+          "shopProfileId": "church"
+        },
+        {
+          "id": 18,
+          "type": "elite",
+          "column": 6,
+          "lane": 1,
+          "next": [
+            20
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 19,
+          "type": "weapon-cache",
+          "column": 6,
+          "lane": 2,
+          "next": [
+            20
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 20,
+          "type": "boss",
+          "column": 7,
+          "lane": 1,
+          "next": [],
+          "themeId": "containment-underworld"
+        }
+      ],
+      "startNodeId": 1,
+      "bossNodeId": 20
+    },
+    "finale": {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 4147905103,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  },
+  {
+    "seed": 42,
+    "map": {
+      "seed": 42,
+      "columns": 8,
+      "lanes": 3,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "combat",
+          "column": 0,
+          "lane": 1,
+          "next": [
+            3,
+            2,
+            4
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 2,
+          "type": "combat",
+          "column": 1,
+          "lane": 0,
+          "next": [
+            5
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 3,
+          "type": "combat",
+          "column": 1,
+          "lane": 1,
+          "next": [
+            6
+          ],
+          "themeId": "surface-frontier"
+        },
+        {
+          "id": 4,
+          "type": "combat",
+          "column": 1,
+          "lane": 2,
+          "next": [
+            7
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 5,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 0,
+          "next": [
+            8,
+            9
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 6,
+          "type": "combat",
+          "column": 2,
+          "lane": 1,
+          "next": [
+            9,
+            8
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 7,
+          "type": "weapon-cache",
+          "column": 2,
+          "lane": 2,
+          "next": [
+            10,
+            9
+          ],
+          "themeId": "bastion-logistics"
+        },
+        {
+          "id": 8,
+          "type": "elite",
+          "column": 3,
+          "lane": 0,
+          "next": [
+            11
+          ],
+          "themeId": "surface-frontier"
+        },
+        {
+          "id": 9,
+          "type": "mini-boss",
+          "column": 3,
+          "lane": 1,
+          "next": [
+            12
+          ],
+          "themeId": "starship-transit"
+        },
+        {
+          "id": 10,
+          "type": "weapon-cache",
+          "column": 3,
+          "lane": 2,
+          "next": [
+            13,
+            12
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 11,
+          "type": "liberation",
+          "column": 4,
+          "lane": 0,
+          "next": [
+            14
+          ],
+          "themeId": "arctic-relay",
+          "shopProfileId": "black-market"
+        },
+        {
+          "id": 12,
+          "type": "combat",
+          "column": 4,
+          "lane": 1,
+          "next": [
+            15,
+            14
+          ],
+          "themeId": "machine-foundry"
+        },
+        {
+          "id": 13,
+          "type": "event",
+          "column": 4,
+          "lane": 2,
+          "next": [
+            16,
+            15
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 14,
+          "type": "elite",
+          "column": 5,
+          "lane": 0,
+          "next": [
+            17,
+            18
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 15,
+          "type": "mini-boss",
+          "column": 5,
+          "lane": 1,
+          "next": [
+            18
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 16,
+          "type": "supply-depot",
+          "column": 5,
+          "lane": 2,
+          "next": [
+            19,
+            18
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 17,
+          "type": "liberation",
+          "column": 6,
+          "lane": 0,
+          "next": [
+            20
+          ],
+          "themeId": "science-wing",
+          "shopProfileId": "blacksmith"
+        },
+        {
+          "id": 18,
+          "type": "shrine",
+          "column": 6,
+          "lane": 1,
+          "next": [
+            20
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 19,
+          "type": "event",
+          "column": 6,
+          "lane": 2,
+          "next": [
+            20
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 20,
+          "type": "boss",
+          "column": 7,
+          "lane": 1,
+          "next": [],
+          "themeId": "containment-underworld"
+        }
+      ],
+      "startNodeId": 1,
+      "bossNodeId": 20
+    },
+    "finale": {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 1437859528,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  },
+  {
+    "seed": 117,
+    "map": {
+      "seed": 117,
+      "columns": 8,
+      "lanes": 3,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "combat",
+          "column": 0,
+          "lane": 1,
+          "next": [
+            3,
+            2,
+            4
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 2,
+          "type": "combat",
+          "column": 1,
+          "lane": 0,
+          "next": [
+            5
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 3,
+          "type": "combat",
+          "column": 1,
+          "lane": 1,
+          "next": [
+            6,
+            5
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 4,
+          "type": "combat",
+          "column": 1,
+          "lane": 2,
+          "next": [
+            7
+          ],
+          "themeId": "arctic-relay"
+        },
+        {
+          "id": 5,
+          "type": "liberation",
+          "column": 2,
+          "lane": 0,
+          "next": [
+            8
+          ],
+          "themeId": "arctic-relay",
+          "shopProfileId": "special-merchant"
+        },
+        {
+          "id": 6,
+          "type": "liberation",
+          "column": 2,
+          "lane": 1,
+          "next": [
+            9,
+            8
+          ],
+          "themeId": "arctic-relay",
+          "shopProfileId": "science-lab"
+        },
+        {
+          "id": 7,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 2,
+          "next": [
+            10
+          ],
+          "themeId": "surface-frontier"
+        },
+        {
+          "id": 8,
+          "type": "combat",
+          "column": 3,
+          "lane": 0,
+          "next": [
+            11
+          ],
+          "themeId": "machine-foundry"
+        },
+        {
+          "id": 9,
+          "type": "shrine",
+          "column": 3,
+          "lane": 1,
+          "next": [
+            12,
+            13
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 10,
+          "type": "weapon-cache",
+          "column": 3,
+          "lane": 2,
+          "next": [
+            13,
+            12
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 11,
+          "type": "event",
+          "column": 4,
+          "lane": 0,
+          "next": [
+            14
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 12,
+          "type": "mini-boss",
+          "column": 4,
+          "lane": 1,
+          "next": [
+            15
+          ],
+          "themeId": "arctic-relay"
+        },
+        {
+          "id": 13,
+          "type": "weapon-cache",
+          "column": 4,
+          "lane": 2,
+          "next": [
+            16
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 14,
+          "type": "event",
+          "column": 5,
+          "lane": 0,
+          "next": [
+            17
+          ],
+          "themeId": "arctic-relay"
+        },
+        {
+          "id": 15,
+          "type": "supply-depot",
+          "column": 5,
+          "lane": 1,
+          "next": [
+            18
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 16,
+          "type": "mini-boss",
+          "column": 5,
+          "lane": 2,
+          "next": [
+            19
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 17,
+          "type": "elite",
+          "column": 6,
+          "lane": 0,
+          "next": [
+            20
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 18,
+          "type": "elite",
+          "column": 6,
+          "lane": 1,
+          "next": [
+            20
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 19,
+          "type": "combat",
+          "column": 6,
+          "lane": 2,
+          "next": [
+            20
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 20,
+          "type": "boss",
+          "column": 7,
+          "lane": 1,
+          "next": [],
+          "themeId": "containment-underworld"
+        }
+      ],
+      "startNodeId": 1,
+      "bossNodeId": 20
+    },
+    "finale": {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 532469099,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  },
+  {
+    "seed": 61061,
+    "map": {
+      "seed": 61061,
+      "columns": 8,
+      "lanes": 3,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "combat",
+          "column": 0,
+          "lane": 1,
+          "next": [
+            3,
+            2,
+            4
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 2,
+          "type": "combat",
+          "column": 1,
+          "lane": 0,
+          "next": [
+            5,
+            6
+          ],
+          "themeId": "arctic-relay"
+        },
+        {
+          "id": 3,
+          "type": "combat",
+          "column": 1,
+          "lane": 1,
+          "next": [
+            6
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 4,
+          "type": "combat",
+          "column": 1,
+          "lane": 2,
+          "next": [
+            7,
+            6
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 5,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 0,
+          "next": [
+            8
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 6,
+          "type": "elite",
+          "column": 2,
+          "lane": 1,
+          "next": [
+            9
+          ],
+          "themeId": "starship-transit"
+        },
+        {
+          "id": 7,
+          "type": "event",
+          "column": 2,
+          "lane": 2,
+          "next": [
+            10
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 8,
+          "type": "supply-depot",
+          "column": 3,
+          "lane": 0,
+          "next": [
+            11,
+            12
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 9,
+          "type": "combat",
+          "column": 3,
+          "lane": 1,
+          "next": [
+            12,
+            11
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 10,
+          "type": "weapon-cache",
+          "column": 3,
+          "lane": 2,
+          "next": [
+            13,
+            12
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 11,
+          "type": "liberation",
+          "column": 4,
+          "lane": 0,
+          "next": [
+            14,
+            15
+          ],
+          "themeId": "starship-transit",
+          "shopProfileId": "special-merchant"
+        },
+        {
+          "id": 12,
+          "type": "mini-boss",
+          "column": 4,
+          "lane": 1,
+          "next": [
+            15
+          ],
+          "themeId": "starship-transit"
+        },
+        {
+          "id": 13,
+          "type": "liberation",
+          "column": 4,
+          "lane": 2,
+          "next": [
+            16
+          ],
+          "themeId": "bastion-standard",
+          "shopProfileId": "science-lab"
+        },
+        {
+          "id": 14,
+          "type": "elite",
+          "column": 5,
+          "lane": 0,
+          "next": [
+            17
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 15,
+          "type": "shrine",
+          "column": 5,
+          "lane": 1,
+          "next": [
+            18
+          ],
+          "themeId": "toxic-bloom"
+        },
+        {
+          "id": 16,
+          "type": "event",
+          "column": 5,
+          "lane": 2,
+          "next": [
+            19,
+            18
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 17,
+          "type": "combat",
+          "column": 6,
+          "lane": 0,
+          "next": [
+            20
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 18,
+          "type": "mini-boss",
+          "column": 6,
+          "lane": 1,
+          "next": [
+            20
+          ],
+          "themeId": "machine-foundry"
+        },
+        {
+          "id": 19,
+          "type": "weapon-cache",
+          "column": 6,
+          "lane": 2,
+          "next": [
+            20
+          ],
+          "themeId": "starship-transit"
+        },
+        {
+          "id": 20,
+          "type": "boss",
+          "column": 7,
+          "lane": 1,
+          "next": [],
+          "themeId": "containment-underworld"
+        }
+      ],
+      "startNodeId": 1,
+      "bossNodeId": 20
+    },
+    "finale": {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 2230558395,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  },
+  {
+    "seed": 99999,
+    "map": {
+      "seed": 99999,
+      "columns": 8,
+      "lanes": 3,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "combat",
+          "column": 0,
+          "lane": 1,
+          "next": [
+            3,
+            4,
+            2
+          ],
+          "themeId": "bastion-standard"
+        },
+        {
+          "id": 2,
+          "type": "combat",
+          "column": 1,
+          "lane": 0,
+          "next": [
+            5,
+            6
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 3,
+          "type": "combat",
+          "column": 1,
+          "lane": 1,
+          "next": [
+            6
+          ],
+          "themeId": "science-wing"
+        },
+        {
+          "id": 4,
+          "type": "combat",
+          "column": 1,
+          "lane": 2,
+          "next": [
+            7,
+            6
+          ],
+          "themeId": "bastion-logistics"
+        },
+        {
+          "id": 5,
+          "type": "event",
+          "column": 2,
+          "lane": 0,
+          "next": [
+            8
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 6,
+          "type": "supply-depot",
+          "column": 2,
+          "lane": 1,
+          "next": [
+            9,
+            10
+          ],
+          "themeId": "void-approach"
+        },
+        {
+          "id": 7,
+          "type": "shrine",
+          "column": 2,
+          "lane": 2,
+          "next": [
+            10,
+            9
+          ],
+          "themeId": "bastion-logistics"
+        },
+        {
+          "id": 8,
+          "type": "weapon-cache",
+          "column": 3,
+          "lane": 0,
+          "next": [
+            11,
+            12
+          ],
+          "themeId": "surface-frontier"
+        },
+        {
+          "id": 9,
+          "type": "liberation",
+          "column": 3,
+          "lane": 1,
+          "next": [
+            12,
+            13
+          ],
+          "themeId": "bastion-logistics",
+          "shopProfileId": "blacksmith"
+        },
+        {
+          "id": 10,
+          "type": "liberation",
+          "column": 3,
+          "lane": 2,
+          "next": [
+            13,
+            12
+          ],
+          "themeId": "starship-transit",
+          "shopProfileId": "black-market"
+        },
+        {
+          "id": 11,
+          "type": "weapon-cache",
+          "column": 4,
+          "lane": 0,
+          "next": [
+            14
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 12,
+          "type": "elite",
+          "column": 4,
+          "lane": 1,
+          "next": [
+            15
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 13,
+          "type": "mini-boss",
+          "column": 4,
+          "lane": 2,
+          "next": [
+            16
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 14,
+          "type": "mini-boss",
+          "column": 5,
+          "lane": 0,
+          "next": [
+            17
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 15,
+          "type": "supply-depot",
+          "column": 5,
+          "lane": 1,
+          "next": [
+            18,
+            17
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 16,
+          "type": "combat",
+          "column": 5,
+          "lane": 2,
+          "next": [
+            19
+          ],
+          "themeId": "arctic-relay"
+        },
+        {
+          "id": 17,
+          "type": "combat",
+          "column": 6,
+          "lane": 0,
+          "next": [
+            20
+          ],
+          "themeId": "containment-underworld"
+        },
+        {
+          "id": 18,
+          "type": "event",
+          "column": 6,
+          "lane": 1,
+          "next": [
+            20
+          ],
+          "themeId": "alien-hive"
+        },
+        {
+          "id": 19,
+          "type": "elite",
+          "column": 6,
+          "lane": 2,
+          "next": [
+            20
+          ],
+          "themeId": "emberfall"
+        },
+        {
+          "id": 20,
+          "type": "boss",
+          "column": 7,
+          "lane": 1,
+          "next": [],
+          "themeId": "containment-underworld"
+        }
+      ],
+      "startNodeId": 1,
+      "bossNodeId": 20
+    },
+    "finale": {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 2406356708,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  }
+]

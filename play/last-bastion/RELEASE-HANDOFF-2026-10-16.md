@@ -1,5 +1,15 @@
 # Last Bastion release handoff — 16 October 2026
 
+## 29 October 2026 — final-boss fix and review-branch handoff
+
+Current runtime: `web-2026.10.29-boss-reward-confirm`, schema 17, simulation compatibility 3.
+Artifact confirmation no longer triggers Restart before victory persistence. The final-boss
+failed-write browser regression now passes. [Evidence](playtest-evidence/2026-10-29-design-closeout/README.md).
+G1–G6 actionable slices and G7/G8 design/G9 audit are complete; gated content and external acceptance
+remain in [CURRENT-PLAN](CURRENT-PLAN.md). User authorized commit/push to the existing review branch;
+verify its tip after publishing. Main is diverged: no force push or merge. No packaging/deployment/
+submission in this slice. Earlier identities and not-pushed entries below are historical checkpoints.
+
 **Latest prepared local build (28 October):** `web-2026.10.28-run-save-recovery`, schema 17,
 simulation compatibility 3. Run-end save recovery; [evidence](playtest-evidence/2026-10-28-run-save-recovery/README.md).
 Not pushed or packaged. Human/device/Steam acceptance remains external.

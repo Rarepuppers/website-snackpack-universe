@@ -828,6 +828,8 @@ export class PrototypeScene extends Phaser.Scene {
 
     if (
       intent.restartPressed
+      // Confirm also maps to Restart. Let reward selection reach outcome persistence first.
+      && this.lastSnapshot.pendingDecision === null
       && (this.lastSnapshot.status === "victory" || this.lastSnapshot.status === "defeat")
     ) {
       if (this.expeditionContext) {

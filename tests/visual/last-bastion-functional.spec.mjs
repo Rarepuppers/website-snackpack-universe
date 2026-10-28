@@ -1788,3 +1788,90 @@ for (const outcome of ["safe-node-victory", "abandonment"]) {
     }
   });
 }
+
+
+test.describe("final boss persistence fixture", () => {
+  test.use({ serviceWorkers: "block" });
+
+  test("final expedition boss reward survives failed saving without duplicate victory credit", async ({ page }) => {
+    // Test-only response instrumentation; shipped assets and player routes stay unchanged.
+    await page.route("**/play/last-bastion/game-assets/game.js", async route => {
+      const response = await route.fetch();
+      const body = await response.text();
+      const hook = /postBoot:([\w$]+)=>\{/g;
+      expect([...body.matchAll(hook)]).toHaveLength(1);
+      await route.fulfill({ response, body: body.replace(hook, (match, arg) => `${match}window.__qaGame=${arg};`) });
+    });
+    await page.goto("/play/last-bastion/?flow=menu");
+    await page.evaluate(() => {
+      const save = JSON.parse(localStorage.getItem("last-bastion-save")) || { version: 17 };
+      // Complete valid seed-117 path; only the actual final node remains.
+      save.expedition = { mapSeed: 117, threatTier: 0, currentNodeId: 20,
+        clearedNodeIds: [1, 3, 6, 9, 12, 15, 18],
+        build: { health: 100, shield: 0, level: 1, experience: 0, scrap: 100,
+          weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [] } };
+      localStorage.setItem("last-bastion-save", JSON.stringify(save));
+    });
+    await page.goto("/play/last-bastion/?screen=game&expedition=1&node=20&pausepreview=1");
+    await page.waitForFunction(() => window.__combatPauseMode === "root");
+    await page.keyboard.press("Escape", { delay: 80 });
+    const reward = await page.evaluate(() => {
+      const scene = window.__qaGame.scene.getScenes(true).find(scene => scene.simulation);
+      const sim = scene.simulation;
+      const idle = { move: { x: 0, y: 0 }, aim: { x: 1, y: 0 }, fireHeld: false,
+        evasiveMovePressed: false, interactPressed: false, ultimatePressed: false,
+        kitPressed: false, pausePressed: false, restartPressed: false };
+      for (let frame = 0; frame < 5000; frame++) {
+        const snapshot = sim.snapshot();
+        if (snapshot.status === "victory") {
+          return { title: snapshot.pendingDecision?.title, choices: snapshot.pendingDecision?.options.map(o => o.id) };
+        }
+        if (snapshot.pendingDecision) sim.chooseOption(snapshot.pendingDecision.options[0].id);
+        for (const enemy of snapshot.enemies) sim.dealDamage(enemy.id, 1_000_000);
+        sim.step(idle, 0.1);
+      }
+      throw new Error("Production final-node simulation did not reach its boss reward");
+    });
+    expect(reward.title).toBe("BOSS VAULT — CHOOSE AN ARTIFACT");
+    expect(reward.choices).toHaveLength(3);
+    await page.evaluate(() => {
+      window.__originalStorageWrite = Storage.prototype.setItem;
+      Storage.prototype.setItem = function(key, value) {
+        if (key === "last-bastion-save") throw new DOMException("Test write failure", "QuotaExceededError");
+        return window.__originalStorageWrite.call(this, key, value);
+      };
+    });
+    await page.waitForFunction(() => window.__combatDecisionOverlay?.kind === "rank-reward");
+    await page.waitForTimeout(2800);
+    await expect(page).toHaveURL(/screen=game/);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).expedition.currentNodeId)).toBe(20);
+    const selected = await page.evaluate(() => window.__combatDecisionOverlay.optionIds[window.__combatDecisionOverlay.selectedIndex]);
+    expect(selected).toMatch(/^artifact:/);
+    await page.keyboard.press("Enter", { delay: 80 });
+    const retry = page.getByRole("button", { name: "Retry saving and continue", exact: true });
+    await expect(retry).toBeVisible();
+    const pending = await page.evaluate(() => {
+      const scene = window.__qaGame.scene.getScenes(true).find(scene => scene.simulation);
+      return { artifact: scene.simulation.snapshot().equippedArtifactId, save: scene.saveStore.load() };
+    });
+    expect(pending.artifact).toBe(selected.replace("artifact:", ""));
+    expect(pending.save.progress.runsFinished).toBe(1);
+    expect(pending.save.progress.nodesCleared).toBe(1);
+    expect(pending.save.lastRunSummary.outcome).toBe("victory");
+    expect(pending.save.lastRunSummary.commandMarksEarned).toBeGreaterThan(0);
+    await page.keyboard.press("Enter", { delay: 80 });
+    await retry.click();
+    await retry.click();
+    await expect(page).toHaveURL(/screen=game/);
+    await page.evaluate(() => { Storage.prototype.setItem = window.__originalStorageWrite; });
+    await retry.click();
+    await page.waitForURL(url => url.searchParams.get("screen") === "summary");
+    await page.reload();
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    expect(saved.expedition).toBeNull();
+    expect(saved.progress).toEqual(pending.save.progress);
+    expect(saved.runHistory).toHaveLength(1);
+    expect(saved.lastRunSummary).toEqual(pending.save.lastRunSummary);
+  });
+
+});

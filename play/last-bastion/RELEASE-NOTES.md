@@ -1,5 +1,11 @@
 # Last Bastion release notes
 
+## 29 October 2026 — Boss reward confirmation
+
+Confirming a boss artifact now completes reward and victory recording before leaving combat.
+If saving fails, the result stays available for retry without duplicate victory credit.
+[Evidence](playtest-evidence/2026-10-29-design-closeout/README.md).
+
 ## 28 October 2026 — Run-end save recovery
 
 Run completion waits for successful saving before leaving combat. Failed writes retain the

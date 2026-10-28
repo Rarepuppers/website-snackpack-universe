@@ -1,0 +1,119 @@
+
+
+[WebServer] (node:17796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+Running 1 test using 1 worker
+
+
+
+(node:17680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:1796:1 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit
+
+tests\visual\last-bastion-functional.spec.mjs:1796:1 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit
+
+{
+
+  url: 'http://127.0.0.1:44175/play/last-bastion/?screen=summary',
+
+  scenes: [ 'run-summary' ],
+
+  paused: undefined,
+
+  recorded: undefined,
+
+  status: undefined,
+
+  decision: undefined,
+
+  overlay: undefined,
+
+  save: {
+
+    version: 17,
+
+    expedition: {
+
+      mapSeed: 117,
+
+      threatTier: 0,
+
+      currentNodeId: 20,
+
+      clearedNodeIds: [Array],
+
+      build: [Object]
+
+    }
+
+  }
+
+}
+
+
+
+  1) tests\visual\last-bastion-functional.spec.mjs:1796:1 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit
+
+
+
+    Error: expect(locator).toBeVisible() failed
+
+
+
+    Locator: getByRole('button', { name: 'Retry saving and continue', exact: true })
+
+    Expected: visible
+
+    Timeout: 5000ms
+
+    Error: element(s) not found
+
+
+
+    Call log:
+
+      - Expect "toBeVisible" with timeout 5000ms
+
+      - waiting for getByRole('button', { name: 'Retry saving and continue', exact: true })
+
+
+
+
+
+      1852 |   await page.waitForTimeout(3000);
+
+      1853 |   console.log(await page.evaluate(() => {const s=window.__qaGame.scene.getScenes(true).find(s=>s.simulation);return {url:location.href, scenes:window.__qaGame.scene.getScenes(true).map(x=>x.sys.settings.key), paused:s?.isPaused, recorded:s?.runOutcomeRecorded, status:s?.simulation.snapshot().status, decision:s?.simulation.snapshot().pendingDecision, overlay:window.__combatDecisionOverlay, save:JSON.parse(localStorage.getItem("last-bastion-save"))};}));
+
+    > 1854 |   await expect(retry).toBeVisible();
+
+           |                       ^
+
+      1855 |   const pending = await page.evaluate(() => {
+
+      1856 |     const scene = window.__qaGame.scene.getScenes(true).find(scene => scene.simulation);
+
+      1857 |     return { artifact: scene.simulation.snapshot().equippedArtifactId, save: scene.saveStore.load() };
+
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1854:23
+
+
+
+    Error Context: test-results\last-bastion-functional-fi-d873d-ut-duplicate-victory-credit\error-context.md
+
+
+
+
+
+  1 failed
+
+    tests\visual\last-bastion-functional.spec.mjs:1796:1 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit

@@ -1,0 +1,239 @@
+{
+  "finales": [
+    {
+      "seed": 1,
+      "node": 20,
+      "theme": "containment-underworld",
+      "boss": "bastion-eater"
+    },
+    {
+      "seed": 42,
+      "node": 20,
+      "theme": "containment-underworld",
+      "boss": "bastion-eater"
+    },
+    {
+      "seed": 117,
+      "node": 20,
+      "theme": "containment-underworld",
+      "boss": "bastion-eater"
+    },
+    {
+      "seed": 61061,
+      "node": 20,
+      "theme": "containment-underworld",
+      "boss": "bastion-eater"
+    },
+    {
+      "seed": 99999,
+      "node": 20,
+      "theme": "containment-underworld",
+      "boss": "bastion-eater"
+    }
+  ],
+  "regionalSelectors": [
+    {
+      "theme": "alien-hive",
+      "boss": "the-choir"
+    },
+    {
+      "theme": "toxic-bloom",
+      "boss": "the-choir"
+    },
+    {
+      "theme": "machine-foundry",
+      "boss": "foundry-sovereign"
+    },
+    {
+      "theme": "science-wing",
+      "boss": "foundry-sovereign"
+    },
+    {
+      "theme": "bastion-standard",
+      "boss": "bastion-eater"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "monster-teleporter",
+      "name": "Monster Teleporter",
+      "role": "hybrid",
+      "themes": [
+        "hive",
+        "starship",
+        "underworld"
+      ],
+      "visualKind": "power-conduit",
+      "blocksMovement": true,
+      "blocksProjectiles": true,
+      "durability": 500,
+      "footprintMetres": {
+        "width": 2.4,
+        "height": 2.4
+      },
+      "interaction": {
+        "seconds": 2,
+        "effect": {
+          "type": "disrupt-spawner"
+        }
+      },
+      "maxPerRoom": 2,
+      "placement": "objective-anchor"
+    },
+    {
+      "id": "stargate",
+      "name": "Stargate",
+      "role": "interactable",
+      "themes": [
+        "starship",
+        "underworld"
+      ],
+      "blocksMovement": true,
+      "blocksProjectiles": true,
+      "durability": null,
+      "footprintMetres": {
+        "width": 4.5,
+        "height": 1.2
+      },
+      "interaction": {
+        "seconds": 2.5,
+        "effect": {
+          "type": "activate-stargate"
+        }
+      },
+      "maxPerRoom": 1,
+      "placement": "objective-anchor"
+    },
+    {
+      "id": "control-panel",
+      "name": "Control Panel",
+      "role": "interactable",
+      "themes": [
+        "science",
+        "logistics",
+        "foundry",
+        "starship",
+        "containment"
+      ],
+      "blocksMovement": true,
+      "blocksProjectiles": false,
+      "durability": 100,
+      "footprintMetres": {
+        "width": 1.2,
+        "height": 0.7
+      },
+      "interaction": {
+        "seconds": 0.75,
+        "effect": {
+          "type": "toggle-system",
+          "system": "weapons"
+        }
+      },
+      "maxPerRoom": 3,
+      "placement": "edge"
+    },
+    {
+      "id": "turret-console",
+      "name": "Turret Console",
+      "role": "interactable",
+      "themes": [
+        "bastion",
+        "foundry",
+        "starship"
+      ],
+      "blocksMovement": true,
+      "blocksProjectiles": false,
+      "durability": 120,
+      "footprintMetres": {
+        "width": 1.2,
+        "height": 0.7
+      },
+      "interaction": {
+        "seconds": 1,
+        "effect": {
+          "type": "toggle-system",
+          "system": "turrets"
+        }
+      },
+      "maxPerRoom": 1,
+      "placement": "objective-anchor"
+    },
+    {
+      "id": "trap-console",
+      "name": "Trap Console",
+      "role": "interactable",
+      "themes": [
+        "containment",
+        "underworld"
+      ],
+      "blocksMovement": true,
+      "blocksProjectiles": false,
+      "durability": 100,
+      "footprintMetres": {
+        "width": 1.2,
+        "height": 0.7
+      },
+      "interaction": {
+        "seconds": 0.8,
+        "effect": {
+          "type": "toggle-system",
+          "system": "traps"
+        }
+      },
+      "maxPerRoom": 2,
+      "placement": "objective-anchor"
+    },
+    {
+      "id": "cryogenic-tube",
+      "name": "Cryogenic Tube",
+      "role": "hybrid",
+      "themes": [
+        "science",
+        "starship",
+        "containment"
+      ],
+      "visualKind": "power-conduit",
+      "blocksMovement": true,
+      "blocksProjectiles": true,
+      "durability": 350,
+      "footprintMetres": {
+        "width": 1.4,
+        "height": 2
+      },
+      "interaction": {
+        "seconds": 1.5,
+        "effect": {
+          "type": "release-cryo"
+        }
+      },
+      "maxPerRoom": 4,
+      "placement": "edge"
+    },
+    {
+      "id": "weapon-upgrade-station",
+      "name": "Weapon Upgrade Station",
+      "role": "interactable",
+      "themes": [
+        "science",
+        "foundry",
+        "starship"
+      ],
+      "blocksMovement": true,
+      "blocksProjectiles": true,
+      "durability": null,
+      "footprintMetres": {
+        "width": 2,
+        "height": 1.2
+      },
+      "interaction": {
+        "seconds": 1.25,
+        "effect": {
+          "type": "upgrade-weapon",
+          "weaponDisabledSeconds": 45
+        }
+      },
+      "maxPerRoom": 1,
+      "placement": "objective-anchor"
+    }
+  ]
+}

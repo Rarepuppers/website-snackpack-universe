@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [Pre-design-closeout queue, 29 October](CURRENT-PLAN-BEFORE-DESIGN-CLOSEOUT-2026-10-29.md) | G1–G5 delivered; G6 recovery and transaction slices verified; G7/G8 designs and bounded G9 audit now complete. Open coverage and evidence gates remain only in CURRENT-PLAN. |
 | [Pre-gameplay-review queue, 26 October](CURRENT-PLAN-BEFORE-GAMEPLAY-REVIEW-2026-10-26.md) | Superseded test-heavy queue; current plan prioritizes inventory continuity, truthful effects and player-facing quality. |
 | [August content plan](last-bastion-content-design-plan-2026-08-07.md), [August improvement/Steam plan](last-bastion-improvement-and-steam-plan-2026-08-07.md) | Historical delivery/proposals; current queue retains applicable content and release gates. Regional-finale delivery claims do not establish ordinary route reachability. |
 | [July asset review](asset-next-production-review-2026-07-26.md) | Storefront priorities delivered or superseded; inspect current inventory before commissioning art. |
