@@ -5,6 +5,7 @@ import { likelyNextNodeBackdropAsset } from "../assets/NextNodeBackdropPreload";
 import { cloneTransformationAffinityState } from "../transformations/TransformationAffinity";
 import { LocalSaveStore } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
+import { SaveHandoffRecovery } from "../save/SaveHandoffRecovery";
 import { ARENA_THEMES } from "../rendering/arenaThemes";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { resolvePerkModifiers } from "../perks/perkCatalog";
@@ -67,6 +68,7 @@ const NODE_LABELS: Readonly<Record<ExpeditionNodeType, string>> = Object.freeze(
 export class ExpeditionScene extends Phaser.Scene {
   private saveStore!: LocalSaveStore;
   private run!: ExpeditionRun;
+  private saveRecovery!: SaveHandoffRecovery;
   private root!: Phaser.GameObjects.Container;
   private focusIndex = 0;
   private travelling = false;
@@ -81,6 +83,7 @@ export class ExpeditionScene extends Phaser.Scene {
 
   init(): void {
     this.saveStore = createLocalSaveStore(typeof window !== "undefined" ? window : null);
+    this.saveRecovery = new SaveHandoffRecovery(this.saveStore);
     this.mapRevealBonusColumns = resolvePerkModifiers(this.saveStore.load().selectedPerkId).mapRevealBonusColumns;
     this.run = this.restoreOrStartRun();
   }
@@ -92,8 +95,9 @@ export class ExpeditionScene extends Phaser.Scene {
   create(): void {
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKey);
-    this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKey));
+    this.events.once("shutdown", () => { window.removeEventListener("keydown", this.handleKey); this.saveRecovery.destroy(); });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => {
+      if (this.saveRecovery.active) { if (button.index === 0) this.saveRecovery.retry(); return; }
       if (this.travelling) return;
       const intent = expeditionMapGamepadIntent(button.index);
       if (intent === "previous") this.moveFocus(-1);
@@ -143,6 +147,7 @@ export class ExpeditionScene extends Phaser.Scene {
   }
 
   private readonly handleKey = (event: KeyboardEvent): void => {
+    if (this.saveRecovery.active) return;
     if (this.travelling) {
       return;
     }
@@ -195,7 +200,7 @@ export class ExpeditionScene extends Phaser.Scene {
   private focusNode(targetId: number): void {
     const selectable = selectableNodeIds(this.run);
     const index = selectable.indexOf(targetId);
-    if (index < 0 || index === this.focusIndex) return;
+    if (this.saveRecovery.active || index < 0 || index === this.focusIndex) return;
     this.focusIndex = index;
     this.armedNodeId = null;
     this.render();
@@ -205,7 +210,7 @@ export class ExpeditionScene extends Phaser.Scene {
   private selectNode(targetId: number): void {
     const selectable = selectableNodeIds(this.run);
     const index = selectable.indexOf(targetId);
-    if (index < 0) return;
+    if (this.saveRecovery.active || index < 0) return;
     this.focusIndex = index;
     if (this.armedNodeId === targetId) {
       this.travelTo(targetId);
@@ -252,12 +257,14 @@ export class ExpeditionScene extends Phaser.Scene {
     // Shrine/Event nodes resolve on their own decision screen, which commits the
     // node or routes an ambush into combat; everything else is a combat encounter.
     if (node.type === "shrine" || node.type === "event") {
-      window.location.href = `?screen=event&expedition=1&node=${node.id}`;
+      this.saveRecovery.continueWhenSaved(() => { window.location.href = `?screen=event&expedition=1&node=${node.id}`; });
       return;
     }
-    window.location.href = expeditionEncounterUrl(
-      expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier),
-    );
+    this.saveRecovery.continueWhenSaved(() => {
+      window.location.href = expeditionEncounterUrl(
+        expeditionEncounterForNode(this.run.state.mapSeed, node, this.run.state.threatTier),
+      );
+    });
   }
 
   /** Autosave on every arrival back at the map, per the persistence design. */

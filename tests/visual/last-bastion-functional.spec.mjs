@@ -1661,3 +1661,30 @@ test("event reward stays available after failed saving and retry commits exactly
   expect(saved.expedition.build.health).toBeGreaterThan(5);
   expect(saved.progress.nodesCleared).toBe(1);
 });
+
+test("map travel waits for save recovery before launching the selected encounter", async ({ page }) => {
+  await page.goto("/play/last-bastion/?screen=map&mapseed=117");
+  await page.waitForFunction(() => window.__expeditionState?.selectable?.length > 0);
+  const target = await page.evaluate(() => window.__expeditionState.focusedNodeId);
+  await page.evaluate(() => {
+    window.__originalStorageWrite = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (key === "last-bastion-save") throw new DOMException("Test write failure", "QuotaExceededError");
+      return window.__originalStorageWrite.call(this, key, value);
+    };
+  });
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+  const retry = page.getByRole("button", { name: "Retry saving and continue", exact: true });
+  await expect(retry).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(page).toHaveURL(/screen=map/);
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL(/screen=map/);
+  await retry.click();
+  await expect(page).toHaveURL(/screen=map/);
+  await page.evaluate(() => { Storage.prototype.setItem = window.__originalStorageWrite; });
+  await retry.click();
+  await page.waitForURL(url => url.searchParams.get("node") === String(target));
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).expedition.currentNodeId)).toBe(target);
+});

@@ -2,7 +2,7 @@
 
 **Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.28-event-save-recovery`, schema 17; G1–G5 complete; G6 event-save fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-map-save-recovery`, schema 17; G1–G5 complete; G6 event fix verified; map fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -89,7 +89,12 @@ on a failed storage write, discarding the in-memory result. A fresh browser regr
 it. Native recovery now retains the result, retries only persistence and navigates after success;
 node credit/reward application occurs once. Full verification passes: 1,808 unit tests, 65 browser
 checks, 31 desktop-host tests and all 23 portfolio guards. [Evidence](playtest-evidence/2026-10-28-event-save-recovery/README.md).
-Next bounded checks: map travel and combat/run-end save handoffs, then remaining shop/event
+**Map travel slice completed and verified:** a fresh browser witness showed combat
+launch after a failed pending-position save. Shared native save recovery now holds the selected
+route until persistence succeeds, with map inputs blocked during recovery. Event regression still
+passes. Full verification: 1,808 unit tests, 66 browser checks, 31 desktop-host tests and all
+23 portfolio guards pass. [Map evidence](playtest-evidence/2026-10-28-map-save-recovery/README.md).
+Next bounded checks: combat/run-end save handoffs, then remaining shop/event
 transaction boundaries. Similar source patterns are leads, not independently confirmed failures.
 
 **P1 when a defect is reproduced; otherwise support task, M effort/medium risk.** Attach cross-system

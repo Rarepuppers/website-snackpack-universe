@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 28 October 2026 — Map travel save recovery
+
+Map travel waits for a successful save before launching the selected encounter. Failed writes
+keep the route available for retry; the same recovery control also protects event rewards.
+[Evidence](playtest-evidence/2026-10-28-map-save-recovery/README.md).
+
+
 ## 28 October 2026 — Event save recovery
 
 An event reward now stays on screen if saving fails. Retry saving and continue preserves the

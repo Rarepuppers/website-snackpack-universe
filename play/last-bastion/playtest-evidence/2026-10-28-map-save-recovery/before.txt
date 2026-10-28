@@ -1,0 +1,41 @@
+
+[WebServer] (node:22064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:17232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:1665:1 › map travel waits for save recovery before launching the selected encounter
+  1) tests\visual\last-bastion-functional.spec.mjs:1665:1 › map travel waits for save recovery before launching the selected encounter
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Retry saving and continue', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Retry saving and continue', exact: true })
+        - waiting for "http://127.0.0.1:44175/play/last-bastion/?screen=game&expedition=1&node=3&theme=void-approach&worldseed=1080412022" navigation to finish...
+        - navigated to "http://127.0.0.1:44175/play/last-bastion/?screen=game&expedition=1&node=3&theme=void-approach&worldseed=1080412022"
+
+
+      1677 |   await page.keyboard.press("Enter");
+      1678 |   const retry = page.getByRole("button", { name: "Retry saving and continue", exact: true });
+    > 1679 |   await expect(retry).toBeVisible();
+           |                       ^
+      1680 |   await page.waitForTimeout(600);
+      1681 |   await expect(page).toHaveURL(/screen=map/);
+      1682 |   await page.keyboard.press("Escape");
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1679:23
+
+    Error Context: test-results\last-bastion-functional-ma-14ca4-hing-the-selected-encounter\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:1665:1 › map travel waits for save recovery before launching the selected encounter

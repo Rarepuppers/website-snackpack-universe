@@ -1,5 +1,14 @@
 # Last Bastion completed-work log
 
+## 28 October 2026 — G6 map travel save recovery
+
+Reproduced combat navigation after a failed map-position save. Map launch now retains the route
+until saving succeeds, sharing the native recovery helper with event outcomes. Targeted map/event
+regressions pass. [Evidence](playtest-evidence/2026-10-28-map-save-recovery/README.md).
+Full verification passes: 1,808 unit tests, 66 browser checks, 31 desktop-host tests and 23 portfolio guards.
+No content/balance/assets, push or packaging.
+
+
 ## 28 October 2026 — G6 event reward save recovery
 
 Reproduced event reward loss when a failed storage write was followed by map navigation.
