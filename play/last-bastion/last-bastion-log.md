@@ -1,5 +1,14 @@
 # Last Bastion completed-work log
 
+## 28 October 2026 — G6 run-end save recovery
+
+Guarded terminal and expedition completion navigation with existing save recovery. Quick Drop
+abandonment regression retains one run/history credit after failed writes and retry; Restart
+cannot bypass it. [Evidence](playtest-evidence/2026-10-28-run-save-recovery/README.md).
+Verification finalized 29 October: 1,808 unit tests, 67 browser checks, 31 desktop-host tests and
+23 portfolio guards pass. No content/balance/assets, push or packaging.
+
+
 ## 28 October 2026 — G6 map travel save recovery
 
 Reproduced combat navigation after a failed map-position save. Map launch now retains the route

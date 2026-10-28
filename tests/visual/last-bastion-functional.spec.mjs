@@ -1688,3 +1688,34 @@ test("map travel waits for save recovery before launching the selected encounter
   await page.waitForURL(url => url.searchParams.get("node") === String(target));
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).expedition.currentNodeId)).toBe(target);
 });
+
+test("run end retains records until failed saving recovers without duplicate credit", async ({ page }) => {
+  await page.goto("/play/last-bastion/?screen=game&seed=117&pausepreview=1");
+  await page.waitForFunction(() => window.__combatPauseMode === "root");
+  await page.evaluate(() => {
+    window.__originalStorageWrite = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (key === "last-bastion-save") throw new DOMException("Test write failure", "QuotaExceededError");
+      return window.__originalStorageWrite.call(this, key, value);
+    };
+  });
+  await page.keyboard.press("KeyX", { delay: 80 });
+  await page.waitForFunction(() => window.__combatPauseMode === "confirm-abandon");
+  const box = await page.locator("#game-root canvas").boundingBox();
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height * 164 / 540, { delay: 80 });
+  const retry = page.getByRole("button", { name: "Retry saving and continue", exact: true });
+  await expect(retry).toBeVisible();
+  await page.waitForTimeout(2800);
+  await expect(page).toHaveURL(/screen=game/);
+  await page.keyboard.press("KeyR", { delay: 80 });
+  await expect(page).toHaveURL(/screen=game/);
+  await retry.click();
+  await expect(page).toHaveURL(/screen=game/);
+  await page.evaluate(() => { Storage.prototype.setItem = window.__originalStorageWrite; });
+  await retry.click();
+  await page.waitForURL(url => url.searchParams.get("screen") === "summary");
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+  expect(saved.progress.runsFinished).toBe(1);
+  expect(saved.runHistory).toHaveLength(1);
+  expect(saved.lastRunSummary.defeatCause).toBe("Run abandoned");
+});

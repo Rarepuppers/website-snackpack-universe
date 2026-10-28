@@ -1,0 +1,39 @@
+
+[WebServer] (node:28320) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:28680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:1692:1 › run end retains records until failed saving recovers without duplicate credit
+  1) tests\visual\last-bastion-functional.spec.mjs:1692:1 › run end retains records until failed saving recovers without duplicate credit
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Retry saving and continue', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Retry saving and continue', exact: true })
+
+
+      1705 |   await page.mouse.click(box.x + box.width / 2, box.y + box.height * 164 / 540, { delay: 80 });
+      1706 |   const retry = page.getByRole("button", { name: "Retry saving and continue", exact: true });
+    > 1707 |   await expect(retry).toBeVisible();
+           |                       ^
+      1708 |   await page.waitForTimeout(2800);
+      1709 |   await expect(page).toHaveURL(/screen=game/);
+      1710 |   await page.keyboard.press("KeyR", { delay: 80 });
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1707:23
+
+    Error Context: test-results\last-bastion-functional-ru-678bd-rs-without-duplicate-credit\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:1692:1 › run end retains records until failed saving recovers without duplicate credit

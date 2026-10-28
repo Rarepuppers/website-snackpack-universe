@@ -1,5 +1,10 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Latest prepared local build (28 October):** `web-2026.10.28-run-save-recovery`, schema 17,
+simulation compatibility 3. Run-end save recovery; [evidence](playtest-evidence/2026-10-28-run-save-recovery/README.md).
+Not pushed or packaged. Human/device/Steam acceptance remains external.
+
+
 **Latest prepared local build (28 October):** `web-2026.10.28-map-save-recovery`, schema 17,
 simulation compatibility 3. Map save-handoff fix; [verification evidence](playtest-evidence/2026-10-28-map-save-recovery/README.md).
 Not pushed or packaged. Human/device/Steam gates remain external.

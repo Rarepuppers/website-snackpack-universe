@@ -1,8 +1,8 @@
 # Last Bastion — current development plan
 
-**Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
+**Updated 29 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.28-map-save-recovery`, schema 17; G1–G5 complete; G6 event fix verified; map fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-run-save-recovery`, schema 17; G1–G5 complete; G6 event/map fixes verified; run-end fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -94,7 +94,12 @@ launch after a failed pending-position save. Shared native save recovery now hol
 route until persistence succeeds, with map inputs blocked during recovery. Event regression still
 passes. Full verification: 1,808 unit tests, 66 browser checks, 31 desktop-host tests and all
 23 portfolio guards pass. [Map evidence](playtest-evidence/2026-10-28-map-save-recovery/README.md).
-Next bounded checks: combat/run-end save handoffs, then remaining shop/event
+**Run-end slice completed and verified:** Quick Drop End Run with failed writes now
+retains records until retry succeeds, without duplicate credit. Automatic navigation and terminal
+Restart use the existing recovery helper, also wired to expedition completion. Only Quick Drop
+abandonment has an independent runtime failure witness so far. Full verification passes: 1,808
+unit tests, 67 browser checks, 31 desktop-host tests and all 23 portfolio guards. [Evidence](playtest-evidence/2026-10-28-run-save-recovery/README.md).
+Next bounded checks: independent expedition completion failure witnesses, then remaining shop/event
 transaction boundaries. Similar source patterns are leads, not independently confirmed failures.
 
 **P1 when a defect is reproduced; otherwise support task, M effort/medium risk.** Attach cross-system

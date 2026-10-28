@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.28-map-save-recovery";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.10.28-run-save-recovery";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

@@ -61,6 +61,7 @@ import {
 } from "../rendering/HitStop";
 import { LocalSaveStore, type GameSettings } from "../save/LocalSaveStore";
 import { createLocalSaveStore } from "../save/SaveStorage";
+import { SaveHandoffRecovery } from "../save/SaveHandoffRecovery";
 import { requestCloudSaveSync } from "../platform/CloudSaveRuntime";
 import { queueAchievementProgress } from "../platform/AchievementRuntime";
 import { cueForCombatEvent, EVASIVE_MOVE_CUE, HERO_DEATH_CUE, MEDKIT_HEAL_CUE, UI_CONFIRM_CUE } from "../audio/AudioCueMap";
@@ -193,6 +194,7 @@ export class PrototypeScene extends Phaser.Scene {
   private readonly transformationPreview = readTransformationPreview();
   private readonly heroPreview = readHeroPreview();
   private readonly saveStore = createSaveStore();
+  private readonly saveRecovery = new SaveHandoffRecovery(this.saveStore);
   private settings = applySettingOverrides(this.saveStore);
   private readonly performanceGovernor = new AdaptivePerformanceGovernor(this.settings.effectQuality);
   private readonly expeditionContext = readExpeditionContext(this.saveStore);
@@ -609,6 +611,7 @@ export class PrototypeScene extends Phaser.Scene {
     window.removeEventListener("blur", this.onWindowBlur);
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
     this.pauseOverlay?.destroy();
+    this.saveRecovery.destroy();
     this.eventFeed?.destroy();
     this.decisionOverlay?.destroy();
     this.qaSession?.destroy();
@@ -795,6 +798,11 @@ export class PrototypeScene extends Phaser.Scene {
 
   update(_time: number, deltaMilliseconds: number): void {
     if (this.assetLoadFailed) return;
+    if (this.saveRecovery.active) {
+      this.controls.read(this.player);
+      if (this.controls.consumeMenuAction() === "confirm") this.saveRecovery.retry();
+      return;
+    }
     const deltaSeconds = Math.min(deltaMilliseconds / 1000, 0.05);
     const intent = this.withAimAssist(this.controls.read(this.player));
     const inputDevice = this.controls.activeInputDevice;
@@ -824,10 +832,11 @@ export class PrototypeScene extends Phaser.Scene {
     ) {
       if (this.expeditionContext) {
         const bossNode = this.expeditionContext.encounter.nodeId === this.expeditionContext.run.map.bossNodeId;
-        window.location.href = this.lastSnapshot.status === "victory" && !bossNode ? "?screen=map" : "?screen=summary";
+        const href = this.lastSnapshot.status === "victory" && !bossNode ? "?screen=map" : "?screen=summary";
+        this.saveRecovery.continueWhenSaved(() => { window.location.href = href; });
         return;
       }
-      window.location.href = "?screen=summary";
+      this.saveRecovery.continueWhenSaved(() => { window.location.href = "?screen=summary"; });
       return;
     }
 
@@ -1381,7 +1390,9 @@ export class PrototypeScene extends Phaser.Scene {
       this.navigateAfterPlatformSync("?screen=summary", queueAchievementProgress(before, after));
       return;
     }
-    window.setTimeout(() => { window.location.href = "?screen=map"; }, 900);
+    window.setTimeout(() => {
+      this.saveRecovery.continueWhenSaved(() => { window.location.href = "?screen=map"; });
+    }, 900);
   }
 
   /** Gives the run-end Steam Cloud write a bounded chance to finish before page navigation. */
@@ -1392,7 +1403,7 @@ export class PrototypeScene extends Phaser.Scene {
     const navigate = () => {
       if (navigated) return;
       navigated = true;
-      window.location.href = href;
+      this.saveRecovery.continueWhenSaved(() => { window.location.href = href; });
     };
     window.setTimeout(() => {
       minimumDelayElapsed = true;

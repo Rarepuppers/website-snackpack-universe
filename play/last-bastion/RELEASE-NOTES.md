@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 28 October 2026 — Run-end save recovery
+
+Run completion waits for successful saving before leaving combat. Failed writes retain the
+cached records for retry; Restart cannot bypass recovery. Existing rewards remain unchanged.
+[Evidence and coverage](playtest-evidence/2026-10-28-run-save-recovery/README.md).
+
+
 ## 28 October 2026 — Map travel save recovery
 
 Map travel waits for a successful save before launching the selected encounter. Failed writes
