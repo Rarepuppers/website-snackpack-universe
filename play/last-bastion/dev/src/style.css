@@ -176,3 +176,7 @@ canvas {
 
 .semantic-shell .semantic-dossier { white-space: pre-line; line-height: 1.45; overflow: auto; pointer-events: auto; padding: 10px; background: #152333; border: 1px solid #405a72; }
 .semantic-shell .semantic-dossier:focus-visible { outline: 2px solid #ff9a52; outline-offset: 3px; }
+.save-handoff-retry { position: fixed; z-index: 10000; inset: 0; margin: auto; width: min(32rem, 90vw); height: fit-content; box-sizing: border-box; padding: 1.5rem; color: #e8e2d4; background: #1d2938; border: 2px solid #68e4e8; box-shadow: 0 0 0 100vmax #05090ee8; font: 1rem/1.5 system-ui, sans-serif; }
+.save-handoff-retry h2 { margin-top: 0; font-size: 1.3rem; }
+.save-handoff-retry button { padding: .75rem 1rem; color: #e8e2d4; background: #263a4a; border: 1px solid #68e4e8; font: inherit; cursor: pointer; }
+.save-handoff-retry button:focus-visible { outline: 3px solid #ff9a52; outline-offset: 3px; }

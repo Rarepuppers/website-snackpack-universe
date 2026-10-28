@@ -1,5 +1,14 @@
 # Last Bastion completed-work log
 
+## 28 October 2026 — G6 event reward save recovery
+
+Reproduced event reward loss when a failed storage write was followed by map navigation.
+A native retry dialog now retains the cached result and retries persistence without duplicate
+reward or node credit. Existing reward rules remain intact. [Evidence](playtest-evidence/2026-10-28-event-save-recovery/README.md).
+Full verification passes: 1,808 unit tests, 65 browser checks, 31 desktop-host tests and 23 portfolio guards.
+No push, package or asset generation.
+
+
 ## 28 October 2026 — G5 native armory slice
 
 Added native inspection and separate purchase/equip/Back controls using existing progression

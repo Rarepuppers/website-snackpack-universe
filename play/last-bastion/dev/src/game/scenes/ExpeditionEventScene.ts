@@ -61,6 +61,8 @@ export class ExpeditionEventScene extends Phaser.Scene {
   private choiceIndex = 0;
   private outcome: { choice: EventChoice; resolution: EventResolution } | null = null;
   private demoMode = false;
+  private pendingDestination: string | null = null;
+  private saveRetryPanel: HTMLElement | null = null;
 
   constructor() {
     super("expedition-event");
@@ -74,7 +76,10 @@ export class ExpeditionEventScene extends Phaser.Scene {
     }
     this.root = this.add.container(0, 0);
     window.addEventListener("keydown", this.handleKeyDown);
-    this.events.once("shutdown", () => window.removeEventListener("keydown", this.handleKeyDown));
+    this.events.once("shutdown", () => {
+      window.removeEventListener("keydown", this.handleKeyDown);
+      this.saveRetryPanel?.remove();
+    });
     this.input.gamepad?.on("down", (_pad: unknown, button: { index: number }) => this.handlePadDown(button.index));
     this.render();
   }
@@ -141,6 +146,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   }
 
   private readonly handleKeyDown = (event: KeyboardEvent): void => {
+    if (this.saveRetryPanel) return; // Native retry button owns keyboard activation.
     if (["ArrowUp", "ArrowDown", "Enter", "Space", "Escape"].includes(event.code)) event.preventDefault();
     if (event.repeat) return;
     if (this.outcome) {
@@ -153,6 +159,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
   };
 
   private handlePadDown(index: number): void {
+    if (this.saveRetryPanel) { if (index === 0) this.retrySavedOutcome(); return; }
     if (this.outcome) { if (index === 0) this.commitOutcome(); return; }
     if (index === 12) this.moveChoice(-1);
     else if (index === 13) this.moveChoice(1);
@@ -175,6 +182,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   /** Applies the resolved outcome: ambush → combat, otherwise commit the node and return to the map. */
   private commitOutcome(): void {
+    if (this.pendingDestination) return; // The reward has already been applied; only retry its write.
     if (!this.outcome) return;
     if (this.demoMode) {
       this.outcome = null;
@@ -194,14 +202,44 @@ export class ExpeditionEventScene extends Phaser.Scene {
         resolution.effects.ambush.threatBudget,
         this.run.state.threatTier,
       );
-      window.location.href = `${expeditionEncounterUrl(encounter)}&ambush=${resolution.effects.ambush.threatBudget}`;
+      this.navigateWhenSaved(`${expeditionEncounterUrl(encounter)}&ambush=${resolution.effects.ambush.threatBudget}`);
       return;
     }
 
     const completed = completeCurrentNode(this.run, nextBuild);
     this.saveStore.recordNodeCleared();
     this.persistRun(completed, completed.state.build);
-    window.location.href = "?screen=map";
+    this.navigateWhenSaved("?screen=map");
+  }
+
+  /** Keep the only rewarded copy alive until storage accepts it. Retry never reapplies the event. */
+  private navigateWhenSaved(destination: string): void {
+    this.pendingDestination = destination;
+    if (this.saveStore.persistence().kind === "saved") {
+      window.location.href = destination;
+      return;
+    }
+    const panel = document.createElement("section");
+    panel.className = "save-handoff-retry";
+    panel.setAttribute("role", "alertdialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.setAttribute("aria-labelledby", "event-save-title");
+    panel.setAttribute("aria-describedby", "event-save-detail");
+    panel.innerHTML = '<h2 id="event-save-title">Progress could not be saved</h2><p id="event-save-detail">Your result is still here. Keep this window open and retry saving before continuing.</p><button type="button">Retry saving and continue</button>';
+    panel.querySelector("button")!.onclick = () => this.retrySavedOutcome();
+    panel.addEventListener("keydown", event => {
+      if (event.code === "Tab") { event.preventDefault(); panel.querySelector("button")!.focus(); }
+    });
+    document.body.append(panel);
+    this.saveRetryPanel = panel;
+    panel.querySelector("button")!.focus();
+  }
+
+  private retrySavedOutcome(): void {
+    if (!this.pendingDestination) return;
+    this.saveStore.retryPersistence();
+    if (this.saveStore.persistence().kind === "saved") window.location.href = this.pendingDestination;
+    else this.saveRetryPanel?.querySelector("p")?.setAttribute("role", "alert");
   }
 
   private persistRun(run: ExpeditionRun, build: ExpeditionBuildSnapshot | null): void {

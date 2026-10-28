@@ -1619,3 +1619,45 @@ test("native armory exposes failed persistence and retries without charging twic
   expect(await page.evaluate(() => window.__shellState.commandMarksBalance)).toBe(5);
   await expect(page.locator('[data-shell-key="armory-action"]')).toHaveText("Equipped");
 });
+
+test("event reward stays available after failed saving and retry commits exactly once", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 960, height: 540 });
+  await page.goto("/play/last-bastion/?flow=menu");
+  // Seed 117's production-generated path 1 -> 3 -> 6 -> 9 reaches Fleshwright Altar.
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem("last-bastion-save")) || { version: 17 };
+    save.expedition = { mapSeed: 117, threatTier: 0, currentNodeId: 9, clearedNodeIds: [1, 3, 6],
+      build: { health: 5, shield: 0, level: 1, experience: 0, scrap: 100,
+        weapons: [{ weaponId: "bastion-service-rifle", tier: 1 }], upgrades: [] } };
+    localStorage.setItem("last-bastion-save", JSON.stringify(save));
+  });
+  await page.goto("/play/last-bastion/?screen=event&expedition=1&node=9");
+  await page.waitForFunction(() => window.__expeditionEvent?.eventId === "shrine-fleshwright");
+  await page.evaluate(() => {
+    window.__originalStorageWrite = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (key === "last-bastion-save") throw new DOMException("Test storage failure", "QuotaExceededError");
+      return window.__originalStorageWrite.call(this, key, value);
+    };
+  });
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__expeditionEvent.outcomeShown);
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: "Retry saving and continue", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Retry saving and continue", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Retry saving and continue", exact: true })).toBeFocused();
+  await page.screenshot({ path: testInfo.outputPath("event-save-retry.png") });
+  await expect(page).toHaveURL(/screen=event/);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).expedition.build.shield)).toBe(0);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/screen=event/);
+  await page.evaluate(() => { Storage.prototype.setItem = window.__originalStorageWrite; });
+  await page.getByRole("button", { name: "Retry saving and continue", exact: true }).click();
+  await page.waitForURL(url => url.searchParams.get("screen") === "map");
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+  expect(saved.expedition.clearedNodeIds).toEqual([1, 3, 6, 9]);
+  expect(saved.expedition.build.shield).toBe(5);
+  expect(saved.expedition.build.health).toBeGreaterThan(5);
+  expect(saved.progress.nodesCleared).toBe(1);
+});

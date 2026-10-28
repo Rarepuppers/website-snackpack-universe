@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 28 October 2026 — Event save recovery
+
+An event reward now stays on screen if saving fails. Retry saving and continue preserves the
+resolved result without applying its reward or node credit twice. Existing event costs and rewards
+are unchanged. [Evidence](playtest-evidence/2026-10-28-event-save-recovery/README.md).
+
+
 ## 28 October 2026 — Native armory controls
 
 Inspect equipment and hero clearances with a labelled native selector. Costs, prerequisites,

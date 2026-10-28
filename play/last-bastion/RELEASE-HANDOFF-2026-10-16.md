@@ -1,5 +1,11 @@
 # Last Bastion release handoff — 16 October 2026
 
+**Latest prepared local build (28 October):** `web-2026.10.28-event-save-recovery`, schema 17,
+simulation compatibility 3. G6 event handoff fix; results in
+[event-save evidence](playtest-evidence/2026-10-28-event-save-recovery/README.md).
+Not pushed or packaged; real device/AT/controller/Steam acceptance remains open.
+
+
 **Latest prepared local build (28 October):** `web-2026.10.28-native-armory`, schema 17,
 simulation compatibility 3. Completes G5 implementation; verification recorded in
 [native armory evidence](playtest-evidence/2026-10-28-native-armory/README.md).

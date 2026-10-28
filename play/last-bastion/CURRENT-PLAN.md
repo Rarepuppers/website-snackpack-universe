@@ -2,7 +2,7 @@
 
 **Updated 28 October 2026. Sole active queue.** Prioritize player-facing code, gameplay quality
 and useful existing content. Automated checks support delivery; they are not the product roadmap.
-Current prepared runtime: `web-2026.10.28-native-armory`, schema 17; G1–G5 complete; next: G6 targeted reliability and G7 integration design. Check Git before implementation; shared checkout has concurrent edits.
+Current prepared runtime: `web-2026.10.28-event-save-recovery`, schema 17; G1–G5 complete; G6 event-save fix verified; G7 integration design follows. Check Git before implementation; shared checkout has concurrent edits.
 No human testers available. Implementation is approved; evidence gates remain unchanged.
 
 ## Current audit findings
@@ -83,6 +83,14 @@ portfolio guards. Real AT/controller acceptance remains external.
 No new tree, art, unlock shortcuts or progression tuning.
 
 ### G6 — transaction and reward reliability alongside gameplay changes
+
+**Completed verified slice:** event reward commit previously navigated to the map
+on a failed storage write, discarding the in-memory result. A fresh browser regression reproduced
+it. Native recovery now retains the result, retries only persistence and navigates after success;
+node credit/reward application occurs once. Full verification passes: 1,808 unit tests, 65 browser
+checks, 31 desktop-host tests and all 23 portfolio guards. [Evidence](playtest-evidence/2026-10-28-event-save-recovery/README.md).
+Next bounded checks: map travel and combat/run-end save handoffs, then remaining shop/event
+transaction boundaries. Similar source patterns are leads, not independently confirmed failures.
 
 **P1 when a defect is reproduced; otherwise support task, M effort/medium risk.** Attach cross-system
 checks to G1–G5: buy/sell/lock/ban/reroll, event costs/rewards, reward-before-travel and write failure.

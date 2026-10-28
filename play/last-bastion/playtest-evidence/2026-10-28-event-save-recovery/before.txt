@@ -1,0 +1,41 @@
+
+[WebServer] (node:22076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:13776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\visual\last-bastion-functional.spec.mjs:1623:1 › event reward stays available after failed saving and retry commits exactly once
+  1) tests\visual\last-bastion-functional.spec.mjs:1623:1 › event reward stays available after failed saving and retry commits exactly once
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Retry saving and continue', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Retry saving and continue', exact: true })
+        - waiting for "http://127.0.0.1:44175/play/last-bastion/?screen=map" navigation to finish...
+        - navigated to "http://127.0.0.1:44175/play/last-bastion/?screen=map"
+
+
+      1643 |   await page.waitForFunction(() => window.__expeditionEvent.outcomeShown);
+      1644 |   await page.keyboard.press("Enter");
+    > 1645 |   await expect(page.getByRole("button", { name: "Retry saving and continue", exact: true })).toBeVisible();
+           |                                                                                              ^
+      1646 |   await expect(page).toHaveURL(/screen=event/);
+      1647 |   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")).expedition.build.shield)).toBe(0);
+      1648 |   await page.getByRole("button", { name: "Retry saving and continue", exact: true }).click();
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:1645:94
+
+    Error Context: test-results\last-bastion-functional-ev-1966f--retry-commits-exactly-once\error-context.md
+
+
+  1 failed
+    tests\visual\last-bastion-functional.spec.mjs:1623:1 › event reward stays available after failed saving and retry commits exactly once
