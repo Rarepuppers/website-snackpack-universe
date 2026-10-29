@@ -265,7 +265,7 @@
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Rummy 500 free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>How strong is the computer?</summary><p>Casual lays the longest meld it can and takes the discard only some of the time. Sharp takes the discard whenever it completes a meld or a lay-off, and plans its melds for the most points. Neither looks at your cards.</p></details>
+        <details class="faq-item"><summary>How strong is the computer?</summary><p>Casual uses simple longest-first melds. Sharp takes a useful discard, plans melds for points, and protects promising card combinations before discarding. Neither peeks at your hand.</p></details>
         <details class="faq-item"><summary>What is the daily game?</summary><p>Everyone with the same table size gets the same deals today, so your score is comparable.</p></details>
       </div>
       <p style="margin-top:22px;"><a class="text-link" href="../" style="color:var(--accent);font-weight:700;">← Back to the arcade</a></p>
@@ -654,16 +654,32 @@ function cpuPlayTurn(state) {
             }
         }
     }
-    // Discard the card with the fewest same-rank/adjacent-suit neighbours in hand.
+    // Casual counts nearby cards; Sharp weighs their distance and meld value.
     const hand = s.hands[idx];
     if (hand.length === 0)
         return discardAndEndTurn(s, null);
-    const scoreCard = (c) => hand.filter((o) => o !== c && (o.r === c.r || (o.s === c.s && Math.abs(o.r - c.r) <= 2))).length;
+    const scoreCard = (c) => {
+        if (player.difficulty !== 'sharp')
+            return hand.filter((o) => o !== c && (o.r === c.r || (o.s === c.s && Math.abs(o.r - c.r) <= 2))).length;
+        // Preserve higher-value connections; adjacent/same-rank pairs get more
+        // weight than a one-card gap. Only the active player's cards are read.
+        const connections = hand.reduce((sum, other) => {
+            if (other === c)
+                return sum;
+            if (other.r === c.r)
+                return sum + 2;
+            if (other.s !== c.s)
+                return sum;
+            const gap = Math.abs(other.r - c.r);
+            return sum + (gap === 1 ? 2 : gap === 2 ? 1 : 0);
+        }, 0);
+        return connections * cardValue(c);
+    };
     const toDiscard = hand.reduce((worst, c) => {
         const usefulness = scoreCard(c) - scoreCard(worst);
         if (usefulness < 0)
             return c;
-        // At equal connectivity, Sharp sheds the larger end-of-round penalty.
+        // At equal potential, Sharp sheds the larger end-of-round penalty.
         if (usefulness === 0 && player.difficulty === 'sharp' && cardValue(c) > cardValue(worst))
             return c;
         return worst;
