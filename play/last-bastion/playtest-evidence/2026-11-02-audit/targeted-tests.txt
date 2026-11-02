@@ -1,0 +1,190 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/expedition src/game/save src/game/platform src/game/combat/ExpeditionTransactions.integration.test.ts src/game/combat/PlayerStatDamage.test.ts src/game/combat/PlayerStatSurvival.test.ts src/game/combat/TransformationCombatIntegration.test.ts src/game/combat/FoundrySovereign.test.ts src/game/combat/EncounterObjectiveSystems.test.ts src/game/content/ContentInventory.test.ts src/game/audio src/game/combat/ProjectileEnemyContact.test.ts src/game/combat/WorldInteractionRuntime.test.ts
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ❯ src/game/audio/WebAudioSynth.test.ts (0 test)
+ ❯ src/game/combat/PlayerStatDamage.test.ts (0 test)
+ ❯ src/game/platform/CloudSaveRuntime.test.ts (0 test)
+ ❯ src/game/combat/PlayerStatSurvival.test.ts (0 test)
+ ❯ src/game/expedition/ExpeditionMap.test.ts (0 test)
+ ❯ src/game/expedition/CampaignTuning.test.ts (0 test)
+ ❯ src/game/combat/ExpeditionTransactions.integration.test.ts (0 test)
+ ❯ src/game/save/LocalSaveStore.test.ts (0 test)
+ ❯ src/game/platform/AchievementRuntime.test.ts (0 test)
+ ❯ src/game/combat/WorldInteractionRuntime.test.ts (0 test)
+ ❯ src/game/expedition/ExpeditionEncounter.test.ts (0 test)
+ ❯ src/game/combat/TransformationCombatIntegration.test.ts (0 test)
+ ❯ src/game/expedition/EncounterEventCatalog.test.ts (0 test)
+ ❯ src/game/platform/CloudSyncMetadata.test.ts (0 test)
+ ❯ src/game/expedition/ExpeditionNodeDirector.test.ts (0 test)
+ ❯ src/game/expedition/ExpeditionRun.test.ts (0 test)
+ ❯ src/game/platform/CloudSavePolicy.test.ts (0 test)
+ ❯ src/game/save/SaveStorage.test.ts (0 test)
+ ❯ src/game/platform/HostPlatform.test.ts (0 test)
+ ❯ src/game/platform/PlatformAdapter.test.ts (0 test)
+ ❯ src/game/expedition/ThreatTier.test.ts (0 test)
+ ❯ src/game/audio/ProductionAudioCatalog.test.ts (0 test)
+ ❯ src/game/combat/FoundrySovereign.test.ts (0 test)
+ ❯ src/game/audio/ProductionAudioFeedback.test.ts (0 test)
+ ❯ src/game/platform/PlatformProgress.test.ts (0 test)
+ ❯ src/game/audio/AudioCueMap.test.ts (0 test)
+ ❯ src/game/combat/EncounterObjectiveSystems.test.ts (0 test)
+ ❯ src/game/platform/TouchNotice.test.ts (0 test)
+ ❯ src/game/combat/ProjectileEnemyContact.test.ts (0 test)
+ ❯ src/game/platform/SteamInputRuntime.test.ts (0 test)
+ ❯ src/game/platform/DesktopBridgeParity.test.ts (0 test)
+ ❯ src/game/audio/MusicDirector.test.ts (0 test)
+ ❯ src/game/content/ContentInventory.test.ts (0 test)
+ ❯ src/game/audio/AudioMixer.test.ts (0 test)
+ ❯ src/game/platform/PlatformRuntime.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 35 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/audio/AudioCueMap.test.ts [ src/game/audio/AudioCueMap.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216503-hwbkqctjr1a' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\2c96864872e35d3adffcdba81c1ffac6eda8c413'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/35]⎯
+
+ FAIL  src/game/audio/AudioMixer.test.ts [ src/game/audio/AudioMixer.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216621-ls9pprswmt' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\b7e09a1175809bb198e7a8dddc81218bf1996da6'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/35]⎯
+
+ FAIL  src/game/audio/MusicDirector.test.ts [ src/game/audio/MusicDirector.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216593-0j4z8rj6cb2k' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\77b42cb49001a4e46d0bcf77d9e3b2ba17bc2c9f'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/35]⎯
+
+ FAIL  src/game/audio/ProductionAudioCatalog.test.ts [ src/game/audio/ProductionAudioCatalog.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216470-fjqtn4yr9t' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\3195c240926fe63206745a76373454fee3f0f853'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/35]⎯
+
+ FAIL  src/game/audio/ProductionAudioFeedback.test.ts [ src/game/audio/ProductionAudioFeedback.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216502-r0fpx7asyi' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\8c1b3645715db6375525064e37dd6b4470897fd7'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/35]⎯
+
+ FAIL  src/game/audio/WebAudioSynth.test.ts [ src/game/audio/WebAudioSynth.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216111-aesphf6af1f' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\7a2aa56da6fba977e304980f9e1284887c72068b'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/35]⎯
+
+ FAIL  src/game/content/ContentInventory.test.ts [ src/game/content/ContentInventory.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216606-802o046ph86' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\34c1c93612de0af00fb9b4e084f955174e3bcbd9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/35]⎯
+
+ FAIL  src/game/combat/EncounterObjectiveSystems.test.ts [ src/game/combat/EncounterObjectiveSystems.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216555-dw0fr2jp2h' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\5834305d75fd538632affc215b2a825cfe6a3915'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/35]⎯
+
+ FAIL  src/game/combat/ExpeditionTransactions.integration.test.ts [ src/game/combat/ExpeditionTransactions.integration.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216146-p4fsuojbitb' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\6f6fe01a45bb3ce2004bcf076c74c1875505369d'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/35]⎯
+
+ FAIL  src/game/combat/FoundrySovereign.test.ts [ src/game/combat/FoundrySovereign.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216503-rfzk2r5mzl' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\42dc11f593eeb6bd153ee6aba22ce29887ce2ed4'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/35]⎯
+
+ FAIL  src/game/combat/PlayerStatDamage.test.ts [ src/game/combat/PlayerStatDamage.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216102-wgfkqxunx9' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\85a3571ae98d13c67ac633edfae87d08b167fe51'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/35]⎯
+
+ FAIL  src/game/combat/PlayerStatSurvival.test.ts [ src/game/combat/PlayerStatSurvival.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216148-n9od8gjj6ss' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\c082e7097153fd2fe78f4437d7633daf464753b0'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/35]⎯
+
+ FAIL  src/game/combat/ProjectileEnemyContact.test.ts [ src/game/combat/ProjectileEnemyContact.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216556-dlg4fo2qf5h' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\108641c52c4a58f85196a7b284e7177663b630e7'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/35]⎯
+
+ FAIL  src/game/combat/TransformationCombatIntegration.test.ts [ src/game/combat/TransformationCombatIntegration.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216206-togctrdkj29' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\010a75bec0e0a553246ddfe99913598f225b541f'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/35]⎯
+
+ FAIL  src/game/combat/WorldInteractionRuntime.test.ts [ src/game/combat/WorldInteractionRuntime.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216176-uwpg41lz4xk' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\9f87872d4e61147ecfef77a9c495003d6ad0ac6b'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/35]⎯
+
+ FAIL  src/game/expedition/CampaignTuning.test.ts [ src/game/expedition/CampaignTuning.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216174-1mlrbs2m1dm' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\937885587b3c74cbc84e0635ad95c8f57121be97'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/35]⎯
+
+ FAIL  src/game/expedition/EncounterEventCatalog.test.ts [ src/game/expedition/EncounterEventCatalog.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216214-ka00w4q86ag' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\f23bd24d4d3c3c7266e823101cbf7811ba5649f9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/35]⎯
+
+ FAIL  src/game/expedition/ExpeditionEncounter.test.ts [ src/game/expedition/ExpeditionEncounter.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216176-6ubp1ae357r' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\4199a1fe5b3f02eeebbb9a765301d905e92804ea'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/35]⎯
+
+ FAIL  src/game/expedition/ExpeditionMap.test.ts [ src/game/expedition/ExpeditionMap.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216152-zz9lwqywh1' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\90807db6a282bcf9e2f8ab4a024bf9b2f063830b'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/35]⎯
+
+ FAIL  src/game/expedition/ExpeditionNodeDirector.test.ts [ src/game/expedition/ExpeditionNodeDirector.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216444-2scyy6zdo6v' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\6375d51195e17f1c62f8bb1f606903c9700559c9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/35]⎯
+
+ FAIL  src/game/expedition/ExpeditionRun.test.ts [ src/game/expedition/ExpeditionRun.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216461-bcb7q0gf1sp' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\bda28e7d1fed47892d5283b78057d2cf6e7a0ad4'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/35]⎯
+
+ FAIL  src/game/expedition/ThreatTier.test.ts [ src/game/expedition/ThreatTier.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216468-v2pfrwgkoh' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\8a2e0d0bb67c8463b462563f8fc02391e9066ce4'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/35]⎯
+
+ FAIL  src/game/platform/AchievementRuntime.test.ts [ src/game/platform/AchievementRuntime.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216177-licyzt94mj' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\ed85826338fbb9706111e1750987ae2e5de57651'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/35]⎯
+
+ FAIL  src/game/platform/CloudSavePolicy.test.ts [ src/game/platform/CloudSavePolicy.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216459-5yz38a6n0xo' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\df30dd082200bcaa02750c2c13b79d9806fe114a'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/35]⎯
+
+ FAIL  src/game/platform/CloudSaveRuntime.test.ts [ src/game/platform/CloudSaveRuntime.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216121-y58loqc86an' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\cfb564b8fcf1592ddab796304ced67961bcee620'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/35]⎯
+
+ FAIL  src/game/platform/CloudSyncMetadata.test.ts [ src/game/platform/CloudSyncMetadata.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216439-rhzoecjng9o' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\a91046cda166079abbba0e17a26bfd7981f471d8'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/35]⎯
+
+ FAIL  src/game/platform/DesktopBridgeParity.test.ts [ src/game/platform/DesktopBridgeParity.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216585-ol7ze7xoamh' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\a32554ee65003ed8a4c6c1fcd870d37dfda4e6af'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/35]⎯
+
+ FAIL  src/game/platform/HostPlatform.test.ts [ src/game/platform/HostPlatform.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216470-rpm75h543xm' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\93a8d5438ad1716a63c7b4630f6bd2857c898c41'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/35]⎯
+
+ FAIL  src/game/platform/PlatformAdapter.test.ts [ src/game/platform/PlatformAdapter.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216469-l9c2839nkl' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\07380941fdbbbf36864d7e3b7c3a9f2c37aa59f4'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/35]⎯
+
+ FAIL  src/game/platform/PlatformProgress.test.ts [ src/game/platform/PlatformProgress.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216503-7fgd9lls4h9' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\d2affef1a77c59233a635ea80271c7386c33bf9e'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/35]⎯
+
+ FAIL  src/game/platform/PlatformRuntime.test.ts [ src/game/platform/PlatformRuntime.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216633-1n14mbxv23c' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\e3fe92306634ba1ca6c52075230355ad957ac64d'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/35]⎯
+
+ FAIL  src/game/platform/SteamInputRuntime.test.ts [ src/game/platform/SteamInputRuntime.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216562-z9dp30peozh' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\b7490d3d874fc16e95d0e187025b360e52f5b9d1'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/35]⎯
+
+ FAIL  src/game/platform/TouchNotice.test.ts [ src/game/platform/TouchNotice.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216554-yxunag2gbf' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\1f82b0cd819b04a89cfc69da6d4d21aa4d364c34'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/35]⎯
+
+ FAIL  src/game/save/LocalSaveStore.test.ts [ src/game/save/LocalSaveStore.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216189-e7tu453z2f' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\3df4b67fd437d307e4d53135329549d2087f0ff9'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/35]⎯
+
+ FAIL  src/game/save/SaveStorage.test.ts [ src/game/save/SaveStorage.test.ts ]
+Error: EPERM: operation not permitted, rename 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\.tmp-1793622216468-uvj0f5ctlmr' -> 'C:\Users\Mark\AppData\Local\Packages\sandbox.{039ea4e7-acfa-4b06-828a-1995e6f51af4}\AC\Temp\hdhdJOOExD5Pg8s9b1cPE\ssr\97858f58a5771d9a487dbd1f826debe078c26038'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/35]⎯
+
+
+ Test Files  35 failed (35)
+      Tests  no tests
+   Start at  23:23:35
+   Duration  951ms (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 3ms)

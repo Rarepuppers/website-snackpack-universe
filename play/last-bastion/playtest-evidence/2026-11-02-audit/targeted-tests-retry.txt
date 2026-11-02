@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/expedition src/game/save src/game/platform src/game/combat/ExpeditionTransactions.integration.test.ts src/game/combat/PlayerStatDamage.test.ts src/game/combat/PlayerStatSurvival.test.ts src/game/combat/TransformationCombatIntegration.test.ts src/game/combat/FoundrySovereign.test.ts src/game/combat/EncounterObjectiveSystems.test.ts src/game/content/ContentInventory.test.ts src/game/audio src/game/combat/ProjectileEnemyContact.test.ts src/game/combat/WorldInteractionRuntime.test.ts
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  35 passed (35)
+      Tests  317 passed (317)
+   Start at  23:24:04
+   Duration  2.17s (transform 13.38s, setup 0ms, import 17.37s, tests 1.14s, environment 2ms)

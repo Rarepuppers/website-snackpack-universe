@@ -1,0 +1,6 @@
+
+> last-bastion-web@0.0.1 combat:audit:boundaries
+> node scripts/audit-combat-boundaries.mjs
+
+PASS 33 enemy adapters delegate policy with no inline switch state machines.
+First shared-state seam: ordinary projectile volley geometry; runtime mutation and world effects remain simulation-owned.

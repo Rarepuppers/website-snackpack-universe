@@ -1,0 +1,21 @@
+
+[WebServer] (node:25700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:11204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/10] tests\visual\last-bastion-functional.spec.mjs:181:1 › combat audio settings control the live output and encounter retry stops old voices
+[2/10] tests\visual\last-bastion-functional.spec.mjs:1144:1 › native rebinding swaps duplicates, owns capture input, persists and resets
+[3/10] tests\visual\last-bastion-functional.spec.mjs:1374:1 › saved expedition stash is visible after renderer reload
+[4/10] tests\visual\last-bastion-functional.spec.mjs:1418:1 › native hero and threat selectors preserve locks, focus, mode and deployment
+[5/10] tests\visual\last-bastion-functional.spec.mjs:1593:1 › native armory exposes failed persistence and retries without charging twice
+[6/10] tests\visual\last-bastion-functional.spec.mjs:1623:1 › event reward stays available after failed saving and retry commits exactly once
+[7/10] tests\visual\last-bastion-functional.spec.mjs:1665:1 › map travel waits for save recovery before launching the selected encounter
+[8/10] tests\visual\last-bastion-functional.spec.mjs:1724:3 › expedition safe-node-victory retains its save through failure and retry
+[9/10] tests\visual\last-bastion-functional.spec.mjs:1724:3 › expedition abandonment retains its save through failure and retry
+[10/10] tests\visual\last-bastion-functional.spec.mjs:1796:3 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit
+  10 passed (35.9s)

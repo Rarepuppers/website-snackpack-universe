@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/combat/EnemySteeringProfiles.test.ts src/game/combat/TelegraphRules.test.ts src/game/combat/FixedTimestepClock.test.ts src/game/combat/ProjectileWorldCollision.test.ts src/game/combat/BossPhases.test.ts src/game/combat/FoundryFabricatorLifecycle.test.ts src/game/combat/RiftStalkerBehavior.test.ts src/game/arena/WorldObjectNavigation.test.ts src/game/arena/WorldObjectPlacement.test.ts src/game/assets/CombatAssetManifest.test.ts src/game/equipment/WeaponInventory.test.ts src/game/input
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  17 passed (17)
+      Tests  102 passed (102)
+   Start at  07:34:39
+   Duration  2.41s (transform 2.89s, setup 0ms, import 3.90s, tests 2.15s, environment 1ms)

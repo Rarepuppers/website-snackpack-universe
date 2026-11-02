@@ -1,0 +1,1 @@
+Six actual event scenes confirmed and saved/reloaded through local published bundle.

@@ -4,7 +4,9 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.10.25-decision-labels`; it is not published or packaged.
+Current prepared local build is `web-2026.10.29-boss-reward-confirm`; this worksheet does not establish publication or packaging.
+The [2–3 November audit](playtest-evidence/2026-11-02-audit/README.md) adds event-transaction corrections
+to CURRENT-PLAN; it does not mark any human/device row below as passed.
 The earlier browser publication below refers to the 17 October QA-readiness build. Use the
 [QA readiness instructions](QA-READINESS.md) for opt-in session export and package provenance.
 Reports are evidence aids; their presence does not mark any NOT RUN row as passed.
@@ -79,7 +81,9 @@ controller capture, keyboard Tab reaches Cancel; gamepad B is a binding candidat
 physical menu Back after capture ends. Neither device may navigate menus during the other's capture.
 For records, verify career labels/values, empty and legacy history, outcome/hero/progress/threat/date,
 Newer/Older boundaries, list reading/scrolling, Back/return focus and unchanged save/progression.
-Armory, hero/threat select, LAB, map, debrief and combat remain separate canvas consumers.
+Armory and hero/threat select now have native controls from the 28 October slices; verify their
+labels, focus, purchase/equip/Deploy/Back actions and physical-controller behavior separately.
+LAB, map, debrief and combat remain separate canvas consumers.
 Do not sign off whole-game screen-reader support from this limited slice. Store observations and
 failures by screen/control under a dated evidence folder; preserve the tester's real save.
 

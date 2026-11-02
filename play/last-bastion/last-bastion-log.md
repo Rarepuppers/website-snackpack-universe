@@ -1,5 +1,20 @@
 # Last Bastion completed-work log
 
+## 3 November 2026 — evidence-based audit and queue refresh
+
+Completed the requested audit/planning pass, started 2 November, against `69914456` / runtime
+`web-2026.10.29-boss-reward-confirm`. No runtime, assets, balance, packaging or deployment changed.
+Six real event-scene/save-reload witnesses confirm discarded hunt/echo effects, charged but rejected
+transformation grants, free relic-sacrifice affinity, omitted result deltas and non-stacking duplicate
+relic semantics. The latter is a clarity improvement, not a combat stacking defect. CURRENT-PLAN now
+prioritizes three correctness tasks and two bounded usability improvements, retaining gated finale
+and teleporter designs. Archived the superseded queue and retained release/asset/acceptance contracts.
+Fresh checks: 419 unit tests/52 files, 10 existing browser cases, six audit witnesses, one density
+profile, 63 WebP derivatives and 33 enemy adapter boundaries. Initial sandbox runner failures were
+resolved; full suites/host/portfolio/offline/Steam/human acceptance were not rerun. See the
+[audit and exact coverage](playtest-evidence/2026-11-02-audit/README.md). Documentation-only commit;
+concurrent about/privacy/social/game edits are excluded. No push or live-release claim.
+
 ## 29 October 2026 — G7/G8 design and G9 feedback closeout
 
 Completed versioned-finale and bounded teleporter designs; captured five production maps and seven excluded interactions. Fresh targeted audio/interaction/encounter/presenter checks: 38 tests pass. A subsequent final-boss browser regression exposed and fixed Enter/Restart bypassing reward persistence. [Evidence](playtest-evidence/2026-10-29-design-closeout/README.md). Superseded implementation queue archived; final-boss failed-write coverage now passes; only gated/conditional work remains in CURRENT-PLAN. Full checks pass: 1,810 unit tests, 70 browser checks, 31 desktop-host tests and 23 portfolio guards. Runtime: `web-2026.10.29-boss-reward-confirm`.

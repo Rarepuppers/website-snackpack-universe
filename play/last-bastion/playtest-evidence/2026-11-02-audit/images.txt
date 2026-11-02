@@ -1,0 +1,6 @@
+
+> last-bastion-web@0.0.1 image:audit:webp
+> node scripts/audit-production-images.mjs
+
+PASS 8 lossy + 55 lossless derivatives
+Runtime WebP audit complete: 63 assets; 51.93 MiB -> 27.06 MiB (52.1%).

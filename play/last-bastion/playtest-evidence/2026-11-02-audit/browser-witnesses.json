@@ -1,0 +1,991 @@
+[
+  {
+    "key": "locked",
+    "route": {
+      "mapSeed": 17,
+      "currentNodeId": 17,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        8,
+        11,
+        14
+      ],
+      "choiceIndex": 0
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 17,
+        "threatTier": 0,
+        "currentNodeId": 17,
+        "clearedNodeIds": [
+          1,
+          2,
+          5,
+          8,
+          11,
+          14,
+          17
+        ],
+        "build": {
+          "health": 10,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 100,
+          "weapons": [],
+          "upgrades": [],
+          "transformation": {
+            "committedPathId": "bastion-super-soldier",
+            "paths": [
+              {
+                "pathId": "bastion-super-soldier",
+                "affinity": 3,
+                "choiceIds": [
+                  "heavy-gunner",
+                  "heavy-gunner",
+                  "heavy-gunner"
+                ]
+              }
+            ]
+          },
+          "relicIds": [],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  },
+  {
+    "key": "capped",
+    "route": {
+      "mapSeed": 4,
+      "currentNodeId": 18,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        8,
+        11,
+        14
+      ],
+      "choiceIndex": 0
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 4,
+        "threatTier": 0,
+        "currentNodeId": 18,
+        "clearedNodeIds": [
+          1,
+          2,
+          5,
+          8,
+          11,
+          14,
+          18
+        ],
+        "build": {
+          "health": 7,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 70,
+          "weapons": [
+            {
+              "weaponId": "bastion-service-rifle",
+              "tier": 1
+            }
+          ],
+          "upgrades": [],
+          "transformation": {
+            "committedPathId": "bastion-super-soldier",
+            "paths": [
+              {
+                "pathId": "bastion-super-soldier",
+                "affinity": 3,
+                "choiceIds": [
+                  "heavy-gunner",
+                  "heavy-gunner",
+                  "heavy-gunner"
+                ]
+              }
+            ]
+          },
+          "relicIds": [],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  },
+  {
+    "key": "free",
+    "route": {
+      "mapSeed": 10,
+      "currentNodeId": 10,
+      "clearedNodeIds": [
+        1,
+        3,
+        7
+      ],
+      "choiceIndex": 1
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 10,
+        "threatTier": 0,
+        "currentNodeId": 10,
+        "clearedNodeIds": [
+          1,
+          3,
+          7,
+          10
+        ],
+        "build": {
+          "health": 10,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 100,
+          "weapons": [
+            {
+              "weaponId": "bastion-service-rifle",
+              "tier": 1
+            }
+          ],
+          "upgrades": [],
+          "transformation": {
+            "committedPathId": null,
+            "paths": [
+              {
+                "pathId": "cultist-doctrine",
+                "affinity": 1,
+                "choiceIds": [
+                  "martyrs-resolve"
+                ]
+              }
+            ]
+          },
+          "relicIds": [],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  },
+  {
+    "key": "hunt",
+    "route": {
+      "mapSeed": 6,
+      "currentNodeId": 16,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        9,
+        13
+      ],
+      "choiceIndex": 1
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 6,
+        "threatTier": 0,
+        "currentNodeId": 16,
+        "clearedNodeIds": [
+          1,
+          2,
+          5,
+          9,
+          13,
+          16
+        ],
+        "build": {
+          "health": 10,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 70,
+          "weapons": [
+            {
+              "weaponId": "bastion-service-rifle",
+              "tier": 1
+            }
+          ],
+          "upgrades": [],
+          "transformation": {
+            "committedPathId": null,
+            "paths": []
+          },
+          "relicIds": [],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  },
+  {
+    "key": "echo",
+    "route": {
+      "mapSeed": 1,
+      "currentNodeId": 8,
+      "clearedNodeIds": [
+        1,
+        2,
+        5
+      ],
+      "choiceIndex": 0
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 1,
+        "threatTier": 0,
+        "currentNodeId": 8,
+        "clearedNodeIds": [
+          1,
+          2,
+          5,
+          8
+        ],
+        "build": {
+          "health": 10,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 100,
+          "weapons": [
+            {
+              "weaponId": "bastion-service-rifle",
+              "tier": 1
+            }
+          ],
+          "upgrades": [
+            {
+              "upgradeId": "rapid-cycling",
+              "level": 1
+            }
+          ],
+          "transformation": {
+            "committedPathId": null,
+            "paths": []
+          },
+          "relicIds": [],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  },
+  {
+    "key": "duplicate",
+    "route": {
+      "mapSeed": 18,
+      "currentNodeId": 8,
+      "clearedNodeIds": [
+        1,
+        2,
+        5
+      ],
+      "choiceIndex": 1
+    },
+    "saveAfterReload": {
+      "version": 17,
+      "settings": {
+        "screenShakeEnabled": true,
+        "reducedFlashEnabled": false,
+        "soundEnabled": true,
+        "damageNumbersEnabled": true,
+        "cooldownTimersEnabled": true,
+        "affinityHudEnabled": true,
+        "autoFireEnabled": true,
+        "enemyHealthBars": "threats",
+        "reducedMotionEnabled": false,
+        "highContrastOutlinesEnabled": false,
+        "uiScale": 1,
+        "masterVolume": 1,
+        "sfxVolume": 1,
+        "uiVolume": 1,
+        "musicVolume": 1,
+        "ambienceVolume": 1,
+        "gamepadMoveDeadzone": 0.18,
+        "gamepadAimDeadzone": 0.25,
+        "gamepadAimSensitivity": 1,
+        "gamepadVibrationStrength": 0.75,
+        "aimAssistStrength": 0,
+        "displaySizePercent": 100,
+        "presentationMode": "auto",
+        "fullscreenMode": "windowed",
+        "selectedDisplayId": null,
+        "frameCap": "display",
+        "brightness": 1,
+        "gamma": 1,
+        "screenShakeIntensity": 1,
+        "radarSize": 1,
+        "offscreenThreatIndicators": "all",
+        "colorVisionMode": "standard",
+        "effectQuality": "auto",
+        "gameSpeedMultiplier": 1
+      },
+      "controls": {
+        "keyboard": {
+          "moveUp": "KeyW",
+          "moveDown": "KeyS",
+          "moveLeft": "KeyA",
+          "moveRight": "KeyD",
+          "evade": "Space",
+          "interact": "KeyE",
+          "ultimate": "KeyR",
+          "kit": "KeyQ",
+          "toggleFireMode": "KeyT",
+          "pause": "Escape"
+        },
+        "gamepad": {
+          "evade": "south",
+          "interact": "west",
+          "ultimate": "north",
+          "kit": "east",
+          "toggleFireMode": "rightStick",
+          "pause": "start"
+        }
+      },
+      "progress": {
+        "runsFinished": 0,
+        "victories": 0,
+        "bestWaveReached": 0,
+        "nodesCleared": 1,
+        "bestNodesCleared": 0,
+        "totalKills": 0,
+        "totalDamage": 0,
+        "totalScrapEarned": 0,
+        "bestiary": {},
+        "threatTierBestNodes": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "threatTierVictories": {
+          "0": 0,
+          "1": 0,
+          "2": 0
+        },
+        "commandMarksLifetime": 0,
+        "purchasedArmoryNodeIds": [],
+        "daily": {},
+        "dailyParticipation": []
+      },
+      "expedition": {
+        "mapSeed": 18,
+        "threatTier": 0,
+        "currentNodeId": 8,
+        "clearedNodeIds": [
+          1,
+          2,
+          5,
+          8
+        ],
+        "build": {
+          "health": 10,
+          "shield": 0,
+          "level": 1,
+          "experience": 0,
+          "scrap": 100,
+          "weapons": [
+            {
+              "weaponId": "bastion-service-rifle",
+              "tier": 1
+            }
+          ],
+          "upgrades": [],
+          "transformation": {
+            "committedPathId": null,
+            "paths": []
+          },
+          "relicIds": [
+            "rel-blast-baffle",
+            "rel-blast-baffle"
+          ],
+          "equippedArtifactId": null,
+          "maxHealthBonus": 0,
+          "weaponSlotBonus": 0,
+          "ownedItemIds": [],
+          "itemStats": {},
+          "bannedShopIds": [],
+          "carriedConsumables": [],
+          "bonusLifestealPerKill": 0
+        },
+        "metrics": {
+          "kills": 0,
+          "scrapEarned": 0,
+          "damageByWeapon": {},
+          "damageBySecond": [],
+          "elapsedSeconds": 0,
+          "damageTaken": 0,
+          "eliteKills": 0,
+          "bossDamage": 0,
+          "highestHit": 0,
+          "criticalHits": 0,
+          "damageTakenBySource": {},
+          "defeatCause": null
+        }
+      },
+      "selectedPerkId": "perk-veteran",
+      "selectedHeroId": "marine",
+      "selectedThreatTier": 0,
+      "selectedArmoryNodeId": null,
+      "lastRunSummary": null,
+      "runHistory": []
+    }
+  }
+]

@@ -1,0 +1,617 @@
+{
+  "baseline": "69914456",
+  "inventory": {
+    "heroes": 5,
+    "weaponsTotal": 34,
+    "weaponsDraftable": 31,
+    "weaponsUnique": 1,
+    "weaponsHeroBound": 1,
+    "weaponsTransformationOnly": 1,
+    "enemyTypesTotal": 38,
+    "regularEnemyTypes": 20,
+    "supportEnemyTypes": 8,
+    "elites": 7,
+    "miniBosses": 7,
+    "bosses": 3,
+    "items": 47,
+    "relics": 14,
+    "artifacts": 12,
+    "upgrades": 20,
+    "levelStatCards": 16,
+    "worldObjects": 29,
+    "objectiveModes": 4
+  },
+  "eventCount": 54,
+  "finales": [
+    {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 4147905103,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    },
+    {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 1437859528,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    },
+    {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 532469099,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    },
+    {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 2230558395,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    },
+    {
+      "nodeId": 20,
+      "kind": "boss",
+      "column": 7,
+      "themeId": "containment-underworld",
+      "seed": 2406356708,
+      "directorWaveIndex": 7,
+      "threatBudget": 0,
+      "eliteKind": null,
+      "miniBossKind": null,
+      "bossKind": "bastion-eater",
+      "eventId": null,
+      "objectiveMode": null,
+      "waves": [
+        {
+          "kind": "boss",
+          "directorWaveIndex": 9,
+          "threatBudget": 0,
+          "timerEndsWave": false,
+          "eliteKind": null,
+          "miniBossKind": null,
+          "spawnCadenceMultiplier": 1
+        }
+      ]
+    }
+  ],
+  "routes": {
+    "echo": {
+      "mapSeed": 1,
+      "currentNodeId": 8,
+      "clearedNodeIds": [
+        1,
+        2,
+        5
+      ],
+      "choiceIndex": 0
+    },
+    "capped": {
+      "mapSeed": 4,
+      "currentNodeId": 18,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        8,
+        11,
+        14
+      ],
+      "choiceIndex": 0
+    },
+    "hunt": {
+      "mapSeed": 6,
+      "currentNodeId": 16,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        9,
+        13
+      ],
+      "choiceIndex": 1
+    },
+    "free": {
+      "mapSeed": 10,
+      "currentNodeId": 10,
+      "clearedNodeIds": [
+        1,
+        3,
+        7
+      ],
+      "choiceIndex": 1
+    },
+    "locked": {
+      "mapSeed": 17,
+      "currentNodeId": 17,
+      "clearedNodeIds": [
+        1,
+        2,
+        5,
+        8,
+        11,
+        14
+      ],
+      "choiceIndex": 0
+    },
+    "duplicate": {
+      "mapSeed": 18,
+      "currentNodeId": 8,
+      "clearedNodeIds": [
+        1,
+        2,
+        5
+      ],
+      "choiceIndex": 1
+    }
+  },
+  "witnesses": {
+    "locked": {
+      "eventId": "event-cybernetics-bay",
+      "choiceId": "feed-weapon",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "transformation": {
+          "committedPathId": "bastion-super-soldier",
+          "paths": [
+            {
+              "pathId": "bastion-super-soldier",
+              "affinity": 3,
+              "choiceIds": [
+                "heavy-gunner",
+                "heavy-gunner",
+                "heavy-gunner"
+              ]
+            }
+          ]
+        }
+      },
+      "after": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [],
+        "upgrades": [],
+        "transformation": {
+          "committedPathId": "bastion-super-soldier",
+          "paths": [
+            {
+              "pathId": "bastion-super-soldier",
+              "affinity": 3,
+              "choiceIds": [
+                "heavy-gunner",
+                "heavy-gunner",
+                "heavy-gunner"
+              ]
+            }
+          ]
+        },
+        "relicIds": [],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "The cradle strips your weapon for parts and weaves them into your skin instead."
+    },
+    "capped": {
+      "eventId": "event-super-soldier-serum",
+      "choiceId": "take-the-dose",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "transformation": {
+          "committedPathId": "bastion-super-soldier",
+          "paths": [
+            {
+              "pathId": "bastion-super-soldier",
+              "affinity": 3,
+              "choiceIds": [
+                "heavy-gunner",
+                "heavy-gunner",
+                "heavy-gunner"
+              ]
+            }
+          ]
+        }
+      },
+      "after": {
+        "health": 7,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 70,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "transformation": {
+          "committedPathId": "bastion-super-soldier",
+          "paths": [
+            {
+              "pathId": "bastion-super-soldier",
+              "affinity": 3,
+              "choiceIds": [
+                "heavy-gunner",
+                "heavy-gunner",
+                "heavy-gunner"
+              ]
+            }
+          ]
+        },
+        "relicIds": [],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "It burns going in, then your hands stop shaking. Everything feels lighter to carry."
+    },
+    "free": {
+      "eventId": "event-designed-arrival",
+      "choiceId": "offer-relic",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": []
+      },
+      "after": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "transformation": {
+          "committedPathId": null,
+          "paths": [
+            {
+              "pathId": "cultist-doctrine",
+              "affinity": 1,
+              "choiceIds": [
+                "martyrs-resolve"
+              ]
+            }
+          ]
+        },
+        "relicIds": [],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "They take the relic without a word and welcome you as one of their own."
+    },
+    "duplicate": {
+      "eventId": "shrine-duplication-vat",
+      "choiceId": "duplicate-relic",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "relicIds": [
+          "rel-blast-baffle"
+        ]
+      },
+      "after": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "relicIds": [
+          "rel-blast-baffle",
+          "rel-blast-baffle"
+        ],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "The vat copies the relic down to the last scratch.",
+      "beforeModifiers": {
+        "movingSpreadMultiplier": 1,
+        "chainArcEveryNthAttack": null,
+        "chainArcDamage": 0,
+        "selfExplosiveDamageMultiplier": 0.5,
+        "explosionRadiusMultiplier": 1.15,
+        "eliteMarkedEarlier": false,
+        "eliteBonusDamageAfterMiss": 0,
+        "healthPickupSlowPulse": false,
+        "evasiveDistanceMultiplier": 1,
+        "evasiveRecoveryMultiplier": 1,
+        "terrainDamageMultiplier": 1,
+        "beamDamageMultiplier": 1,
+        "statusBuildupMultiplier": 1,
+        "scrapPerWorldObjectDestroyed": 0,
+        "stationaryRangedBonusAfterSeconds": null,
+        "stationaryRangedBonusDamage": 0,
+        "equippedArtifactId": null,
+        "meleeDamageMultiplier": 1,
+        "closeQuartersArmour": 0,
+        "executeBonusDamage": 0,
+        "fireRatePerKill": 0,
+        "fireRateKillStackCap": 0,
+        "evasiveRefundOnDodge": 0,
+        "revivesOnce": false,
+        "negatesFirstHitPerWave": false,
+        "blinkOnHitMetres": 0,
+        "implosionEverySeconds": null,
+        "eggDeathDamage": 0,
+        "preventHatchDuringCrack": false,
+        "criticalHealthBraceFormation": false,
+        "scrapMultiplier": 1,
+        "lifestealPerKill": 0,
+        "berserkerMaxBonusDamage": 0,
+        "shieldRechargeMultiplier": 1,
+        "shieldRechargeDelayMultiplier": 1
+      },
+      "afterModifiers": {
+        "movingSpreadMultiplier": 1,
+        "chainArcEveryNthAttack": null,
+        "chainArcDamage": 0,
+        "selfExplosiveDamageMultiplier": 0.5,
+        "explosionRadiusMultiplier": 1.15,
+        "eliteMarkedEarlier": false,
+        "eliteBonusDamageAfterMiss": 0,
+        "healthPickupSlowPulse": false,
+        "evasiveDistanceMultiplier": 1,
+        "evasiveRecoveryMultiplier": 1,
+        "terrainDamageMultiplier": 1,
+        "beamDamageMultiplier": 1,
+        "statusBuildupMultiplier": 1,
+        "scrapPerWorldObjectDestroyed": 0,
+        "stationaryRangedBonusAfterSeconds": null,
+        "stationaryRangedBonusDamage": 0,
+        "equippedArtifactId": null,
+        "meleeDamageMultiplier": 1,
+        "closeQuartersArmour": 0,
+        "executeBonusDamage": 0,
+        "fireRatePerKill": 0,
+        "fireRateKillStackCap": 0,
+        "evasiveRefundOnDodge": 0,
+        "revivesOnce": false,
+        "negatesFirstHitPerWave": false,
+        "blinkOnHitMetres": 0,
+        "implosionEverySeconds": null,
+        "eggDeathDamage": 0,
+        "preventHatchDuringCrack": false,
+        "criticalHealthBraceFormation": false,
+        "scrapMultiplier": 1,
+        "lifestealPerKill": 0,
+        "berserkerMaxBonusDamage": 0,
+        "shieldRechargeMultiplier": 1,
+        "shieldRechargeDelayMultiplier": 1
+      }
+    },
+    "hunt": {
+      "eventId": "event-old-sergeant",
+      "choiceId": "buy-hunt-mark",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": []
+      },
+      "after": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 70,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [],
+        "relicIds": [],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "He carves a sigil on your pauldron. The hunt is on."
+    },
+    "echo": {
+      "eventId": "shrine-echoes",
+      "choiceId": "echo-upgrade",
+      "available": true,
+      "before": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [
+          {
+            "upgradeId": "rapid-cycling",
+            "level": 1
+          }
+        ]
+      },
+      "after": {
+        "health": 10,
+        "shield": 0,
+        "level": 1,
+        "experience": 0,
+        "scrap": 100,
+        "weapons": [
+          {
+            "weaponId": "bastion-service-rifle",
+            "tier": 1
+          }
+        ],
+        "upgrades": [
+          {
+            "upgradeId": "rapid-cycling",
+            "level": 1
+          }
+        ],
+        "relicIds": [],
+        "equippedArtifactId": null,
+        "maxHealthBonus": 0,
+        "weaponSlotBonus": 0,
+        "carriedConsumables": [],
+        "bonusLifestealPerKill": 0
+      },
+      "text": "The echo lands. Your build speaks twice, and answers a beat slower."
+    }
+  }
+}
