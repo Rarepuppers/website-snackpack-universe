@@ -20,12 +20,9 @@ export type { ArtifactId, RelicId } from "../content/relicCatalog";
  * This module is pure and Phaser-free, matching `perkCatalog` and the
  * transformation catalogs: the catalog is data, `resolveEventChoice` is a
  * deterministic function of (build, choice, roll), and the map/scene wiring is
- * a separate behavior gate. Fields the live systems already own (health,
- * shield, scrap, experience, weapons) are applied to the build snapshot
- * directly; effects whose systems are not live yet (relics, artifacts, weapon
- * slots, upgrade rerolls, next-node modifiers) are carried in `EventSideEffects`
- * for the run to consume when those systems land — the same "carry but resolve
- * later" approach the transformation state already uses.
+ * a separate behavior gate. Direct changes and supported side effects are
+ * merged into the persisted build; ambushes route into combat. Offers whose
+ * side effects have no runtime consumer are unavailable, not deferred rewards.
  */
 
 export type EncounterEventKind = "shrine" | "event";
@@ -83,11 +80,8 @@ export type EventOutcome =
   // --- Phase 3 (24 July 2026) ---
   /**
    * Applies one aligned transformation choice `count` times (default 1), same
-   * as picking it in the transformation lab. Stops early and no-ops the
-   * remainder if a pick fails (path-locked to a different committed path,
-   * apex reached, or the choice is already at max rank) rather than throwing —
-   * Blood Market cards can request more points than are legal to grant and
-   * the player still gets whatever fits.
+   * as picking it in the transformation lab. The complete exchange is
+   * preflighted before costs: every requested pick must be legal.
    */
   | { type: "grantTransformationAffinity"; choiceId: TransformationChoiceId; count?: number };
 
@@ -1294,6 +1288,7 @@ const EVENTS: readonly EncounterEventDefinition[] = Object.freeze([
         id: "offer-relic",
         label: "Offer up a relic",
         detail: "Give up your most recently owned relic → Church of the Designed Arrival Affinity (Martyr)",
+        requirement: { minRelics: 1 },
         outcomes: [{ type: "purifyRelic" }, { type: "grantTransformationAffinity", choiceId: "martyrs-resolve" }],
         resultText: "They take the relic without a word and welcome you as one of their own.",
       },
@@ -1396,7 +1391,7 @@ export function selectEncounterEvent(
 // Resolution — pure, deterministic given a roll in [0, 1).
 // ---------------------------------------------------------------------------
 
-/** Effects whose live systems do not exist yet; the run carries these forward. */
+/** Supported build/ambush effects plus legacy flags withheld by offer preflight. */
 export interface EventSideEffects {
   maxHealthDelta: number;
   weaponSlotsGranted: number;
@@ -1416,6 +1411,8 @@ export interface EventResolution {
   build: ExpeditionBuildSnapshot;
   effects: EventSideEffects;
   resultText: string;
+  /** Rejected exchanges retain the original build and carry no side effects. */
+  rejectedReason?: string;
 }
 
 export function emptySideEffects(): EventSideEffects {
@@ -1443,32 +1440,66 @@ export function isChoiceAvailable(
   maxHealth: number,
   choice: EventChoice,
 ): boolean {
-  const requirement = choice.requirement;
-  if (!requirement) {
-    return true;
-  }
+  return eventChoiceUnavailableReason(build, maxHealth, choice) === null;
+}
+
+/** Shared by offer presentation and resolution, including callers outside the scene. */
+export function eventChoiceUnavailableReason(
+  build: ExpeditionBuildSnapshot,
+  maxHealth: number,
+  choice: EventChoice,
+): string | null {
+  const branches = choice.randomOutcomes
+    ? choice.randomOutcomes.map(branch => branch.outcomes)
+    : [choice.outcomes ?? []];
+  if (branches.some(outcomes => outcomes.some(outcome =>
+    outcome.type === "guaranteedEliteRelicNextNode"
+    || outcome.type === "duplicateUpgradeWithPenalty"
+    || outcome.type === "upgradeReroll"
+  ))) return "This exchange is unavailable.";
+
+  const requirement = choice.requirement ?? {};
   if (requirement.minScrap !== undefined && build.scrap < requirement.minScrap) {
-    return false;
+    return `Requires ${requirement.minScrap} Scrap.`;
   }
   if (requirement.minHealth !== undefined && build.health < requirement.minHealth) {
-    return false;
+    return `Requires ${requirement.minHealth} health.`;
   }
   if (requirement.minWeapons !== undefined && build.weapons.length < requirement.minWeapons) {
-    return false;
+    return "Requires an equipped weapon.";
   }
   if (requirement.minRelics !== undefined && (build.relicIds?.length ?? 0) < requirement.minRelics) {
-    return false;
+    return "Requires an owned relic.";
   }
   if (requirement.minUpgrades !== undefined && build.upgrades.length < requirement.minUpgrades) {
-    return false;
+    return "Requires an owned upgrade.";
   }
   if (requirement.minMaxHealthAfterCost !== undefined) {
     const cost = maxHealthCostOf(choice);
     if (maxHealth - cost < requirement.minMaxHealthAfterCost) {
-      return false;
+      return "Maximum health is too low for this exchange.";
     }
   }
-  return true;
+  // A gamble is offered only when every branch can honor its promise. Never
+  // filter/reroll a blocked branch: that would change its seeded probabilities.
+  for (const outcomes of branches) {
+    let transformation = build.transformation ?? createTransformationAffinityState();
+    for (const outcome of outcomes) {
+      if (outcome.type !== "grantTransformationAffinity") continue;
+      const pathId = transformationChoiceById(outcome.choiceId).pathId;
+      for (let pick = 0; pick < (outcome.count ?? 1); pick += 1) {
+        const result = applyTransformationChoice(transformation, pathId, outcome.choiceId);
+        if (!result.ok) {
+          if (result.reason === "path-locked") return "You are committed to another transformation path.";
+          if (result.reason === "apex-reached") return "This transformation has already reached its apex.";
+          if (result.reason === "choice-max-rank") return "This affinity choice is already at its maximum rank.";
+          return "This transformation choice is unavailable.";
+        }
+        transformation = result.state;
+      }
+    }
+  }
+  return null;
 }
 
 /** The largest max-health reduction any outcome branch of a choice can apply. */
@@ -1498,6 +1529,10 @@ export function resolveEventChoice(
   choice: EventChoice,
   roll: number,
 ): EventResolution {
+  const rejectedReason = eventChoiceUnavailableReason(build, maxHealth, choice);
+  if (rejectedReason !== null) {
+    return { build, effects: emptySideEffects(), resultText: rejectedReason, rejectedReason };
+  }
   const branch = choice.randomOutcomes
     ? pickWeightedBranch(choice.randomOutcomes, roll)
     : null;
@@ -1749,10 +1784,11 @@ function pickRelic(pool: readonly RelicId[], roll: number, already: readonly Rel
  * accumulate, the last granted artifact becomes equipped, and the max-health
  * and weapon-slot bonuses add on. `resolution.build` already holds the applied
  * health/shield/scrap/experience/weapon changes; this layers the reward-item
- * carrier on top so the in-run event screen can commit one snapshot. Ambush and
- * next-node modifiers are handled by the run, not the build.
+ * carrier on top so the in-run event screen can commit one snapshot. Ambush
+ * routing is handled by the scene. Unsupported next-node offers are withheld.
  */
 export function applyEventResolutionToBuild(resolution: EventResolution): ExpeditionBuildSnapshot {
+  if (resolution.rejectedReason) return resolution.build;
   const { build, effects } = resolution;
   const relicIds = [...(build.relicIds ?? []), ...effects.relicIds];
   const equippedArtifactId = effects.artifactIds.length > 0

@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/expedition src/game/transformations
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  14 passed (14)
+      Tests  204 passed (204)
+   Start at  21:01:33
+   Duration  840ms (transform 1.06s, setup 0ms, import 1.59s, tests 500ms, environment 1ms)

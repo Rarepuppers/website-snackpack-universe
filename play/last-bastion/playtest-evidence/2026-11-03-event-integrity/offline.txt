@@ -1,0 +1,5 @@
+
+> last-bastion-web@0.0.1 offline
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/offline-boot-test.ps1
+
+Thread failed to start.

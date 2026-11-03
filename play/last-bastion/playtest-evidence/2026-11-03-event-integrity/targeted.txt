@@ -1,0 +1,36 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/expedition src/game/transformations
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+ ❯ src/game/expedition/EncounterEventCatalog.test.ts (58 tests | 1 failed) 26ms
+     × floors damage at 1 and scrap at 0 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/expedition/EncounterEventCatalog.test.ts > deterministic resolution > floors damage at 1 and scrap at 0
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/game/expedition/EncounterEventCatalog.test.ts:160:33
+    158|     const push = choiceById(bloom, "push-through"); // -4 health, +40 …
+    159|     const result = resolveEventChoice(build({ health: 2, scrap: 0 }), …
+    160|     expect(result.build.health).toBe(1);
+       |                                 ^
+    161|     expect(result.build.scrap).toBe(40);
+    162|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 13 passed (14)
+      Tests  1 failed | 203 passed (204)
+   Start at  21:00:59
+   Duration  908ms (transform 1.25s, setup 0ms, import 1.88s, tests 530ms, environment 1ms)

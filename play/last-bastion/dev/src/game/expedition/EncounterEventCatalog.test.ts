@@ -153,12 +153,13 @@ describe("deterministic resolution", () => {
     expect(result.build.shield).toBe(5);
   });
 
-  it("floors damage at 1 and scrap at 0", () => {
+  it("rejects an unaffordable health cost even when called directly", () => {
     const bloom = encounterEventById("event-spore-bloom")!;
     const push = choiceById(bloom, "push-through"); // -4 health, +40 scrap
     const result = resolveEventChoice(build({ health: 2, scrap: 0 }), 18, push, 0);
-    expect(result.build.health).toBe(1);
-    expect(result.build.scrap).toBe(40);
+    expect(result.rejectedReason).toBeTruthy();
+    expect(result.build.health).toBe(2);
+    expect(result.build.scrap).toBe(0);
   });
 
   it("strengthens the last weapon and caps at tier III", () => {
@@ -170,11 +171,12 @@ describe("deterministic resolution", () => {
     expect(capped.build.weapons[0]!.tier).toBe(3);
   });
 
-  it("records the guaranteed-elite-relic next-node modifier", () => {
+  it("withholds the unimplemented guaranteed-elite-relic next-node modifier", () => {
     const hunt = encounterEventById("shrine-hunt")!;
     const accept = choiceById(hunt, "accept-hunt");
     const result = resolveEventChoice(build(), 60, accept, 0);
-    expect(result.effects.guaranteedEliteRelicNextNode).toBe(true);
+    expect(result.rejectedReason).toBeTruthy();
+    expect(result.effects.guaranteedEliteRelicNextNode).toBe(false);
   });
 
   it("purchases a relic, spending scrap and carrying the relic id forward", () => {

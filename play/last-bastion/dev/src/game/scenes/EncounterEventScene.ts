@@ -4,6 +4,7 @@ import type { ExpeditionBuildSnapshot } from "../expedition/ExpeditionRun";
 import {
   ENCOUNTER_EVENT_CATALOG,
   isChoiceAvailable,
+  eventChoiceUnavailableReason,
   resolveEventChoice,
   type EncounterEventDefinition,
   type EventChoice,
@@ -193,7 +194,8 @@ export class EncounterEventScene extends Phaser.Scene {
   private renderChoices(): void {
     this.event.choices.forEach((choice, index) => {
       const y = 226 + index * 68;
-      const available = isChoiceAvailable(this.build, DEMO_MAX_HEALTH, choice);
+      const unavailableReason = eventChoiceUnavailableReason(this.build, DEMO_MAX_HEALTH, choice);
+      const available = unavailableReason === null;
       const selected = index === this.choiceIndex;
       const fill = !available ? PANEL_LOCKED : selected ? PANEL_SELECTED : PANEL;
       const card = this.add.rectangle(38, y, 884, 58, fill)
@@ -208,10 +210,10 @@ export class EncounterEventScene extends Phaser.Scene {
       this.root.add(card);
       const titleColor = !available ? MUTED : selected ? IVORY : "#c4ccd6";
       this.root.add(this.text(52, y + 8, choice.label.toUpperCase(), titleColor, "13px"));
-      const detail = choice.detail ?? (choice.randomOutcomes ? "Uncertain outcome" : "");
-      if (detail) this.root.add(this.text(52, y + 30, detail, choice.randomOutcomes ? ORANGE : GREEN, "10px"));
+      const detail = unavailableReason ?? choice.detail ?? (choice.randomOutcomes ? "Uncertain outcome" : "");
+      if (detail) this.root.add(this.text(52, y + 30, detail, !available || choice.randomOutcomes ? ORANGE : GREEN, "10px"));
       if (!available) {
-        this.root.add(this.text(910, y + 8, requirementReason(choice), ORANGE, "10px", false, true));
+        this.root.add(this.text(910, y + 8, "LOCKED", ORANGE, "10px", false, true));
       } else if (choice.randomOutcomes) {
         this.root.add(this.text(910, y + 8, "GAMBLE", ORANGE, "10px", false, true));
       }
@@ -267,17 +269,6 @@ export class EncounterEventScene extends Phaser.Scene {
     else if (right) text.setOrigin(1, 0);
     return text;
   }
-}
-
-/** A short reason a gated choice is unavailable, derived from its requirement. */
-function requirementReason(choice: EventChoice): string {
-  const requirement = choice.requirement;
-  if (!requirement) return "";
-  if (requirement.minScrap !== undefined) return `NEEDS ${requirement.minScrap} SCRAP`;
-  if (requirement.minHealth !== undefined) return `NEEDS ${requirement.minHealth} HP`;
-  if (requirement.minMaxHealthAfterCost !== undefined) return "MAX HP TOO LOW";
-  if (requirement.minWeapons !== undefined) return "NEEDS A WEAPON";
-  return "LOCKED";
 }
 
 /** Human-readable before/after summary of a resolution for the outcome panel. */

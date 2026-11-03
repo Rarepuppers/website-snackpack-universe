@@ -25,6 +25,7 @@ import {
   applyEventResolutionToBuild,
   encounterEventById,
   isChoiceAvailable,
+  eventChoiceUnavailableReason,
   resolveEventChoice,
   type EncounterEventDefinition,
   type EventChoice,
@@ -250,7 +251,8 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
     this.event.choices.forEach((choice, index) => {
       const y = 200 + index * 74;
-      const available = isChoiceAvailable(this.build, this.maxHealth, choice);
+      const unavailableReason = eventChoiceUnavailableReason(this.build, this.maxHealth, choice);
+      const available = unavailableReason === null;
       const selected = index === this.choiceIndex;
       const fill = !available ? PANEL_LOCKED : selected ? PANEL_SELECTED : PANEL;
       const card = this.add.rectangle(48, y, WIDTH - 96, 62, fill).setOrigin(0, 0)
@@ -263,8 +265,8 @@ export class ExpeditionEventScene extends Phaser.Scene {
         });
       this.root.add(card);
       this.root.add(this.text(64, y + 10, choice.label.toUpperCase(), !available ? MUTED : selected ? IVORY : "#c4ccd6", "14px"));
-      const detail = choice.detail ?? (choice.randomOutcomes ? "Uncertain outcome" : "");
-      if (detail) this.root.add(this.text(64, y + 34, detail, choice.randomOutcomes ? ORANGE : GREEN, "11px"));
+      const detail = unavailableReason ?? choice.detail ?? (choice.randomOutcomes ? "Uncertain outcome" : "");
+      if (detail) this.root.add(this.text(64, y + 34, detail, !available || choice.randomOutcomes ? ORANGE : GREEN, "11px"));
       if (!available) this.root.add(this.text(WIDTH - 64, y + 10, "LOCKED", ORANGE, "11px").setOrigin(1, 0));
     });
 

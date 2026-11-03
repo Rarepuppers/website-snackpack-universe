@@ -1,4 +1,87 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+// Retained production-generated routes from the audit; no invented map topology.
+const eventIntegrityFixtures = JSON.parse(readFileSync(new URL("../../play/last-bastion/playtest-evidence/2026-11-02-audit/production-witnesses.json", import.meta.url), "utf8"));
+
+async function openIntegrityEvent(page, key, extraBuild = {}) {
+  const route = eventIntegrityFixtures.routes[key];
+  const witness = eventIntegrityFixtures.witnesses[key];
+  await page.goto("/play/last-bastion/?flow=menu");
+  await page.waitForFunction(() => window.__shellState);
+  await page.evaluate(({route, witness, extraBuild}) => {
+    localStorage.setItem("last-bastion-save", JSON.stringify({version:17, selectedHeroId:"marine",
+      expedition:{...route, threatTier:0, build:{...witness.before,...extraBuild}}}));
+  }, {route,witness,extraBuild});
+  await page.goto(`/play/last-bastion/?screen=event&expedition=1&node=${route.currentNodeId}`);
+  await page.waitForFunction(id => window.__expeditionEvent?.eventId === id, witness.eventId);
+  for(let i=0;i<route.choiceIndex;i++) await page.keyboard.press("ArrowDown");
+  expect(await page.evaluate(() => window.__expeditionEvent.choiceId)).toBe(witness.choiceId);
+  return route;
+}
+
+for (const key of ["locked","capped","free","hunt","echo"]) {
+  test(`event integrity blocks ${key} exchange without spending or completing`, async ({page}, testInfo) => {
+    await page.setViewportSize({width:960,height:540});
+    const route=await openIntegrityEvent(page,key);
+    const before=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    await page.keyboard.down("Enter");
+    await page.keyboard.down("Enter");
+    await page.waitForTimeout(100);
+    await page.keyboard.up("Enter");
+    const canvas=await page.locator("#game-root canvas").boundingBox();
+    await page.mouse.click(canvas.x+canvas.width*400/960,canvas.y+canvas.height*(220+route.choiceIndex*74)/540);
+    expect(await page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(false);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")))).toEqual(before);
+    await page.screenshot({path:testInfo.outputPath(`${key}-locked.png`)});
+    await page.reload();
+    await page.waitForFunction(() => window.__expeditionEvent);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")))).toEqual(before);
+    // Leave remains reachable on exactly the same seeded event after rejection/reload.
+    for(let i=0;i<5;i++) {
+      if(await page.evaluate(() => window.__expeditionEvent.choiceId)==="leave") break;
+      await page.keyboard.press("ArrowDown");
+    }
+    expect(await page.evaluate(() => window.__expeditionEvent.choiceId)).toBe("leave");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => window.__expeditionEvent.outcomeShown);
+    await page.keyboard.press("Enter");
+    await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+    const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    // Completing Leave adds neutral legacy-save defaults; existing resources stay intact.
+    expect(after.expedition.build).toMatchObject(before.expedition.build);
+    expect(after.expedition.build.transformation).toEqual(before.expedition.build.transformation ?? {committedPathId:null,paths:[]});
+    expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+  });
+}
+
+test("event integrity legal relic sacrifice survives failed write and reload exactly once", async ({page}) => {
+  const route=await openIntegrityEvent(page,"free",{relicIds:["rel-blast-baffle","rel-blast-baffle"]});
+  await page.evaluate(() => {
+    window.__originalStorageWrite=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value) {
+      if(key==="last-bastion-save") throw new DOMException("Test storage failure","QuotaExceededError");
+      return window.__originalStorageWrite.call(this,key,value);
+    };
+  });
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__expeditionEvent.outcomeShown);
+  await page.keyboard.press("Enter");
+  const retry=page.getByRole("button",{name:"Retry saving and continue",exact:true});
+  await expect(retry).toBeVisible();
+  await retry.click();
+  await expect(retry).toBeVisible();
+  await page.evaluate(() => {Storage.prototype.setItem=window.__originalStorageWrite;});
+  await retry.click();
+  await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+  await page.reload();
+  await page.waitForFunction(() => window.__expeditionState);
+  const saved=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+  expect(saved.expedition.build.relicIds).toEqual(["rel-blast-baffle"]);
+  expect(saved.expedition.build.transformation.paths[0].choiceIds).toEqual(["martyrs-resolve"]);
+  expect(saved.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+  expect(saved.progress.nodesCleared).toBe(1);
+});
 
 for (const device of ["pointer", "simulated-pad", "simulated-pad-blur"]) {
   test(`shop page transition does not sell on held ${device} confirmation`, async ({ page }) => {

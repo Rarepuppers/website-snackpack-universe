@@ -37,7 +37,7 @@ export interface RunProvenance {
   gameSpeedModified: boolean;
 }
 
-export const LAST_BASTION_BUILD_VERSION = "web-2026.10.29-boss-reward-confirm";
+export const LAST_BASTION_BUILD_VERSION = "web-2026.11.03-event-integrity";
 
 export interface RunSummary {
   mode: "quick-drop" | "expedition";

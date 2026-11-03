@@ -1,0 +1,289 @@
+
+[WebServer] (node:16172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:3124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/9] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks locked exchange without spending or completing
+  1) tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks locked exchange without spending or completing
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 9
+
+    @@ -1,9 +1,17 @@
+      Object {
+    +   "bannedShopIds": Array [],
+    +   "bonusLifestealPerKill": 0,
+    +   "carriedConsumables": Array [],
+    +   "equippedArtifactId": null,
+        "experience": 0,
+        "health": 10,
+    +   "itemStats": Object {},
+        "level": 1,
+    +   "maxHealthBonus": 0,
+    +   "ownedItemIds": Array [],
+    +   "relicIds": Array [],
+        "scrap": 100,
+        "shield": 0,
+        "transformation": Object {
+          "committedPathId": "bastion-super-soldier",
+          "paths": Array [
+    @@ -17,10 +25,11 @@
+              "pathId": "bastion-super-soldier",
+            },
+          ],
+        },
+        "upgrades": Array [],
+    +   "weaponSlotBonus": 0,
+        "weapons": Array [
+          Object {
+            "tier": 1,
+            "weaponId": "bastion-service-rifle",
+          },
+
+      49 |     await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      50 |     const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    > 51 |     expect(after.expedition.build).toEqual(before.expedition.build);
+         |                                    ^
+      52 |     expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+      53 |   });
+      54 | }
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:51:36
+
+    Error Context: play\last-bastion\playtest-evidence\2026-11-03-event-integrity\browser-output\last-bastion-functional-ev-f5395-hout-spending-or-completing\error-context.md
+
+
+(node:27256) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[2/9] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks capped exchange without spending or completing
+  2) tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks capped exchange without spending or completing
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 9
+
+    @@ -1,9 +1,17 @@
+      Object {
+    +   "bannedShopIds": Array [],
+    +   "bonusLifestealPerKill": 0,
+    +   "carriedConsumables": Array [],
+    +   "equippedArtifactId": null,
+        "experience": 0,
+        "health": 10,
+    +   "itemStats": Object {},
+        "level": 1,
+    +   "maxHealthBonus": 0,
+    +   "ownedItemIds": Array [],
+    +   "relicIds": Array [],
+        "scrap": 100,
+        "shield": 0,
+        "transformation": Object {
+          "committedPathId": "bastion-super-soldier",
+          "paths": Array [
+    @@ -17,10 +25,11 @@
+              "pathId": "bastion-super-soldier",
+            },
+          ],
+        },
+        "upgrades": Array [],
+    +   "weaponSlotBonus": 0,
+        "weapons": Array [
+          Object {
+            "tier": 1,
+            "weaponId": "bastion-service-rifle",
+          },
+
+      49 |     await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      50 |     const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    > 51 |     expect(after.expedition.build).toEqual(before.expedition.build);
+         |                                    ^
+      52 |     expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+      53 |   });
+      54 | }
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:51:36
+
+    Error Context: play\last-bastion\playtest-evidence\2026-11-03-event-integrity\browser-output\last-bastion-functional-ev-a1aa6-hout-spending-or-completing\error-context.md
+
+
+(node:25100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/9] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks free exchange without spending or completing
+  3) tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks free exchange without spending or completing
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  0
+    + Received  + 13
+
+    @@ -1,12 +1,25 @@
+      Object {
+    +   "bannedShopIds": Array [],
+    +   "bonusLifestealPerKill": 0,
+    +   "carriedConsumables": Array [],
+    +   "equippedArtifactId": null,
+        "experience": 0,
+        "health": 10,
+    +   "itemStats": Object {},
+        "level": 1,
+    +   "maxHealthBonus": 0,
+    +   "ownedItemIds": Array [],
+    +   "relicIds": Array [],
+        "scrap": 100,
+        "shield": 0,
+    +   "transformation": Object {
+    +     "committedPathId": null,
+    +     "paths": Array [],
+    +   },
+        "upgrades": Array [],
+    +   "weaponSlotBonus": 0,
+        "weapons": Array [
+          Object {
+            "tier": 1,
+            "weaponId": "bastion-service-rifle",
+          },
+
+      49 |     await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      50 |     const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    > 51 |     expect(after.expedition.build).toEqual(before.expedition.build);
+         |                                    ^
+      52 |     expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+      53 |   });
+      54 | }
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:51:36
+
+    Error Context: play\last-bastion\playtest-evidence\2026-11-03-event-integrity\browser-output\last-bastion-functional-ev-23df3-hout-spending-or-completing\error-context.md
+
+
+(node:14328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[4/9] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks hunt exchange without spending or completing
+  4) tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks hunt exchange without spending or completing
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  0
+    + Received  + 13
+
+    @@ -1,12 +1,25 @@
+      Object {
+    +   "bannedShopIds": Array [],
+    +   "bonusLifestealPerKill": 0,
+    +   "carriedConsumables": Array [],
+    +   "equippedArtifactId": null,
+        "experience": 0,
+        "health": 10,
+    +   "itemStats": Object {},
+        "level": 1,
+    +   "maxHealthBonus": 0,
+    +   "ownedItemIds": Array [],
+    +   "relicIds": Array [],
+        "scrap": 100,
+        "shield": 0,
+    +   "transformation": Object {
+    +     "committedPathId": null,
+    +     "paths": Array [],
+    +   },
+        "upgrades": Array [],
+    +   "weaponSlotBonus": 0,
+        "weapons": Array [
+          Object {
+            "tier": 1,
+            "weaponId": "bastion-service-rifle",
+          },
+
+      49 |     await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      50 |     const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    > 51 |     expect(after.expedition.build).toEqual(before.expedition.build);
+         |                                    ^
+      52 |     expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+      53 |   });
+      54 | }
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:51:36
+
+    Error Context: play\last-bastion\playtest-evidence\2026-11-03-event-integrity\browser-output\last-bastion-functional-ev-079ee-hout-spending-or-completing\error-context.md
+
+
+(node:26980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[5/9] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks echo exchange without spending or completing
+  5) tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks echo exchange without spending or completing
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  0
+    + Received  + 13
+
+    @@ -1,17 +1,30 @@
+      Object {
+    +   "bannedShopIds": Array [],
+    +   "bonusLifestealPerKill": 0,
+    +   "carriedConsumables": Array [],
+    +   "equippedArtifactId": null,
+        "experience": 0,
+        "health": 10,
+    +   "itemStats": Object {},
+        "level": 1,
+    +   "maxHealthBonus": 0,
+    +   "ownedItemIds": Array [],
+    +   "relicIds": Array [],
+        "scrap": 100,
+        "shield": 0,
+    +   "transformation": Object {
+    +     "committedPathId": null,
+    +     "paths": Array [],
+    +   },
+        "upgrades": Array [
+          Object {
+            "level": 1,
+            "upgradeId": "rapid-cycling",
+          },
+        ],
+    +   "weaponSlotBonus": 0,
+        "weapons": Array [
+          Object {
+            "tier": 1,
+            "weaponId": "bastion-service-rifle",
+          },
+
+      49 |     await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      50 |     const after=await page.evaluate(() => JSON.parse(localStorage.getItem("last-bastion-save")));
+    > 51 |     expect(after.expedition.build).toEqual(before.expedition.build);
+         |                                    ^
+      52 |     expect(after.expedition.clearedNodeIds).toEqual([...route.clearedNodeIds,route.currentNodeId]);
+      53 |   });
+      54 | }
+        at C:\snackpack-universe\website-snackpack-universe\tests\visual\last-bastion-functional.spec.mjs:51:36
+
+    Error Context: play\last-bastion\playtest-evidence\2026-11-03-event-integrity\browser-output\last-bastion-functional-ev-5dbe8-hout-spending-or-completing\error-context.md
+
+
+(node:24772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[6/9] tests\visual\last-bastion-functional.spec.mjs:56:1 › event integrity legal relic sacrifice survives failed write and reload exactly once
+[7/9] tests\visual\last-bastion-functional.spec.mjs:236:1 › event results require a fresh confirmation and block underlying choices
+[8/9] tests\visual\last-bastion-functional.spec.mjs:1704:1 › event reward stays available after failed saving and retry commits exactly once
+[9/9] tests\visual\last-bastion-functional.spec.mjs:1877:3 › final boss persistence fixture › final expedition boss reward survives failed saving without duplicate victory credit
+  5 failed
+    tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks locked exchange without spending or completing
+    tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks capped exchange without spending or completing
+    tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks free exchange without spending or completing
+    tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks hunt exchange without spending or completing
+    tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks echo exchange without spending or completing
+  4 passed (16.1s)

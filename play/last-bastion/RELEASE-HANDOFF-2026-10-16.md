@@ -1,5 +1,13 @@
 # Last Bastion release handoff — 16 October 2026
 
+## 3 November 2026 — event integrity prepared locally
+
+Current prepared runtime: `web-2026.11.03-event-integrity`, schema 17, simulation compatibility 3.
+E1–E3 are complete: unsupported offers locked, transformation costs preflighted, relic sacrifice
+required. [Checks and limitations](playtest-evidence/2026-11-03-event-integrity/README.md).
+Local web output is refreshed; no push, deployment or executable package. Claude owns packaging.
+Human/device/Steam gates remain open. Earlier identities below are historical checkpoints.
+
 ## 29 October 2026 — final-boss fix and review-branch handoff
 
 Current runtime: `web-2026.10.29-boss-reward-confirm`, schema 17, simulation compatibility 3.

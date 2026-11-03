@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  318 passed (318)
+      Tests  1821 passed (1821)
+   Start at  21:02:58
+   Duration  12.12s (transform 51.56s, setup 0ms, import 114.34s, tests 37.89s, environment 35ms)

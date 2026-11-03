@@ -1,5 +1,16 @@
 # Last Bastion completed-work log
 
+## 3 November 2026 — Phase 1 event integrity implementation
+
+Completed E1–E3 with shared offer/resolver preflight, player-facing lock reasons and a required
+relic sacrifice. Unsupported hunt/echo offers and illegal transformation grants cannot spend.
+Random offers require every branch to be fulfillable; no filtering/rerolls alter seeded odds.
+1,821 unit tests and nine distinct targeted browser checks pass, including failed-write/reload
+of a legal relic exchange. Web build/typecheck, 25-output comparison, offline static delivery
+and site JavaScript pass. [Evidence](playtest-evidence/2026-11-03-event-integrity/README.md).
+Runtime `web-2026.11.03-event-integrity`; schema 17 / simulation 3 unchanged. No assets, gated
+content, executable package, push or deployment. U1/U2 remain next; concurrent work excluded.
+
 ## 3 November 2026 — evidence-based audit and queue refresh
 
 Completed the requested audit/planning pass, started 2 November, against `69914456` / runtime

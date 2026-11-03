@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 3 November 2026 — Event exchange integrity (prepared locally)
+
+Unavailable event rewards can no longer consume resources. Transformation exchanges check path,
+rank and apex limits before spending, and Designed Arrival now requires the relic it asks for.
+Locked choices explain why they cannot be taken; working alternatives and Leave remain available.
+[Verification](playtest-evidence/2026-11-03-event-integrity/README.md). Not packaged or deployed.
+
 ## 29 October 2026 — Boss reward confirmation
 
 Confirming a boss artifact now completes reward and victory recording before leaving combat.

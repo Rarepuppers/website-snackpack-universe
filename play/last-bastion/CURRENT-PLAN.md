@@ -1,8 +1,8 @@
 # Last Bastion — current development plan
 
-**Updated 3 November 2026. Sole active queue. This request is audit/planning only.**
-Runtime remains `web-2026.10.29-boss-reward-confirm`; schema 17; simulation compatibility 3.
-Baseline `69914456` includes `3ec98f89`, with no subsequent game-code changes. See the [expanded audit, content review and evidence](playtest-evidence/2026-11-02-audit/README.md).
+**Updated 3 November 2026. Sole active queue. Phase 1 implementation complete locally.**
+Prepared runtime: `web-2026.11.03-event-integrity`; schema 17; simulation compatibility 3.
+Audit baseline was `69914456`; implementation starts from `343cd595`. See the [audit](playtest-evidence/2026-11-02-audit/README.md) and [Phase 1 implementation evidence](playtest-evidence/2026-11-03-event-integrity/README.md).
 
 Newly reproduced event defects supersede the previous conclusion that no ungated work remained.
 Completed G1–G6 stays complete: stash, supported transformation filtering, build explanations,
@@ -16,63 +16,29 @@ shop polish, native selection/armory, event/map/run-end/boss-confirm recovery. T
 
 P1 prevents resource loss/reward exploits; P2 improves trust/readability/content value; P3 is optional.
 Effort means focused developer time excluding release/external acceptance. “Actionable now” means
-independently implementable in the next implementation request, not permission to change runtime during this audit.
+independently implementable without human testers; external content gates remain unchanged.
 
-## Phase 1 — confirmed correctness and resource-loss fixes
+## Phase 1 — completed event integrity corrections
 
-### E1 — withhold event effects the run cannot honor
+| Task | Delivered behavior |
+|---|---|
+| E1 | Hunt/echo offers without consumers are locked with an explanation. Stable event/choice IDs, supported alternatives and Leave remain. Direct resolver calls cannot apply these exchanges. |
+| E2 | Shared offer/resolver preflight checks the complete affinity grant before costs. Path lock, rank cap, apex and partial multi-grant failure preserve the build. A gamble is unavailable if any branch cannot honor its grant; no branch filtering or reroll changes its odds. |
+| E3 | Designed Arrival requires an owned relic and a legal affinity grant; a valid exchange consumes exactly one copy. |
 
-**Evidence/class:** Confirmed defect F1 in the audit. Old Sergeant charges 30 Scrap for an unconsumed elite/relic flag; Echoes promises an unapplied upgrade/cooldown change. `EncounterEventCatalog.ts:193,211,360,824,1755`; `ExpeditionEventScene.ts:195,327`. Real `hunt`/`echo` scenes and saved/reloaded builds reproduce the mismatch.
-
-**Benefit/scope:** Stop selling imaginary rewards. Withhold unsupported hunt/echo choices while preserving event IDs, seeded event selection, supported alternatives and Leave. Do not implement a new next-node subsystem as the emergency fix.
-
-**Priority/phase/dependencies/effort/risk:** P1, Phase 1 first; no external dependency; 0.5–1 day; low/medium compatibility risk. **Actionable now.** Code/text reuse; no editing or generation of assets.
-
-**Implementation:** Inventory all four authored hunt/echo offers; use a shared supported-offer decision in rendering and confirmation; keep stable identities for saved routes; give truthful unavailable feedback instead of success text. Preserve map RNG and ordinary rewards. Dormant outcome types can remain if compatibility needs them.
-
-**Acceptance:** None of these offers can take a cost or promise an unconsumed effect; supported choices and Leave complete once; prior seeded saves still resume the same event; reward/write retry cannot double-credit a node.
-
-**Automated checks:** Actual catalogue eligibility for every occurrence, real Old Sergeant/Echo routes, repeated/held confirmation, event→map→reload, failed-write retry and existing event/map/transaction regressions. For later runtime implementation, rebuild and verify changed production outputs and run relevant game guards; no build during this audit.
-
-**External:** Later physical-control/readability acceptance is separate, not required to code a confirmed correction. Implementing hunt/echo mechanics later needs a separate bounded design and applicable content gate.
-
-### E2 — preflight transformation exchanges before spending
-
-**Evidence/class:** Confirmed defect F2. Eligibility at `EncounterEventCatalog.ts:1441` checks resources, but resolution at 1628 discovers path-lock/max-rank only after costs. Production `TransformationAffinity` rejects those grants. Cybernetics removes a rifle for no affinity; maxed Serum spends 30 Scrap/3 HP for no affinity. Both survive browser reload.
-
-**Benefit/scope:** Preserve earned resources; use actual transformation eligibility for both offer and resolution. Completed G2 supported-effect filtering remains intact.
-
-**Priority/phase/dependencies/effort/risk:** P1, Phase 1 after or alongside E1; 1–2 days; medium ordered/random-outcome risk. **Actionable now.** Existing code/text, no assets.
-
-**Implementation:** Preflight the complete outcome on cloned state using production affinity rules before spending; reject without mutation and return a player-facing reason for path lock, max rank or apex. Preserve seeded random rolls: a rejected rolled grant cannot be rerolled for a better outcome. Explicitly handle any multi-grant/partial-grant authored contract; paid promises should be atomic. Share the result with offer presentation.
-
-**Acceptance:** Illegal grants consume no health/max health/Scrap/weapon/relic; legal ones charge and grant once. Repeat input, save retry and reload do not duplicate either. Seeded outcomes stay deterministic. No new transformation path or balance change.
-
-**Automated checks:** Actual event catalogues at uncommitted/other-path/rank-III/apex states, legal purchases, random branches, production resolver/integration and real scene→save→reload; transformation/save normalization tests.
-
-**External:** Later wording and physical controls remain separate; no human evidence needed for deterministic transaction correctness.
-
-### E3 — enforce the Designed Arrival relic cost
-
-**Evidence/class:** Confirmed exploit F3. `offer-relic` around `EncounterEventCatalog.ts:1293` lacks `minRelics`; the real `free` browser witness gains saved Martyr affinity with no relic.
-
-**Benefit/scope:** Make the advertised sacrifice real, preserving reward values and Leave.
-
-**Priority/phase/dependencies/effort/risk:** P1, Phase 1; reuse E2 transaction preflight; 0.25–0.5 day; low risk. **Actionable now.** Code/text reuse, no assets.
-
-**Implementation:** Add owned-relic requirement; explain unavailable state; validate again at resolution; remove exactly the most recent owned copy for a legal grant. If the transformation is illegal, E2 must prevent sacrificing anything.
-
-**Acceptance:** Zero relics cannot earn the grant; one relic is spent exactly once; a rejected grant spends nothing; duplicate spare copies keep intentional single-effect behavior.
-
-**Automated checks:** Zero/one/two relics, duplicate relic and path-locked cases via actual catalogue/resolver, real save/reload and repeat confirmation. Existing event/save tests remain passing.
-
-**External:** No external dependency to close this exploit. Ordinary input/readability acceptance remains separately open.
+[Implementation and acceptance evidence](playtest-evidence/2026-11-03-event-integrity/README.md):
+1,821 unit tests/318 files pass; six new browser cases plus three relevant existing browser cases
+pass; typecheck/web build, 25-output source comparison, offline static delivery and 75-file site
+JavaScript checks pass. Screenshots confirm minimum-viewport locked-state explanations. These are
+local automated results, not physical-controller, screen-reader, hardware, listening or Steam acceptance.
+No new art, content activation, save schema, simulation compatibility, package or deployment.
+U1/U2 remain below; this slice does not claim the broader result-summary work is done.
 
 ## Phase 2 — usability, quality of life and visible polish
 
 ### U1 — show actual event build changes
 
-**Evidence/class:** Confirmed usability defect F4 and inspected screenshot observation. `ExpeditionEventScene.ts:314` omits weapon, direct relic-array, upgrade and transformation changes. The weapon-loss result says “You move on.” Conversely it prints unapplied hunt/echo flags.
+**Evidence/class:** Confirmed usability defect F4 and inspected audit screenshot. The event result summary omits weapon, direct relic-array, upgrade and transformation changes. The audited weapon-loss result said “You move on.” E1 now blocks unsupported hunt/echo promises; supported build changes still need complete summaries.
 
 **Benefit/scope:** Players can understand what they paid and received. Extend the current result panel; do not create a new decision mechanic or modal framework.
 
@@ -142,9 +108,10 @@ independently implementable in the next implementation request, not permission t
 
 No implementation task justified. A region-specific campaign/NPC arc requires evidence that G7 leaves a meaningful repetition problem, an explicit region-sized scope and standing expansion/art gates. Do not commission a cast, terrain set, disconnected cards or progression currency from catalogue size alone.
 
-## Next five independently executable tasks
+## Next independently executable tasks
 
-For the next implementation request: **E1 unsupported offers → E2 atomic transformation exchanges → E3 relic prerequisite → U1 truthful result deltas → U2 duplicate-relic explanation.** E1–E3 may share one focused preflight seam, with distinct acceptance. No additional ungated content task is justified.
+**U1 truthful event result deltas → U2 duplicate-relic explanation.** E1–E3 are complete;
+reopen only for a reproduced regression. No additional ungated content task is justified.
 
 ## External gates and release boundary
 
@@ -152,7 +119,7 @@ For the next implementation request: **E1 unsupported offers → E2 atomic trans
 - Floors remain opt-in pending named motion/hardware acceptance. Practice requires repeated observed learning failures. New art/expansion requires demonstrated gaps, bounded scope and existing gates. Retain art/environment/object contracts.
 - Real controller/hotplug, screen reader, listening and target GPU/4K/15-minute pacing remain external. Do not repeatedly request unavailable testers or substitute automated checks for acceptance.
 - Steam requires actual App/Depot IDs, partner account and client achievements/cloud/conflict/controller tests. Host/platform tests and App 480 are insufficient.
-- Claude owns production/executable packaging; [release handoff](RELEASE-HANDOFF-2026-10-16.md) remains the contract. No package, deploy, submission, merge of diverged main or push in this audit request.
+- Claude owns production/executable packaging; [release handoff](RELEASE-HANDOFF-2026-10-16.md) remains the contract. No package, deploy, submission, merge of diverged main or push in this implementation slice.
 - Fresh audit: 419 unit tests/52 files, 10 existing browser checks, six real-event witnesses, one bounded density profile and image/boundary checks pass. Historical 1,810/70/31/23 counts are not renewed. Host/full portfolio/offline/rebuild/human/Steam checks were not rerun; see dated coverage limits.
 - Commit only task-relevant audit documents/evidence in the nested repository, preserving concurrent work. The remote review branch stays at the previous checkpoint until separately published.
 

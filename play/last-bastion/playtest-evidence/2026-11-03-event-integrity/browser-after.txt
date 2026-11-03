@@ -1,0 +1,17 @@
+
+[WebServer] (node:12376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+
+(node:19500) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/6] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks locked exchange without spending or completing
+[2/6] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks capped exchange without spending or completing
+[3/6] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks free exchange without spending or completing
+[4/6] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks hunt exchange without spending or completing
+[5/6] tests\visual\last-bastion-functional.spec.mjs:24:3 › event integrity blocks echo exchange without spending or completing
+[6/6] tests\visual\last-bastion-functional.spec.mjs:58:1 › event integrity legal relic sacrifice survives failed write and reload exactly once
+  6 passed (8.4s)
