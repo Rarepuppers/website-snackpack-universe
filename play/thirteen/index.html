@@ -590,7 +590,7 @@ function cpuChoosePlay(state, playerIdx) {
     var player = state.players[idx];
     var played = new Set(combo.cards.map(function (c) { return c.id; }));
     player.hand = player.hand.filter(function (c) { return !played.has(c.id); });
-    state.lastCombo = combo; state.lastPlayerIdx = idx; state.selectedCards = []; state.passedPlayers = new Set();
+    state.lastCombo = combo; state.lastPlayerIdx = idx; state.selectedCards = [];
     if (player.hand.length === 0) { state.winner = idx; state.phase = "gameover"; return state; }
     state.currentPlayer = nextTurn(state, idx); state.isFirstTurn = false;
     return state;
