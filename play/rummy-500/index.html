@@ -528,7 +528,7 @@ function endRound(state, wentOutIdx) {
 }
 function gameOverMessage(players, scores) {
     const best = players.reduce((bestI, _, i) => (scores[i] > scores[bestI] ? i : bestI), 0);
-    return `${players[best].name} wins with ${scores[best]}!`;
+    return players[best].name === 'You' ? `You win with ${scores[best]}!` : `${players[best].name} wins with ${scores[best]}!`;
 }
 function combinations(arr, k) {
     const out = [];
