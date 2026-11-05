@@ -793,12 +793,12 @@ function fromFen(fen) {
     };
 }
 const DIFFICULTY = {
-    beginner: { depth: 1, blunder: 0.45, window: 250 },
-    casual: { depth: 2, blunder: 0.20, window: 130 },
-    club: { depth: 2, blunder: 0.08, window: 70 },
-    intermediate: { depth: 3, blunder: 0.05, window: 45 },
-    advanced: { depth: 3, blunder: 0.0, window: 15 },
-    hard: { depth: 4, blunder: 0.0, window: 0 },
+    beginner: { depth: 1, budgetMs: 150, sliceMs: 40, blunder: 0.45, window: 250 },
+    casual: { depth: 2, budgetMs: 250, sliceMs: 40, blunder: 0.20, window: 130 },
+    club: { depth: 2, budgetMs: 450, sliceMs: 80, blunder: 0.08, window: 70 },
+    intermediate: { depth: 3, budgetMs: 700, sliceMs: 120, blunder: 0.05, window: 45 },
+    advanced: { depth: 3, budgetMs: 1000, sliceMs: 160, blunder: 0.0, window: 15 },
+    hard: { depth: 4, budgetMs: 1500, sliceMs: 250, blunder: 0.0, window: 0 },
 };
 const VALUE = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 0 };
 // Piece-square tables (from White's point of view, row 0 = top/Black side).
@@ -899,15 +899,39 @@ function scoreMove(m) {
     return s;
 }
 const QUIESCE_MAX_PLIES = 4;
+/** Deepest fully searched depth of the latest move, for scripts/audit-chess-ladder.cjs and device logs. */
+let lastSearchDepth = 0;
+function lineFrom(positions) {
+    return positions.reduce((prior, position) => ({ position, prior }), null);
+}
+/**
+ * A position can only recur after reversible moves, and `half` counts those, so
+ * only the last `half` plies can match. That makes the common case free: most
+ * search nodes have a low `half` and need no position keys at all.
+ */
 function occurrences(pos, earlier) {
+    if (pos.half < 4)
+        return 1;
     const key = positionKey(pos);
-    return 1 + earlier.filter(previous => previous === key).length;
+    let count = 1, plies = 0;
+    for (let item = earlier; item && plies < pos.half; item = item.prior, plies++) {
+        if (positionKey(item.position) === key)
+            count++;
+    }
+    return count;
 }
 function claimReason(pos, earlier) {
-    return pos.half >= 100 ? 'draw-fifty' : occurrences(pos, earlier) >= 3 ? 'draw-repetition' : null;
+    if (pos.half >= 100)
+        return 'draw-fifty';
+    return pos.half >= 8 && occurrences(pos, earlier) >= 3 ? 'draw-repetition' : null;
 }
 function automaticDraw(pos, earlier) {
-    return pos.half >= 150 || insufficientMaterial(pos.board) || occurrences(pos, earlier) >= 5;
+    if (pos.half >= 150)
+        return true;
+    // Material only falls on a capture or promotion, and both reset `half`.
+    if (pos.half === 0 && insufficientMaterial(pos.board))
+        return true;
+    return pos.half >= 16 && occurrences(pos, earlier) >= 5;
 }
 const SEARCH_EXPIRED = Symbol('search-expired');
 function checkBudget(control) {
@@ -920,7 +944,7 @@ function checkBudget(control) {
  * the very next move is a recapture. Standard quiescence search: keep
  * following captures (bounded to a few plies) until the position is "quiet".
  */
-function quiesce(pos, alpha, beta, plies, control, earlier = []) {
+function quiesce(pos, alpha, beta, plies, control, earlier = null) {
     checkBudget(control);
     const moves = legalMoves(pos);
     const checked = inCheck(pos, pos.turn);
@@ -928,8 +952,9 @@ function quiesce(pos, alpha, beta, plies, control, earlier = []) {
         return checked ? -(MATE + Math.max(0, plies)) : 0;
     if (automaticDraw(pos, earlier))
         return 0;
-    const nextHistory = [...earlier, positionKey(pos)];
-    const canClaim = claimReason(pos, earlier) != null || moves.some(m => claimReason(makeMove(pos, m), nextHistory) != null);
+    const nextHistory = { position: pos, prior: earlier };
+    // A child can only reach a claim from here at half 7 or more.
+    const canClaim = pos.half >= 7 && (claimReason(pos, earlier) != null || moves.some(m => claimReason(makeMove(pos, m), nextHistory) != null));
     if (canClaim) {
         alpha = Math.max(alpha, 0);
         if (alpha >= beta)
@@ -962,7 +987,7 @@ function quiesce(pos, alpha, beta, plies, control, earlier = []) {
  * Standard negamax with alpha-beta. Returns the score from the perspective of
  * the side to move at `pos` (positive = good for that side).
  */
-function negamax(pos, depth, alpha, beta, control, earlier = []) {
+function negamax(pos, depth, alpha, beta, control, earlier = null) {
     checkBudget(control);
     if (depth === 0)
         return quiesce(pos, alpha, beta, QUIESCE_MAX_PLIES, control, earlier);
@@ -981,7 +1006,7 @@ function negamax(pos, depth, alpha, beta, control, earlier = []) {
     alpha = Math.max(alpha, best);
     if (alpha >= beta)
         return best;
-    const nextHistory = [...earlier, positionKey(pos)];
+    const nextHistory = { position: pos, prior: earlier };
     for (const m of orderMoves(moves)) {
         const child = makeMove(pos, m);
         let score = -negamax(child, depth - 1, -beta, -alpha, control, nextHistory);
@@ -998,19 +1023,19 @@ function negamax(pos, depth, alpha, beta, control, earlier = []) {
 }
 /** Legacy synchronous caller: a valid claim may return null, just like an ended game. */
 function chooseMove(pos, difficulty, earlier = []) {
-    const moves = legalMoves(pos), keys = earlier.map(positionKey);
-    if (!moves.length || automaticDraw(pos, keys))
+    const moves = legalMoves(pos), line = lineFrom(earlier);
+    if (!moves.length || insufficientMaterial(pos.board) || automaticDraw(pos, line))
         return null;
     const cfg = DIFFICULTY[difficulty];
     if (cfg.blunder > 0 && Math.random() < cfg.blunder)
         return moves[Math.floor(Math.random() * moves.length)];
-    const history = [...keys, positionKey(pos)];
-    const reason = claimReason(pos, keys);
+    const history = { position: pos, prior: line };
+    const reason = drawClaim(pos, earlier);
     const scored = reason ? [{ move: null, score: 0 }] : [];
     for (const move of orderMoves(moves)) {
         const child = makeMove(pos, move);
         const score = -negamax(child, cfg.depth - 1, -Infinity, Infinity, undefined, history);
-        scored.push(claimReason(child, history) && score <= 0 ? { move: null, score: 0 } : { move, score });
+        scored.push(drawClaim(pos, earlier, move) && score <= 0 ? { move: null, score: 0 } : { move, score });
     }
     scored.sort((a, b) => b.score - a.score);
     const pool = scored.filter(item => scored[0].score - item.score <= cfg.window);
@@ -1021,18 +1046,18 @@ async function chooseActionAsync(pos, difficulty, options = {}) {
     await new Promise((resolve) => setTimeout(resolve, 0));
     if (options.cancelled?.())
         return null;
-    const moves = orderMoves(legalMoves(pos)), keys = (options.earlier ?? []).map(positionKey);
-    if (!moves.length || automaticDraw(pos, keys))
+    const moves = orderMoves(legalMoves(pos)), line = lineFrom(options.earlier ?? []);
+    if (!moves.length || insufficientMaterial(pos.board) || automaticDraw(pos, line))
         return null;
     const cfg = DIFFICULTY[difficulty];
     if (cfg.blunder > 0 && Math.random() < cfg.blunder)
         return { kind: 'move', move: moves[Math.floor(Math.random() * moves.length)] };
-    const deadline = Date.now() + (options.budgetMs ?? 450);
-    const history = [...keys, positionKey(pos)];
-    const reason = claimReason(pos, keys);
+    const history = { position: pos, prior: line };
+    const earlier = options.earlier ?? [];
+    const reason = drawClaim(pos, earlier);
     const currentClaim = reason ? [{ action: { kind: 'claim', reason }, score: 0 }] : [];
     const candidate = (move, score) => {
-        const intendedReason = claimReason(makeMove(pos, move), history);
+        const intendedReason = drawClaim(pos, earlier, move);
         return intendedReason && score <= 0
             ? { action: { kind: 'claim', reason: intendedReason, intended: move }, score: 0 }
             : { action: { kind: 'move', move }, score };
@@ -1053,30 +1078,47 @@ async function chooseActionAsync(pos, difficulty, options = {}) {
         const loss = drawn || !replies.length ? 0 : Math.max(0, ...replies.filter(reply => reply.to === move.to && reply.captured).map(reply => VALUE[typeOf(reply.captured)] - VALUE[typeOf(reply.piece)]));
         score -= loss;
         // The opponent may claim a draw instead of accepting a losing continuation.
-        if (replies.length && claimReason(child, history))
+        if (replies.length && drawClaim(pos, earlier, move))
             score = Math.min(score, 0);
         fallback.push(candidate(move, score));
         await new Promise(resolve => setTimeout(resolve, 0));
     }
+    // The clock starts here so that yielding through the pass above costs no thinking time.
+    const deadline = Date.now() + (options.budgetMs ?? cfg.budgetMs);
+    const scoreOf = new Map(fallback.flatMap(item => item.action.kind === 'move' ? [[item.action.move, item.score]] : []));
     let best = select(fallback);
     for (let depth = 1; depth <= cfg.depth; depth++) {
+        // Best first, so a depth cut short by the clock has still judged the moves that matter.
+        const ordered = moves.slice().sort((x, y) => (scoreOf.get(y) ?? -MATE) - (scoreOf.get(x) ?? -MATE));
         const scored = [...currentClaim];
-        try {
-            for (const move of moves) {
-                if (options.cancelled?.())
-                    return null;
-                const control = { deadline: Math.min(deadline, Date.now() + (options.sliceMs ?? 16)), cancelled: options.cancelled };
-                const score = -negamax(makeMove(pos, move), depth - 1, -Infinity, Infinity, control, history);
+        let bestSoFar = -Infinity, searched = 0, expired = false;
+        for (const move of ordered) {
+            if (options.cancelled?.())
+                return null;
+            // sliceMs bounds how long one move may hold the JS thread. Moves already
+            // out of the choosing window only need proving worse, which is far cheaper.
+            const control = { deadline: Math.min(deadline, Date.now() + (options.sliceMs ?? cfg.sliceMs)), cancelled: options.cancelled };
+            const floor = bestSoFar === -Infinity ? -Infinity : bestSoFar - cfg.window - 1;
+            try {
+                const score = -negamax(makeMove(pos, move), depth - 1, -Infinity, -floor, control, history);
                 scored.push(candidate(move, score));
-                await new Promise((resolve) => setTimeout(resolve, 0));
+                scoreOf.set(move, score);
+                bestSoFar = Math.max(bestSoFar, score);
+                searched++;
             }
+            catch (error) {
+                if (error !== SEARCH_EXPIRED)
+                    throw error;
+                expired = true;
+                break;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+        if (searched > 0)
             best = select(scored);
-        }
-        catch (error) {
-            if (error !== SEARCH_EXPIRED)
-                throw error;
+        lastSearchDepth = expired ? depth - 1 : depth;
+        if (expired)
             break;
-        }
     }
     return options.cancelled?.() ? null : best;
 }
