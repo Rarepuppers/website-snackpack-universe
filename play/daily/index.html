@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">24</span></b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">25</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -159,44 +159,44 @@
             <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
                  renders word-format markers lowercase, so a sentence-initial
                  one would read "twelve boards". -->
-            <h2>One day, <span data-game-count="daily" data-game-count-format="word">24</span> boards.</h2>
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">25</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
 
         <div class="dl-grid" id="dl-grid">
           <a class="dl-card" data-game="pinball" href="../pinball/">
-            <img src="../tiles/pinball.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/pinball.webp" type="image/webp"><img src="../tiles/pinball.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Pinball</h3><p>Today's shared table</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="snackwords" href="../snackwords/">
-            <img src="../tiles/snackwords.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/snackwords.webp" type="image/webp"><img src="../tiles/snackwords.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>SnackWords</h3><p>Today's five-letter word</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="sudoku" href="../sudoku/">
-            <img src="../tiles/sudoku.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/sudoku.webp" type="image/webp"><img src="../tiles/sudoku.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Sudoku</h3><p>Today's shared grid</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="killer-sudoku" href="../killer-sudoku/">
-            <img src="../tiles/killer-sudoku.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/killer-sudoku.webp" type="image/webp"><img src="../tiles/killer-sudoku.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Killer Sudoku</h3><p>Today's shared cages</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="word-search" href="../word-search/">
-            <img src="../tiles/word-search.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/word-search.webp" type="image/webp"><img src="../tiles/word-search.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Word Search</h3><p>Today's themed grid</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="freecell" href="../freecell/">
-            <img src="../tiles/freecell.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/freecell.webp" type="image/webp"><img src="../tiles/freecell.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>FreeCell</h3><p>Today's solver-checked deal</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="mahjong" href="../mahjong/">
-            <img src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/mahjong.webp" type="image/webp"><img src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Mahjong Solitaire</h3><p>Today's shared layout</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
@@ -211,12 +211,12 @@
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="golf-solitaire" href="../golf-solitaire/">
-            <img src="../tiles/golf-solitaire.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/golf-solitaire.webp" type="image/webp"><img src="../tiles/golf-solitaire.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Golf Solitaire</h3><p>Today's shared deal</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="memory-match" href="../memory-match/">
-            <img src="../tiles/memory-match.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/memory-match.webp" type="image/webp"><img src="../tiles/memory-match.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Memory Match</h3><p>Today's shared card layout</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
@@ -245,38 +245,43 @@
             <div><h3>Rummy 500</h3><p>Today's shared deals</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
+          <a class="dl-card" data-game="big-two" href="../big-two/">
+            <picture><source srcset="../tiles/big-two.webp" type="image/webp"><img src="../tiles/big-two.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
+            <div><h3>Big Two</h3><p>Today's shared deal</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
           <a class="dl-card" data-game="backgammon" href="../backgammon/">
             <picture><source srcset="../tiles/backgammon.webp" type="image/webp"><img src="../tiles/backgammon.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Backgammon</h3><p>Today's shared dice</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="minesweeper" href="../minesweeper/">
-            <img src="../tiles/minesweeper.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/minesweeper.webp" type="image/webp"><img src="../tiles/minesweeper.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Minesweeper</h3><p>Shared once you open the same square</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="water-sort" href="../water-sort/">
-            <img src="../tiles/water-sort.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/water-sort.webp" type="image/webp"><img src="../tiles/water-sort.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Water Sort</h3><p>Today's shared colour sort</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="block-puzzle" href="../block-puzzle/">
-            <img src="../tiles/block-puzzle.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/block-puzzle.webp" type="image/webp"><img src="../tiles/block-puzzle.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Block Puzzle</h3><p>Today's shared blocks</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="flag-frenzy" href="../flag-frenzy/">
-            <img src="../tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/flag-frenzy.webp" type="image/webp"><img src="../tiles/flag-frenzy.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Flag Frenzy</h3><p>Guess today's mystery team</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="crossword" href="../crossword/?daily">
-            <img src="../tiles/crossword.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/crossword.webp" type="image/webp"><img src="../tiles/crossword.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Crossword</h3><p>Today's mini grid</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="kakuro" href="../kakuro/?daily">
-            <img src="../tiles/kakuro.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52">
+            <picture><source srcset="../tiles/kakuro.webp" type="image/webp"><img src="../tiles/kakuro.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Kakuro</h3><p>Today's shared cross-sums</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
@@ -322,7 +327,7 @@
     snackwords: "SnackWords", sudoku: "Sudoku", "killer-sudoku": "Killer Sudoku", "word-search": "Word Search", freecell: "FreeCell",
     mahjong: "Mahjong", "golf-solitaire": "Golf Solitaire", "memory-match": "Memory Match",
     thirteen: "Thirteen", minesweeper: "Minesweeper", "water-sort": "Water Sort", "block-puzzle": "Block Puzzle", "flag-frenzy": "Flag Frenzy",
-    "five-dice": "Dice Score", hearts: "Hearts", spades: "Spades", "rummy-500": "Rummy 500", backgammon: "Backgammon"
+    "five-dice": "Dice Score", hearts: "Hearts", spades: "Spades", "rummy-500": "Rummy 500", "big-two": "Big Two", backgammon: "Backgammon"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));
 
