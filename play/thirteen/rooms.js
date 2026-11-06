@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  var ROOMS_URL = "";
+  var ROOMS_URL = "https://snackpack-arcade-rooms.snackpackuniverse.workers.dev";
   if (/^localhost$/.test(location.hostname)) ROOMS_URL = new URLSearchParams(location.search).get("roomsUrl") || ROOMS_URL;
   if (!ROOMS_URL) return;
 
