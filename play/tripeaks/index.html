@@ -668,7 +668,8 @@
     if (state.phase !== "playing" || !state.stock.length) return;
     snapshot();
     hintIdx = null;
-    state.waste.push(state.stock.pop());
+    // Front of the stock first: the order every deal in VERIFIED was solved in.
+    state.waste.push(state.stock.shift());
     state.streak = 0;                  // the whole cost of drawing
     state.moves++;
     // Turning a card is a lift, not a placement — the lighter tap.

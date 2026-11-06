@@ -21,6 +21,9 @@
  *
  * A card is available when both cards overlapping it are gone. Base-row cards
  * are always available.
+ *
+ * The stock is drawn from index 0 upward, and the page must draw in that same
+ * order. scripts/verify-tripeaks-deals.js checks the page against this file.
  */
 
 "use strict";

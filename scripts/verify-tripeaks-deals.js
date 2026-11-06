@@ -6,6 +6,11 @@
  * own — a bad merge, a hand edit, or a change to deal() in either file would
  * break it silently and the page would keep making the claim.
  *
+ * The solver also has to be solving the game the page really plays, so this runs
+ * the page's own deal(), COVERS and draw against the solver's before it trusts
+ * the pool. A page that drew from the wrong end of the stock once dealt 220 of
+ * 1,200 "verified" boards that could not be cleared.
+ *
  * Exits non-zero if any seed fails, so it can gate a release.
  *
  * Usage:
@@ -16,7 +21,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { deal, isSolvable } = require("./tripeaks-solver.js");
+const { COVERS, deal, isSolvable } = require("./tripeaks-solver.js");
 
 const pagePath = path.join("play", "tripeaks", "index.html");
 const page = fs.readFileSync(pagePath, "utf8");
@@ -30,6 +35,62 @@ if (!match) {
 const seeds = match[1].split(",").map((s) => Number(s.trim())).filter((n) => !isNaN(n));
 if (!seeds.length) {
   console.error("The VERIFIED pool is empty.");
+  process.exit(1);
+}
+
+// Cuts one function out of the page by matching braces, so the real code runs.
+function pageFunction(name) {
+  const start = page.indexOf(`function ${name}(`);
+  if (start < 0) {
+    console.error(`Could not find ${name}() in ${pagePath}.`);
+    process.exit(1);
+  }
+  let depth = 0;
+  for (let i = page.indexOf("{", start); i < page.length; i++) {
+    if (page[i] === "{") depth++;
+    if (page[i] === "}" && --depth === 0) return page.slice(start, i + 1);
+  }
+  console.error(`Unbalanced braces in ${name}() in ${pagePath}.`);
+  process.exit(1);
+}
+
+function checkPageMatchesSolver() {
+  const pageDeal = new Function(`${pageFunction("mulberry32")}\n${pageFunction("deal")}\nreturn deal;`)();
+  const layout = page.match(/var COVERS = \[\];[\s\S]*?COVERS\[18 \+ b\] = \[\];/);
+  const pageCovers = layout ? new Function(`${layout[0]}\nreturn COVERS;`)() : null;
+  if (JSON.stringify(pageCovers) !== JSON.stringify(COVERS)) {
+    return "the page's COVERS layout differs from the solver's";
+  }
+
+  // draw() run for real, with the page's globals stubbed, so that any way of
+  // taking the wrong card fails here and not only one spelling of it.
+  const drawNext = (stock) => {
+    const state = { phase: "playing", stock: stock.slice(), waste: [], streak: 0, moves: 0 };
+    new Function("state", "snapshot", "isStuck", "render", "hintIdx", "window", `${pageFunction("draw")}\ndraw();`)(
+      state, () => {}, () => false, () => {}, null, {}
+    );
+    return state.waste[state.waste.length - 1];
+  };
+
+  for (const seed of seeds) {
+    const expected = deal(seed);
+    const actual = pageDeal(seed);
+    const waste = Array.isArray(actual.waste) ? actual.waste[0] : actual.waste;
+    if (JSON.stringify(actual.tableau) !== JSON.stringify(expected.tableau)
+      || JSON.stringify(waste) !== JSON.stringify(expected.waste)
+      || JSON.stringify(actual.stock) !== JSON.stringify(expected.stock)) {
+      return `the page's deal() differs from the solver's at seed ${seed}`;
+    }
+    if (drawNext(actual.stock) !== actual.stock[0]) {
+      return "the page's draw() does not take the next stock card the solver plays";
+    }
+  }
+  return null;
+}
+
+const mismatch = checkPageMatchesSolver();
+if (mismatch) {
+  console.error(`\nThe pool can't be trusted: ${mismatch}.`);
   process.exit(1);
 }
 
