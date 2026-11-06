@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Peak Run</title>
+<!-- PLAYTEST BUILD: unlisted on purpose. Not in the hub, sitemap or service worker. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Peak Run is a solitaire roguelike playtest from SnackPack Studios.">
+<meta name="theme-color" content="#1b2a41">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/labs/peak-run/">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+  :root {
+    --night: #16233a; --dusk: #24395a; --panel: #213452; --panel-2: #2c4468;
+    --line: #ffffff24; --ink: #f6f1e7; --soft: #b9c6d8;
+    --sun: #f3b84b; --ember: #ef7b45; --go: #58c48c; --bad: #ef6a6a; --felt: #1f6f58;
+    --serif: "Fraunces", Georgia, serif; --sans: "DM Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: linear-gradient(180deg, var(--night), var(--dusk) 60%, #35527a);
+    background-attachment: fixed; color: var(--ink); font-family: var(--sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:disabled { cursor: default; }
+  button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 10px 16px 28px; }
+  h1, h2, h3 { font-family: var(--serif); margin: 0; font-weight: 700; }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 36px; }
+  .top a { color: var(--soft); font-size: .85rem; text-decoration: none; }
+  .link { background: none; border: 0; color: var(--soft); font-size: .85rem; padding: 6px 4px; }
+
+  .btn {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 18px; font-weight: 700; min-height: 46px;
+  }
+  .btn.primary { background: var(--sun); color: #2b1d05; border-color: transparent; }
+  .btn.go { background: var(--go); color: #06281a; border-color: transparent; }
+  .btn:disabled { opacity: .45; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  /* Home */
+  .hero { text-align: center; padding: 22px 0 14px; }
+  .hero h1 { font-size: clamp(2.6rem, 11vw, 4.2rem); line-height: 1; }
+  .hero p { color: var(--soft); margin: 10px auto 0; max-width: 34rem; line-height: 1.5; }
+  .ridge { display: block; width: min(360px, 80%); margin: 0 auto 10px; }
+  .section { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-top: 12px; }
+  .section h2 { font-size: 1.1rem; margin-bottom: 8px; }
+  .kits { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+  .kit { text-align: left; background: var(--panel-2); border: 2px solid transparent; border-radius: 12px; padding: 10px; }
+  .kit[aria-pressed="true"] { border-color: var(--sun); }
+  .kit b { display: block; } .kit small { color: var(--soft); line-height: 1.35; display: block; margin-top: 3px; }
+  .kit:disabled { opacity: .5; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; text-align: center; }
+  .stats div { background: #0000001f; border-radius: 10px; padding: 8px 4px; }
+  .stats b { display: block; font-size: 1.2rem; } .stats span { color: var(--soft); font-size: .76rem; }
+  .how { color: var(--soft); line-height: 1.55; margin: 0; padding-left: 18px; }
+  .how li { margin-bottom: 4px; }
+  .note { color: var(--soft); font-size: .84rem; text-align: center; margin: 12px 0 0; line-height: 1.45; }
+
+  /* Hand HUD */
+  .hud { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline; }
+  .where { font-family: var(--serif); font-weight: 700; font-size: 1.02rem; }
+  .res { font-weight: 700; white-space: nowrap; font-size: .95rem; }
+  .res span { margin-left: 8px; }
+  .boss-line { grid-column: 1 / -1; color: #ffd3b8; font-size: .85rem; }
+  .bar { position: relative; height: 26px; background: #0000003d; border-radius: 13px; margin: 8px 0 6px; overflow: hidden; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--ember), var(--sun)); transition: width .18s; }
+  .bar.met i { background: linear-gradient(90deg, #2f9e6f, var(--go)); }
+  .bar b { position: absolute; inset: 0; display: grid; place-items: center; font-size: .86rem; text-shadow: 0 1px 2px #0009; }
+  .charm-strip { display: flex; gap: 6px; min-height: 40px; align-items: center; flex-wrap: wrap; }
+  .charm-chip { width: 40px; height: 40px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); font-size: 1.25rem; padding: 0; }
+  .charm-chip.r2 { border-color: #7fb4ff; } .charm-chip.r3 { border-color: var(--sun); }
+  .status { min-height: 2.5em; color: var(--soft); font-size: .86rem; line-height: 1.25em; margin: 4px 0 6px; }
+
+  /* Board */
+  .board {
+    position: relative; background: linear-gradient(135deg, #24805f, var(--felt)); border-radius: 16px;
+    padding: 12px; --cw: clamp(58px, 17vw, 74px); --tp-step: 1.06; --tp-drop: .44;
+  }
+  /* Phones have height to spare and little width, so rows sit further apart. */
+  @media (max-width: 620px) { .board { --tp-step: .82; --tp-drop: .66; padding: 10px 6px; margin-inline: -8px; } }
+  @media (max-width: 400px) { .board { --tp-step: .72; } }
+  .peaks { position: relative; margin: 0 auto; width: 100%; }
+  .c {
+    position: absolute; aspect-ratio: 1 / 1.4; border-radius: 7px; background: #fff; border: 1px solid #cfcfcf;
+    box-shadow: 0 2px 5px #0f2f2488; font-weight: 700; line-height: 1; overflow: hidden; padding: 0;
+    container-type: inline-size; transition: transform .1s ease; color: #201713;
+  }
+  .c.red { color: #c0392b; }
+  .c .r { position: absolute; top: 5%; left: 7%; font-size: 31cqw; }
+  .c .su { position: absolute; top: 34%; left: 8%; font-size: 26cqw; }
+  .c .big { position: absolute; right: 6%; bottom: 3%; font-size: 52cqw; opacity: .88; }
+  /* Left edge: a neighbouring card can overlap the right side on a phone. */
+  .c .ed { position: absolute; top: 49%; left: 8%; font-size: 24cqw; }
+  .c.covered { filter: brightness(.74); }
+  .c.down { background: #0b6461 url("../../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.webp") center / cover no-repeat; }
+  .c.down > * { display: none; }
+  /* Keep the natural stacking: raising a playable card would hide the rank of
+     the neighbour it overlaps on a phone. */
+  .c.playable { outline: 3px solid var(--sun); outline-offset: -2px; cursor: pointer; }
+  @media (hover: hover) { .c.playable:hover { transform: translateY(-4px); } }
+  .c.e-wild { background: linear-gradient(145deg, #fff, #e3d3ff 55%, #bfe5ff); }
+  .c.e-gold { background: linear-gradient(145deg, #fffdf2, #ffe08a); }
+  .c.e-spark { background: linear-gradient(145deg, #fff, #c9f3ff); }
+  .c.e-honey { background: linear-gradient(145deg, #fff8ea, #ffc873); }
+  .piles { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 12px; }
+  .pile { width: var(--cw); aspect-ratio: 1 / 1.4; position: relative; flex: none; }
+  .pile .c { position: absolute; inset: 0; width: 100%; }
+  .pile .c.pop { animation: pop .16s ease-out; }
+  @keyframes pop { from { transform: scale(1.22) rotate(-4deg); } to { transform: none; } }
+  .stock {
+    width: 100%; height: 100%; padding: 0; border: 2px solid #ffffff66; border-radius: 13%;
+    background: #0b6461 url("../../shared-assets/game-ui/pro-hand-painted/card-decks/backs/emerald-arcade.webp") center / cover no-repeat;
+    display: grid; place-items: center; font-weight: 800; font-size: 1.2rem; text-shadow: 0 1px 3px #000;
+  }
+  .stock.empty { background: #ffffff14; border-style: dashed; }
+  .streak { min-width: 76px; text-align: center; font-weight: 800; }
+  .streak b { display: block; font-family: var(--serif); font-size: 2rem; line-height: 1; color: var(--sun); }
+  .streak b.bump { animation: bump .18s ease-out; }
+  @keyframes bump { from { transform: scale(1.5); } to { transform: none; } }
+  .streak small { color: #ffffffc4; font-weight: 600; }
+  .peek { display: flex; gap: 4px; justify-content: center; margin-top: 8px; font-size: .78rem; color: #ffffffd0; min-height: 1.2em; }
+  .peek b { background: #0000003d; padding: 1px 6px; border-radius: 6px; }
+  .float {
+    position: absolute; left: 50%; top: 40%; transform: translateX(-50%); pointer-events: none; z-index: 30;
+    font-family: var(--serif); font-weight: 800; font-size: 1.7rem; color: #fff; text-shadow: 0 2px 6px #000b;
+    animation: rise .75s ease-out forwards;
+  }
+  @keyframes rise { from { opacity: 1; margin-top: 0; } to { opacity: 0; margin-top: -60px; } }
+  .hand-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: center; flex-wrap: wrap; }
+  .hand-actions .btn { flex: 1 1 auto; max-width: 420px; }
+
+  /* Offers */
+  .offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .offer {
+    background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 12px; text-align: left;
+    display: flex; flex-direction: column; gap: 4px; min-height: 134px;
+  }
+  .offer.r2 { border-color: #7fb4ff88; } .offer.r3 { border-color: #f3b84baa; }
+  .offer:not(:disabled):hover { background: var(--panel-2); }
+  .offer .ic { font-size: 1.8rem; line-height: 1.1; }
+  .offer b { font-family: var(--serif); font-size: 1.05rem; }
+  .offer small { color: var(--soft); line-height: 1.35; flex: 1; }
+  .offer .price { font-weight: 800; color: var(--sun); }
+  .offer:disabled { opacity: .5; }
+  .offer.sold { opacity: .3; }
+  .shop-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .shop-head h2 { font-size: 1.5rem; }
+  .sub { color: var(--soft); font-size: .86rem; margin: 2px 0 0; }
+  h3.small { font-size: 1rem; margin-top: 16px; }
+  .owned { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .owned button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: .84rem; min-height: 44px; }
+  .deckline { color: var(--soft); font-size: .84rem; margin-top: 12px; }
+
+  /* Result overlay */
+  .veil { position: fixed; inset: 0; background: #0a1220c7; display: grid; place-items: center; padding: 16px; z-index: 50; overflow-y: auto; }
+  .sheet {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px;
+    width: min(420px, 100%); text-align: center; animation: pop .2s ease-out;
+  }
+  .sheet h2 { font-size: 1.7rem; }
+  .sheet p { color: var(--soft); line-height: 1.5; margin: 8px 0; }
+  .lines { list-style: none; padding: 0; margin: 12px 0; text-align: left; }
+  .lines li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .lines li.total { font-weight: 800; color: var(--sun); border: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap" id="app" aria-live="off"></main>
+<script src="engine.js"></script>
+<script>
+(function () {
+  var PR = window.PeakRun;
+  var app = document.getElementById("app");
+  var RUN_KEY = "sp_peakrun_run_v1", META_KEY = "sp_peakrun_meta_v1";
+  var SUIT = ["♣", "♦", "♠", "♥"], SUIT_NAME = ["club", "diamond", "spade", "heart"];
+  var RANK = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
+  function load(key, fallback) {
+    try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; }
+    catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try {
+      if (value == null) localStorage.removeItem(key);
+      else localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) { /* the game still plays without storage */ }
+  }
+
+  var meta = Object.assign({
+    runs: 0, wins: 0, bestAct: 0, bestStreak: 0, bestPlay: 0, hands: 0,
+    unlocks: {}, maxAlt: 1, days: [], daily: {}, sound: true, kit: "classic", altitude: 1
+  }, load(META_KEY, {}));
+  var run = load(RUN_KEY, null);
+  if (run && (run.v !== 1 || !run.phase)) run = null;
+  var view = "home", statusText = "", lastPop = false, justFinished = false;
+
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function persist() { save(RUN_KEY, run && run.phase !== "lost" && run.phase !== "won" ? run : null); save(META_KEY, meta); }
+
+  // ════ Sound: a small synth, so a long streak climbs in pitch ═════
+  var ctx = null;
+  function tone(freq, dur, type, vol) {
+    if (!meta.sound) return;
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+      o.type = type || "triangle"; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.08, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + dur);
+    } catch (e) { /* silent */ }
+  }
+  var SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28, 31];
+  function noteFor(streak) {
+    var n = Math.min(streak, 28);
+    var octave = Math.floor(n / SCALE.length);
+    return 330 * Math.pow(2, (SCALE[n % SCALE.length] + 12 * octave) / 12);
+  }
+  function chord(list) { list.forEach(function (f, i) { setTimeout(function () { tone(f, 0.28, "triangle", 0.07); }, i * 70); }); }
+
+  // ════ Meta progress ══════════════════════════════════════════════
+  function markProgress() {
+    if (!run) return;
+    var cleared = run.phase === "won" ? 3 : run.act;
+    if (cleared >= 1) meta.unlocks.act1 = true;
+    if (cleared >= 2) meta.unlocks.act2 = true;
+    meta.bestAct = Math.max(meta.bestAct, cleared);
+    meta.bestStreak = Math.max(meta.bestStreak, run.stats.bestStreak);
+    meta.bestPlay = Math.max(meta.bestPlay, run.stats.bestPlay);
+  }
+  function finishRun() {
+    if (justFinished) return;
+    justFinished = true;
+    markProgress();
+    meta.hands += run.stats.hands;
+    if (run.phase === "won") {
+      meta.wins += 1;
+      meta.unlocks.win = true;
+      if (run.altitude >= meta.maxAlt) meta.maxAlt = Math.min(5, run.altitude + 1);
+    }
+    if (run.daily) meta.daily[run.daily] = reachedLabel();
+    persist();
+  }
+  function reachedLabel() {
+    if (run.phase === "won") return "reached the top";
+    return PR.ACT_NAMES[run.act] + " " + (run.stage + 1);
+  }
+
+  function begin(opts) {
+    var d = today();
+    if (meta.days.indexOf(d) < 0) meta.days.push(d);
+    meta.days = meta.days.slice(-60);
+    meta.runs += 1;
+    justFinished = false;
+    run = PR.newRun(opts);
+    view = "run"; statusText = "";
+    persist(); render();
+  }
+  function randomSeed() { return "r" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36); }
+
+  // ════ Render ═════════════════════════════════════════════════════
+  function render() {
+    if (view === "home" || !run) app.innerHTML = homeHTML();
+    else if (run.phase === "reward") app.innerHTML = topHTML() + rewardHTML();
+    else if (run.phase === "shop") app.innerHTML = topHTML() + shopHTML();
+    else app.innerHTML = topHTML() + handHTML() + resultHTML();
+    if (view === "run" && run && run.hand && run.phase !== "shop" && run.phase !== "reward") drawBoard();
+    lastPop = false;
+  }
+  function topHTML() {
+    return '<div class="top"><button class="link" data-do="home">← Peak Run</button>' +
+      '<button class="link" data-do="sound" aria-pressed="' + meta.sound + '">Sound ' + (meta.sound ? "on" : "off") + "</button></div>";
+  }
+
+  function homeHTML() {
+    var d = today(), doneToday = meta.daily[d];
+    var live = run && run.phase !== "lost" && run.phase !== "won";
+    var kits = PR.KITS.map(function (k) {
+      var open = !k.unlock || meta.unlocks[k.unlock];
+      var lock = { act1: "Clear The Foothills to unlock.", act2: "Clear The Ridge to unlock.", win: "Reach the top to unlock." }[k.unlock];
+      return '<button class="kit" data-do="kit" data-id="' + k.id + '" aria-pressed="' + (meta.kit === k.id) + '"' + (open ? "" : " disabled") + ">" +
+        "<b>" + k.icon + " " + esc(k.name) + "</b><small>" + esc(open ? k.desc : lock) + "</small></button>";
+    }).join("");
+    var alt = "";
+    if (meta.maxAlt > 1) {
+      alt = '<div class="section"><h2>Altitude</h2><div class="row">';
+      for (var a = 1; a <= meta.maxAlt; a++) {
+        alt += '<button class="btn' + (meta.altitude === a ? " primary" : "") + '" data-do="alt" data-id="' + a + '">' + a + "</button>";
+      }
+      alt += '</div><p class="note">Each level raises every target by 20%.</p></div>';
+    }
+    return '<div class="top"><a href="../../">← Arcade</a><button class="link" data-do="sound" aria-pressed="' + meta.sound + '">Sound ' + (meta.sound ? "on" : "off") + "</button></div>" +
+      '<section class="hero"><svg class="ridge" viewBox="0 0 360 96" aria-hidden="true"><path d="M0 96 80 34l42 34 62-60 58 52 36-22 82 58z" fill="#f3b84b"/><path d="M184 8l-20 19 13 7 9-8 12 9 9-8z" fill="#fff"/></svg>' +
+      "<h1>Peak Run</h1><p>Solitaire with a climb to finish. Chain cards, beat the target, collect charms that bend the rules, and try to reach the top.</p></section>" +
+      '<div class="row">' +
+      (live ? '<button class="btn primary" data-do="resume">Continue: ' + esc(PR.ACT_NAMES[run.act]) + " " + (run.stage + 1) + "</button>" : "") +
+      '<button class="btn' + (live ? "" : " primary") + '" data-do="new">New run</button>' +
+      '<button class="btn" data-do="daily"' + (doneToday ? " disabled" : "") + ">" + (doneToday ? "Today's climb: " + esc(doneToday) : "Daily climb") + "</button></div>" +
+      '<div class="section"><h2>Starting pack</h2><div class="kits">' + kits + "</div></div>" + alt +
+      '<div class="section"><h2>How the climb works</h2><ol class="how">' +
+      "<li>Play any uncovered card one rank above or below the waste card. Suit does not matter.</li>" +
+      "<li>Each card in a row builds your streak, and the streak multiplies its points. Drawing ends the streak.</li>" +
+      "<li>Beat the target to pass. Once you have, make camp at any time: unused draws earn coins.</li>" +
+      "<li>Fall short and you lose a rope. Lose your last rope and the run ends.</li>" +
+      "<li>Spend coins at the trading post. Every fourth climb is a boss with a rule of its own.</li></ol></div>" +
+      '<div class="section"><h2>Your climbs</h2><div class="stats">' +
+      stat(meta.runs, "Runs") + stat(meta.wins, "Reached the top") + stat(meta.bestAct + "/3", "Best acts") +
+      stat(meta.bestStreak, "Best streak") + stat(meta.bestPlay.toLocaleString(), "Best play") + stat(meta.days.length, "Days played") +
+      "</div></div>" +
+      '<p class="note">Playtest build: everything is free and your progress stays on this device.</p>';
+  }
+  function stat(v, label) { return "<div><b>" + v + "</b><span>" + esc(label) + "</span></div>"; }
+
+  function charmStrip() {
+    return '<div class="charm-strip">' + run.charms.map(function (id) {
+      var c = PR.CHARM[id];
+      return '<button class="charm-chip r' + c.rarity + '" data-do="charm" data-id="' + id + '" aria-label="' + esc(c.name + ": " + c.desc) + '">' + c.icon + "</button>";
+    }).join("") + "</div>";
+  }
+
+  function handHTML() {
+    var h = run.hand, pct = Math.min(100, Math.round((h.score / h.target) * 100));
+    var boss = h.boss ? PR.BOSS[h.boss] : null;
+    var camp = "";
+    if (PR.canBank(run) && run.phase === "hand") {
+      var total = PR.payout(run).reduce(function (n, l) { return n + l.coins; }, 0);
+      camp = '<button class="btn go" data-do="bank">Make camp: +' + total + " coins</button>";
+    }
+    var undo = h.undos > 0 && h.undoSnap && run.phase === "hand"
+      ? '<button class="btn" data-do="undo">Undo (' + h.undos + ")</button>" : "";
+    var peek = "";
+    if (PR.has(run, "spyglass")) {
+      peek = '<div class="peek">Next: ' + (h.stock.slice(0, 3).map(function (c) {
+        return "<b>" + RANK[c.r] + SUIT[c.s] + (c.e ? " " + PR.EDITIONS[c.e].icon : "") + "</b>";
+      }).join("") || "nothing") + "</div>";
+    }
+    return '<section class="hud"><div class="where">' + esc(PR.ACT_NAMES[run.act]) + " · " +
+      (boss ? "Boss" : "Climb " + (run.stage + 1)) + '</div><div class="res"><span title="Coins">🪙 ' + run.coins + '</span><span title="Ropes">🧵 ' + run.ropes + "</span></div>" +
+      (boss ? '<div class="boss-line">' + boss.icon + " <b>" + esc(boss.name) + ":</b> " + esc(boss.desc) + "</div>" : "") + "</section>" +
+      '<div class="bar' + (h.score >= h.target ? " met" : "") + '"><i style="width:' + pct + '%"></i><b>' + h.score.toLocaleString() + " / " + h.target.toLocaleString() + "</b></div>" +
+      charmStrip() +
+      '<p class="status" id="status" role="status">' + esc(statusText || defaultStatus()) + "</p>" +
+      '<div class="board" id="board"><div class="peaks" id="peaks"></div>' +
+      '<div class="piles"><div class="pile">' +
+      (h.stock.length
+        ? '<button class="stock" data-do="draw" aria-label="Draw a card, ' + h.stock.length + ' left">' + h.stock.length + "</button>"
+        : '<button class="stock empty" disabled aria-label="No draws left">0</button>') +
+      '</div><div class="pile" id="waste"></div><div class="streak"><b class="' + (h.streak > 0 ? "bump" : "") + '">×' + Math.max(1, h.streak) + "</b><small>streak</small></div></div>" + peek + "</div>" +
+      '<div class="hand-actions">' + camp + undo + "</div>";
+  }
+  function defaultStatus() {
+    if (run.phase !== "hand") return "";
+    var moves = PR.legal(run).length;
+    if (moves) return moves + (moves === 1 ? " card" : " cards") + " playable. Tap a charm to read it.";
+    return run.hand.score >= run.hand.target ? "No plays left. Draw for more, or make camp." : "Nothing playable. Draw a card.";
+  }
+
+  function cardFace(c) {
+    var ed = c.e ? '<span class="ed">' + PR.EDITIONS[c.e].icon + "</span>" : "";
+    return '<span class="r">' + RANK[c.r] + '</span><span class="su">' + SUIT[c.s] + '</span><span class="big">' + SUIT[c.s] + "</span>" + ed;
+  }
+  function cardClass(c) { return "c " + (PR.isRed(c) ? "red" : "black") + (c.e ? " e-" + c.e : ""); }
+
+  function drawBoard() {
+    var h = run.hand, peaks = document.getElementById("peaks"), board = document.getElementById("board");
+    if (!peaks) return;
+    var step = parseFloat(getComputedStyle(board).getPropertyValue("--tp-step")) || 1.06;
+    var DROP = parseFloat(getComputedStyle(board).getPropertyValue("--tp-drop")) || 0.44;
+    var widthUnits = 9 * step + 1, RATIO = 1.4;
+    var heightUnits = 3 * DROP * RATIO + RATIO, topPct = (DROP * RATIO) / heightUnits * 100;
+    var cardPct = 100 / widthUnits, stepPct = cardPct * step;
+    peaks.style.aspectRatio = (widthUnits / heightUnits).toFixed(4) + " / 1";
+    peaks.style.maxWidth = Math.round(74 * widthUnits) + "px";
+    var legal = PR.legal(run), html = "";
+    for (var i = 0; i < 28; i++) {
+      if (h.gone[i]) continue;
+      var c = h.tableau[i], open = PR.available(h, i), can = legal.indexOf(i) >= 0;
+      var hidden = h.boss === "fog" && !open;
+      var label = hidden ? "Hidden card" : RANK[c.r] + " of " + SUIT_NAME[c.s] + "s" + (c.e ? ", " + PR.EDITIONS[c.e].name : "") + (can ? ", playable" : open ? ", no fit" : ", covered");
+      html += '<button class="' + cardClass(c) + (open ? "" : " covered") + (hidden ? " down" : "") + (can ? " playable" : "") + '"' +
+        ' style="width:' + cardPct.toFixed(4) + "%;left:" + (PR.LEFT[i] * stepPct).toFixed(4) + "%;top:" + (PR.rowOf(i) * topPct).toFixed(3) + "%;z-index:" + (PR.rowOf(i) + 1) + '"' +
+        (can ? ' data-do="play" data-id="' + i + '"' : " disabled") + ' aria-label="' + label + '">' + cardFace(c) + "</button>";
+    }
+    peaks.innerHTML = html;
+    var top = h.waste[h.waste.length - 1];
+    document.getElementById("waste").innerHTML = '<div class="' + cardClass(top) + (lastPop ? " pop" : "") + '" role="img" aria-label="Waste card: ' + RANK[top.r] + " of " + SUIT_NAME[top.s] + 's">' + cardFace(top) + "</div>";
+  }
+
+  function offerHTML(attrs, ic, name, desc, price, disabled, rarity, sold) {
+    return '<button class="offer' + (rarity ? " r" + rarity : "") + (sold ? " sold" : "") + '" ' + attrs + (disabled ? " disabled" : "") + ">" +
+      '<span class="ic" aria-hidden="true">' + ic + "</span><b>" + esc(name) + "</b><small>" + esc(desc) + "</small>" +
+      (price ? '<span class="price">' + (sold ? "Taken" : "🪙 " + price) + "</span>" : "") + "</button>";
+  }
+  function rewardHTML() {
+    return '<div class="shop-head"><h2>' + esc(run.reward.title) + "</h2></div>" +
+      '<p class="sub">Charms stay with you for the whole run.</p><div class="offers">' +
+      run.reward.charms.map(function (id) {
+        var c = PR.CHARM[id];
+        return offerHTML('data-do="reward" data-id="' + id + '"', c.icon, c.name, c.desc, null, false, c.rarity);
+      }).join("") + '</div><div class="row" style="margin-top:12px"><button class="link" data-do="skip">Skip</button></div>';
+  }
+  function shopHTML() {
+    var s = run.shop, full = run.charms.length >= PR.slots(run);
+    var charms = s.charms.map(function (o, i) {
+      var c = PR.CHARM[o.id];
+      return offerHTML('data-do="buycharm" data-id="' + i + '"', c.icon, c.name, c.desc, c.price, o.sold || run.coins < c.price || full, c.rarity, o.sold);
+    }).join("");
+    var packs = s.packs.map(function (o, i) {
+      var p = PR.PACK[o.id];
+      return offerHTML('data-do="buypack" data-id="' + i + '"', p.icon, p.name, p.desc, p.price, !PR.canBuyPack(run, i), 0, o.sold);
+    }).join("");
+    var owned = run.charms.map(function (id) {
+      var c = PR.CHARM[id];
+      return '<button data-do="sell" data-id="' + id + '" aria-label="Sell ' + esc(c.name) + " for " + PR.sellValue(id) + ' coins">' + c.icon + " " + esc(c.name) + " · sell 🪙" + PR.sellValue(id) + "</button>";
+    }).join("");
+    var counts = { wild: 0, gold: 0, spark: 0, honey: 0 };
+    run.deck.forEach(function (c) { if (c.e) counts[c.e] += 1; });
+    var next = run.stage + 1 >= PR.BALANCE.stagesPerAct ? { a: run.act + 1, s: 0 } : { a: run.act, s: run.stage + 1 };
+    var nextBoss = next.s === PR.BALANCE.stagesPerAct - 1 ? PR.BOSS[run.bosses[next.a]] : null;
+    return '<div class="shop-head"><h2>Trading Post</h2><div class="res"><span>🪙 ' + run.coins + "</span><span>🧵 " + run.ropes + "</span></div></div>" +
+      '<p class="sub">Next: ' + esc(PR.ACT_NAMES[next.a]) + ", target " + PR.targetFor(run, next.a, next.s).toLocaleString() +
+      (nextBoss ? ". Boss: " + esc(nextBoss.name + ". " + nextBoss.desc) : "") + "</p>" +
+      '<h3 class="small">Charms (' + run.charms.length + "/" + PR.slots(run) + ')</h3><div class="offers">' + charms + "</div>" +
+      '<div class="row" style="margin-top:10px"><button class="btn" data-do="reroll"' + (run.coins < s.reroll ? " disabled" : "") + ">Fresh stock: 🪙 " + s.reroll + "</button></div>" +
+      '<h3 class="small">Supplies</h3><div class="offers">' + packs + "</div>" +
+      (owned ? '<h3 class="small">Your charms</h3><div class="owned">' + owned + "</div>" : "") +
+      '<p class="deckline">Pack: ' + run.deck.length + " cards · ✶ " + counts.wild + " · ◆ " + counts.gold + " · ⚡ " + counts.spark + " · 🍯 " + counts.honey + "</p>" +
+      '<div class="row" style="margin-top:14px"><button class="btn primary" data-do="leave">Keep climbing</button></div>';
+  }
+
+  function resultHTML() {
+    var r = run.result;
+    if (!r) return "";
+    if (run.phase === "passed") {
+      var boss = PR.isBossStage(run), first = boss && run.act === 0;
+      return veil("<h2>" + (boss ? "Boss beaten!" : "Climb passed") + "</h2>" +
+        "<p>" + r.score.toLocaleString() + " of " + r.target.toLocaleString() + "</p>" +
+        '<ul class="lines">' + r.lines.map(function (l) {
+          return "<li><span>" + esc(l.label) + "</span><b>+" + l.coins + "</b></li>";
+        }).join("") + '<li class="total"><span>Earned</span><span>🪙 ' + r.total + "</span></li></ul>" +
+        (first ? "<p>The Foothills are behind you. The Ridge is next, and the targets get steeper from here.</p>" : "") +
+        '<button class="btn primary" data-do="advance">Onward</button>');
+    }
+    if (run.phase === "fell") {
+      return veil("<h2>You slipped</h2><p>" + r.score.toLocaleString() + " of " + r.target.toLocaleString() + ". You lost a rope, and " +
+        run.ropes + (run.ropes === 1 ? " is" : " are") + ' left. The climb deals again.</p><button class="btn primary" data-do="retry">Try again</button>');
+    }
+    if (run.phase === "lost" || run.phase === "won") {
+      var won = run.phase === "won", s = run.stats;
+      var share = run.daily ? '<button class="btn" data-do="share">Copy result</button>' : "";
+      return veil("<h2>" + (won ? "You reached the top!" : "The climb ends here") + "</h2>" +
+        "<p>" + (won ? "All three acts cleared." : "You got as far as " + esc(reachedLabel()) + ".") + "</p>" +
+        '<div class="stats">' + stat(s.hands, "Hands") + stat(s.cards, "Cards") + stat(s.bestStreak, "Best streak") + stat(s.bestPlay.toLocaleString(), "Best play") + "</div>" +
+        '<div class="row" style="margin-top:14px"><button class="btn primary" data-do="again">Climb again</button>' + share + "</div>");
+    }
+    return "";
+  }
+  function veil(inner) { return '<div class="veil"><div class="sheet" role="dialog" aria-modal="true">' + inner + "</div></div>"; }
+
+  // ════ Actions ════════════════════════════════════════════════════
+  function floatText(text) {
+    var board = document.getElementById("board");
+    if (!board) return;
+    var el = document.createElement("div");
+    el.className = "float"; el.textContent = text;
+    board.appendChild(el);
+    setTimeout(function () { el.remove(); }, 800);
+  }
+  function afterMove() {
+    markProgress();
+    if (run.phase === "lost" || run.phase === "won") finishRun();
+    persist(); render();
+  }
+  var actions = {
+    home: function () { view = "home"; render(); },
+    resume: function () { view = "run"; render(); },
+    sound: function () { meta.sound = !meta.sound; save(META_KEY, meta); render(); },
+    kit: function (id) { meta.kit = id; save(META_KEY, meta); render(); },
+    alt: function (id) { meta.altitude = Number(id); save(META_KEY, meta); render(); },
+    "new": function () {
+      var live = run && run.phase !== "lost" && run.phase !== "won";
+      if (live && !window.confirm("Start a new run and give up the one in progress?")) return;
+      begin({ seed: randomSeed(), kit: meta.kit, altitude: meta.altitude });
+    },
+    daily: function () {
+      var live = run && run.phase !== "lost" && run.phase !== "won";
+      if (live && !window.confirm("Start the daily climb and give up the run in progress?")) return;
+      var d = today();
+      begin({ seed: "daily-" + d, kit: "classic", altitude: 1, daily: d });
+    },
+    again: function () { view = "home"; run = null; persist(); render(); },
+    reward: function (id) { PR.takeReward(run, id); statusText = ""; tone(660, 0.15); afterMove(); },
+    skip: function () { PR.skipReward(run); afterMove(); },
+    charm: function (id) {
+      var c = PR.CHARM[id], el = document.getElementById("status");
+      if (el) el.textContent = c.name + ": " + c.desc;
+    },
+    play: function (id) {
+      var res = PR.play(run, Number(id));
+      if (!res) return;
+      statusText = "";
+      lastPop = true;
+      tone(noteFor(res.streak), 0.14);
+      if (res.coin) tone(1320, 0.1, "square", 0.03);
+      if (res.peaks) chord([523, 659, 784]);
+      afterMove();
+      if (res.pts + res.bonus > 0 && !res.ended) floatText("+" + (res.pts + res.bonus).toLocaleString());
+      if (res.ended && run.phase !== "lost") chord(run.result && run.result.passed ? [523, 659, 784, 1047] : [330, 262]);
+      if (run.phase === "lost") chord([294, 247, 196]);
+    },
+    draw: function () {
+      var res = PR.draw(run);
+      if (!res) return;
+      statusText = res.lost ? "Rockfall! You lost " + res.lost + " points." : "";
+      lastPop = true;
+      tone(180, 0.09, "sine", 0.06);
+      afterMove();
+    },
+    undo: function () { if (PR.undo(run)) { statusText = "Move undone."; afterMove(); } },
+    bank: function () { PR.bank(run); chord([523, 659, 784]); afterMove(); },
+    advance: function () { PR.advance(run); afterMove(); },
+    retry: function () { PR.retry(run); statusText = ""; afterMove(); },
+    buycharm: function (id) { if (PR.buyCharm(run, Number(id))) { tone(880, 0.12); afterMove(); } },
+    buypack: function (id) { if (PR.buyPack(run, Number(id))) { tone(740, 0.12); afterMove(); } },
+    reroll: function () { if (PR.reroll(run)) { tone(440, 0.08); afterMove(); } },
+    sell: function (id) {
+      if (window.confirm("Sell " + PR.CHARM[id].name + " for " + PR.sellValue(id) + " coins?") && PR.sellCharm(run, id)) afterMove();
+    },
+    leave: function () { PR.leaveShop(run); statusText = ""; afterMove(); },
+    share: function () {
+      var text = "Peak Run daily " + run.daily + ": " + reachedLabel() + ", best streak " + run.stats.bestStreak;
+      if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+    }
+  };
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-do]");
+    if (!el || el.disabled) return;
+    var fn = actions[el.getAttribute("data-do")];
+    if (fn) fn(el.getAttribute("data-id"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " " && view === "run" && run && run.phase === "hand" && e.target === document.body) {
+      e.preventDefault();
+      actions.draw();
+    }
+  });
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (view === "run" && run && run.hand) drawBoard(); }, 120);
+  });
+
+  if (run) view = "home";
+  render();
+})();
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+</body>
+</html>
