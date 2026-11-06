@@ -86,6 +86,13 @@ jobs:
       - name: Enforce new arcade game quality bar
         run: node scripts/check-new-game.mjs
 
+      # The page promises every TriPeaks deal can be cleared. This runs the page's
+      # own deal, layout and draw against the solver, then re-solves the pool. A
+      # page drawing from the wrong end of the stock dealt 220 unwinnable boards
+      # until 2026-11-06, while a check of the solver alone stayed green.
+      - name: Check TriPeaks deals
+        run: node scripts/verify-tripeaks-deals.js
+
       - name: Check website delivery contract
         run: node scripts/check-website-delivery.mjs
 
