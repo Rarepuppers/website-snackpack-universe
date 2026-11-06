@@ -30,6 +30,7 @@ const GUIDES = {
   minesweeper: "minesweeper-without-ads",
   mahjong: "mahjong-solitaire-without-ads",
   thirteen: "thirteen-tien-len-rules",
+  "2048": "play-browser-games-offline",
   "flag-frenzy": "flag-quiz-without-ads",
   "water-sort": "water-sort-strategy",
 };

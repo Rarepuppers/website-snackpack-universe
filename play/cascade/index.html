@@ -365,7 +365,7 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
 </footer>
 
 <script src="../funnel.js"></script>
-<script src="../pause.js"></script>
+<script src="../pause.js"></script><script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
@@ -434,7 +434,7 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
   // piece locks. An empty hold takes the next piece from the queue.
   var holdType = null, holdUsed = false;
   var holdEl = document.getElementById("cs-hold"), holdCellsEl = document.getElementById("cs-hold-cells"), holdStateEl = document.getElementById("cs-hold-state");
-  var cellEls = [], dropTimer = null;
+  var cellEls = [], dropTimer = null, resume = null, pauser = null;
 
   best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
   bestEl.textContent = best;
@@ -489,6 +489,7 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
     nextType = randomType();
     holdUsed = false;
     render();
+    if (resume) resume.changed();
   }
 
   function hold() {
@@ -552,6 +553,7 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
   function gameOver() {
     over = true;
     clearTimeout(dropTimer);
+    if (resume) resume.clear();
     var prevBest = best;
     if (score > best) { best = score; localStorage.setItem(BEST_KEY, String(best)); }
     bestEl.textContent = best;
@@ -660,14 +662,21 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
     else if (a === "hard") hardDrop();
   });
 
-  document.getElementById("cs-new").addEventListener("click", reset);
+  document.getElementById("cs-new").addEventListener("click", function () {
+    if (resume) resume.clear();
+    if (pauser && pauser.isPaused()) pauser.resume();
+    reset();
+  });
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
+      if (pauser && pauser.isPaused()) pauser.resume();
       startLevel = btn.dataset.mode === "turbo" ? 6 : 1;
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
+      if (resume) resume.variantChanged();
     });
   });
 
@@ -680,7 +689,7 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
   // paused already gates every move/rotate/drop function and scheduleDrop(),
   // so the callbacks only need to own the drop timer and the status line.
   if (window.SnackPackPause) {
-    window.SnackPackPause.attach({
+    pauser = window.SnackPackPause.attach({
       mount: document.querySelector(".game-controls"),
       stage: document.querySelector(".game-stage"),
       isPlaying: function () { return !over; },
@@ -688,6 +697,36 @@ button.cs-next-box:disabled { cursor: default; opacity: 0.55; }
       resume: function () { paused = false; statusEl.textContent = "Clear full rows to score."; scheduleDrop(); }
     });
   }
+
+  // Saved games. A restored run opens paused, so nobody returns to a falling piece.
+  function validPiece(p) {
+    return p && Number.isInteger(p.type) && p.type >= 0 && p.type < TETROMINOES.length &&
+      Number.isInteger(p.rot) && p.rot >= 0 && p.rot < 4 && Number.isInteger(p.row) && Number.isInteger(p.col);
+  }
+  function validSave(p) {
+    if (!p || !Array.isArray(p.grid) || p.grid.length !== COLS * ROWS || !validPiece(p.piece)) return false;
+    if (!p.grid.every(function (v) { return Number.isInteger(v) && v >= 0 && v < COLORS.length; })) return false;
+    if (!Number.isInteger(p.nextType) || p.nextType < 0 || p.nextType >= TETROMINOES.length) return false;
+    if (p.holdType !== null && (!Number.isInteger(p.holdType) || p.holdType < 0 || p.holdType >= TETROMINOES.length)) return false;
+    if (!Number.isInteger(p.score) || p.score < 0 || !Number.isInteger(p.lines) || p.lines < 0) return false;
+    return isValid(p.grid, pieceCells(p.piece));
+  }
+  if (window.SnackPackResume) resume = window.SnackPackResume.attach({
+    game: "cascade",
+    variant: function () { return startLevel === 6 ? "turbo" : "classic"; },
+    serialize: function () { return { grid: grid, piece: piece, nextType: nextType, score: score, lines: lines, holdType: holdType, holdUsed: holdUsed }; },
+    validate: validSave,
+    isActive: function () { return !over && (lines > 0 || score > 0); },
+    restore: function (p) {
+      clearTimeout(dropTimer);
+      grid = p.grid; piece = p.piece; nextType = p.nextType; score = p.score; lines = p.lines;
+      holdType = p.holdType; holdUsed = !!p.holdUsed; over = false;
+      render();
+      if (pauser) pauser.pause(); else scheduleDrop();
+      return true;
+    },
+    onRestore: function () { statusEl.textContent = "Saved game restored. Resume when you're ready."; }
+  });
 })();
 </script>
 <!-- Cloudflare Web Analytics -->

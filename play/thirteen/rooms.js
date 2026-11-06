@@ -57,13 +57,14 @@
     '<div class="th-table"><div class="th-table-label" id="r-tablelabel">Table</div><div class="th-table-cards" id="r-tablecards"></div><div class="th-table-by" id="r-tableby"></div></div>' +
     '<div class="th-hand-wrap"><div class="th-hand" id="r-hand" aria-label="Your hand"></div></div>' +
     '<div class="th-actions"><button class="btn-game btn-game--primary" id="r-play" type="button" disabled>Play</button><button class="btn-game" id="r-pass" type="button" disabled>Pass</button><button class="btn-game" id="r-sort" type="button">Sort</button></div></div>' +
-    '<p class="game-hint" id="r-hint"></p>';
+    '<p class="game-hint" id="r-timer" aria-live="off"></p><p class="game-hint" id="r-hint"></p>';
   stage.parentNode.insertBefore(panel, stage);
   stage.hidden = true;
 
   var el = function (id) { return document.getElementById(id); };
   var statusEl = el("r-status"), lobbyEl = el("r-lobby"), gameEl = el("r-game"), handEl = el("r-hand");
   var view = null, selected = [], socket = null, retries = 0, closed = false, counted = false;
+  var TURN_SECONDS = 60, turnKey = "", turnStarted = 0;
 
   function token() {
     var key = "sp_thirteen_room_" + code, value = null;
@@ -163,6 +164,23 @@
     else statusEl.textContent = seatName(view.turn) + " is playing…";
   }
 
+  // The server moves an idle player on after a minute. Count from when this browser
+  // saw the turn start, because player clocks can differ from the server's.
+  function trackTurn() {
+    var key = view.playing ? [view.turn, view.counts.join(), view.passed.length].join("|") : "";
+    if (key !== turnKey) { turnKey = key; turnStarted = Date.now(); }
+    showTimer();
+  }
+
+  function showTimer() {
+    var timer = el("r-timer");
+    if (!view || !view.playing || view.seats[view.turn] !== "here") { timer.textContent = ""; return; }
+    var left = Math.max(0, TURN_SECONDS - Math.floor((Date.now() - turnStarted) / 1000));
+    if (view.turn === view.seat) timer.textContent = left <= 20 ? left + " seconds left, then your turn is played for you." : left + " seconds left.";
+    else timer.textContent = seatName(view.turn) + " has " + left + " seconds left.";
+  }
+  setInterval(showTimer, 1000);
+
   function connect() {
     var url = ROOMS_URL.replace(/^http/, "ws") + "/rooms/" + code + "?token=" + seatToken;
     socket = new WebSocket(url);
@@ -178,6 +196,7 @@
       view = message;
       selected = selected.filter(function (id) { return (view.hand || []).some(function (c) { return c.id === id; }); });
       render();
+      trackTurn();
     });
     socket.addEventListener("close", function () {
       if (closed) return;

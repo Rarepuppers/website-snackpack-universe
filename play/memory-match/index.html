@@ -309,7 +309,7 @@
 
 <script src="../keyboard-grid.js"></script>
 <script src="../funnel.js"></script>
-<script src="../daily-state.js"></script><script src="../share-result.js"></script>
+<script src="../store.js"></script><script src="../resume.js"></script><script src="../daily-state.js"></script><script src="../share-result.js"></script>
 <script>
 (function () {
   "use strict";
@@ -353,6 +353,7 @@
 
   var size = "classic";
   var moves, matched, flipped, busy, started, timerId, elapsed;
+  var layout = [], resume = null;
 
   // ── Daily seed → deterministic shuffle ──
   // `?daily=<anything>` has always produced a deterministic board, but nothing in
@@ -446,9 +447,12 @@
     var seed = activeSeed();
     var rng = makeRng(seed ? seed + "-" + size : null);
     var symbols = shuffle(DECK, rng).slice(0, cfg.pairs);
-    var cards = shuffle(symbols.concat(symbols), rng);
+    drawBoard(shuffle(symbols.concat(symbols), rng));
+  }
 
-    boardEl.style.setProperty("--cols", String(cfg.cols));
+  function drawBoard(cards) {
+    layout = cards.map(function (sym) { return sym.id; });
+    boardEl.style.setProperty("--cols", String(SIZES[size].cols));
     boardEl.innerHTML = "";
     cards.forEach(function (sym, idx) {
       var card = document.createElement("button");
@@ -469,6 +473,7 @@
 
   function onComplete() {
     stopTimer();
+    if (resume) resume.clear();
     statusEl.textContent = "Solved in " + moves + " moves · " + fmt(elapsed) + ". 🎉";
     statusEl.className = "game-status game-status--win";
 
@@ -528,8 +533,10 @@
       flipped = [];
       matched++;
       if (matched === SIZES[size].pairs) onComplete();
+      else if (resume) resume.changed();
     } else {
       unmatch(a, b);
+      if (resume) resume.changed();
     }
   }
 
@@ -541,32 +548,78 @@
   newBtn.addEventListener("click", function () {
     // "New game" out of daily mode returns you to a fresh shuffle — a daily is one
     // board, so re-rolling it while still calling it today's would be a lie.
+    if (resume) resume.clear();
     dailyMode = false;
     urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", "false");
     reset();
+    if (resume) resume.variantChanged();
   });
 
   var dailyBtn = document.getElementById("m-daily");
   dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
+    if (resume) resume.save();
     dailyMode = !dailyMode;
     if (!dailyMode) urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));
     reset();
+    if (resume) resume.variantChanged();
   });
 
   document.querySelectorAll(".seg [data-size]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (resume) resume.save();
       size = btn.dataset.size;
       document.querySelectorAll(".seg [data-size]").forEach(function (x) {
         x.setAttribute("aria-pressed", String(x === btn));
       });
       reset();
+      if (resume) resume.variantChanged();
     });
   });
 
   reset();
+
+  // Saved games. A pair still face up is not saved: it flips back on return, and
+  // the clock waits for the next card.
+  function validSave(p) {
+    var total = SIZES[size].pairs * 2;
+    if (!p || !Array.isArray(p.layout) || p.layout.length !== total || !Array.isArray(p.matched)) return false;
+    if (!Number.isInteger(p.moves) || p.moves < 0 || !Number.isInteger(p.elapsed) || p.elapsed < 0) return false;
+    var counts = {};
+    var known = p.layout.every(function (id) {
+      counts[id] = (counts[id] || 0) + 1;
+      return DECK.some(function (d) { return d.id === id; });
+    });
+    return known && Object.keys(counts).every(function (id) { return counts[id] === 2; }) &&
+      p.matched.every(function (id) { return counts[id] === 2; });
+  }
+  if (window.SnackPackResume) resume = window.SnackPackResume.attach({
+    game: "memory-match",
+    variant: function () { return (dailyMode ? "daily-" + dailyNumber() : "random") + "-" + size; },
+    serialize: function () {
+      var done = [];
+      boardEl.querySelectorAll(".mem-card.is-matched").forEach(function (c) { if (done.indexOf(c.dataset.sym) < 0) done.push(c.dataset.sym); });
+      return { layout: layout, matched: done, moves: moves, elapsed: elapsed };
+    },
+    validate: validSave,
+    isActive: function () { return moves > 0 && matched < SIZES[size].pairs; },
+    restore: function (p) {
+      stopTimer();
+      flipped = []; busy = false; started = false;
+      moves = p.moves; elapsed = p.elapsed; matched = p.matched.length;
+      movesEl.textContent = String(moves);
+      timeEl.textContent = fmt(elapsed);
+      drawBoard(p.layout.map(function (id) { return DECK.filter(function (d) { return d.id === id; })[0]; }));
+      boardEl.querySelectorAll(".mem-card").forEach(function (card) {
+        if (p.matched.indexOf(card.dataset.sym) < 0) return;
+        card.classList.add("is-flipped", "is-matched");
+        card.setAttribute("aria-label", "Card showing " + card.dataset.name);
+      });
+      return true;
+    }
+  });
 })();
 </script>
 <script>
