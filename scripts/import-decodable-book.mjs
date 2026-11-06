@@ -185,7 +185,7 @@ ${pageCards}
 <section><div class="shell story-finish-card"><span class="eyebrow">The end &middot; Brilliant reading</span>${QUESTIONS[book.id] ? `<h2>${esc(QUESTIONS[book.id][0])}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(QUESTIONS[book.id][1])}</p></details><h3 class="story-grownups">For grown-ups</h3>` : "<h2>For grown-ups</h2>"}<p><a class="text-link" href="#reading-preparation">Review the preparation note and word lists above</a>.</p><p>SnackPack ABC &amp; Alphabet continues with letter activities, read-together stories and more early phonics practice.</p><div class="stack-inline"><a class="btn btn-primary" href="${PLAY_URL}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-1-abcs-alphabet/">Explore the app</a><a class="btn btn-secondary" href="./${book.id}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack ABC &amp; Alphabet.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-1-abcs-alphabet/">Privacy</a></div></div></footer>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}"}'></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${BEACON}","spa":false}'></script>
 </body></html>
 `;
   return html.replace('</head>', `<!-- breadcrumbs:generated -->\n<!-- /breadcrumbs:generated -->\n${SHARED}</head>`)

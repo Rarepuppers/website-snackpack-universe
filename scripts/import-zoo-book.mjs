@@ -160,7 +160,7 @@ ${cards}
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story and illustrations from SnackPack Zoo World.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-12-zoo-world/">Privacy</a></div></div></footer>
   <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+          data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94", "spa": false}'></script>
   <!-- End Cloudflare Web Analytics -->
 </body></html>
 `;
