@@ -14,9 +14,10 @@ final art and a read-through by someone from Honduras before it goes on the shel
 
 ## Book details
 
-- **Character:** Polly Roger, already on the shelf as the pirate parrot. She is on holiday,
-  so she carries a small bag and no pirate gear.
-- **New character:** Rosa, a scarlet macaw from the Copán Valley.
+- **Character:** Polly Roger, already on the shelf. She is drawn as a red macaw in a purple
+  and gold coat with a gold feathered hat, and she keeps that outfit here. It is how a child
+  tells her from Rosa. She adds a small travel bag.
+- **New character:** Rosa, a wild scarlet macaw from the Copán Valley. No clothes.
 - **Length:** six pages, matching the Talk together and end-question format of the shelf.
 - **Theme:** people and birds looking after a place together.
 - **Phonics focus:** -ing, -ed and -er endings; vowel teams ee, ea, ai, oa.
@@ -26,7 +27,7 @@ final art and a read-through by someone from Honduras before it goes on the shel
 | Page | Text | Talk together | Art |
 |---|---|---|---|
 | 1 | Polly Roger is on holiday in Honduras. She is flying over green hills to meet her cousin, Rosa. | Where is Polly going? | Polly high over green hills and a river valley, with a small bag |
-| 2 | Rosa is a red macaw. "In Honduras, we call a red macaw a guara roja," she says. "We are the bird of this land." | What is Rosa's other name? | Rosa greeting Polly on a branch, bright red, yellow and blue feathers |
+| 2 | Rosa is a red macaw, just like Polly. "In Honduras, we call a red macaw a guara roja," she says. "We are the bird of this land." | What is Rosa's other name? | Rosa greeting Polly on a branch, bright red, yellow and blue feathers |
 | 3 | Rosa leads Polly to Copán. Long ago, the Maya people built this city from stone. Polly stops. "Look! A stone bird is peeking at me!" | Who built the old city? | The stone ball court at Copán with a carved macaw head, Polly peering at it |
 | 4 | "Maya carvers made macaws in stone," Rosa says. "But real macaws nearly vanished from this valley. Then people started helping." | What nearly vanished from the valley? | Ruins with tall trees, a few macaws far off, soft evening light |
 | 5 | Rosa shows Polly a neat nest box high in a tree. Two chicks are peeping inside. "We are coming back," Rosa says. | How did people help the macaws? | Wooden nest box in a tree, two chick heads, Polly and Rosa on the branch |
@@ -45,7 +46,7 @@ A side-by-side Spanish text would make the book far more useful to a Honduran cl
 This draft must be checked by a Honduran Spanish speaker before use.
 
 1. Polly Roger está de vacaciones en Honduras. Vuela sobre verdes colinas para visitar a su prima Rosa.
-2. Rosa es una guara roja. —Somos el ave nacional de Honduras —dice.
+2. Rosa es una guara roja, igual que Polly. —Somos el ave nacional de Honduras —dice.
 3. Rosa lleva a Polly a Copán. Hace mucho tiempo, los mayas construyeron esta ciudad de piedra. Polly se detiene. —¡Mira! ¡Un pájaro de piedra me está mirando!
 4. —Los mayas tallaron guaras en la piedra —dice Rosa—. Pero las guaras de verdad casi desaparecieron de este valle. Entonces la gente empezó a ayudar.
 5. Rosa le muestra a Polly un nido de madera en lo alto de un árbol. Dentro pían dos polluelos. —Estamos volviendo —dice Rosa.
@@ -69,11 +70,13 @@ eaten across the country. The reviewer should confirm that page 6 feels right.
   no Aztec or generic jungle-temple designs.
 - No human figures in traditional dress. The story has no people on the page, which avoids
   caricature.
-- Polly must match her design in `read/polly-rogers-pirate-cove/`.
+- Polly must match `read/polly-rogers-pirate-cove/pages/` and the portrait
+  `apps/snackpack-3-spelling-sentences/assets/character-portraits/polly-roger-parrot.webp`.
+- Full art instructions are in `docs/ART-BRIEF-WEB-BOOKS-2026-11-06.md`.
 
 ## Before publishing
 
-1. Final art for six pages, plus a social card.
+1. Final art for six pages. The social card is generated from the art.
 2. A read-through by someone from Honduras, ideally a teacher.
 3. Spanish text checked, if the bilingual version goes ahead.
 4. Import, PDF and publication checks as for any other shelf book.
