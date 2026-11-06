@@ -1,6 +1,6 @@
 # Art brief: three web-exclusive books and Big Two (6 November 2026)
 
-**Total: 16 page pictures, one character sheet, one game tile and one social card.**
+**Total: 20 page pictures, one character sheet, one game tile and one social card.**
 Work through the sets in order. Text and scene notes are in the book briefs. If they
 conflict with this file, stop and record the conflict rather than guessing.
 
@@ -8,6 +8,7 @@ conflict with this file, stop and record the conflict rather than guessing.
 |---|---|---|---|
 | 0 | Rosa character sheet, for review | 1 | Below |
 | 1 | Polly Roger and the Red Wings of Copán | 6 | `docs/BOOK-BRIEF-POLLY-ROGER-COPAN-2026-11-06.md` |
+| 1b | Rosa's Copán Report (new pages only; two pages reuse Set 1) | 4 | `docs/BOOK-BRIEF-ROSAS-COPAN-REPORT-2026-11-06.md` |
 | 2 | Nutmeg's Stormy Barn | 5 | `docs/BOOK-BRIEF-READING-TRAIL-7-8-2026-11-06.md` |
 | 3 | Panda-Cake's Puddle Party | 5 | Same file |
 | 4 | Big Two tile and social card | 2 | Below |
@@ -33,17 +34,20 @@ them and use them as reference images.
 | Character | Reference | Must look like |
 |---|---|---|
 | Polly Roger | `polly-roger-parrot.webp`, plus the Pirate Cove pages | Red macaw in a purple and gold coat, gold hat with purple and gold feathers. Add a small travel bag. Keep the coat and hat on every page |
-| Rosa (new) | Sheet below | Wild scarlet macaw with no clothes or accessories |
+| Rosa (new) | Sheet below | Scarlet macaw, exchange student: white collared shirt, blue skirt, small backpack, notebook. Same outfit on every page |
 | Nutmeg | `nutmeg-squirrel.webp` | Squirrel in a green jumper. Never a mouse |
 | Panda-Cake | `panda-cake-panda.webp` | Panda in a layered golden pancake wrap and apron. No chef hat, bow or tutu. Add boots on page 4 |
 | Ted-E-Bear | Ted's portrait in the same folder | Brown bear with a golden halo, flower crown and pastry apron. Add boots on page 4 |
 
 ## Set 0: Rosa
 
-Paint one sheet of Rosa on a plain background: front, side and flying. She is an accurate
-scarlet macaw: red body, yellow and blue wing bands, pale bare face patch, pale upper beak.
-She has a kind, lively expression, a little slimmer and more natural-looking than Polly.
-Children must be able to tell the two apart at a glance. Then use this sheet for every page.
+Paint one sheet of Rosa on a plain background: front, side and flying. Her body is an
+accurate scarlet macaw: red, with yellow and blue wing bands, a pale bare face patch and a
+pale upper beak. She is a school pupil from Honduras, so she wears a simple white collared
+shirt and a blue skirt, with a small backpack and a notebook. Blue and white are the colours
+of the older Honduran school uniform, and they must stay plain: no flag, badge, crest or
+writing. She is friendly and curious, a little smaller and younger-looking than Polly.
+Children must be able to tell the two apart at a glance. Use this sheet for every page.
 
 ## Set 1: rules for Copán
 
@@ -58,8 +62,15 @@ Real places and a real culture are shown here, so accuracy matters more than dra
 - Page 5: a plain wooden nest box fixed high in a tree, with two chicks looking out.
 - Page 6: a baleada is a thick, soft folded flour tortilla with refried beans. Show it on a
   plain plate on a low stone wall away from the carvings, never on the monument.
-- Scarlet macaws in flight on pages 4 and 6 must look natural: red, yellow, blue, long tails.
+- Wild macaws in the background on pages 4 and 6 must look natural: red, yellow, blue, long
+  tails, and no clothes. Only Rosa and Polly wear clothes.
 - Never show a bird in a cage.
+
+## Set 1b notes
+
+Paint only pages 1, 2, 3 and 5 of Rosa's Copán Report. Copy nothing for pages 4 and 6: Claude
+reuses Set 1 pages 3 and 5. The Set 1 rules apply. On page 3 the stairway stays far enough
+away that no glyph can be read, and on page 5 the macaw is a wild bird with no clothes.
 
 ## Set 2 and Set 3 notes
 
@@ -85,7 +96,7 @@ Never overwrite an existing file. Do not edit website pages, shelf data or apps.
 | Big Two tile | 144×144 and 288×288 PNG | `docs/art-incoming/2026-11-06/big-two/big-two.png`, `big-two@2x.png` |
 | Big Two social card | 1200×630 PNG | `docs/art-incoming/2026-11-06/big-two/big-two-social.png` |
 
-Book folders: `polly-roger-copan`, `nutmeg-stormy-barn`, `panda-cake-puddle-party`.
+Book folders: `polly-roger-copan`, `rosa-copan-report`, `nutmeg-stormy-barn`, `panda-cake-puddle-party`.
 
 Add `docs/art-incoming/2026-11-06/DELIVERED.md` listing each file, its prompt, size and any
 page you are unsure about. Claude reviews, imports and publishes. Mark and a Honduran

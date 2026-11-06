@@ -17,7 +17,10 @@ final art and a read-through by someone from Honduras before it goes on the shel
 - **Character:** Polly Roger, already on the shelf. She is drawn as a red macaw in a purple
   and gold coat with a gold feathered hat, and she keeps that outfit here. It is how a child
   tells her from Rosa. She adds a small travel bag.
-- **New character:** Rosa, a wild scarlet macaw from the Copán Valley. No clothes.
+- **New character:** Rosa, a scarlet macaw and an exchange student from Honduras at Wise
+  Owl's school. Readers in Honduras get a character from home, and her school clothes and
+  backpack set her apart from Polly.
+- **Older companion:** `docs/BOOK-BRIEF-ROSAS-COPAN-REPORT-2026-11-06.md`.
 - **Length:** six pages, matching the Talk together and end-question format of the shelf.
 - **Theme:** people and birds looking after a place together.
 - **Phonics focus:** -ing, -ed and -er endings; vowel teams ee, ea, ai, oa.
@@ -26,8 +29,8 @@ final art and a read-through by someone from Honduras before it goes on the shel
 
 | Page | Text | Talk together | Art |
 |---|---|---|---|
-| 1 | Polly Roger is on holiday in Honduras. She is flying over green hills to meet her cousin, Rosa. | Where is Polly going? | Polly high over green hills and a river valley, with a small bag |
-| 2 | Rosa is a red macaw, just like Polly. "In Honduras, we call a red macaw a guara roja," she says. "We are the bird of this land." | What is Rosa's other name? | Rosa greeting Polly on a branch, bright red, yellow and blue feathers |
+| 1 | Rosa is an exchange student at Wise Owl's school. She is from Honduras. Today, she is taking her friend Polly Roger home. | Where is Rosa from? | Rosa and Polly setting off from a school gate, Rosa with her backpack, Polly with a small bag |
+| 2 | They fly over green hills. "In Honduras, we call a red macaw a guara roja," says Rosa. "I am one, and so are you!" | What do people in Honduras call a red macaw? | Rosa and Polly flying over green hills and a river valley, both in their outfits |
 | 3 | Rosa leads Polly to Copán. Long ago, the Maya people built this city from stone. Polly stops. "Look! A stone bird is peeking at me!" | Who built the old city? | The stone ball court at Copán with a carved macaw head, Polly peering at it |
 | 4 | "Maya carvers made macaws in stone," Rosa says. "But real macaws nearly vanished from this valley. Then people started helping." | What nearly vanished from the valley? | Ruins with tall trees, a few macaws far off, soft evening light |
 | 5 | Rosa shows Polly a neat nest box high in a tree. Two chicks are peeping inside. "We are coming back," Rosa says. | How did people help the macaws? | Wooden nest box in a tree, two chick heads, Polly and Rosa on the branch |
@@ -45,8 +48,8 @@ final art and a read-through by someone from Honduras before it goes on the shel
 A side-by-side Spanish text would make the book far more useful to a Honduran class.
 This draft must be checked by a Honduran Spanish speaker before use.
 
-1. Polly Roger está de vacaciones en Honduras. Vuela sobre verdes colinas para visitar a su prima Rosa.
-2. Rosa es una guara roja, igual que Polly. —Somos el ave nacional de Honduras —dice.
+1. Rosa es una estudiante de intercambio en la escuela de Wise Owl. Es de Honduras. Hoy lleva a su amiga Polly Roger a su tierra.
+2. Vuelan sobre verdes colinas. —En Honduras, a un ave como nosotras la llamamos guara roja —dice Rosa—. ¡Yo soy una, y tú también!
 3. Rosa lleva a Polly a Copán. Hace mucho tiempo, los mayas construyeron esta ciudad de piedra. Polly se detiene. —¡Mira! ¡Un pájaro de piedra me está mirando!
 4. —Los mayas tallaron guaras en la piedra —dice Rosa—. Pero las guaras de verdad casi desaparecieron de este valle. Entonces la gente empezó a ayudar.
 5. Rosa le muestra a Polly un nido de madera en lo alto de un árbol. Dentro pían dos polluelos. —Estamos volviendo —dice Rosa.
