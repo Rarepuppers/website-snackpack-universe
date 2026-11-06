@@ -141,4 +141,10 @@
       );
     }, opts.delay != null ? opts.delay : 900);
   };
+
+  // Anonymous game start and win counts. See game-events.js and /privacy/arcade/.
+  var events = document.createElement("script");
+  events.src = "/play/game-events.js";
+  events.async = false;
+  document.head.appendChild(events);
 })();
