@@ -40,9 +40,11 @@
   document.addEventListener("pointerdown", onInput, true);
   document.addEventListener("keydown", onInput, true);
 
+  window.SnackPack = window.SnackPack || {};
+  window.SnackPack.countFriends = function () { send("friends"); };
+
   // Every game that has a win calls SnackPack.celebrate, however it renders.
   var wonAt = 0;
-  window.SnackPack = window.SnackPack || {};
   var celebrate = window.SnackPack.celebrate;
   window.SnackPack.celebrate = function (opts) {
     var now = Date.now();
