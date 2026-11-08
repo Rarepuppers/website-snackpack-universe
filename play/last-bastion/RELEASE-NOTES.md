@@ -1,5 +1,12 @@
 # Last Bastion release notes
 
+## 4 November 2026 — Clear event results (prepared locally)
+
+Event results now show named before/after build changes, including weapon losses, relic copies,
+upgrades and transformation affinity. Long results can be paged while Continue stays reachable.
+Duplication Vat explains that relic effects do not stack and spare copies can be sacrificed.
+[Verification](playtest-evidence/2026-11-03-event-results/README.md). Not packaged or deployed.
+
 ## 3 November 2026 — Event exchange integrity (prepared locally)
 
 Unavailable event rewards can no longer consume resources. Transformation exchanges check path,

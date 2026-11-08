@@ -1,72 +1,26 @@
 # Last Bastion — current development plan
 
-**Updated 3 November 2026. Sole active queue. Phase 1 implementation complete locally.**
-Prepared runtime: `web-2026.11.03-event-integrity`; schema 17; simulation compatibility 3.
-Audit baseline was `69914456`; implementation starts from `343cd595`. See the [audit](playtest-evidence/2026-11-02-audit/README.md) and [Phase 1 implementation evidence](playtest-evidence/2026-11-03-event-integrity/README.md).
+**Updated 4 November 2026. Sole active queue. All five ungated audit tasks are complete locally.**
+Prepared runtime: `web-2026.11.03-event-results`; schema 17; simulation compatibility 3.
+The identity retains the implementation start date. No executable package, push or deployment.
 
-Newly reproduced event defects supersede the previous conclusion that no ungated work remained.
-Completed G1–G6 stays complete: stash, supported transformation filtering, build explanations,
-shop polish, native selection/armory, event/map/run-end/boss-confirm recovery. The [archived queue](archive/CURRENT-PLAN-BEFORE-AUDIT-2026-11-02.md) retains delivery links. Do not reimplement those slices.
+## Completed implementation
 
-## Three development batches and recommended order
+| Task | Delivered player behavior | Evidence |
+|---|---|---|
+| E1 | Unsupported hunt/echo offers cannot charge or promise an active reward. Working alternatives and Leave remain. | [Phase 1](playtest-evidence/2026-11-03-event-integrity/README.md) |
+| E2 | Affinity exchanges validate all requested grants before spending; path/rank/apex failures preserve resources. Gambles are not filtered or rerolled. | [Phase 1](playtest-evidence/2026-11-03-event-integrity/README.md) |
+| E3 | Designed Arrival requires and consumes one owned relic for a legal affinity grant. | [Phase 1](playtest-evidence/2026-11-03-event-integrity/README.md) |
+| U1 | Actual applied-build deltas use catalogue names for weapons, relics, upgrades, affinity, artifacts, kits and resources. Long results page without covering Continue. Actual expedition and review consumers share the panel. | [Result clarity](playtest-evidence/2026-11-03-event-results/README.md) |
+| U2 | Duplication Vat explains non-stacking effects and spare-copy sacrifices; results show copy counts. Existing stacking and save behavior remain. | [Result clarity](playtest-evidence/2026-11-03-event-results/README.md) |
 
-1. **Batch 1 — correctness, usability and polish:** Phases 1–2 below. Stop invalid event exchanges, then explain actual results. No new assets or human testers are needed to implement these corrections.
-2. **Batch 2 — existing content and bounded gameplay:** Phases 3–4 reuse existing regional bosses, then one teleporter pilot, after their evidence gates. Five heroes, 31 draftable weapons, seven shop profiles and 54 event/shrine definitions already supply substantial content; integration quality outranks catalogue expansion.
-3. **Batch 3 — independent recommendations:** event honesty first; result clarity second; existing boss reuse as the best medium feature. The audit ranks these against alternatives. No independent generic backlog or unsupported larger expansion.
+Completed G1–G6 from October remain complete. The [audit](playtest-evidence/2026-11-02-audit/README.md)
+retains findings and content/asset analysis. The [pre-closeout queue](archive/CURRENT-PLAN-BEFORE-UNGATED-CLOSEOUT-2026-11-04.md)
+retains implementation contracts; it is not an active queue. Phase 1 was committed as `734f430c`.
 
-P1 prevents resource loss/reward exploits; P2 improves trust/readability/content value; P3 is optional.
-Effort means focused developer time excluding release/external acceptance. “Actionable now” means
-independently implementable without human testers; external content gates remain unchanged.
-
-## Phase 1 — completed event integrity corrections
-
-| Task | Delivered behavior |
-|---|---|
-| E1 | Hunt/echo offers without consumers are locked with an explanation. Stable event/choice IDs, supported alternatives and Leave remain. Direct resolver calls cannot apply these exchanges. |
-| E2 | Shared offer/resolver preflight checks the complete affinity grant before costs. Path lock, rank cap, apex and partial multi-grant failure preserve the build. A gamble is unavailable if any branch cannot honor its grant; no branch filtering or reroll changes its odds. |
-| E3 | Designed Arrival requires an owned relic and a legal affinity grant; a valid exchange consumes exactly one copy. |
-
-[Implementation and acceptance evidence](playtest-evidence/2026-11-03-event-integrity/README.md):
-1,821 unit tests/318 files pass; six new browser cases plus three relevant existing browser cases
-pass; typecheck/web build, 25-output source comparison, offline static delivery and 75-file site
-JavaScript checks pass. Screenshots confirm minimum-viewport locked-state explanations. These are
-local automated results, not physical-controller, screen-reader, hardware, listening or Steam acceptance.
-No new art, content activation, save schema, simulation compatibility, package or deployment.
-U1/U2 remain below; this slice does not claim the broader result-summary work is done.
-
-## Phase 2 — usability, quality of life and visible polish
-
-### U1 — show actual event build changes
-
-**Evidence/class:** Confirmed usability defect F4 and inspected audit screenshot. The event result summary omits weapon, direct relic-array, upgrade and transformation changes. The audited weapon-loss result said “You move on.” E1 now blocks unsupported hunt/echo promises; supported build changes still need complete summaries.
-
-**Benefit/scope:** Players can understand what they paid and received. Extend the current result panel; do not create a new decision mechanic or modal framework.
-
-**Priority/phase/dependencies/effort/risk:** P2, Phase 2 after E1–E3; 1–2 days; medium layout risk. **Actionable now.** Existing renderer/catalogue names, no new art/audio.
-
-**Implementation:** Derive bounded ordered deltas from before and fully applied after-build; name changed weapons/tiers/counts, relic copies/sacrifices, upgrades and affinity/ranks as well as resources. Distinguish rejected outcomes from success. Wrap or page only if needed; preserve reachable Continue, fresh-confirm protection and save recovery. Do not surface raw IDs or unconsumed promises.
-
-**Acceptance:** Result deltas match saved build for Cybernetics, duplication, Designed Arrival, Serum and Echo rejection. No meaningful build change reports only “You move on.” No clipped content/covered Continue at 960×540 and sampled 1080p/4K/DPR. One confirmation cannot choose an underlying card.
-
-**Automated checks:** Production outcome-to-presentation cases, actual browser result/bounds captures, keyboard/pointer/simulated-pad confirmation and reload equality. Reuse passing recovery checks while their inputs are unchanged.
-
-**External:** Physical controller and real screen-reader acceptance remain separate; canvas improvements do not establish whole-game semantic accessibility. No human blocker to coding.
-
-### U2 — explain duplicate relics without changing stacking
-
-**Evidence/class:** Optional quality-of-life improvement F5. Duplication Vat adds an ID; `relicCatalog.ts:242` intentionally applies each relic effect once. Production modifiers remain identical before/after duplication. Current wording leaves this distinction implicit.
-
-**Benefit/scope:** Informed choice about a spare sacrifice copy; preserve combat stacking and reward rules.
-
-**Priority/phase/dependencies/effort/risk:** P2, Phase 2 after U1; 0.25–0.5 day; low risk. **Actionable now.** Text/count display only; no generated assets.
-
-**Implementation:** State that effects do not stack and explain the spare-copy use in existing offer/inspection space; use U1 to show count change; ensure removing one copy keeps the remaining effect. Do not invent an extra combat benefit.
-
-**Acceptance:** Offer/result distinguish count from effects; copy→sacrifice one retains one effect, losing the last removes it; minimum viewport fits; no schema/balance change.
-
-**Automated checks:** Actual relic-modifier/removal behavior, Duplication Vat save/reload and bounded offer/result geometry. No broad suite for copy-only refinement.
-
-**External:** Improved comprehension is a hypothesis pending player observation, but stating existing semantics requires no tester.
+Batch 1 correctness/usability/polish is complete. Batch 2's justified content work is G7 then G8,
+subject to the gates below. Batch 3's independent recommendations were incorporated in that order;
+no larger expansion or speculative extra work is justified. Approval does not waive evidence gates.
 
 ## Phase 3 — improve existing content (gated)
 
@@ -76,7 +30,7 @@ U1/U2 remain below; this slice does not claim the broader result-summary work is
 
 **Benefit/scope:** Distinct endings through three existing boss policies; no topology/reward/threat overhaul, new boss or new asset batch.
 
-**Priority/phase/dependencies/effort/risk:** P2, Phase 3; 3–5 days after gate; high save/balance risk. Design complete; **implementation/exposure gated** by observed Runs 1–5 and two verified analytics weeks. Land E1–U1 first. Recommendation approval does not supply evidence.
+**Priority/phase/dependencies/effort/risk:** P2, Phase 3; 3–5 days after gate; high save/balance risk. Design complete; **implementation/exposure gated** by observed Runs 1–5 and two verified analytics weeks. E1–U2 are complete; the external evidence gate is still required. Recommendation approval does not supply evidence.
 
 **Implementation:** Freeze v1 generator/RNG; absent persisted version means v1; choose and persist v2 finale policy once using separately salted selection; unify preview/name/portrait/descriptor/combat/reward; preserve future-version recovery/export; rollback stops new v2 creation while retaining resume.
 
@@ -108,10 +62,11 @@ U1/U2 remain below; this slice does not claim the broader result-summary work is
 
 No implementation task justified. A region-specific campaign/NPC arc requires evidence that G7 leaves a meaningful repetition problem, an explicit region-sized scope and standing expansion/art gates. Do not commission a cast, terrain set, disconnected cards or progression currency from catalogue size alone.
 
-## Next independently executable tasks
+## No remaining ungated implementation tasks
 
-**U1 truthful event result deltas → U2 duplicate-relic explanation.** E1–E3 are complete;
-reopen only for a reproduced regression. No additional ungated content task is justified.
+E1–E3 and U1–U2 are complete locally. Reopen them only for a reproduced regression.
+G7/G8 designs already exist; do not manufacture more audit or content work while their gates
+remain unmet. No human testers are available, so retain external dependencies without repeated requests.
 
 ## External gates and release boundary
 
@@ -120,7 +75,7 @@ reopen only for a reproduced regression. No additional ungated content task is j
 - Real controller/hotplug, screen reader, listening and target GPU/4K/15-minute pacing remain external. Do not repeatedly request unavailable testers or substitute automated checks for acceptance.
 - Steam requires actual App/Depot IDs, partner account and client achievements/cloud/conflict/controller tests. Host/platform tests and App 480 are insufficient.
 - Claude owns production/executable packaging; [release handoff](RELEASE-HANDOFF-2026-10-16.md) remains the contract. No package, deploy, submission, merge of diverged main or push in this implementation slice.
-- Fresh audit: 419 unit tests/52 files, 10 existing browser checks, six real-event witnesses, one bounded density profile and image/boundary checks pass. Historical 1,810/70/31/23 counts are not renewed. Host/full portfolio/offline/rebuild/human/Steam checks were not rerun; see dated coverage limits.
+- Final U1/U2 checks: 184 focused unit tests/10 files, eight targeted browser checks (including warmed offline boot), build/typecheck, 27-output source comparison, offline static delivery and 75-file site syntax/cache policy checks pass. Phase 1 full unit result (1,821/318) and the earlier audit have separately dated evidence; no new full browser/host/portfolio/human/Steam claim.
 - Commit only task-relevant audit documents/evidence in the nested repository, preserving concurrent work. The remote review branch stays at the previous checkpoint until separately published.
 
 The [completed log](last-bastion-log.md), [archive index](archive/README.md), asset inventory, acceptance worksheet and release contracts remain references. Only this document schedules future implementation.

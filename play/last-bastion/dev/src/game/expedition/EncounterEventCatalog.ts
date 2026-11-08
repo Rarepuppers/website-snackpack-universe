@@ -444,7 +444,7 @@ const SHRINES: readonly EncounterEventDefinition[] = Object.freeze([
       {
         id: "duplicate-relic",
         label: "Feed it a relic",
-        detail: "Add a second copy of your most recently owned relic",
+        detail: "Copy your latest relic. Effects do not stack; spare copies can be sacrificed.",
         requirement: { minRelics: 1 },
         outcomes: [{ type: "duplicateRelic" }],
         resultText: "The vat copies the relic down to the last scratch.",

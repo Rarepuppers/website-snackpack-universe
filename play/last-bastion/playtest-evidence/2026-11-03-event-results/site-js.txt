@@ -1,0 +1,7 @@
+
+> check:javascript
+> node scripts/check-javascript.mjs
+
+JavaScript policy check failed (1):
+
+sw.js Last Bastion release omits executable chunks: EventResultPanel.js, powerupCatalog.js

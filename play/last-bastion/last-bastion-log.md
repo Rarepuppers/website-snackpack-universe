@@ -1,5 +1,17 @@
 # Last Bastion completed-work log
 
+## 4 November 2026 — U1/U2 and ungated queue closeout
+
+Event summaries now compare actual applied builds with catalogue names and copy/rank counts.
+Shared bounded result paging preserves every wrapped line and keeps Continue reachable.
+Duplication Vat explains non-stacking effects and spare-copy sacrifices; mechanics are unchanged.
+The review scene uses the same resolver/panel and correct in-memory carry-forward. Fresh checks:
+184 focused unit tests, eight targeted browser checks including DPR 2 simulated input and warmed
+offline boot, build/typecheck, 27-output comparison and site cache policy. The latter caught and
+then verified correction of two missing cache entries. [Evidence](playtest-evidence/2026-11-03-event-results/README.md).
+All E1–E3/U1–U2 are complete; archived the superseded ungated queue. G7/G8 and external gates remain.
+Prepared `web-2026.11.03-event-results`; schema 17/simulation 3 unchanged. No package, push or deploy.
+
 ## 3 November 2026 — Phase 1 event integrity implementation
 
 Completed E1–E3 with shared offer/resolver preflight, player-facing lock reasons and a required

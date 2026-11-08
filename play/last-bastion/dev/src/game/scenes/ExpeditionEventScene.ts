@@ -1,3 +1,5 @@
+import { eventOutcomeSummary } from "../expedition/EventOutcomeSummary";
+import { renderEventResultPanel } from "../ui/EventResultPanel";
 import Phaser from "phaser";
 import { uiTextResolution } from "../rendering/DisplayScaling";
 import { LocalSaveStore } from "../save/LocalSaveStore";
@@ -62,6 +64,8 @@ export class ExpeditionEventScene extends Phaser.Scene {
   private root!: Phaser.GameObjects.Container;
   private choiceIndex = 0;
   private outcome: { choice: EventChoice; resolution: EventResolution } | null = null;
+  private outcomePage = 0;
+  private resultPanel: ReturnType<typeof renderEventResultPanel> | null = null;
   private demoMode = false;
   private pendingDestination: string | null = null;
   private saveRecovery!: SaveHandoffRecovery;
@@ -150,10 +154,12 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   private readonly handleKeyDown = (event: KeyboardEvent): void => {
     if (this.saveRecovery.active) return; // Native retry button owns keyboard activation.
-    if (["ArrowUp", "ArrowDown", "Enter", "Space", "Escape"].includes(event.code)) event.preventDefault();
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Space", "Escape"].includes(event.code)) event.preventDefault();
     if (event.repeat) return;
     if (this.outcome) {
-      if (event.code === "Enter" || event.code === "Space") this.commitOutcome();
+      if (event.code === "ArrowLeft") this.changeOutcomePage(-1);
+      else if (event.code === "ArrowRight") this.changeOutcomePage(1);
+      else if (event.code === "Enter" || event.code === "Space") this.commitOutcome();
       return;
     }
     if (event.code === "ArrowUp") this.moveChoice(-1);
@@ -163,7 +169,12 @@ export class ExpeditionEventScene extends Phaser.Scene {
 
   private handlePadDown(index: number): void {
     if (this.saveRecovery.active) { if (index === 0) this.saveRecovery.retry(); return; }
-    if (this.outcome) { if (index === 0) this.commitOutcome(); return; }
+    if (this.outcome) {
+      if (index === 14) this.changeOutcomePage(-1);
+      else if (index === 15) this.changeOutcomePage(1);
+      else if (index === 0) this.commitOutcome();
+      return;
+    }
     if (index === 12) this.moveChoice(-1);
     else if (index === 13) this.moveChoice(1);
     else if (index === 0) this.resolveSelected();
@@ -179,6 +190,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
     if (this.outcome) return;
     const choice = this.event.choices[this.choiceIndex];
     if (!choice || !isChoiceAvailable(this.build, this.maxHealth, choice)) return;
+    this.outcomePage = 0;
     this.outcome = { choice, resolution: resolveEventChoice(this.build, this.maxHealth, choice, this.roll) };
     this.render();
   }
@@ -271,25 +283,22 @@ export class ExpeditionEventScene extends Phaser.Scene {
     });
 
     this.root.add(this.text(48, HEIGHT - 30, "↑ ↓ CHOICE   ENTER SELECT", MUTED, "12px"));
-    this.publishState();
+    this.resultPanel = null;
     if (this.outcome) this.renderOutcome();
+    this.publishState();
   }
 
   private renderOutcome(): void {
     const { resolution } = this.outcome!;
-    this.root.add(this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 0x05090e, 0.82).setInteractive());
-    this.root.add(this.add.rectangle(190, 170, 580, 200, PANEL).setOrigin(0, 0).setStrokeStyle(3, 0x68e4e8));
-    this.root.add(this.text(WIDTH / 2, 190, "RESULT", TEAL, "18px", true));
-    this.root.add(this.text(214, 226, resolution.resultText || "You move on.", IVORY, "13px", false, false, 530));
-    const line = resolution.effects.ambush
-      ? "You are ambushed — into combat!"
-      : summarizeEffects(this.build, resolution);
-    this.root.add(this.text(214, 300, line, resolution.effects.ambush ? ORANGE : GREEN, "12px", false, false, 530));
-    const continueButton = this.add.rectangle(WIDTH / 2, 348, 320, 32, PANEL_SELECTED)
-      .setStrokeStyle(1, 0x68e4e8).setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.commitOutcome());
-    this.root.add(continueButton);
-    this.root.add(this.text(WIDTH / 2, 344, "ENTER / SPACE / A  CONTINUE", IVORY, "11px", true));
+    this.resultPanel = renderEventResultPanel(this, this.root, resolution.resultText,
+      eventOutcomeSummary(this.build, resolution), this.outcomePage,
+      () => this.commitOutcome(), delta => this.changeOutcomePage(delta));
+  }
+
+  private changeOutcomePage(delta: number): void {
+    if (!this.outcome || !this.resultPanel) return;
+    this.outcomePage = Math.max(0, Math.min(this.resultPanel.pageCount - 1, this.outcomePage + delta));
+    this.render();
   }
 
   private publishState(): void {
@@ -299,6 +308,7 @@ export class ExpeditionEventScene extends Phaser.Scene {
       choiceId: this.event.choices[this.choiceIndex]?.id,
       outcomeShown: this.outcome !== null,
       ambush: this.outcome?.resolution.effects.ambush ?? null,
+      result: this.resultPanel,
     };
   }
 
@@ -311,22 +321,4 @@ export class ExpeditionEventScene extends Phaser.Scene {
     else if (right) t.setOrigin(1, 0);
     return t;
   }
-}
-
-/** One-line before/after summary for the outcome panel (non-ambush). */
-function summarizeEffects(before: ExpeditionBuildSnapshot, resolution: EventResolution): string {
-  const after = resolution.build;
-  const effects = resolution.effects;
-  const parts: string[] = [];
-  if (after.health !== before.health) parts.push(`HP ${Math.round(before.health)}→${Math.round(after.health)}`);
-  if (after.shield !== before.shield) parts.push(`+${after.shield - before.shield} shield`);
-  if (after.scrap !== before.scrap) parts.push(`scrap ${before.scrap}→${after.scrap}`);
-  if (after.experience !== before.experience) parts.push(`+${after.experience - before.experience} XP`);
-  if (effects.maxHealthDelta !== 0) parts.push(`max HP ${effects.maxHealthDelta > 0 ? "+" : ""}${effects.maxHealthDelta}`);
-  if (effects.weaponSlotsGranted > 0) parts.push(`+${effects.weaponSlotsGranted} slot`);
-  for (const relic of effects.relicIds) parts.push(`relic: ${relic.replace("rel-", "")}`);
-  for (const artifact of effects.artifactIds) parts.push(`artifact: ${artifact.replace("art-", "")}`);
-  if (effects.guaranteedEliteRelicNextNode) parts.push("next node: +elite +relic");
-  if (effects.duplicateUpgradeWithPenalty) parts.push("duplicate upgrade");
-  return parts.length > 0 ? parts.join("   ") : "You move on.";
 }

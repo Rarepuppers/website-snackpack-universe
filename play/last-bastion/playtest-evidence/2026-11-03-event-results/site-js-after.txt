@@ -1,0 +1,5 @@
+
+> check:javascript
+> node scripts/check-javascript.mjs
+
+JavaScript syntax check passed (75 files).

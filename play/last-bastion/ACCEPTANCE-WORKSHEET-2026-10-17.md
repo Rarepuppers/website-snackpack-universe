@@ -4,7 +4,8 @@ Use with CURRENT-PLAN and the five-run matrix. Human and physical-device results
 Mark or an assigned human tester owns observed play; Claude owns production packaging.
 This document requests no deployment, scheduled monitoring, Steam upload or cross-chat message.
 
-Current prepared local build is `web-2026.11.03-event-integrity`; this worksheet does not establish publication or packaging.
+Current prepared local build is `web-2026.11.03-event-results`; this worksheet does not establish publication or packaging.
+All five ungated audit tasks are [implemented locally](playtest-evidence/2026-11-03-event-results/README.md).
 The [2–3 November audit](playtest-evidence/2026-11-02-audit/README.md) adds event-transaction corrections
 to CURRENT-PLAN; [Phase 1 is now implemented locally](playtest-evidence/2026-11-03-event-integrity/README.md).
 Neither the audit nor automated implementation checks mark any human/device row below as passed.

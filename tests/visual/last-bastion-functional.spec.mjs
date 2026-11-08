@@ -83,6 +83,126 @@ test("event integrity legal relic sacrifice survives failed write and reload exa
   expect(saved.progress.nodesCleared).toBe(1);
 });
 
+test.describe("event result summaries", () => {
+  test.use({serviceWorkers:"block"});
+  test.beforeEach(async ({page}) => {
+    // Test-only access to live Phaser objects for text bounds, never a shipped shortcut.
+    await page.route("**/play/last-bastion/game-assets/game.js",async route=>{
+      const response=await route.fetch(), body=await response.text(), hook=/postBoot:([\w$]+)=>\{/g;
+      expect([...body.matchAll(hook)]).toHaveLength(1);
+      await route.fulfill({response,body:body.replace(hook,(match,arg)=>`${match}window.__qaGame=${arg};`)});
+    });
+  });
+
+  test("review scene keeps held confirmation and applied build results consistent", async ({page}) => {
+    await page.goto("/play/last-bastion/?screen=event-lab");
+    await page.waitForFunction(()=>window.__encounterEventLab);
+    const saved=await page.evaluate(()=>localStorage.getItem("last-bastion-save"));
+    await page.keyboard.down("Enter");
+    await page.waitForFunction(()=>window.__encounterEventLab.outcomeShown);
+    await page.keyboard.down("Enter");
+    expect(await page.evaluate(()=>window.__encounterEventLab.outcomeShown)).toBe(true);
+    const lines=await page.evaluate(()=>window.__encounterEventLab.result.visibleLines.join("\n"));
+    expect(lines).toContain("Maximum-health bonus: 0 → -4");
+    expect(lines).toContain("Extra weapon slots: 0 → 1");
+    await page.keyboard.up("Enter");
+    await page.keyboard.press("Enter");
+    expect(await page.evaluate(()=>window.__encounterEventLab.build.weaponSlotBonus)).toBe(1);
+    expect(await page.evaluate(()=>window.__encounterEventLab.build.maxHealthBonus)).toBe(-4);
+    expect(await page.evaluate(()=>localStorage.getItem("last-bastion-save"))).toBe(saved);
+  });
+
+  test.describe("high DPI controller", () => {
+    test.use({viewport:{width:1280,height:800},deviceScaleFactor:2});
+    test("simulated pad keeps result paging separate from confirmation at DPR 2",async ({page},testInfo)=>{
+      await page.addInitScript(()=>{
+        const pad={id:"Standard test controller",index:0,connected:true,mapping:"standard",timestamp:1,
+          axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,touched:false,value:0}))};
+        window.__testPad=pad;
+        Object.defineProperty(navigator,"getGamepads",{value:()=>{pad.timestamp=performance.now();return [pad];}});
+      });
+      await openIntegrityEvent(page,"duplicate");
+      await page.keyboard.press("Enter");
+      await page.waitForFunction(()=>window.__expeditionEvent?.result);
+      await page.evaluate(()=>{
+        const scene=window.__qaGame.scene.getScenes(true).find(s=>s.sys.settings.key==="expedition-event");
+        scene.outcome.resolution.resultText="Recovered transmission. ".repeat(150);
+        scene.render();
+      });
+      const press=async index=>{
+        await page.evaluate(index=>{window.__testPad.buttons[index]={pressed:true,touched:true,value:1};},index);
+        await page.waitForTimeout(120);
+        await page.evaluate(index=>{window.__testPad.buttons[index]={pressed:false,touched:false,value:0};},index);
+        await page.waitForTimeout(80);
+      };
+      await press(15);
+      expect(await page.evaluate(()=>window.__expeditionEvent.result.page)).toBe(1);
+      await press(1);
+      expect(await page.evaluate(()=>window.__expeditionEvent.outcomeShown)).toBe(true);
+      await page.screenshot({path:testInfo.outputPath("result-dpr2-pad.png")});
+      await press(0);
+      await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+      expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("last-bastion-save")).expedition.build.relicIds)).toHaveLength(2);
+    });
+  });
+
+  test("named Cybernetics result matches actual weapon and affinity save",async ({page})=>{
+    await openIntegrityEvent(page,"locked",{transformation:{committedPathId:null,paths:[]}});
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(()=>window.__expeditionEvent?.result);
+    const lines=await page.evaluate(()=>window.__expeditionEvent.result.visibleLines.join("\n"));
+    expect(lines).toContain("Bastion Service Rifle (tier 1): 1 → 0");
+    expect(lines).toContain("Cybernetic Ascension affinity: 0 → 1");
+    await page.keyboard.press("Enter");
+    await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+    await page.reload();
+    const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("last-bastion-save")));
+    expect(saved.expedition.build.weapons).toEqual([]);
+    expect(saved.expedition.build.transformation.paths[0].choiceIds).toEqual(["shield-lattice"]);
+  });
+
+  test("duplicate relic result stays readable across sizes and paged text never covers Continue",async ({page},testInfo)=>{
+    await openIntegrityEvent(page,"duplicate");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(()=>window.__expeditionEvent?.result);
+    for(const size of [{width:960,height:540},{width:1920,height:1080},{width:3840,height:2160}]) {
+      await page.setViewportSize(size);
+      await page.waitForTimeout(100);
+      const rendered=await page.evaluate(()=>{
+        const scene=window.__qaGame.scene.getScenes(true).find(s=>s.sys.settings.key==="expedition-event");
+        const text=window.__expeditionEvent.result.visibleLines.join("\n");
+        const bounds=scene.root.list.find(row=>row.type==="Text" && row.text===text).getBounds();
+        return {text,bottom:bounds.bottom,right:bounds.right};
+      });
+      expect(rendered.text).toContain("Blast Baffle copies: 1 → 2");
+      expect(rendered.text).toContain("Relic effects do not stack");
+      expect(rendered.bottom).toBeLessThan(420);
+      expect(rendered.right).toBeLessThanOrEqual(850);
+      await page.screenshot({path:testInfo.outputPath(`duplicate-${size.width}.png`)});
+    }
+    // Stress the real panel with a long narrative; actual reward and input consumers remain intact.
+    await page.evaluate(()=>{
+      const scene=window.__qaGame.scene.getScenes(true).find(s=>s.sys.settings.key==="expedition-event");
+      scene.outcome.resolution.resultText="A long recovered transmission. ".repeat(150);
+      scene.render();
+    });
+    expect(await page.evaluate(()=>window.__expeditionEvent.result.pageCount)).toBeGreaterThan(1);
+    await page.keyboard.press("ArrowRight");
+    expect(await page.evaluate(()=>window.__expeditionEvent.result.page)).toBe(1);
+    await page.keyboard.press("ArrowLeft");
+    expect(await page.evaluate(()=>window.__expeditionEvent.result.page)).toBe(0);
+    const bounds=await page.evaluate(()=>{
+      const scene=window.__qaGame.scene.getScenes(true).find(s=>s.sys.settings.key==="expedition-event");
+      return scene.root.list.find(row=>row.type==="Text" && row.text===window.__expeditionEvent.result.visibleLines.join("\n")).getBounds().bottom;
+    });
+    expect(bounds).toBeLessThan(420);
+    await page.keyboard.press("Enter");
+    await page.waitForURL(url=>url.searchParams.get("screen")==="map");
+    await page.reload();
+    expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("last-bastion-save")).expedition.build.relicIds)).toEqual(["rel-blast-baffle","rel-blast-baffle"]);
+  });
+});
+
 for (const device of ["pointer", "simulated-pad", "simulated-pad-blur"]) {
   test(`shop page transition does not sell on held ${device} confirmation`, async ({ page }) => {
     await page.setViewportSize({width:960,height:540});
@@ -257,7 +377,7 @@ test("event results require a fresh confirmation and block underlying choices", 
   await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(false);
   await page.keyboard.press("Enter");
   await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(true);
-  await clickGame(480, 344);
+  await clickGame(480, 465);
   await expect.poll(() => page.evaluate(() => window.__expeditionEvent.outcomeShown)).toBe(false);
 });
 

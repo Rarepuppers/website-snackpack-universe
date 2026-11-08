@@ -6,6 +6,7 @@ Unlinked relative paths quoted inside these older documents were written from th
 
 | File | Why archived |
 |---|---|
+| [Pre-ungated-closeout queue, 4 November](CURRENT-PLAN-BEFORE-UNGATED-CLOSEOUT-2026-11-04.md) | E1–E3 and U1–U2 are implemented and verified locally. Preserves detailed acceptance contracts; only gated G7/G8 and external acceptance remain in CURRENT-PLAN. |
 | [Pre-audit queue, 2 November](CURRENT-PLAN-BEFORE-AUDIT-2026-11-02.md) | Superseded after fresh production event witnesses established unconsumed rewards, invalid transformation spending and a missing relic cost. Completed G1–G6 and G7/G8 designs remain retained; only CURRENT-PLAN schedules the new corrections. |
 | [Pre-design-closeout queue, 29 October](CURRENT-PLAN-BEFORE-DESIGN-CLOSEOUT-2026-10-29.md) | G1–G5 delivered; G6 recovery and transaction slices verified; G7/G8 designs and bounded G9 audit now complete. Open coverage and evidence gates remain only in CURRENT-PLAN. |
 | [Pre-gameplay-review queue, 26 October](CURRENT-PLAN-BEFORE-GAMEPLAY-REVIEW-2026-10-26.md) | Superseded test-heavy queue; current plan prioritizes inventory continuity, truthful effects and player-facing quality. |

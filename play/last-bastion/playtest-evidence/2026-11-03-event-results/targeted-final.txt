@@ -1,0 +1,12 @@
+
+> last-bastion-web@0.0.1 test
+> vitest run src/game/expedition src/game/content/relicCatalog.test.ts
+
+
+ RUN  v4.1.10 C:/snackpack-universe/website-snackpack-universe/play/last-bastion/dev
+
+
+ Test Files  10 passed (10)
+      Tests  184 passed (184)
+   Start at  02:01:45
+   Duration  650ms (transform 838ms, setup 0ms, import 1.04s, tests 444ms, environment 1ms)

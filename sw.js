@@ -17,7 +17,7 @@ const CACHE = "snackpack-arcade-v54";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
-const LAST_BASTION_RELEASE = "2026-11-03-event-integrity";
+const LAST_BASTION_RELEASE = "2026-11-03-event-results";
 const LAST_BASTION_CACHE = `last-bastion-${LAST_BASTION_RELEASE}`;
 
 // Stable public filenames make a partial cache refresh unsafe: a new scene can
@@ -35,6 +35,7 @@ const LAST_BASTION_CORE = [
   "/play/last-bastion/game-assets/CombatSimulation.js",
   "/play/last-bastion/game-assets/EncounterEventCatalog.js",
   "/play/last-bastion/game-assets/EncounterEventScene.js",
+  "/play/last-bastion/game-assets/EventResultPanel.js",
   "/play/last-bastion/game-assets/ExpeditionEventScene.js",
   "/play/last-bastion/game-assets/SaveHandoffRecovery.js",
   "/play/last-bastion/game-assets/ExpeditionRun.js",
@@ -49,6 +50,7 @@ const LAST_BASTION_CORE = [
   "/play/last-bastion/game-assets/medic-select-portrait-v1-1024x1536.js",
   "/play/last-bastion/game-assets/medic.js",
   "/play/last-bastion/game-assets/phaser.js",
+  "/play/last-bastion/game-assets/powerupCatalog.js",
   "/play/last-bastion/game-assets/PhaserAssetLoader.js",
   "/play/last-bastion/game-assets/PhaserAssetQueue.js",
   "/play/last-bastion/game-assets/PrototypeScene.js",

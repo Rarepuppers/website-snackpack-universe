@@ -1,5 +1,13 @@
 # Last Bastion release handoff — 16 October 2026
 
+## 4 November 2026 — all ungated audit work complete locally
+
+Current prepared identity: `web-2026.11.03-event-results`, schema 17, simulation compatibility 3.
+U1/U2 add truthful paged event results and duplicate-relic explanations. E1–E3 remain complete.
+[Checks and coverage](playtest-evidence/2026-11-03-event-results/README.md). Web chunks and atomic
+cache list are refreshed, with warmed offline boot verified. No push/deployment or executable
+package. Claude owns packaging; existing human/hardware/Steam and content gates remain open.
+
 ## 3 November 2026 — event integrity prepared locally
 
 Current prepared runtime: `web-2026.11.03-event-integrity`, schema 17, simulation compatibility 3.

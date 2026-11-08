@@ -1,0 +1,16 @@
+
+[WebServer] (node:32304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+
+(node:31604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/5] tests\visual\last-bastion-functional.spec.mjs:58:1 › event integrity legal relic sacrifice survives failed write and reload exactly once
+[2/5] tests\visual\last-bastion-functional.spec.mjs:97:3 › event result summaries › named Cybernetics result matches actual weapon and affinity save
+[3/5] tests\visual\last-bastion-functional.spec.mjs:112:3 › event result summaries › duplicate relic result stays readable across sizes and paged text never covers Continue
+[4/5] tests\visual\last-bastion-functional.spec.mjs:306:1 › event results require a fresh confirmation and block underlying choices
+[5/5] tests\visual\last-bastion-functional.spec.mjs:1774:1 › event reward stays available after failed saving and retry commits exactly once
+  5 passed (6.7s)
