@@ -21,9 +21,9 @@ for(const theme of ['cream','dark','light'])for(const width of [320,390,768,1280
  });
 }
 test('guide counts and audience wording agree across visible copy and metadata',async({page})=>{
- await page.goto('/guides/free-printable-decodable-readers/');await expect(page.locator('h1')).toContainText('Twelve');
- await expect(page.locator('main .lead').first()).toContainText('54-book');
- expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('54 free illustrated books');
+ await page.goto('/guides/free-printable-decodable-readers/');await expect(page.locator('h1')).toContainText('Fourteen');
+ await expect(page.locator('main .lead').first()).toContainText('56-book');
+ expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('56 free illustrated books');
  for(const path of ['/guides/','/guides/phonics-sound-order-satpin/','/guides/decodable-vs-levelled-readers/']){
   await page.goto(path);expect(await page.content()).not.toMatch(/Eight free printable readers|eight free staged readers|eight free readers to try|See all eight readers/);
  }

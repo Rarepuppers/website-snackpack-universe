@@ -1,6 +1,8 @@
 # Web-exclusive books: Reading Trail steps 7 and 8
 
-Status: draft manuscripts, 6 November 2026. Not published. These continue the six Reading
+Status: published 9 November 2026 at /read/nutmegs-stormy-barn/ and
+/read/panda-cakes-puddle-party/. The page text now lives in `data/web-books.json`, which
+the importer and the publication check read; change it there, not here. Drafted 6 November 2026. These continue the six Reading
 Trail steps from Sentences & Spelling, which end at -ing, -ed and -er. Phonics-led books
 lead the /read/ shelf, so the next books carry on that path. Both are web-only for now.
 

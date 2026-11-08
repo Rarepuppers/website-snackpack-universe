@@ -2065,6 +2065,76 @@
       "pdf_sha256": "e0080604b5cc9561a0a7ca3ed4e3ca7b8aa12b3de7d9bb92b0a579e4a42820ed"
     },
     {
+      "slug": "nutmegs-stormy-barn",
+      "source_id": "web-reading-trail-nutmeg-stormy-barn",
+      "source_art": {
+        "../docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p1.jpg": "c763c4d23afc7229318266c29bdb9309886a3afeb1b02c09dd7b59943a17609d",
+        "../docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p2.jpg": "7444311a8cf6f1fd591943a69d6b3885b9785f01e4bff8caa80bca51e86024ff",
+        "../docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p3.jpg": "46f49e90492e4f9943643447b4c7e6558359c9f72886954956423f8bffcdc13c",
+        "../docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p4.jpg": "9d0e4ea788b3dd76dc5791a166007d7107f5b69ba87bc1024fdc3344e874b5c4",
+        "../docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p5.jpg": "bfd811d35b5d5a4798482470b7dfe52bb88d6f2d7fa0889e786cfda77e4a17d6"
+      },
+      "text": [
+        "Nutmeg has a farm with a red barn. Her corn is tall, and the first stars are out.",
+        "Dark clouds start to form. A storm is coming! Nutmeg must get her corn to the barn.",
+        "A small bird chirps on the fence. Her nest is torn, and she cannot fly far.",
+        "Nutmeg turns back. She lifts the bird and runs for the barn door. Thunder roars in the dark.",
+        "Morning comes. Some of the corn is torn, but the bird chirps on the porch. Nutmeg smiles. A farm is more than corn."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [
+        "Who did Nutmeg help?",
+        "A small bird",
+        "Which two letters make the sound in \"corn\"?",
+        "o and r",
+        "What can Nutmeg see on her farm?",
+        "Why must Nutmeg hurry?",
+        "What is wrong with the bird?",
+        "What does Nutmeg choose to do first?",
+        "What does Nutmeg mean?"
+      ],
+      "quizzes": [
+        {
+          "question": "Who did Nutmeg help?",
+          "answer": "A small bird."
+        },
+        {
+          "question": "Which two letters make the sound in \"corn\"?",
+          "answer": "o and r."
+        }
+      ],
+      "art": {
+        "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p1.jpg": "c763c4d23afc7229318266c29bdb9309886a3afeb1b02c09dd7b59943a17609d",
+        "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p2.jpg": "7444311a8cf6f1fd591943a69d6b3885b9785f01e4bff8caa80bca51e86024ff",
+        "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p3.jpg": "46f49e90492e4f9943643447b4c7e6558359c9f72886954956423f8bffcdc13c",
+        "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p4.jpg": "9d0e4ea788b3dd76dc5791a166007d7107f5b69ba87bc1024fdc3344e874b5c4",
+        "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p5.jpg": "bfd811d35b5d5a4798482470b7dfe52bb88d6f2d7fa0889e786cfda77e4a17d6"
+      },
+      "pdf": "read/nutmegs-stormy-barn/nutmegs-stormy-barn.pdf",
+      "pdf_sha256": "ff940c02c0b0e6050095872477d8a61885d9e2b56baf5223dd915012076f71c6"
+    },
+    {
       "slug": "octo-pops-coral-reef",
       "source_id": "octo-pop-coral-reef",
       "source_art": {
@@ -2480,6 +2550,76 @@
       },
       "pdf": "read/panda-cakes-market-basket/panda-cakes-market-basket.pdf",
       "pdf_sha256": "925ed8b4640ca0be4573d2a987a7a6192c5ec9b72f5d4ed8b0d72021daa04ae7"
+    },
+    {
+      "slug": "panda-cakes-puddle-party",
+      "source_id": "web-reading-trail-panda-cake-puddle-party",
+      "source_art": {
+        "../docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p1.jpg": "e09ea43c80a0a1242228f6b021252d0ef58ecfd50dda9b237346ae98fa64d30b",
+        "../docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p2.jpg": "31cfa81a82d0144b5d6522c0e8e861736ed7ba528cac5378d2bdac225dd91282",
+        "../docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p3.jpg": "f885b9376ee5d6dd0b08df21c344428711f7278e28258b992ef7c7628e392c8a",
+        "../docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p4.jpg": "a05b6e11ff175abe09a4d821e4f21586874a28418f0b277231d0690f76a4b1b4",
+        "../docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p5.jpg": "036696daaa95115dc4ee072b28f367a1b036cb6139070fe9435fdbeb855c7370"
+      },
+      "text": [
+        "It is a rainy day, and Ted-E-Bear is not happy. His sunny picnic will have to wait.",
+        "Panda-Cake has a little idea. She sets a table by the window with an apple cake.",
+        "Ted looks out. There is a puddle in the middle of the path, and a duckling is paddling in it.",
+        "\"That looks funny!\" says Ted. They run out and jump in the puddle. Splash! They giggle.",
+        "They come in muddy and happy, and share the apple cake. A rainy day can be a jolly day too."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [
+        "What was in the middle of the path?",
+        "A puddle",
+        "Which word ends like \"happy\": funny or table?",
+        "Funny",
+        "Why is Ted sad?",
+        "What does Panda-Cake do?",
+        "What does Ted see?",
+        "How does Ted feel now?",
+        "What changed Ted's day?"
+      ],
+      "quizzes": [
+        {
+          "question": "What was in the middle of the path?",
+          "answer": "A puddle."
+        },
+        {
+          "question": "Which word ends like \"happy\": funny or table?",
+          "answer": "Funny."
+        }
+      ],
+      "art": {
+        "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p1.jpg": "e09ea43c80a0a1242228f6b021252d0ef58ecfd50dda9b237346ae98fa64d30b",
+        "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p2.jpg": "31cfa81a82d0144b5d6522c0e8e861736ed7ba528cac5378d2bdac225dd91282",
+        "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p3.jpg": "f885b9376ee5d6dd0b08df21c344428711f7278e28258b992ef7c7628e392c8a",
+        "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p4.jpg": "a05b6e11ff175abe09a4d821e4f21586874a28418f0b277231d0690f76a4b1b4",
+        "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.jpg": "036696daaa95115dc4ee072b28f367a1b036cb6139070fe9435fdbeb855c7370"
+      },
+      "pdf": "read/panda-cakes-puddle-party/panda-cakes-puddle-party.pdf",
+      "pdf_sha256": "423fce1f0b652cb223c38bb3ddb463f1c248d76ad83960250c4fb5bb7cd385e7"
     },
     {
       "slug": "pip-sits",

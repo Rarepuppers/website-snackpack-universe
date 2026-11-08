@@ -40,12 +40,17 @@ if (hasApps) {
   ];
   const { ABC_BOOKS, getBookAlphabet } = load(abc, 'alphabet');
   candidates.push(...ABC_BOOKS.map(b => ({ ...b, pages: getBookAlphabet(b.id).map(p => ({ text: p.sentence })) })));
+  // Web-only books: data/web-books.json is their source, as an app export is for the rest.
+  const webBooks = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/web-books.json'), 'utf8')).books;
+  candidates.push(...webBooks);
+  for (const b of webBooks) spellingIds.add(b.id);
   const spellArt = load('snackpack-3-spelling-sentences', 'bookPageArtwork').BOOK_PAGE_ARTWORK;
   const countArt = load('snackpack-2-123s-counting', 'storyPageArtwork').getStoryPageArtwork;
   const abcArt = load(abc, 'bookPageArtwork').getBookPageArtwork;
   const miniArt = load(abc, 'miniStoryHeroArtwork').getMiniStoryHeroArtwork;
   const mathArt = load('snackpack-4-math-arithmetic', 'bookPageImages').getBookPageImage;
   sourceArtFor = book => {
+    if (book.id.startsWith('web-')) return Object.fromEntries(book.art.map(rel => { const p = path.join(APP_ROOT, '..', rel); assert(fs.existsSync(p), `${book.id}: reviewed art missing: ${rel}`); return [path.relative(APP_ROOT, p).replace(/\\/g, '/'), sha(p)]; }));
     const images = book.pages.map((p, i) => p.illustration || spellArt[book.id]?.[i] || countArt(book.id, i) || abcArt(book.id, i) || miniArt(book.id, i) || mathArt(p.illustrationId || p.id) ||
       (book.id === 'animal-architects' ? path.join(APP_ROOT, 'snackpack-zoo-world/assets/books', book.id, `${book.id}-p${i + 1}.jpg`) : null));
     assert(images.every(p => typeof p === 'string' && fs.existsSync(p)), `${book.id}: current app page art missing/unmapped`);

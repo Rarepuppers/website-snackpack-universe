@@ -1,0 +1,51 @@
+{
+  "about": "Books written for the website and not taken from an app. This file is their source of truth, in the same shape as the app exports, so check-read-publication.mjs compares the published pages with it as it compares app books with the apps. Manuscripts: docs/BOOK-BRIEF-READING-TRAIL-7-8-2026-11-06.md. Art: monorepo docs/art-incoming/2026-11-06/, reviewed 2026-11-09.",
+  "books": [
+    {
+      "id": "web-reading-trail-nutmeg-stormy-barn",
+      "step": 7,
+      "title": "Nutmeg's Stormy Barn",
+      "targetWords": ["barn", "dark", "star", "farm", "corn", "storm", "torn", "her", "bird", "chirp", "turn"],
+      "trickyWords": ["cloud", "thunder", "morning"],
+      "art": [
+        "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p1.jpg",
+        "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p2.jpg",
+        "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p3.jpg",
+        "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p4.jpg",
+        "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p5.jpg"
+      ],
+      "pages": [
+        { "text": "Nutmeg has a farm with a red barn. Her corn is tall, and the first stars are out.", "prompt": "What can Nutmeg see on her farm?" },
+        { "text": "Dark clouds start to form. A storm is coming! Nutmeg must get her corn to the barn.", "prompt": "Why must Nutmeg hurry?" },
+        { "text": "A small bird chirps on the fence. Her nest is torn, and she cannot fly far.", "prompt": "What is wrong with the bird?" },
+        { "text": "Nutmeg turns back. She lifts the bird and runs for the barn door. Thunder roars in the dark.", "prompt": "What does Nutmeg choose to do first?" },
+        { "text": "Morning comes. Some of the corn is torn, but the bird chirps on the porch. Nutmeg smiles. A farm is more than corn.", "prompt": "What does Nutmeg mean?" }
+      ],
+      "quiz": { "question": "Who did Nutmeg help?", "answer": "A small bird" },
+      "quiz2": { "question": "Which two letters make the sound in \"corn\"?", "answer": "o and r" }
+    },
+    {
+      "id": "web-reading-trail-panda-cake-puddle-party",
+      "step": 8,
+      "title": "Panda-Cake's Puddle Party",
+      "targetWords": ["rainy", "sunny", "happy", "funny", "muddy", "little", "table", "apple", "puddle", "middle", "giggle"],
+      "trickyWords": ["window", "picnic", "Ted-E-Bear"],
+      "art": [
+        "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p1.jpg",
+        "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p2.jpg",
+        "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p3.jpg",
+        "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p4.jpg",
+        "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p5.jpg"
+      ],
+      "pages": [
+        { "text": "It is a rainy day, and Ted-E-Bear is not happy. His sunny picnic will have to wait.", "prompt": "Why is Ted sad?" },
+        { "text": "Panda-Cake has a little idea. She sets a table by the window with an apple cake.", "prompt": "What does Panda-Cake do?" },
+        { "text": "Ted looks out. There is a puddle in the middle of the path, and a duckling is paddling in it.", "prompt": "What does Ted see?" },
+        { "text": "\"That looks funny!\" says Ted. They run out and jump in the puddle. Splash! They giggle.", "prompt": "How does Ted feel now?" },
+        { "text": "They come in muddy and happy, and share the apple cake. A rainy day can be a jolly day too.", "prompt": "What changed Ted's day?" }
+      ],
+      "quiz": { "question": "What was in the middle of the path?", "answer": "A puddle" },
+      "quiz2": { "question": "Which word ends like \"happy\": funny or table?", "answer": "Funny" }
+    }
+  ]
+}

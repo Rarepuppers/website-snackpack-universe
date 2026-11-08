@@ -165,6 +165,40 @@ const BOOKS = {
     ]
   },
 
+  // ── Web-only Reading Trail steps (2026-11-09) ──
+  // Not in any app: text, quizzes and tricky words come from data/web-books.json,
+  // and the art from the monorepo's docs/art-incoming/ (reviewed page by page).
+  "nutmeg-stormy-barn": {
+    source: "web", slug: "nutmegs-stormy-barn", skill: "R-controlled vowels",
+    lead: "A five-page storm story for practising the sounds letters make with r: ar, or, er, ir and ur.",
+    blurb: "A storm is coming and the corn must go in, but a small bird with a torn nest needs Nutmeg first.",
+    about: "R-controlled vowels ar, or, er, ir and ur",
+    pattern: /ar|or|er|ir|ur/,
+    stop: ["are", "door", "roars", "thunder", "morning"],
+    alts: [
+      "Nutmeg the squirrel, in her green jumper, stands by tall corn and a red barn as the first stars come out.",
+      "Nutmeg hurries along the path with a basket of corn as dark storm clouds roll over the barn.",
+      "Nutmeg stops by the fence, where a small brown bird chirps beside its torn nest.",
+      "Nutmeg runs to the open, lamplit barn door holding the small bird, her corn basket left by the fence in the rain.",
+      "On a bright morning Nutmeg smiles on the porch as the small bird sings on the rail, with bent corn stalks in the field behind."
+    ]
+  },
+  "panda-cake-puddle-party": {
+    source: "web", slug: "panda-cakes-puddle-party", skill: "Y and -le endings",
+    lead: "A five-page rainy-day story for practising y at the end of a word and -le endings, as in happy and puddle.",
+    blurb: "Rain spoils Ted's picnic, until a duckling in a puddle gives Panda-Cake a better idea.",
+    about: "Final y as in happy, and -le endings as in puddle",
+    pattern: /[^aeiou]y$|[^aeiou]le$/,
+    stop: ["by", "my"],
+    alts: [
+      "Ted-E-Bear, in his flower crown and bee apron, leans sadly by a rainy window with a picnic basket beside him.",
+      "Panda-Cake, in her pancake wrap and apron, sets an apple cake on a small round table by the rainy window.",
+      "Ted and Panda-Cake look out of the window at a yellow duckling paddling in a puddle on the path.",
+      "Panda-Cake in green boots and Ted in yellow boots jump into the puddle with a splash as the duckling watches.",
+      "Muddy and smiling, Ted and Panda-Cake eat apple cake at the round table, their boots lined up by the door."
+    ]
+  },
+
   // ── Short reads (books.ts), chosen 2026-10-15 from all 60 free quick reads ──
   // Rejected and why: see READ-PLAN-2026-10.md (Phase B2). Five more passed
   // both reads and are held in reserve until the 2026-11-15 re-measure:
@@ -445,7 +479,7 @@ const SRC_SHORT = fs.readFileSync(path.join(APP, "constants/books.ts"), "utf8");
 // art is replaced: sw.js serves images cache-first, so a new picture at an old
 // URL would stay stale for every returning reader. Bump it when pictures change.
 const webPage = (art, ed, n) => `${art}-p${n}${ed.revisions?.[n] ? `-r${ed.revisions[n]}` : ed.rev ? `-r${ed.rev}` : ""}`;
-const artPrefix = (id, ed) => (ed.source === "short" ? id : `reading-trail-${id}`);
+const artPrefix = (id, ed) => (ed.source === "short" || ed.source === "web" ? id : `reading-trail-${id}`);
 
 // Reads a single- or double-quoted JS string literal starting at s[i].
 function readString(s, i) {
@@ -498,8 +532,23 @@ function parseShort(id) {
   };
 }
 
+// Web-only books (data/web-books.json): already in the app-export shape.
+const MONOREPO = path.resolve(ROOT, "..");
+const WEB_BOOKS = JSON.parse(fs.readFileSync(path.join(ROOT, "data/web-books.json"), "utf8")).books;
+function parseWeb(id) {
+  const b = WEB_BOOKS.find((x) => x.id === `web-reading-trail-${id}`);
+  if (!b) throw new Error(`web-reading-trail-${id} not found in data/web-books.json`);
+  return { step: b.step, title: b.title, subtitle: "", targetWords: b.targetWords, trickyWords: b.trickyWords, pages: b.pages, quiz: b.quiz, quiz2: b.quiz2 || null, art: b.art };
+}
+// Where a book's page N art comes from.
+function sourceArt(id, ed, book, n) {
+  if (ed.source === "web") return path.join(MONOREPO, book.art[n - 1]);
+  return path.join(APP, "assets/book-page-art", `${artPrefix(id, ed)}-p${n}.jpg`);
+}
+
 function parseBook(id, ed) {
   if (ed && ed.source === "short") return parseShort(id);
+  if (ed && ed.source === "web") return parseWeb(id);
   const start = SRC.indexOf(`id: 'reading-trail-${id}'`);
   if (start === -1) throw new Error(`reading-trail-${id} not found in reading-trail-drafts.ts`);
   const next = SRC.indexOf("id: 'reading-trail-", start + 10);
@@ -554,6 +603,13 @@ function render(id, book, ed) {
   const { slug } = ed;
   const art = artPrefix(id, ed);
   const short = ed.source === "short";
+  const web = ed.source === "web";
+  const tricky = web && book.trickyWords?.length ? `<p class="read-preparation">Tricky words to say together first: ${book.trickyWords.map((w) => `<strong>${esc(w)}</strong>`).join(", ")}.</p>` : "";
+  const appLine = short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games."
+    : web ? `Reading Trail step ${book.step} is a free web book. Steps 1 to 6 are in SnackPack Sentences &amp; Spelling, with longer stories, word packs and eight literacy games.`
+    : "SnackPack Sentences &amp; Spelling has the full Reading Trail, longer stories, word packs and eight literacy games.";
+  const footNote = web ? `Reading Trail step ${book.step}, written for the SnackPack Universe website.` : "Story from SnackPack Sentences &amp; Spelling.";
+  const privacy = web ? "../../privacy/" : "../../privacy/snackpack-3-spelling-sentences/";
   const url = `${SITE}/read/${slug}/`;
   const title = curly(book.title);
   const n = book.pages.length;
@@ -586,16 +642,16 @@ function render(id, book, ed) {
 ${SHARED}</head>
 <body class="story-reader-page">
 ${HEADER}<main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p>${short ? "" : `<p class="read-preparation">Read together: practise the focus sounds with an adult. This story uses wider vocabulary and is not a controlled independent decodable stage.</p>`}<div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p>${short ? "" : `<p class="read-preparation">Read together: practise the focus sounds with an adult. This story uses wider vocabulary and is not a controlled independent decodable stage.</p>${tricky}`}<div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
 
 <section class="story-pages" aria-label="Story pages">
 ${cards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details>${book.quiz2 ? `<h3 class="story-second-question">${esc(curly(book.quiz2.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz2.answer))}.${book.quiz2.why ? ` ${esc(curly(book.quiz2.why))}` : ""}</p></details>` : ""}<p>${short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games." : "SnackPack Sentences &amp; Spelling has the full Reading Trail, longer stories, word packs and eight literacy games."}</p><!-- read-next:generated -->
+<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details>${book.quiz2 ? `<h3 class="story-second-question">${esc(curly(book.quiz2.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz2.answer))}.${book.quiz2.why ? ` ${esc(curly(book.quiz2.why))}` : ""}</p></details>` : ""}<p>${appLine}</p><!-- read-next:generated -->
 <!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-primary" href="${PLAY}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-3-spelling-sentences/">Explore the app</a><a class="btn btn-secondary" href="./${slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
-<footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story from SnackPack Sentences &amp; Spelling.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-3-spelling-sentences/">Privacy</a></div></div></footer>
+<footer class="foot"><div class="shell foot-wrap"><p class="foot-note">${footNote}</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="${privacy}">Privacy</a></div></div></footer>
   <!-- Cloudflare Web Analytics -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94", "spa": false}'></script>
@@ -609,14 +665,14 @@ for (const id of ids) {
   const book = parseBook(id, ed);
   if (book.pages.length !== ed.alts.length) throw new Error(`${id}: ${book.pages.length} pages but ${ed.alts.length} alt texts`);
   const art = artPrefix(id, ed);
-  const missing = book.pages.map((_, i) => path.join(APP, "assets/book-page-art", `${art}-p${i + 1}.jpg`)).filter((f) => !fs.existsSync(f));
+  const missing = book.pages.map((_, i) => sourceArt(id, ed, book, i + 1)).filter((f) => !fs.existsSync(f));
   if (missing.length) throw new Error(`${id}: missing art ${missing.join(", ")}`);
   const dir = path.join(ROOT, "read", ed.slug);
   console.log(`${WRITE ? "write" : "dry  "} read/${ed.slug}/  ${ed.source === "short" ? "short read" : `step ${book.step}`}, ${book.pages.length} pages, "${book.title}"`);
   if (!WRITE) continue;
   fs.mkdirSync(path.join(dir, "pages"), { recursive: true });
   for (let i = 1; i <= book.pages.length; i++) {
-    fs.copyFileSync(path.join(APP, "assets/book-page-art", `${art}-p${i}.jpg`), path.join(dir, "pages", `${webPage(art, ed, i)}.jpg`));
+    fs.copyFileSync(sourceArt(id, ed, book, i), path.join(dir, "pages", `${webPage(art, ed, i)}.jpg`));
   }
   fs.writeFileSync(path.join(dir, "index.html"), render(id, book, ed));
 }
