@@ -1,7 +1,9 @@
 # Web-exclusive book brief: Polly Roger and the Red Wings of Copán
 
-Status: draft manuscript and art brief, 6 November 2026. Not published. The book needs
-final art and a read-through by someone from Honduras before it goes on the shelf.
+Status: published 9 November 2026 at /read/polly-roger-and-the-red-wings-of-copan/, on Mark's
+instruction and before the Honduran read-through, which is still wanted (see "Before
+publishing"). Page text now lives in `data/web-books.json`; change it there. The Spanish
+version below is NOT published.
 
 ## Why this book
 

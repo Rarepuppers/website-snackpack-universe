@@ -1,6 +1,7 @@
 # Web-exclusive book: Rosa's Copán Report
 
-Status: draft manuscript, 6 November 2026. Not published. This is the older companion to
+Status: published 9 November 2026 at /read/rosas-copan-report/, before the Honduran
+read-through, which is still wanted. Page text now lives in `data/web-books.json`. This is the older companion to
 *Polly Roger and the Red Wings of Copán*. Rosa, an exchange student from Honduras, gives her
 class a report on her home. It is written for readers aged about 9 to 12, including older
 pupils learning English who need a grown-up topic in plainer language.

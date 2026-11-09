@@ -2743,6 +2743,84 @@
       "pdf_sha256": "672af6151f506e22d18828e25fbc56a903ef51ad9732b7adceb008892440289a"
     },
     {
+      "slug": "polly-roger-and-the-red-wings-of-copan",
+      "source_id": "web-polly-roger-copan",
+      "source_art": {
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p1.jpg": "0ed8c463e115b3be8479553983385979504ecacfb1b9532a4fe8b13078a4b61a",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p2.jpg": "482851ba3c23abc8fb48a365ef0a087b460e71bb4d4bcc62672b2b4a4cbf3efe",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p3-r2.jpg": "d0c6a4565fac30c2edfb9e57e9f2633aee2737108dc84cf5b7ea3f02ddc4bf6e",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p4.jpg": "3c586f333f06bd45fa6fc70fd719498c268f3088c4729413a78ddecc4355cdc3",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p5.jpg": "9cd577044e4571575e42aa508a892b9cc31fd0e56dfbc03e925f48fe6fa25467",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p6.jpg": "7bc5e9bf129fc457ff0a6c2a869077fb506a1ce31ef8f52d9de24d986af0934b"
+      },
+      "text": [
+        "Rosa is an exchange student at Wise Owl's school. She is from Honduras. Today, she is taking her friend Polly Roger home.",
+        "They fly over green hills. \"In Honduras, we call a red macaw a guara roja,\" says Rosa. \"I am one, and so are you!\"",
+        "Rosa leads Polly to Copán. Long ago, the Maya people built this city from stone. Polly stops. \"Look! A stone bird is peeking at me!\"",
+        "\"Maya carvers made macaws in stone,\" Rosa says. \"But real macaws nearly vanished from this valley. Then people started helping.\"",
+        "Rosa shows Polly a neat nest box high in a tree. Two chicks are peeping inside. \"We are coming back,\" Rosa says.",
+        "At sunset, they eat a warm baleada together. Red wings are flying over the old stones. Polly smiles. \"This is the best treasure.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [
+        "What is a red macaw called in Honduras?",
+        "A guara roja",
+        "Why do people put nest boxes in the trees?",
+        "To help the macaws come back to the valley",
+        "Where is Rosa from?",
+        "What do people in Honduras call a red macaw?",
+        "Who built the old city?",
+        "What nearly vanished from the valley?",
+        "How did people help the macaws?",
+        "What does Polly call the best treasure?"
+      ],
+      "quizzes": [
+        {
+          "question": "What is a red macaw called in Honduras?",
+          "answer": "A guara roja."
+        },
+        {
+          "question": "Why do people put nest boxes in the trees?",
+          "answer": "To help the macaws come back to the valley."
+        }
+      ],
+      "art": {
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p1.jpg": "0ed8c463e115b3be8479553983385979504ecacfb1b9532a4fe8b13078a4b61a",
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p2.jpg": "482851ba3c23abc8fb48a365ef0a087b460e71bb4d4bcc62672b2b4a4cbf3efe",
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p3.jpg": "d0c6a4565fac30c2edfb9e57e9f2633aee2737108dc84cf5b7ea3f02ddc4bf6e",
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p4.jpg": "3c586f333f06bd45fa6fc70fd719498c268f3088c4729413a78ddecc4355cdc3",
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.jpg": "9cd577044e4571575e42aa508a892b9cc31fd0e56dfbc03e925f48fe6fa25467",
+        "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.jpg": "7bc5e9bf129fc457ff0a6c2a869077fb506a1ce31ef8f52d9de24d986af0934b"
+      },
+      "pdf": "read/polly-roger-and-the-red-wings-of-copan/polly-roger-and-the-red-wings-of-copan.pdf",
+      "pdf_sha256": "5248525960421e79dae505a52298a28c455f001bee9a68431f20507aacf7b56b"
+    },
+    {
       "slug": "polly-rogers-pirate-cove",
       "source_id": "polly-roger-pirate-cove",
       "source_art": {
@@ -3018,6 +3096,90 @@
       },
       "pdf": "read/quill-berrys-ending-clues/quill-berrys-ending-clues.pdf",
       "pdf_sha256": "a1c0259148957473bfdf9c3e9b2f390a80315a9a03225137f0f07e2c9d47a21d"
+    },
+    {
+      "slug": "rosas-copan-report",
+      "source_id": "web-rosa-copan-report",
+      "source_art": {
+        "../docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p1.jpg": "a9e9b36ad81fec430502679ff808509365156d327e5403c7c50e60ff80f20e84",
+        "../docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p2-r2.jpg": "9254cab7f4d1037ecb600c2879ccf11d46c7c70002bf7c305ea3a9a66f3b3ab7",
+        "../docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p3-r2.jpg": "7ea75c62f138c4d796d0e198d7fbba677cea70595e2b480eb7d3125915f7ffee",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p3-r2.jpg": "d0c6a4565fac30c2edfb9e57e9f2633aee2737108dc84cf5b7ea3f02ddc4bf6e",
+        "../docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p5.jpg": "23907297282e2c0a36e3c68e9bdead08f6b0429142fcb7d1335799b102d5bd5f",
+        "../docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p5.jpg": "9cd577044e4571575e42aa508a892b9cc31fd0e56dfbc03e925f48fe6fa25467"
+      },
+      "text": [
+        "My name is Rosa, and I am an exchange student from Honduras. My teacher asked me to tell the class about my home. I chose Copán, because its history and its birds belong together.",
+        "Copán is in western Honduras, close to the border with Guatemala. More than a thousand years ago, it was a great Maya city. In 1980, it became a UNESCO World Heritage Site, so people around the world now help to protect it.",
+        "The most famous place in Copán is the Hieroglyphic Stairway. Maya carvers covered its stone steps with more than a thousand glyphs. It is the longest Maya text that we know. Reading it is like opening a history book made of stone.",
+        "Macaws mattered to the Maya of Copán. Carvers shaped macaw heads for the ball court, and the name of the city's first ruler includes the word for macaw. These birds were part of the city's identity.",
+        "Scarlet macaws nest in holes high in tall trees. A female usually lays two to four eggs, and the chicks hatch blind and without feathers. Fruit and nuts are the main foods of these birds, and they can live for decades.",
+        "Scarlet macaws almost disappeared from the valley. Then people began to build nests, watch the chicks and teach visitors. Now macaws fly over Copán again. My report has one question for you: what is worth protecting where you live?"
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [
+        "What covers the steps of the Hieroglyphic Stairway?",
+        "More than a thousand carved glyphs",
+        "How did people help the macaws return?",
+        "They built nests, watched the chicks and taught visitors",
+        "Why are history and birds linked at Copán?",
+        "The Maya carved macaws and valued them, and macaws live in the valley today",
+        "Why did Rosa choose Copán?",
+        "Where is Copán?",
+        "What makes the stairway special?",
+        "How do we know macaws mattered?",
+        "What do scarlet macaws eat?",
+        "What is Rosa's question for the class?"
+      ],
+      "quizzes": [
+        {
+          "question": "What covers the steps of the Hieroglyphic Stairway?",
+          "answer": "More than a thousand carved glyphs."
+        },
+        {
+          "question": "How did people help the macaws return?",
+          "answer": "They built nests, watched the chicks and taught visitors."
+        },
+        {
+          "question": "Why are history and birds linked at Copán?",
+          "answer": "The Maya carved macaws and valued them, and macaws live in the valley today."
+        }
+      ],
+      "art": {
+        "read/rosas-copan-report/pages/rosa-copan-report-p1.jpg": "a9e9b36ad81fec430502679ff808509365156d327e5403c7c50e60ff80f20e84",
+        "read/rosas-copan-report/pages/rosa-copan-report-p2.jpg": "9254cab7f4d1037ecb600c2879ccf11d46c7c70002bf7c305ea3a9a66f3b3ab7",
+        "read/rosas-copan-report/pages/rosa-copan-report-p3.jpg": "7ea75c62f138c4d796d0e198d7fbba677cea70595e2b480eb7d3125915f7ffee",
+        "read/rosas-copan-report/pages/rosa-copan-report-p4.jpg": "d0c6a4565fac30c2edfb9e57e9f2633aee2737108dc84cf5b7ea3f02ddc4bf6e",
+        "read/rosas-copan-report/pages/rosa-copan-report-p5.jpg": "23907297282e2c0a36e3c68e9bdead08f6b0429142fcb7d1335799b102d5bd5f",
+        "read/rosas-copan-report/pages/rosa-copan-report-p6.jpg": "9cd577044e4571575e42aa508a892b9cc31fd0e56dfbc03e925f48fe6fa25467"
+      },
+      "pdf": "read/rosas-copan-report/rosas-copan-report.pdf",
+      "pdf_sha256": "a886c0dc76ef76bfe87a89985920a77e9b1ac9ca3cf5f332d67778e741694266"
     },
     {
       "slug": "shelly-pops-slow-and-steady",

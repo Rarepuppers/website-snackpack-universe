@@ -199,6 +199,48 @@ const BOOKS = {
     ]
   },
 
+  // ── Web-only books set in real places (2026-11-09): the Copán pair ──
+  // Written for a class in Honduras that began using /read/ in November 2026.
+  // Facts and sources: docs/BOOK-BRIEF-POLLY-ROGER-COPAN-2026-11-06.md and
+  // docs/BOOK-BRIEF-ROSAS-COPAN-REPORT-2026-11-06.md. Rosa's pages 4 and 6
+  // reuse Polly's pages 3 and 5, as the brief specifies.
+  "polly-roger-copan": {
+    source: "web", slug: "polly-roger-and-the-red-wings-of-copan", skill: "Honduras", eyebrow: "Story from Honduras",
+    lead: "A six-page story about Copán in Honduras, its stone macaws, and the people who helped real macaws come back.",
+    blurb: "Rosa takes Polly Roger home to Honduras, where stone macaws watch over Copán and real ones are flying again.",
+    about: "Copán, Honduras, and the return of the scarlet macaw",
+    pattern: /^.{2,}(ing|ed|er)$|ee|ea|ai|oa/,
+    stop: ["over", "baleada", "together", "stopped", "roger", "treasure"],
+    appLine: "Polly Roger has more adventures in SnackPack Sentences &amp; Spelling, with short reads, the Reading Trail and eight literacy games.",
+    foot: "Written for the SnackPack Universe website. Facts checked November 2026.",
+    sources: [["Smithsonian Magazine", "https://www.smithsonianmag.com/science-nature/scarlet-macaw-recovery-national-bird-honduras-180974740/"], ["Maya Ruins: the Copán ball court", "https://mayaruins.com/copan/a1_1079.html"]],
+    alts: [
+      "Rosa, a young scarlet macaw in a white shirt, blue skirt and backpack, sets off through a school gate with Polly Roger in her purple coat and feathered hat.",
+      "Polly Roger and Rosa fly side by side over green hills and a winding river valley.",
+      "Rosa and Polly stand on the grass of the ancient Copán ball court as Polly peers up at a weathered stone macaw head.",
+      "Polly and Rosa stand beside low grey stone ruins under tall trees as three wild scarlet macaws fly through the evening sky.",
+      "From a branch high in a tree, Polly and Rosa watch two macaw chicks peep out of a wooden nest box.",
+      "At sunset Polly and Rosa eat baleadas, soft folded tortillas filled with beans, cheese and cream, as wild macaws fly over the ruins."
+    ]
+  },
+  "rosa-copan-report": {
+    source: "web", slug: "rosas-copan-report", skill: "Maya history", eyebrow: "Older readers · ages 9 to 12", level: "Ages 9 to 12",
+    lead: "A six-page class report on Copán, Honduras: a great Maya city, its stone stairway of glyphs, and the scarlet macaws that came back.",
+    blurb: "Rosa tells her class about Copán: Maya glyphs, a ball court of stone macaws, and the real macaws that came home.",
+    about: "Copán, the Maya, the Hieroglyphic Stairway and scarlet macaw conservation",
+    appLine: "For younger readers, the same trip is told as a story in Polly Roger and the Red Wings of Copán.",
+    foot: "Written for the SnackPack Universe website. Facts checked November 2026.",
+    sources: [["Britannica", "https://www.britannica.com/place/Copan"], ["Maya Ruins: the Copán ball court", "https://mayaruins.com/copan/a1_1079.html"], ["Animal Diversity Web", "https://animaldiversity.org/accounts/Ara_macao/"], ["Smithsonian Magazine", "https://www.smithsonianmag.com/science-nature/scarlet-macaw-recovery-national-bird-honduras-180974740/"]],
+    alts: [
+      "Rosa, a young scarlet macaw in a white shirt and blue skirt, holds up her open notebook at the front of a cosy classroom.",
+      "A wide green valley with a winding river and hills, with small grey Maya ruins among very tall trees.",
+      "Rosa stands small on the grass looking up at the steep, carved Hieroglyphic Stairway under its protective canopy, with seated stone figures, an altar and a carved stela.",
+      "Rosa and Polly Roger stand on the grass of the Copán ball court, looking up at a weathered stone macaw head.",
+      "A wild scarlet macaw holds a piece of fruit beside its nest hole high in a tall tree above the forest.",
+      "Two macaw chicks peep out of a wooden nest box high in a tree as Rosa and Polly watch from a branch."
+    ]
+  },
+
   // ── Short reads (books.ts), chosen 2026-10-15 from all 60 free quick reads ──
   // Rejected and why: see READ-PLAN-2026-10.md (Phase B2). Five more passed
   // both reads and are held in reserve until the 2026-11-15 re-measure:
@@ -536,9 +578,9 @@ function parseShort(id) {
 const MONOREPO = path.resolve(ROOT, "..");
 const WEB_BOOKS = JSON.parse(fs.readFileSync(path.join(ROOT, "data/web-books.json"), "utf8")).books;
 function parseWeb(id) {
-  const b = WEB_BOOKS.find((x) => x.id === `web-reading-trail-${id}`);
-  if (!b) throw new Error(`web-reading-trail-${id} not found in data/web-books.json`);
-  return { step: b.step, title: b.title, subtitle: "", targetWords: b.targetWords, trickyWords: b.trickyWords, pages: b.pages, quiz: b.quiz, quiz2: b.quiz2 || null, art: b.art };
+  const b = WEB_BOOKS.find((x) => x.id === `web-reading-trail-${id}` || x.id === `web-${id}`);
+  if (!b) throw new Error(`web-reading-trail-${id} / web-${id} not found in data/web-books.json`);
+  return { step: b.step ?? null, title: b.title, subtitle: "", targetWords: b.targetWords || [], trickyWords: b.trickyWords || [], wordList: b.wordList || [], pages: b.pages, quiz: b.quiz, quiz2: b.quiz2 || null, quiz3: b.quiz3 || null, art: b.art };
 }
 // Where a book's page N art comes from.
 function sourceArt(id, ed, book, n) {
@@ -604,11 +646,16 @@ function render(id, book, ed) {
   const art = artPrefix(id, ed);
   const short = ed.source === "short";
   const web = ed.source === "web";
+  // A web book that is not a Reading Trail step (e.g. the Copán books): its
+  // eyebrow, closing line and footer come from its BOOKS entry.
+  const place = web && !book.step;
+  const wordLine = place && book.wordList.length ? `<p class="read-preparation">Words to talk about first: ${book.wordList.map((w) => `<strong>${esc(w)}</strong>`).join(", ")}.</p>` : "";
+  const sources = place && ed.sources?.length ? `<p class="read-sources">Facts checked against ${ed.sources.map(([label, href]) => `<a class="text-link" href="${href}" target="_blank" rel="noopener">${esc(label)}</a>`).join(", ")}.</p>` : "";
   const tricky = web && book.trickyWords?.length ? `<p class="read-preparation">Tricky words to say together first: ${book.trickyWords.map((w) => `<strong>${esc(w)}</strong>`).join(", ")}.</p>` : "";
-  const appLine = short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games."
+  const appLine = place ? ed.appLine : short ? "SnackPack Sentences &amp; Spelling has many more short reads like this one, plus the Reading Trail, word packs and literacy games."
     : web ? `Reading Trail step ${book.step} is a free web book. Steps 1 to 6 are in SnackPack Sentences &amp; Spelling, with longer stories, word packs and eight literacy games.`
     : "SnackPack Sentences &amp; Spelling has the full Reading Trail, longer stories, word packs and eight literacy games.";
-  const footNote = web ? `Reading Trail step ${book.step}, written for the SnackPack Universe website.` : "Story from SnackPack Sentences &amp; Spelling.";
+  const footNote = place ? ed.foot : web ? `Reading Trail step ${book.step}, written for the SnackPack Universe website.` : "Story from SnackPack Sentences &amp; Spelling.";
   const privacy = web ? "../../privacy/" : "../../privacy/snackpack-3-spelling-sentences/";
   const url = `${SITE}/read/${slug}/`;
   const title = curly(book.title);
@@ -624,7 +671,7 @@ function render(id, book, ed) {
   const ld = JSON.stringify({
     "@context": "https://schema.org", "@type": "Book", name: title,
     author: { "@type": "Organization", name: "SnackPack Studios" },
-    isAccessibleForFree: true, educationalLevel: "Beginning reader", learningResourceType: short ? "Illustrated short story" : "Illustrated story",
+    isAccessibleForFree: true, educationalLevel: ed.level || "Beginning reader", learningResourceType: short ? "Illustrated short story" : "Illustrated story",
     about: ed.about, image: `${url}pages/${webPage(art, ed, 1)}.jpg`, url
   });
   return `<!DOCTYPE html>
@@ -632,7 +679,7 @@ function render(id, book, ed) {
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title} | ${short ? "Free Illustrated Short Read" : `Free ${titleCase} Story`}</title>
-<meta name="description" content="Read ${esc(title)}, a free ${n}-page illustrated story for beginning readers. ${esc(ed.lead.replace(/^A [a-z-]+-page /, "").replace(/^./, (c) => c.toUpperCase()))} Printable PDF included.">
+<meta name="description" content="Read ${esc(title)}, a free ${n}-page illustrated story for ${ed.level ? `readers ${ed.level.toLowerCase()}` : "beginning readers"}. ${esc(ed.lead.replace(/^A [a-z-]+-page /, "").replace(/^./, (c) => c.toUpperCase()))} Printable PDF included.">
 <link rel="canonical" href="${url}">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(ed.blurb)}"><meta property="og:image" content="${url}pages/${webPage(art, ed, 1)}.jpg"><meta property="og:url" content="${url}"><meta property="og:type" content="book"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon-32.png"><link rel="preload" href="/assets/fonts/dmsans-ed656a5d.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/fraunces-36024e18.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="../../site.css">
@@ -642,13 +689,13 @@ function render(id, book, ed) {
 ${SHARED}</head>
 <body class="story-reader-page">
 ${HEADER}<main>
-<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p>${short ? "" : `<p class="read-preparation">Read together: practise the focus sounds with an adult. This story uses wider vocabulary and is not a controlled independent decodable stage.</p>${tricky}`}<div class="tag-row">${short ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">4 pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
+<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">${short ? "Short read" : place ? ed.eyebrow : `Reading Trail · Step ${book.step}`} · Free</span><h1>${h1}</h1><p class="lead">${esc(ed.lead)}</p>${short ? "" : place ? wordLine : `<p class="read-preparation">Read together: practise the focus sounds with an adult. This story uses wider vocabulary and is not a controlled independent decodable stage.</p>${tricky}`}<div class="tag-row">${short || place ? `<span class="tag">Read together</span><span class="tag">${ed.skill}</span><span class="tag">${n} pages</span>` : `<span class="tag">Beginning reader</span><span class="tag">${ed.skill}</span><span class="tag">Read together</span>`}</div><a class="btn btn-primary" href="#page-1">Begin the story</a></div><picture><source srcset="./pages/${webPage(art, ed, 1)}.webp" type="image/webp"><img src="./pages/${webPage(art, ed, 1)}.jpg" alt="" width="768" height="1152"></picture></div></section>
 
 <section class="story-pages" aria-label="Story pages">
 ${cards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details>${book.quiz2 ? `<h3 class="story-second-question">${esc(curly(book.quiz2.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz2.answer))}.${book.quiz2.why ? ` ${esc(curly(book.quiz2.why))}` : ""}</p></details>` : ""}<p>${appLine}</p><!-- read-next:generated -->
+<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(curly(book.quiz.question))}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz.answer))}.${book.quiz.why ? ` ${esc(curly(book.quiz.why))}` : ""}</p></details>${book.quiz2 ? `<h3 class="story-second-question">${esc(curly(book.quiz2.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz2.answer))}.${book.quiz2.why ? ` ${esc(curly(book.quiz2.why))}` : ""}</p></details>` : ""}${book.quiz3 ? `<h3 class="story-second-question">${esc(curly(book.quiz3.question))}</h3><details class="story-answer"><summary>Show the answer</summary><p>${esc(curly(book.quiz3.answer))}.${book.quiz3.why ? ` ${esc(curly(book.quiz3.why))}` : ""}</p></details>` : ""}${sources}<p>${appLine}</p><!-- read-next:generated -->
 <!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-primary" href="${PLAY}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-3-spelling-sentences/">Explore the app</a><a class="btn btn-secondary" href="./${slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">${footNote}</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="${privacy}">Privacy</a></div></div></footer>
@@ -668,7 +715,7 @@ for (const id of ids) {
   const missing = book.pages.map((_, i) => sourceArt(id, ed, book, i + 1)).filter((f) => !fs.existsSync(f));
   if (missing.length) throw new Error(`${id}: missing art ${missing.join(", ")}`);
   const dir = path.join(ROOT, "read", ed.slug);
-  console.log(`${WRITE ? "write" : "dry  "} read/${ed.slug}/  ${ed.source === "short" ? "short read" : `step ${book.step}`}, ${book.pages.length} pages, "${book.title}"`);
+  console.log(`${WRITE ? "write" : "dry  "} read/${ed.slug}/  ${ed.source === "short" ? "short read" : book.step ? `step ${book.step}` : "web book"}, ${book.pages.length} pages, "${book.title}"`);
   if (!WRITE) continue;
   fs.mkdirSync(path.join(dir, "pages"), { recursive: true });
   for (let i = 1; i <= book.pages.length; i++) {

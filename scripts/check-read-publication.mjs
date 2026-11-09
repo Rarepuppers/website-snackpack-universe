@@ -92,6 +92,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   const expected = [];
   if (book?.quiz) expected.push(...[book.quiz.question, book.quiz.answer, book.quiz.why].filter(Boolean));
   if (book?.quiz2) expected.push(...[book.quiz2.question, book.quiz2.answer, book.quiz2.why].filter(Boolean));
+  if (book?.quiz3) expected.push(...[book.quiz3.question, book.quiz3.answer, book.quiz3.why].filter(Boolean));
   book?.pages.forEach((p, i) => {
     const prompt = p.riddle?.prompt || p.prompt;
     if (prompt) expected.push(prompt);
@@ -104,7 +105,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
     }
   });
   for (const item of hasApps ? expected : previous.expected) assert(plain.includes(norm(item)), `${slug}: missing prompt/question/answer: ${item}`);
-  const quizzes = hasApps ? (spellingIds.has(book.id) ? [book.quiz,book.quiz2].filter(Boolean).map(q=>({question:norm(q.question),answer:norm(q.answer+'.'+(q.why?' '+q.why:''))})) : []) : previous.quizzes;
+  const quizzes = hasApps ? (spellingIds.has(book.id) ? [book.quiz,book.quiz2,book.quiz3].filter(Boolean).map(q=>({question:norm(q.question),answer:norm(q.answer+'.'+(q.why?' '+q.why:''))})) : []) : previous.quizzes;
   if (quizzes?.length) {
     const finish = html.split('class="shell story-finish-card"')[1]?.split('<!-- read-next:generated -->')[0] || '';
     const actual = [...finish.matchAll(/<h[23](?:\s[^>]*)?>([\s\S]*?)<\/h[23]>\s*<details class="story-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/g)].map(m=>({question:norm(m[1]),answer:norm(m[2])}));

@@ -1,12 +1,28 @@
 {
-  "about": "Books written for the website and not taken from an app. This file is their source of truth, in the same shape as the app exports, so check-read-publication.mjs compares the published pages with it as it compares app books with the apps. Manuscripts: docs/BOOK-BRIEF-READING-TRAIL-7-8-2026-11-06.md. Art: monorepo docs/art-incoming/2026-11-06/, reviewed 2026-11-09.",
+  "about": "Books written for the website and not taken from an app. This file is their source of truth, in the same shape as the app exports, so check-read-publication.mjs compares the published pages with it as it compares app books with the apps. Manuscripts: docs/BOOK-BRIEF-READING-TRAIL-7-8-2026-11-06.md, docs/BOOK-BRIEF-POLLY-ROGER-COPAN-2026-11-06.md and docs/BOOK-BRIEF-ROSAS-COPAN-REPORT-2026-11-06.md. Art: monorepo docs/art-incoming/2026-11-06/, reviewed 2026-11-09.",
   "books": [
     {
       "id": "web-reading-trail-nutmeg-stormy-barn",
       "step": 7,
       "title": "Nutmeg's Stormy Barn",
-      "targetWords": ["barn", "dark", "star", "farm", "corn", "storm", "torn", "her", "bird", "chirp", "turn"],
-      "trickyWords": ["cloud", "thunder", "morning"],
+      "targetWords": [
+        "barn",
+        "dark",
+        "star",
+        "farm",
+        "corn",
+        "storm",
+        "torn",
+        "her",
+        "bird",
+        "chirp",
+        "turn"
+      ],
+      "trickyWords": [
+        "cloud",
+        "thunder",
+        "morning"
+      ],
       "art": [
         "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p1.jpg",
         "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p2.jpg",
@@ -15,21 +31,58 @@
         "docs/art-incoming/2026-11-06/nutmeg-stormy-barn/nutmeg-stormy-barn-p5.jpg"
       ],
       "pages": [
-        { "text": "Nutmeg has a farm with a red barn. Her corn is tall, and the first stars are out.", "prompt": "What can Nutmeg see on her farm?" },
-        { "text": "Dark clouds start to form. A storm is coming! Nutmeg must get her corn to the barn.", "prompt": "Why must Nutmeg hurry?" },
-        { "text": "A small bird chirps on the fence. Her nest is torn, and she cannot fly far.", "prompt": "What is wrong with the bird?" },
-        { "text": "Nutmeg turns back. She lifts the bird and runs for the barn door. Thunder roars in the dark.", "prompt": "What does Nutmeg choose to do first?" },
-        { "text": "Morning comes. Some of the corn is torn, but the bird chirps on the porch. Nutmeg smiles. A farm is more than corn.", "prompt": "What does Nutmeg mean?" }
+        {
+          "text": "Nutmeg has a farm with a red barn. Her corn is tall, and the first stars are out.",
+          "prompt": "What can Nutmeg see on her farm?"
+        },
+        {
+          "text": "Dark clouds start to form. A storm is coming! Nutmeg must get her corn to the barn.",
+          "prompt": "Why must Nutmeg hurry?"
+        },
+        {
+          "text": "A small bird chirps on the fence. Her nest is torn, and she cannot fly far.",
+          "prompt": "What is wrong with the bird?"
+        },
+        {
+          "text": "Nutmeg turns back. She lifts the bird and runs for the barn door. Thunder roars in the dark.",
+          "prompt": "What does Nutmeg choose to do first?"
+        },
+        {
+          "text": "Morning comes. Some of the corn is torn, but the bird chirps on the porch. Nutmeg smiles. A farm is more than corn.",
+          "prompt": "What does Nutmeg mean?"
+        }
       ],
-      "quiz": { "question": "Who did Nutmeg help?", "answer": "A small bird" },
-      "quiz2": { "question": "Which two letters make the sound in \"corn\"?", "answer": "o and r" }
+      "quiz": {
+        "question": "Who did Nutmeg help?",
+        "answer": "A small bird"
+      },
+      "quiz2": {
+        "question": "Which two letters make the sound in \"corn\"?",
+        "answer": "o and r"
+      }
     },
     {
       "id": "web-reading-trail-panda-cake-puddle-party",
       "step": 8,
       "title": "Panda-Cake's Puddle Party",
-      "targetWords": ["rainy", "sunny", "happy", "funny", "muddy", "little", "table", "apple", "puddle", "middle", "giggle"],
-      "trickyWords": ["window", "picnic", "Ted-E-Bear"],
+      "targetWords": [
+        "rainy",
+        "sunny",
+        "happy",
+        "funny",
+        "muddy",
+        "little",
+        "table",
+        "apple",
+        "puddle",
+        "middle",
+        "giggle"
+      ],
+      "trickyWords": [
+        "window",
+        "picnic",
+        "Ted-E-Bear"
+      ],
       "art": [
         "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p1.jpg",
         "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p2.jpg",
@@ -38,14 +91,148 @@
         "docs/art-incoming/2026-11-06/panda-cake-puddle-party/panda-cake-puddle-party-p5.jpg"
       ],
       "pages": [
-        { "text": "It is a rainy day, and Ted-E-Bear is not happy. His sunny picnic will have to wait.", "prompt": "Why is Ted sad?" },
-        { "text": "Panda-Cake has a little idea. She sets a table by the window with an apple cake.", "prompt": "What does Panda-Cake do?" },
-        { "text": "Ted looks out. There is a puddle in the middle of the path, and a duckling is paddling in it.", "prompt": "What does Ted see?" },
-        { "text": "\"That looks funny!\" says Ted. They run out and jump in the puddle. Splash! They giggle.", "prompt": "How does Ted feel now?" },
-        { "text": "They come in muddy and happy, and share the apple cake. A rainy day can be a jolly day too.", "prompt": "What changed Ted's day?" }
+        {
+          "text": "It is a rainy day, and Ted-E-Bear is not happy. His sunny picnic will have to wait.",
+          "prompt": "Why is Ted sad?"
+        },
+        {
+          "text": "Panda-Cake has a little idea. She sets a table by the window with an apple cake.",
+          "prompt": "What does Panda-Cake do?"
+        },
+        {
+          "text": "Ted looks out. There is a puddle in the middle of the path, and a duckling is paddling in it.",
+          "prompt": "What does Ted see?"
+        },
+        {
+          "text": "\"That looks funny!\" says Ted. They run out and jump in the puddle. Splash! They giggle.",
+          "prompt": "How does Ted feel now?"
+        },
+        {
+          "text": "They come in muddy and happy, and share the apple cake. A rainy day can be a jolly day too.",
+          "prompt": "What changed Ted's day?"
+        }
       ],
-      "quiz": { "question": "What was in the middle of the path?", "answer": "A puddle" },
-      "quiz2": { "question": "Which word ends like \"happy\": funny or table?", "answer": "Funny" }
+      "quiz": {
+        "question": "What was in the middle of the path?",
+        "answer": "A puddle"
+      },
+      "quiz2": {
+        "question": "Which word ends like \"happy\": funny or table?",
+        "answer": "Funny"
+      }
+    },
+    {
+      "id": "web-polly-roger-copan",
+      "step": null,
+      "title": "Polly Roger and the Red Wings of Copán",
+      "wordList": [
+        "macaw",
+        "valley",
+        "carved",
+        "vanished",
+        "nest box",
+        "baleada"
+      ],
+      "art": [
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p1.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p2.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p3-r2.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p4.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p5.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p6.jpg"
+      ],
+      "pages": [
+        {
+          "text": "Rosa is an exchange student at Wise Owl's school. She is from Honduras. Today, she is taking her friend Polly Roger home.",
+          "prompt": "Where is Rosa from?"
+        },
+        {
+          "text": "They fly over green hills. \"In Honduras, we call a red macaw a guara roja,\" says Rosa. \"I am one, and so are you!\"",
+          "prompt": "What do people in Honduras call a red macaw?"
+        },
+        {
+          "text": "Rosa leads Polly to Copán. Long ago, the Maya people built this city from stone. Polly stops. \"Look! A stone bird is peeking at me!\"",
+          "prompt": "Who built the old city?"
+        },
+        {
+          "text": "\"Maya carvers made macaws in stone,\" Rosa says. \"But real macaws nearly vanished from this valley. Then people started helping.\"",
+          "prompt": "What nearly vanished from the valley?"
+        },
+        {
+          "text": "Rosa shows Polly a neat nest box high in a tree. Two chicks are peeping inside. \"We are coming back,\" Rosa says.",
+          "prompt": "How did people help the macaws?"
+        },
+        {
+          "text": "At sunset, they eat a warm baleada together. Red wings are flying over the old stones. Polly smiles. \"This is the best treasure.\"",
+          "prompt": "What does Polly call the best treasure?"
+        }
+      ],
+      "quiz": {
+        "question": "What is a red macaw called in Honduras?",
+        "answer": "A guara roja"
+      },
+      "quiz2": {
+        "question": "Why do people put nest boxes in the trees?",
+        "answer": "To help the macaws come back to the valley"
+      }
+    },
+    {
+      "id": "web-rosa-copan-report",
+      "step": null,
+      "title": "Rosa's Copán Report",
+      "wordList": [
+        "exchange student",
+        "border",
+        "glyph",
+        "identity",
+        "protect"
+      ],
+      "art": [
+        "docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p1.jpg",
+        "docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p2-r2.jpg",
+        "docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p3-r2.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p3-r2.jpg",
+        "docs/art-incoming/2026-11-06/rosa-copan-report/rosa-copan-report-p5.jpg",
+        "docs/art-incoming/2026-11-06/polly-roger-copan/polly-roger-copan-p5.jpg"
+      ],
+      "pages": [
+        {
+          "text": "My name is Rosa, and I am an exchange student from Honduras. My teacher asked me to tell the class about my home. I chose Copán, because its history and its birds belong together.",
+          "prompt": "Why did Rosa choose Copán?"
+        },
+        {
+          "text": "Copán is in western Honduras, close to the border with Guatemala. More than a thousand years ago, it was a great Maya city. In 1980, it became a UNESCO World Heritage Site, so people around the world now help to protect it.",
+          "prompt": "Where is Copán?"
+        },
+        {
+          "text": "The most famous place in Copán is the Hieroglyphic Stairway. Maya carvers covered its stone steps with more than a thousand glyphs. It is the longest Maya text that we know. Reading it is like opening a history book made of stone.",
+          "prompt": "What makes the stairway special?"
+        },
+        {
+          "text": "Macaws mattered to the Maya of Copán. Carvers shaped macaw heads for the ball court, and the name of the city's first ruler includes the word for macaw. These birds were part of the city's identity.",
+          "prompt": "How do we know macaws mattered?"
+        },
+        {
+          "text": "Scarlet macaws nest in holes high in tall trees. A female usually lays two to four eggs, and the chicks hatch blind and without feathers. Fruit and nuts are the main foods of these birds, and they can live for decades.",
+          "prompt": "What do scarlet macaws eat?"
+        },
+        {
+          "text": "Scarlet macaws almost disappeared from the valley. Then people began to build nests, watch the chicks and teach visitors. Now macaws fly over Copán again. My report has one question for you: what is worth protecting where you live?",
+          "prompt": "What is Rosa's question for the class?"
+        }
+      ],
+      "quiz": {
+        "question": "What covers the steps of the Hieroglyphic Stairway?",
+        "answer": "More than a thousand carved glyphs"
+      },
+      "quiz2": {
+        "question": "How did people help the macaws return?",
+        "answer": "They built nests, watched the chicks and taught visitors"
+      },
+      "quiz3": {
+        "question": "Why are history and birds linked at Copán?",
+        "answer": "The Maya carved macaws and valued them, and macaws live in the valley today"
+      }
     }
   ]
 }

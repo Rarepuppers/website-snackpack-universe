@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 56,
- "bytes": 54580222,
+ "books": 58,
+ "bytes": 57471514,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -145,7 +145,7 @@
     "/read/bug-in-a-cup/pages/bug-in-a-cup-page-8.webp",
     "/read/bug-in-a-cup/pages/cover.webp"
    ],
-   "html_sha256": "bd37fb5b93950e25aa195feca33afc04f12c9a025c101601cef144d72268ac93",
+   "html_sha256": "62ff8b700fa0a32ecb7df36b711b409f7b581720f527bc55b7fdf0353651bc22",
    "bytes": 1074262
   },
   {
@@ -163,7 +163,7 @@
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-7.webp",
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-8.webp"
    ],
-   "html_sha256": "1e1d52ddaa733c6eab6d7033384e76742ae9599b0e0245ecabac06f306167ca0",
+   "html_sha256": "231e9f01c20723eedcfc4666e47f59317f306d9d25d24bbbfba993a86eee60c3",
    "bytes": 892338
   },
   {
@@ -177,7 +177,7 @@
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p4.webp",
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.webp"
    ],
-   "html_sha256": "854b2e10911cb73a5b3a6d4d0013544f6ca451be257d499344cc52fdebda8dd4",
+   "html_sha256": "9070759c9285ecac9251669032b5de4fca35071d4cdc544115a2df56c5566382",
    "bytes": 538170
   },
   {
@@ -191,7 +191,7 @@
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p4.webp",
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.webp"
    ],
-   "html_sha256": "b76900f327571fff16491287145ae27d721487e6dcb5678caf2c7e8ea05c84ca",
+   "html_sha256": "fc4ee418d17bbb9b69f17179a4c52cc61d55f6ddcb22bce7d770d9722e85a24c",
    "bytes": 552658
   },
   {
@@ -205,7 +205,7 @@
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p4.webp",
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.webp"
    ],
-   "html_sha256": "d99ebfa939bb7812e1a47f57f18fc75a50ff18c23737c9a58b2f004ccaa246bb",
+   "html_sha256": "a85a1dcd8899efe4309f80006a6cd334be0cda2d5ad2f59cf86e82dd2440fb40",
    "bytes": 815990
   },
   {
@@ -219,7 +219,7 @@
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p4.webp",
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.webp"
    ],
-   "html_sha256": "50dbeb8c3cfbb853b333eb528f52e736b614f7ceb6efdb5b96fc14b1cbc4224f",
+   "html_sha256": "1902070f3ad0f713f3d588460ef4f8e05cceb5bb63f80beb1c7c11457a6451cd",
    "bytes": 613708
   },
   {
@@ -233,7 +233,7 @@
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p4.webp",
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.webp"
    ],
-   "html_sha256": "34cc50692c383ac7c97d8ab4602a1881bcf6246e49b0a82b8fd0416b6db77f8e",
+   "html_sha256": "c05be24807852da3c74c594398cef3da1ceefdd1a1c3c0a7196827e0b684a693",
    "bytes": 753430
   },
   {
@@ -247,7 +247,7 @@
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p4.webp",
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.webp"
    ],
-   "html_sha256": "f2ac41d2032fdd27002445e2176346323878a4be74c2ea31bd358ba28e3d1d2f",
+   "html_sha256": "d2a83931bdff47014a4afc7918a61e493141a9849613583d508d94395f728713",
    "bytes": 546088
   },
   {
@@ -261,7 +261,7 @@
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p4.webp",
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p5.webp"
    ],
-   "html_sha256": "0141db2551e903ce4b2470ebd9d2c970a7dae1338acab8df4ffb015fc13cf0b4",
+   "html_sha256": "ed5f3018e1811370ec3f500de108eba7c80a434279dbdfd5ae4450967c1c6f2b",
    "bytes": 976268
   },
   {
@@ -275,8 +275,38 @@
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p4.webp",
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.webp"
    ],
-   "html_sha256": "26d7d18d983444fb7156b18ec1af9af3523bca68bdc73b6ab0c7714834f8284a",
+   "html_sha256": "38622ae1c515197b8f2dee3c5e6d93198f45474de3c30f2bcc6aadd7e0ef6d90",
    "bytes": 1122460
+  },
+  {
+   "slug": "polly-roger-and-the-red-wings-of-copan",
+   "title": "Polly Roger and the Red Wings of Copán",
+   "urls": [
+    "/read/polly-roger-and-the-red-wings-of-copan/",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p1.webp",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p2.webp",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p3.webp",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p4.webp",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.webp",
+    "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.webp"
+   ],
+   "html_sha256": "3fc9ec1e0d4d74d39bba7b44f55ae347404f1f9542fdbc30308f83b48611125f",
+   "bytes": 1432460
+  },
+  {
+   "slug": "rosas-copan-report",
+   "title": "Rosa’s Copán Report",
+   "urls": [
+    "/read/rosas-copan-report/",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p1.webp",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p2.webp",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p3.webp",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p4.webp",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p5.webp",
+    "/read/rosas-copan-report/pages/rosa-copan-report-p6.webp"
+   ],
+   "html_sha256": "d5672f18c5b6a8dee2f64f3629454121cafae3389301c8eed4c1f1b035067a9c",
+   "bytes": 1458832
   },
   {
    "slug": "baby-bulldogs-at-the-playground",
@@ -288,7 +318,7 @@
     "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p3-r2.webp",
     "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p4-r2.webp"
    ],
-   "html_sha256": "9ab5a791915deff92663861ad356e2a4a81d275ca7fafa7134bdcad84173bed2",
+   "html_sha256": "86167b186bd8e962591e3a666dd683ebdcd34e7f873ec23007865aec3e0ecf28",
    "bytes": 704440
   },
   {
@@ -301,7 +331,7 @@
     "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p3-r2.webp",
     "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p4-r2.webp"
    ],
-   "html_sha256": "9ebe31672f06e22687b74b519a52a670e61d3801433a11cba7e1014f939ef7f2",
+   "html_sha256": "0a403d277d52c49375855502208e0b2b34c9f813fefe398967e365bf837d0794",
    "bytes": 519118
   },
   {
@@ -314,7 +344,7 @@
     "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p3.webp",
     "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p4.webp"
    ],
-   "html_sha256": "9ea7f7874fe71bbea97e52ab472f353e8e3118bae7a592996ae857f893f2a2f6",
+   "html_sha256": "364467d5292961d3d74620ecbce4eb7b3912eb2d54acc264a5b3675ee75f0a11",
    "bytes": 546078
   },
   {
@@ -327,7 +357,7 @@
     "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p3.webp",
     "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p4.webp"
    ],
-   "html_sha256": "73d196ca6eeea2e282a7f0332826643e57b0e8c69522dfcc2e7b4bc080943c8c",
+   "html_sha256": "78d6e5faecd6aea82f197c525336b62f72ec24af5052d77a2b47f1543305e810",
    "bytes": 759970
   },
   {
@@ -340,7 +370,7 @@
     "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p3.webp",
     "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p4.webp"
    ],
-   "html_sha256": "1d1d2bf97bb0770b388a93f48c43e45a5ae1d20890addbc5498124dc8fddb47f",
+   "html_sha256": "e2fe1e6d1257dfc833c53e73b95ef53888d4512fbcfb0f2d48c1e19f97dd8f2a",
    "bytes": 740304
   },
   {
@@ -353,7 +383,7 @@
     "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p3.webp",
     "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p4.webp"
    ],
-   "html_sha256": "796b1bd8c38f791d0dbacd2279d74b06efcd5f48d2ef7978c13866bfaf1267ad",
+   "html_sha256": "d75c050b7594791e524ff9b46a8df7fcaec1b0f6f6c79b05eae8f8e6e15b7701",
    "bytes": 512746
   },
   {
@@ -366,7 +396,7 @@
     "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p3.webp",
     "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p4.webp"
    ],
-   "html_sha256": "46a3a5f3db2db6ffaf9bc99fb8b75d97c05b8beeeba33f066b9483166b6ddfcf",
+   "html_sha256": "25a3d39b7f9db385b5d5f82c868c3fac7c4e658d55893e8a2db6359b436330c8",
    "bytes": 640332
   },
   {
@@ -379,7 +409,7 @@
     "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p3.webp",
     "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p4.webp"
    ],
-   "html_sha256": "2dbb70ccddad788136b60c0013d9cbac487d86b0f3aaef863a0d12029c48232b",
+   "html_sha256": "012a3c7c04c5960ff5f719805c46a5faa73ac61d1be2f622e49dc5e393af60e1",
    "bytes": 351670
   },
   {
@@ -392,7 +422,7 @@
     "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p3.webp",
     "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p4.webp"
    ],
-   "html_sha256": "04f69cc1f5612bba63a8716cf3839611271074cd39198bee43236dcbd06c21f3",
+   "html_sha256": "78aacbc0f05d2baf39c04d2a841257a6bddab79ff8ebd09cd92358b50e4a97a7",
    "bytes": 570774
   },
   {
@@ -405,7 +435,7 @@
     "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p3.webp",
     "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p4.webp"
    ],
-   "html_sha256": "b5eff98cd1840d7c601a5e73857730be0df70f1ebf0335e9a33936ac59f0e307",
+   "html_sha256": "a1ffa8d454654027a1187c3970fbfb520edf62a17a0cd3cd507d36ed532f02c0",
    "bytes": 486528
   },
   {
@@ -418,7 +448,7 @@
     "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p3.webp",
     "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p4.webp"
    ],
-   "html_sha256": "9ec0824b7097fc16192885717015a74f50d57474982a8e3e8094d5ef9257794c",
+   "html_sha256": "0fd87431f82a51f05247dc65b74202a41e0325a4b3d0917400b39018ffe90157",
    "bytes": 370700
   },
   {
@@ -431,7 +461,7 @@
     "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p3.webp",
     "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p4.webp"
    ],
-   "html_sha256": "3facf5542cfdca901945a0bbb4b3a6d319c641e566c04e32a43591835e95a965",
+   "html_sha256": "7a0013d645e3945c528dca8a033ddaacd8dca6d0001da5afd538f67fa0ff1b1a",
    "bytes": 836102
   },
   {
@@ -444,7 +474,7 @@
     "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p3-r2.webp",
     "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p4-r2.webp"
    ],
-   "html_sha256": "331d847a1a2d92660f1340484d26d6694b60bacccb285701c88b2c0d88191eea",
+   "html_sha256": "c4e1a35f1cfaaa97d3dbc940e1b5f78e59010d61596ba15b74305c9a40b5365c",
    "bytes": 448912
   },
   {
@@ -457,7 +487,7 @@
     "/read/wise-owls-library-day/pages/wise-owl-library-day-p3-r2.webp",
     "/read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.webp"
    ],
-   "html_sha256": "ef6db641d65e954dede649d1a19579144950ebb4ca3920b5016ec44a79ae6a33",
+   "html_sha256": "0775e031b57828f7074cb27f127b55e3404aec7ec7ba1d736943abbed2e80a4f",
    "bytes": 520758
   },
   {
@@ -470,7 +500,7 @@
     "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p3-r2.webp",
     "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p4-r2.webp"
    ],
-   "html_sha256": "f1dd0ebefbae5cf573334653e12a4d3a0147de81afa20ada8a25940a65c1fda0",
+   "html_sha256": "c0d5e2244d0bb26f11f35d865fb7ee2becc1b57948630d57109b97d10776d8dc",
    "bytes": 432206
   },
   {
@@ -619,7 +649,7 @@
     "/read/sub-zero-and-the-snowflake-post/pages/page-5.webp",
     "/read/sub-zero-and-the-snowflake-post/pages/page-6.webp"
    ],
-   "html_sha256": "403edeaa6742740cdc41eba9040c2edfe560504cda7aa70647b54d84eacb6fbf",
+   "html_sha256": "de1010a245b992c38158435341f2e4956329dac29073214f08b9c064cce52ce2",
    "bytes": 1007364
   },
   {
@@ -649,7 +679,7 @@
     "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-5.webp",
     "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-6.webp"
    ],
-   "html_sha256": "781c8d3d4802d040602edf3f8b03d240efb8bcfb5939f17b76d0e85273c87a11",
+   "html_sha256": "ded8dc60fc577b289d64ad97cd9d229e78a73c6b9b86057c058a916ec0c6eae1",
    "bytes": 1361124
   },
   {
@@ -769,7 +799,7 @@
     "/read/hop-tarts-stepping-stone-switch/pages/model-stepping-3-r1.png",
     "/read/hop-tarts-stepping-stone-switch/pages/model-stepping-4-r1.png"
    ],
-   "html_sha256": "fec42cfadbe8993499ecbf624d6547ab225ca35c8a83ccac9d8158207535a1a3",
+   "html_sha256": "66612aa6f0d6949838bd8798a65b99898f8e14db1f1a27acbe0c9bca77b400f6",
    "bytes": 689635
   },
   {
@@ -787,7 +817,7 @@
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-3-r1.png",
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-4-r1.png"
    ],
-   "html_sha256": "98f75a3fa8b55c1fcd7121bb8e8951de60fd32c9f2edbf3c1273ac06683f53a6",
+   "html_sha256": "78d88f424865e866045b5c6bb1200ad23dfff1cf4b66cf89844c007453c1cf3a",
    "bytes": 785216
   },
   {
@@ -801,7 +831,7 @@
     "/read/wise-owl-festival-of-factors/pages/page-3.webp",
     "/read/wise-owl-festival-of-factors/pages/page-4.webp"
    ],
-   "html_sha256": "a37eadfa6f9cd6183349b26133d54a64ee5739918544afb99c7b707a77d0e86a",
+   "html_sha256": "f1bfb957bf938217929819254b0162d49366dc4e581cee7bc92419f5c0a8b94e",
    "bytes": 676320
   },
   {
@@ -818,7 +848,7 @@
     "/read/vincent-van-mouse-and-the-mural/pages/page-6.webp",
     "/read/vincent-van-mouse-and-the-mural/pages/page-7.webp"
    ],
-   "html_sha256": "c71065c9683b9cf6c39cf9a013865fcc8ca885cbc24bd3f621f4c04c251832a9",
+   "html_sha256": "f3b2a1dfe0cc2e2be916758cfbce478dfb77afb1af2f3a1614c1e54122a6c385",
    "bytes": 2051926
   },
   {
@@ -848,7 +878,7 @@
     "/read/animal-architects/pages/animal-architects-p6.webp",
     "/read/animal-architects/pages/animal-architects-p7.webp"
    ],
-   "html_sha256": "bd06d99249e30c3bc3337d52ca48a4b56407da6db8203467e2f47fea9df380a2",
+   "html_sha256": "7b21708c166c86ea40442d5ad405509821485aa1b5cd8c69ea071b083dc5eb83",
    "bytes": 1033782
   },
   {
@@ -1009,6 +1039,20 @@
   "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p3.webp",
   "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p4.webp",
   "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p1.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p2.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p3.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p4.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.webp",
+  "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.webp",
+  "/read/rosas-copan-report/",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p1.webp",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p2.webp",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p3.webp",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p4.webp",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p5.webp",
+  "/read/rosas-copan-report/pages/rosa-copan-report-p6.webp",
   "/read/baby-bulldogs-at-the-playground/",
   "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p1-r2.webp",
   "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p2-r2.webp",
