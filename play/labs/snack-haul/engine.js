@@ -28,6 +28,7 @@
     cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12 },
     eggBreak: 2.6,
     ballast: 2.4,                  // low weight under the bed, which keeps flips earned
+    valleyBend: 0.3,               // how fast a valley floor may turn upward, in slope per metre
     strapReact: 0,
     strapHold: 0.3,                // share of a crate's weight pressed down, per Straps level
     flipSeconds: 1.6,
@@ -48,7 +49,8 @@
     cakeTilt: 0.6,                 // radians off upright before a cake is ruined
     meltFloor: 1 / 3,              // ice cream pay at 1.5 times the gold time
     longLen: 1200,
-    longClimb: 1.25,               // extra heat per kilometre of a Long Haul
+    longClimb: 1.6,                // extra heat per kilometre of a Long Haul
+    longSteep: 1.5,                // a Long Haul may grow this much steeper than the region's routes
     longCanGrow: 0.035
   };
 
@@ -56,7 +58,7 @@
   var REGIONS = [
     { id: "bakery", name: "Bakery Hills", blurb: "Gentle hills and good grip.", friction: 1.0, amp: 1.0, wave: 1.0, rough: 0.12, maxSlope: 0.5, pay: 1, kinds: ["eggs", "crate"], features: ["ramp"], ramp: [0.2, 0.34] },
     { id: "dunes", name: "Dairy Dunes", blurb: "Long dunes, loose sand and gusty wind.", friction: 0.72, amp: 1.5, wave: 1.45, rough: 0.08, maxSlope: 0.55, pay: 1.5, kinds: ["milk", "melon"], features: ["wind"] },
-    { id: "harbour", name: "Honey Harbour", blurb: "Bouncy plank bridges and shallow fords.", friction: 0.9, amp: 1.45, wave: 1.2, rough: 0.1, maxSlope: 0.52, pay: 2, kinds: ["jelly", "cake"], features: ["bridge", "ford"] },
+    { id: "harbour", name: "Honey Harbour", blurb: "Bouncy plank bridges and shallow fords.", friction: 0.9, amp: 1.6, wave: 1.2, rough: 0.14, maxSlope: 0.56, pay: 2, kinds: ["jelly", "cake"], features: ["bridge", "ford"] },
     { id: "frost", name: "Frosty Pass", blurb: "Steep ice. Brake early.", friction: 0.42, amp: 1.7, wave: 1.15, rough: 0.16, maxSlope: 0.6, pay: 2.6, kinds: ["icecream", "eggs"], features: ["slick"] },
     { id: "chilli", name: "Chilli Ridge", blurb: "Rough rock, sharp crests and big ramps.", friction: 0.85, amp: 1.75, wave: 0.9, rough: 0.22, maxSlope: 0.62, pay: 3.3, kinds: ["popcorn", "jelly"], features: ["ramp"], ramp: [0.5, 0.8] },
     { id: "market", name: "Midnight Market", blurb: "Night roads, speed bumps and wet cobbles.", friction: 0.95, amp: 1.8, wave: 1.0, rough: 0.14, maxSlope: 0.6, pay: 4, kinds: null, features: ["bump", "slick"] }
@@ -112,7 +114,7 @@
     { id: "van", name: "Bread Van", cost: 420, desc: "High sides keep crates in, but it rolls on steep ground.", bedHalf: 1.75, perRow: 4, wheelR: 0.5, rearX: -1.1, frontX: 1.2, torque: 1.15, top: -1.2, weight: 1.25, rail: 0.42, soft: 0, pay: 1, stats: { speed: 1, grip: 2, load: 4 } },
     { id: "buggy", name: "Dune Buggy", cost: 680, desc: "Fast and grippy on sand, but it flips on steep ground.", bedHalf: 1.6, perRow: 4, wheelR: 0.62, rearX: -1.05, frontX: 1.12, torque: 1.2, top: 2.6, weight: 1, rail: 0.28, soft: 0.5, hold: 0.45, pay: 1, stats: { speed: 4, grip: 4, load: 1 } },
     { id: "hauler", name: "Long Hauler", cost: 1500, desc: "Long and strong. Pays 20% more on every load.", bedHalf: 2.25, perRow: 5, wheelR: 0.56, rearX: -1.55, frontX: 1.65, torque: 1.35, top: -0.8, weight: 1.35, rail: 0.1, soft: 0, pay: 1.2, stats: { speed: 2, grip: 3, load: 3 } },
-    { id: "monster", name: "Big Muncher", cost: 2600, desc: "Huge soft wheels roll over anything. Drinks fuel.", bedHalf: 1.9, perRow: 4, wheelR: 0.85, rearX: -1.25, frontX: 1.4, torque: 1.9, top: 0.4, weight: 1.45, rail: 0.3, soft: 1.1, lift: 0.3, thirst: 1.35, hold: 0.2, pay: 1, stats: { speed: 3, grip: 4, load: 3 } }
+    { id: "monster", name: "Big Muncher", cost: 2600, desc: "Huge soft wheels roll over anything. Drinks fuel.", bedHalf: 1.9, perRow: 4, wheelR: 0.85, rearX: -1.25, frontX: 1.4, torque: 1.9, top: 0.4, weight: 1.45, rail: 0.3, soft: 1.1, lift: 0.3, thirst: 1.35, hold: 0.2, brake: 0.4, pay: 1, stats: { speed: 3, grip: 4, load: 3 } }
   ];
 
   function truckSpec(id) { return TRUCKS.filter(function (t) { return t.id === id; })[0] || TRUCKS[0]; }
@@ -190,7 +192,7 @@
     ];
     var total = START_FLAT + d.len + END_FLAT, features = planFeatures(d);
     var pts = [], last = 0;
-    function slopeAt(x) { return region.maxSlope * Math.min(1, 0.65 + heatAt(d, x) * 0.4); }
+    function slopeAt(x) { return region.maxSlope * Math.min(d.long ? BALANCE.longSteep : 1, 0.65 + heatAt(d, x) * 0.4); }
     for (var x = 0; x <= total; x += SAMPLE) {
       var edge = Math.min((x - START_FLAT) / 28, (START_FLAT + d.len - x) / 28);
       var env = Math.max(0, Math.min(1, edge));
@@ -235,6 +237,17 @@
         if (pts[i].x < START_FLAT) break;
         var limit = slopeAt(pts[i].x) * SAMPLE;
         pts[i].y = Math.max(pts[i + 1].y - limit, Math.min(pts[i + 1].y + limit, pts[i].y));
+      }
+    }
+    // Slope limits alone leave sharp V-shaped valley floors, where a steep descent
+    // meets a steep climb in one step and slams the truck. Fill each floor so the
+    // slope turns upward gradually. Crests are left sharp: they are the jumps.
+    var sag = BALANCE.valleyBend * SAMPLE * SAMPLE / 2;
+    for (var fill = 0; fill < 12; fill++) {
+      for (var v = 1; v < pts.length - 1; v++) {
+        if (pts[v].x < START_FLAT) continue;
+        var floor = (pts[v - 1].y + pts[v + 1].y) / 2 - sag;
+        if (pts[v].y < floor) pts[v].y = floor;
       }
     }
     // Ramps go on last, because they are meant to be steeper than the road allows.
@@ -351,6 +364,8 @@
       ground.createFixture({ shape: new planck.Circle({ x: rock.x, y: rock.y }, rock.r), friction: 0.9 });
     });
 
+    // A tall truck on big wheels somersaults if its brakes bite as hard as its engine pulls.
+    var brakeBite = spec.brake || 1;
     var rail = 0.2 + 0.14 * up.straps + spec.rail;
     var strapHold = BALANCE.strapHold * up.straps + (spec.hold || 0);
     var eggBreak = BALANCE.eggBreak * (1 + 0.16 * up.suspension + 0.16 * up.straps);
@@ -528,8 +543,8 @@
         // Brakes while rolling forward, then a gentle reverse.
         var back = vx < 0.6;
         var speed = back ? topSpeed * 0.35 : 0;
-        rearJoint.setMotorSpeed(speed); rearJoint.setMaxMotorTorque(back ? torque * 0.6 : torque * 2);
-        frontJoint.setMotorSpeed(speed); frontJoint.setMaxMotorTorque(back ? torque * 0.3 : torque * 2);
+        rearJoint.setMotorSpeed(speed); rearJoint.setMaxMotorTorque(back ? torque * 0.6 : torque * 2 * brakeBite);
+        frontJoint.setMotorSpeed(speed); frontJoint.setMaxMotorTorque(back ? torque * 0.3 : torque * 2 * brakeBite);
         if (back) g.fuel = Math.max(0, g.fuel - STEP * 0.5 * thirst);
       } else {
         rearJoint.setMotorSpeed(0); rearJoint.setMaxMotorTorque(0.4);

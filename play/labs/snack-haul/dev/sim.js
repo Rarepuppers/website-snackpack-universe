@@ -8,8 +8,9 @@ const SH = require("../engine.js");
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
 
 // target = cruising speed. A careful driver slows for crests and dips ahead.
-function drive(id, upgrades, target, maxSeconds, truck, delivery) {
+function drive(id, upgrades, target, maxSeconds, truck, delivery, watch) {
   const g = SH.createGame({ id, delivery, upgrades, truck });
+  const log = [];
   const t = g.terrain;
   let frames = 0;
   while (g.status === "driving" && frames < maxSeconds * 60) {
@@ -36,10 +37,13 @@ function drive(id, upgrades, target, maxSeconds, truck, delivery) {
     else if (vx < want) input.gas = true;
     else if (vx > want + 1.6) input.brake = true;
     g.step(input);
+    if (watch) for (const ev of g.events) if (ev.type === "lost" || ev.type === "broken" || ev.type === "ruined" || ev.type === "missed") log.push(ev.type + " " + ev.cargo + " @" + Math.round(pos.x) + " v" + vx.toFixed(1) + " " + (SH.featureAt(t, pos.x) ? SH.featureAt(t, pos.x).type : "") + (g.grounded() ? "" : " air"));
+    if (watch) g.events.length = 0;
   }
   if (g.status === "driving") { g.status = "failed"; g.reason = "timeout:" + Math.round(g.truck.getPosition().x) + "/" + Math.round(t.total); }
   const rep = SH.report(g);
   rep.rec = g.rec;
+  rep.log = log; rep.endX = Math.round(g.truck.getPosition().x);
   return rep;
 }
 
@@ -105,7 +109,8 @@ function trucks() {
 
 // Long Haul: how far each truck gets, and that a recorded run replays exactly.
 function long() {
-  const u = { engine: 2, suspension: 2, tyres: 2, straps: 2, tank: 2 };
+  const L = Number(process.argv[3] || 2);
+  const u = { engine: L, suspension: L, tyres: L, straps: L, tank: L };
   SH.REGIONS.forEach((region, r) => {
     const d = SH.longHaul(r, "sim");
     console.log(region.id.padEnd(9) + [4, 5.5, 7].map((v) => { const x = drive(null, u, v, 600, "pickup", d); return (x.metres + "m " + x.kept + "/" + x.total + " " + (x.reason || "")).padEnd(22); }).join(""));
@@ -123,10 +128,21 @@ function ghost() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// node dev/sim.js trace <route> [truck] [level]: where each load is lost.
+function trace() {
+  const id = process.argv[3], truck = process.argv[4] || "pickup", lvl = Number(process.argv[5] || 4);
+  const u = { engine: lvl, suspension: lvl, tyres: lvl, straps: lvl, tank: lvl };
+  for (const v of [3, 4, 5, 6.5, 8]) {
+    const r = drive(id, u, v, 200, truck, null, true);
+    console.log(("speed " + v).padEnd(10) + cell(r, 13) + " end " + r.endX + "  " + r.log.join(" | "));
+  }
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
 else if (mode === "trucks") trucks();
 else if (mode === "long") long();
 else if (mode === "ghost") ghost();
+else if (mode === "trace") trace();
 else table("Base truck, no upgrades", base, [4.5, 6, 8]);
