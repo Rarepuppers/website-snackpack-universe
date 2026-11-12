@@ -11,10 +11,14 @@ const THEMES = [
     grass: ["#79b048", "#67a03f", "#8fc057", "#a4c95e"], road: "#c49a68", rut: "#a57e50", edge: "#dfbd86", far: ["#7fa768", "#93b57c"], peak: ["#8fa8a0", "#b3c4bb"], dust: "#d9bd8f", exposure: 1.02 },
   { id: "dunes", skyTop: "#3fa6e6", skyMid: "#a7dcf2", skyLow: "#fbeec4", fog: "#f6e6bd", fogFar: 360, sun: "#fff4dc", sunI: 3.2, hemi: ["#dcefff", "#b99a5c", 1.3],
     grass: ["#ecd08c", "#e4c47c", "#f2dc9e", "#dcb86e"], road: "#d8b070", rut: "#bd955a", edge: "#efd79a", far: ["#e6c988", "#efd9a0"], peak: ["#d9b98a", "#ead2a8"], dust: "#ecd5a0", exposure: 1.0 },
+  { id: "harbour", skyTop: "#38b6d8", skyMid: "#a9e2ea", skyLow: "#fff1c9", fog: "#e9f1df", fogFar: 340, sun: "#fff0cf", sunI: 3.0, hemi: ["#d8f3ff", "#a08a5a", 1.3],
+    grass: ["#e9c98a", "#dfbd7c", "#f1d79c", "#cfd28a"], road: "#8a5f3c", rut: "#74502f", edge: "#b98a58", far: ["#7fc3b8", "#9fd3c4"], peak: ["#7fb0b8", "#a8ccd0"], dust: "#e6d2a2", exposure: 1.02 },
   { id: "frost", skyTop: "#27406f", skyMid: "#6f92c4", skyLow: "#f3c9b4", fog: "#c3d3ea", fogFar: 280, sun: "#ffdcc0", sunI: 2.5, hemi: ["#bfd8ff", "#7d8fb0", 1.45],
     grass: ["#f4f9ff", "#e6f0fc", "#dbe8f8", "#ffffff"], road: "#8fb2d8", rut: "#7096c4", edge: "#c3d8ee", far: ["#dfeafa", "#c9daf0"], peak: ["#b8cbe6", "#f2f7ff"], dust: "#f2f7ff", exposure: 1.0 },
   { id: "chilli", skyTop: "#3c1f4f", skyMid: "#b5463f", skyLow: "#ffb15e", fog: "#d98a60", fogFar: 280, sun: "#ffd2a0", sunI: 2.9, hemi: ["#ffd0b8", "#6a4238", 1.35],
-    grass: ["#5f403c", "#6a4842", "#755248", "#553834"], road: "#e0a56c", rut: "#c48a54", edge: "#f5c88e", far: ["#5a3238", "#6a3c3e"], peak: ["#5a2a3a", "#7a3540"], dust: "#c98a68", exposure: 1.05 }
+    grass: ["#5f403c", "#6a4842", "#755248", "#553834"], road: "#e0a56c", rut: "#c48a54", edge: "#f5c88e", far: ["#5a3238", "#6a3c3e"], peak: ["#5a2a3a", "#7a3540"], dust: "#c98a68", exposure: 1.05 },
+  { id: "market", skyTop: "#0e1433", skyMid: "#2c2f66", skyLow: "#5b4a8a", fog: "#3a3566", fogFar: 260, sun: "#cfd8ff", sunI: 1.7, hemi: ["#8f9be0", "#3a3350", 1.5],
+    grass: ["#2b3350", "#313a5a", "#262d48", "#374066"], road: "#c9b899", rut: "#b3a283", edge: "#e2d4b8", far: ["#252b47", "#2d3454"], peak: ["#1d2240", "#2a3058"], dust: "#bdb09a", exposure: 1.1, night: true }
 ];
 
 // ════ Small helpers ═══════════════════════════════════════════════
@@ -99,7 +103,7 @@ function canvasTex(w, h, paint) {
 }
 
 // ════ Trucks ══════════════════════════════════════════════════════
-const PAINT = { pickup: ["#d8452e", "#f2e2c4"], van: ["#f2ead8", "#e7a23c"], buggy: ["#f4c21f", "#2d2d33"], hauler: ["#2f6fb8", "#f2f2ee"] };
+const PAINT = { tuktuk: ["#3fb7a6", "#fff3d6"], monster: ["#7a3fb8", "#f4c21f"], pickup: ["#d8452e", "#f2e2c4"], van: ["#f2ead8", "#e7a23c"], buggy: ["#f4c21f", "#2d2d33"], hauler: ["#2f6fb8", "#f2f2ee"] };
 
 function doorDecal(text, color) {
   return canvasTex(256, 128, (x, w, h) => {
@@ -320,6 +324,37 @@ function buildCargo(type, quality) {
       });
     });
     group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.35 }))));
+  } else if (type === "melon") {
+    const k = new Kit();
+    zs.forEach((z) => {
+      k.add(new THREE.SphereGeometry(0.25, 14, 10), "#3f9a4a", m(0, 0, z, 0, 0, Math.PI / 2, 1, 1.12, 1));
+      for (let i = 0; i < 6; i++) k.add(new THREE.TorusGeometry(0.252, 0.018, 4, 14, Math.PI), "#1f5f2e", m(0, 0, z, (i * Math.PI) / 6, 0, Math.PI / 2, 1, 1.12, 1));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4 }))));
+  } else if (type === "cake") {
+    const k = new Kit(), H = SH.cargoSize("cake").h - 0.02;
+    zs.forEach((z) => {
+      k.add(roundedSlab(0.48, H, 0.48, 0.05), "#ffd3e2", m(0, 0, z));
+      k.add(box(0.5, 0.07, 0.5), "#e0457b", m(0, 0.02, z));
+      k.add(box(0.07, H + 0.01, 0.5), "#e0457b", m(0, 0, z));
+      k.add(blob(0.07, 1), "#d81e3c", m(0, H / 2 + 0.05, z));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5 }))));
+  } else if (type === "popcorn") {
+    const k = new Kit();
+    zs.forEach((z) => {
+      for (let i = 0; i < 5; i++) k.add(box(S / 5 + 0.002, S * 0.8, S), i % 2 ? "#ffffff" : "#e23b3b", m(-S / 2 + (i + 0.5) * (S / 5), -S * 0.1, z));
+      [[-0.12, 0.05], [0.1, -0.08], [0, 0.12], [0.14, 0.1], [-0.1, -0.12]].forEach(([a, b]) => k.add(blob(0.09, 1), "#fff2b8", m(a, S * 0.33, z + b)));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }))));
+  } else if (type === "icecream") {
+    const k = new Kit();
+    zs.forEach((z) => {
+      k.add(cyl(0.25, 0.22, S * 0.8, 14), "#9fe3c8", m(0, -S * 0.1, z));
+      k.add(cyl(0.262, 0.262, 0.06, 14), "#f6fffb", m(0, S * 0.3, z));
+      k.add(blob(0.13, 2), "#ffb3cf", m(0, S * 0.42, z));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4 }))));
   } else {
     const mat = new THREE.MeshPhysicalMaterial({ color: "#ff5f94", roughness: 0.18, transmission: quality.level > 1 ? 0 : 0, transparent: true, opacity: 0.82, emissive: "#a51e50", emissiveIntensity: 0.25 });
     zs.forEach((z) => { const c = shadow(new THREE.Mesh(roundedSlab(S, S, S, 0.12), mat)); c.position.z = z; group.add(c); });
@@ -400,6 +435,36 @@ function propKit(kind, theme) {
       }
       break;
     }
+    case "palm": {
+      for (let i = 0; i < 4; i++) k.add(cyl(0.16, 0.2, 1.5, 6), "#8a6a44", m(i * 0.18, 0.75 + i * 1.4, 0, 0, 0, -0.12), true);
+      for (let i = 0; i < 7; i++) { const a = (i / 7) * 6.283; k.add(new THREE.ConeGeometry(0.42, 2.6, 4), theme.leaf[i % 2], m(0.7 + Math.cos(a) * 1.1, 5.7, Math.sin(a) * 1.1, Math.sin(a) * 1.25, 0, -Math.cos(a) * 1.25, 1, 1, 0.35), true); }
+      break;
+    }
+    case "hut": {
+      k.add(box(2.2, 2.2, 2.2), "#fff4dc", m(0, 1.1, 0));
+      for (let i = 0; i < 5; i++) k.add(box(0.22, 2.2, 2.22), "#3fa7c9", m(-0.88 + i * 0.44, 1.1, 0));
+      k.add(sideShape([[-1.4, 0], [1.4, 0], [0, 1.1]], 2.5), "#e0483c", m(0, 2.2, 0), true);
+      break;
+    }
+    case "lamp": {
+      k.add(cyl(0.07, 0.1, 4, 6), "#2a2a36", m(0, 2, 0), true);
+      k.add(box(0.9, 0.07, 0.07), "#2a2a36", m(0.4, 4, 0));
+      k.add(blob(0.34, 1), "#ffc857", m(0.8, 3.62, 0, 0, 0, 0, 1, 1.25, 1));
+      break;
+    }
+    case "townhouse": {
+      k.add(box(3.4, 7, 3.4), "#4a4670", m(0, 3.5, 0));
+      k.add(sideShape([[-2.0, 0], [2.0, 0], [0, 1.7]], 3.8), "#2a2644", m(0, 7, 0), true);
+      for (let r = 0; r < 3; r++) for (let c2 = 0; c2 < 2; c2++) k.add(box(0.8, 1.0, 0.1), (r + c2) % 3 ? "#ffd27a" : "#3a3760", m(-0.8 + c2 * 1.6, 1.6 + r * 2.1, 1.72));
+      break;
+    }
+    case "stall": {
+      k.add(box(2.6, 1.0, 1.4), "#7a5234", m(0, 0.5, 0));
+      [-1.2, 1.2].forEach((x) => k.add(box(0.1, 2.4, 0.1), "#4a3322", m(x, 1.2, 0.6)));
+      for (let i = 0; i < 6; i++) k.add(box(0.47, 0.1, 1.9), i % 2 ? "#fff6e6" : "#e0483c", m(-1.18 + i * 0.47, 2.45, 0.2, 0.25));
+      [[-0.7, "#ff8a3c"], [0, "#ffd34d"], [0.7, "#e0457b"]].forEach(([x, c2]) => k.add(blob(0.3, 1), c2, m(x, 1.15, 0.2, 0, 0, 0, 1, 0.7, 1)));
+      break;
+    }
     case "fence": {
       k.add(box(0.13, 1.0, 0.13), theme.fence, m(-1.5, 0.5, 0));
       k.add(box(3.05, 0.1, 0.06), theme.fence, m(0, 0.72, 0));
@@ -419,7 +484,9 @@ const SCENERY = {
   bakery: { leaf: ["#5f9e3f", "#78b24a", "#e0a23f"], rock: "#a79c8e", fence: "#efe6d6", fills: [["oak", 24], ["bush", 10], ["rock", 5]], front: ["bush", "rock"], landmarks: ["cottage"], fencing: true },
   dunes: { leaf: ["#8caf54", "#a3bd5c", "#c9bb62"], rock: "#c9a877", fence: "#c7a26e", fills: [["cactus", 12], ["hay", 7], ["rock", 7], ["bush", 5]], front: ["rock", "bush"], landmarks: ["barn"], fencing: true },
   frost: { leaf: ["#3f6f6b", "#528782"], rock: "#a9bfd8", fence: "#7a5234", fills: [["pine", 30], ["rock", 7]], front: ["rock", "pine"], landmarks: ["cabin"], snowTrees: true, fencing: false },
-  chilli: { leaf: ["#3f7a3a", "#4f8a44"], rock: "#6b372c", fence: "#3a2422", fills: [["crag", 16], ["rock", 12], ["chilliPlant", 7]], front: ["rock", "chilliPlant"], landmarks: [], fencing: false }
+  chilli: { leaf: ["#3f7a3a", "#4f8a44"], rock: "#6b372c", fence: "#3a2422", fills: [["crag", 16], ["rock", 12], ["chilliPlant", 7]], front: ["rock", "chilliPlant"], landmarks: [], fencing: false },
+  harbour: { leaf: ["#3f9a5a", "#5fb46a"], rock: "#6f7780", fence: "#f4ead6", fills: [["palm", 14], ["hut", 4], ["rock", 6], ["bush", 5]], front: ["rock", "bush"], landmarks: ["cottage"], fencing: true },
+  market: { leaf: ["#2f5a4a", "#3a6a56"], rock: "#4a4d66", fence: "#3a3550", fills: [["lamp", 10], ["stall", 6], ["townhouse", 9], ["bush", 4]], front: ["bush", "rock"], landmarks: [], fencing: false }
 };
 
 // ════ The world ═══════════════════════════════════════════════════
@@ -507,7 +574,7 @@ export class World3D {
     const noise = noiseFn(SH.hash(seed));
     const pts = terrain.pts, S = SH.SAMPLE, last = pts[pts.length - 1];
     const base = (x) => (x <= 0 ? pts[0].y : x >= last.x ? last.y : SH.heightAt(terrain, x));
-    const hillRise = theme.id === "dunes" ? 0.1 : theme.id === "frost" ? 0.2 : theme.id === "chilli" ? 0.22 : 0.13;
+    const hillRise = theme.id === "dunes" || theme.id === "harbour" || theme.id === "market" ? 0.1 : theme.id === "frost" ? 0.2 : theme.id === "chilli" ? 0.22 : 0.13;
     const surface = (x, z) => {
       const b = base(x), az = Math.abs(z);
       if (az <= 2.7) return b;
@@ -568,7 +635,7 @@ export class World3D {
     // Clouds
     const cloud = new Kit();
     [[0, 0, 5], [4.5, -0.6, 3.6], [-4.5, -0.8, 3.4], [2, 1.5, 3.2]].forEach(([x, y, s]) => cloud.add(blob(s, 1), "#ffffff", m(x, y, 0, 0, 0, 0, 1, 0.62, 1)));
-    const clouds = new THREE.InstancedMesh(cloud.build(), new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: theme.id === "chilli" ? 0.28 : 0.85 }), 16);
+    const clouds = new THREE.InstancedMesh(cloud.build(), new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, transparent: true, opacity: theme.id === "chilli" ? 0.28 : theme.night ? 0.12 : 0.85 }), 16);
     this.cloudData = [];
     for (let i = 0; i < 16; i++) this.cloudData.push({ x: x0 + r() * (x1 - x0), y: 42 + r() * 32, z: -170 - r() * 40, s: 1 + r() * 1.6 });
     clouds.frustumCulled = false;
@@ -674,12 +741,12 @@ export class World3D {
     fx.mesh.instanceMatrix.needsUpdate = true;
   }
   buildWeather(theme) {
-    if (theme.id !== "frost" && theme.id !== "chilli") return;
+    if (theme.id !== "frost" && theme.id !== "chilli" && theme.id !== "market") return;
     const n = this.quality.level === 0 ? 120 : 340, p = new Float32Array(n * 3);
     for (let i = 0; i < n * 3; i += 3) { p[i] = Math.random() * 70 - 35; p[i + 1] = Math.random() * 34; p[i + 2] = Math.random() * 34 - 18; }
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(p, 3));
-    const pts = new THREE.Points(g, new THREE.PointsMaterial({ color: theme.id === "frost" ? "#ffffff" : "#ffb45a", size: theme.id === "frost" ? 0.2 : 0.13, transparent: true, opacity: 0.9, fog: false }));
+    const pts = new THREE.Points(g, new THREE.PointsMaterial({ color: theme.id === "frost" ? "#ffffff" : theme.id === "market" ? "#ffe9a8" : "#ffb45a", size: theme.id === "frost" ? 0.2 : 0.13, transparent: true, opacity: 0.9, fog: false }));
     pts.frustumCulled = false;
     this.scene.add(pts);
     this.weather = { pts, dir: theme.id === "frost" ? -1 : 1, speed: theme.id === "frost" ? 3.2 : 2 };
@@ -719,13 +786,16 @@ export class World3D {
     scene.add(this.canMesh);
 
     // Road hazards: a physics bump is drawn as a log across the road.
-    if (game.rocks.length) {
+    const logList = game.rocks.filter((rock) => rock.kind !== "bump");
+    if (logList.length) {
       const logGeo = propKit("log", SCENERY[theme.id]);
-      const logs = new THREE.InstancedMesh(logGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 }), game.rocks.length);
-      game.rocks.forEach((rock, i) => logs.setMatrixAt(i, m(rock.x, rock.y, 0, 0, 0, 0, rock.r, rock.r, 4.6)));
+      const logs = new THREE.InstancedMesh(logGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 }), logList.length);
+      logList.forEach((rock, i) => logs.setMatrixAt(i, m(rock.x, rock.y, 0, 0, 0, 0, rock.r, rock.r, 4.6)));
       logs.castShadow = q.shadows; logs.frustumCulled = false;
       scene.add(logs);
     }
+
+    this.buildFeatures(game);
 
     // Unloading zone and depot
     const zoneLen = t.zoneEnd - t.zoneStart, zy = SH.heightAt(t, t.zoneStart);
@@ -766,6 +836,55 @@ export class World3D {
     this.updateCamera(game, 1);
   }
 
+  // ─── Road features: bridges, fords, ice, wind, bumps, ramps, pickup stops ─
+  buildFeatures(game) {
+    const t = game.terrain, kit = new Kit(), glow = new Kit(), S = SH.SAMPLE;
+    // A strip that hugs the road between two points along it.
+    const strip = (target, x0, x1, color, lift, width) => {
+      for (let x = x0; x < x1 - 0.01; x += S / 2) {
+        const xb = Math.min(x1, x + S / 2), ya = SH.heightAt(t, x) + lift, yb = SH.heightAt(t, xb) + lift;
+        const len = Math.hypot(xb - x, yb - ya);
+        target.add(box(len + 0.02, 0.03, width), color, m((x + xb) / 2, (ya + yb) / 2, 0, 0, 0, Math.atan2(yb - ya, xb - x)));
+      }
+    };
+    const post = (x, h, color, z) => kit.add(box(0.16, h, 0.16), color, m(x, SH.heightAt(t, x) + h / 2, z));
+    (t.features || []).forEach((f) => {
+      if (f.type === "slick") {
+        strip(glow, f.x0, f.x1, this.theme.night ? "#7fd0ff" : "#c8f0ff", 0.035, 4.7);
+        [f.x0, f.x1].forEach((x) => { post(x, 2.2, "#2f7fd0", -3.0); kit.add(blob(0.3, 0), "#9fe0ff", m(x, SH.heightAt(t, x) + 2.4, -3.0)); });
+      } else if (f.type === "ford") {
+        strip(glow, f.x0, f.x1, "#3fb6d8", 0.3, 9);
+      } else if (f.type === "bridge") {
+        for (let x = f.x0; x < f.x1; x += 0.75) kit.add(box(0.66, 0.1, 5), Math.round(x / 0.75) % 2 ? "#a9773f" : "#8f6233", m(x + 0.375, SH.heightAt(t, x + 0.375) + 0.03, 0, 0, 0, 0));
+        [f.x0, f.x1].forEach((x) => [-2.6, 2.6].forEach((z) => post(x, 2.4, "#6d4a2c", z)));
+          } else if (f.type === "wind") {
+        [f.x0, f.x1].forEach((x) => { post(x, 4, "#f2f2ee", -3.2); for (let i = 0; i < 4; i++) kit.add(box(0.45, 0.42 - i * 0.07, 0.42 - i * 0.07), i % 2 ? "#ffffff" : "#ff7a2f", m(x - 0.3 - i * 0.45, SH.heightAt(t, x) + 3.8 - i * 0.06, -3.2)); });
+      } else if (f.type === "ramp") {
+        for (let i = 0; i < 3; i++) kit.add(box(0.5, 0.06, 4.4), i % 2 ? "#2a2a2e" : "#ffcf3a", m(f.x0 + 1.5 + i * 1.3, SH.heightAt(t, f.x0 + 1.5 + i * 1.3) + 0.04, 0, 0, 0, 0.12 + i * 0.1));
+      } else if (f.type === "pickup") {
+        strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
+        const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx);
+        kit.add(box(6, 3.2, 3), "#efe2c6", m(cx, y + 1.6, -6.5));
+        kit.add(box(6.6, 0.4, 3.6), "#3f9a5a", m(cx, y + 3.4, -6.5));
+        kit.add(box(0.3, 5.5, 0.3), "#d8d2c6", m(cx, y + 2.75, -3.4));
+        kit.add(box(0.3, 0.3, 4.2), "#d8d2c6", m(cx, y + 5.5, -1.4));
+        [-1, 0, 1].forEach((i) => kit.add(box(0.6, 0.6, 0.6), "#eab765", m(cx + i * 0.9, y + 0.3, -4.4)));
+      }
+    });
+    game.rocks.filter((rock) => rock.kind === "bump").forEach((rock, i) => kit.add(cyl(rock.r, rock.r, 4.7, 8), i % 2 ? "#2a2a2e" : "#ffcf3a", m(rock.x, rock.y, 0, Math.PI / 2)));
+    if (kit.pos.length) {
+      const mesh = new THREE.Mesh(kit.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
+      mesh.castShadow = this.quality.shadows;
+      this.scene.add(mesh);
+    }
+    if (glow.pos.length) this.scene.add(new THREE.Mesh(glow.build(), new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false })));
+    if (this.theme.night) {
+      // Headlights: one warm light riding ahead of the truck.
+      this.headlight = new THREE.PointLight("#ffe2a8", 60, 26, 1.6);
+      this.scene.add(this.headlight);
+    } else this.headlight = null;
+  }
+
   // ─── Menu showcase: the truck parked in its region ──────────────
   showcase(truckId, regionIndex, rail) {
     this.lastBuild = { truck: truckId, region: regionIndex, rail };
@@ -783,11 +902,12 @@ export class World3D {
     model.root.position.set(50, y, 0);
     this.scene.add(model.root);
     model.wheels.forEach((w, i) => { w.position.set(50 + (i ? D.frontX : D.rearX), y + D.axleY, 0); this.scene.add(w); });
-    const load = ["crate", "eggs", "crate", "milk"];
+    const kinds = SH.REGIONS[regionIndex].kinds || ["cake", "popcorn"];
+    const load = ["crate", kinds[0], "crate", kinds[1]];
     const stacked = spec.perRow;
     load.forEach((type, i) => {
       const g = buildCargo(type, this.quality);
-      g.position.set(50 + D.bedRight - D.crate * ((i % stacked) + 0.55), y + D.bedHeight + D.crate / 2 + 0.01, 0);
+      g.position.set(50 + D.bedRight - D.crate * ((i % stacked) + 0.55), y + D.bedHeight + SH.cargoSize(type).h / 2 + (i >= stacked ? D.crate : 0) + 0.01, 0);
       this.scene.add(g);
     });
     this.truckModel = model;
@@ -821,6 +941,7 @@ export class World3D {
       g.rotation.z = w.getAngle();
     });
     model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
+    if (this.headlight) this.headlight.position.set(p.x + 5, p.y + 2.2, 1.5);
 
     this.cargo.forEach((c) => {
       const b = c.info.body, cp = b.getPosition();
@@ -894,7 +1015,17 @@ export class World3D {
   // Turns game events into effects.
   react(ev) {
     const z = () => (Math.random() - 0.5) * 1.8;
-    if (ev.type === "land") {
+    if (ev.type === "pickup") {
+      ev.items.forEach((c) => { const g = buildCargo(c.type, this.quality); this.scene.add(g); this.cargo.push({ info: c, group: g, age: 0, wob: 0 }); });
+      const green = col("#6fe08f");
+      for (let i = 0; i < 18; i++) this.puff(ev.x + (Math.random() - 0.5) * 3, ev.y + 1.5, z(), (Math.random() - 0.5) * 2, 2 + Math.random() * 2, z(), 0.1, 0.7, green, 5);
+    } else if (ev.type === "splash") {
+      const water = col("#bfeaff");
+      for (let i = 0; i < 9; i++) this.puff(ev.x + (Math.random() - 0.5) * 2, ev.y + 0.3, z(), (Math.random() - 0.5) * 4, 2 + Math.random() * 3, z(), 0.1, 0.5, water, 10);
+    } else if (ev.type === "ruined") {
+      const icing = col("#ffd3e2");
+      for (let i = 0; i < 12; i++) this.puff(ev.x, ev.y, z() * 0.4, (Math.random() - 0.5) * 4, 2 + Math.random() * 2, z(), 0.09, 0.7, icing, 10);
+    } else if (ev.type === "land") {
       this.shake = Math.min(0.5, this.reduceMotion ? 0 : ev.air * 0.32);
       const n = Math.min(14, 5 + ev.air * 10);
       for (let i = 0; i < n; i++) this.puff(ev.x + (Math.random() - 0.5) * 3, ev.y - 0.3, z(), (Math.random() - 0.5) * 3, 1 + Math.random() * 1.6, z(), 0.26, 0.7);

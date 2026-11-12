@@ -9,7 +9,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 // ════ Save ════════════════════════════════════════════════════════
 function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-const DEFAULTS = { coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [] };
+const DEFAULTS = { coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} } };
 const save = Object.assign({}, DEFAULTS, load());
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0 }, save.stats);
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* plays on without storage */ } }
@@ -32,19 +32,35 @@ const railFor = (truckId) => 0.2 + 0.14 * level("straps") + SH.truckSpec(truckId
 const GOALS = [
   { id: "first", icon: "📦", name: "First Drop", desc: "Finish your first delivery.", coins: 20, test: () => save.stats.deliveries >= 1 },
   { id: "intact", icon: "⭐", name: "Not a Scratch", desc: "Deliver a whole load intact.", coins: 25, test: (r) => r && r.stars === 3 },
-  { id: "express", icon: "⏱️", name: "Express Post", desc: "Beat a route's Express time.", coins: 40, test: (r) => r && r.express },
+  { id: "express", icon: "⏱️", name: "Express Post", desc: "Win a gold medal.", coins: 40, test: (r) => r && r.express },
   { id: "air", icon: "🦅", name: "Hang Time", desc: "Stay in the air for 1.5 seconds.", coins: 30, test: () => save.stats.bestAir >= 1.5 },
   { id: "eggs", icon: "🥚", name: "Egg Whisperer", desc: "Deliver 20 trays of eggs.", coins: 60, test: () => save.stats.eggs >= 20 },
   { id: "crates", icon: "🏗️", name: "Heavy Lifter", desc: "Deliver 100 loads of cargo.", coins: 80, test: () => save.stats.crates >= 100 },
-  { id: "bakery", icon: "🥐", name: "Bakery Boss", desc: "Three stars on all of Bakery Hills.", coins: 100, test: () => regionStars(0) === 18 },
-  { id: "dunes", icon: "🥛", name: "Cream of the Crop", desc: "Reach Frosty Pass.", coins: 80, test: () => regionOpen(2) },
-  { id: "chilli", icon: "🌶️", name: "Feeling the Heat", desc: "Reach Chilli Ridge.", coins: 120, test: () => regionOpen(3) },
+  { id: "bakery", icon: "🥐", name: "Bakery Boss", desc: "Three stars on all of Bakery Hills.", coins: 100, test: () => regionStars(0) === 24 },
+  { id: "dunes", icon: "🥛", name: "Cream of the Crop", desc: "Reach Honey Harbour.", coins: 80, test: () => regionOpen(2) },
+  { id: "chilli", icon: "🌶️", name: "Feeling the Heat", desc: "Reach Chilli Ridge.", coins: 120, test: () => regionOpen(4) },
   { id: "fleet", icon: "🚚", name: "Second Set of Wheels", desc: "Buy another truck.", coins: 50, test: () => save.trucks.length >= 2 },
   { id: "maxed", icon: "🔧", name: "Fully Tuned", desc: "Max out one upgrade.", coins: 100, test: () => SH.UPGRADES.some((u) => level(u.id) >= SH.MAX_LEVEL) },
   { id: "streak", icon: "📅", name: "Regular Run", desc: "Do the daily delivery 3 days in a row.", coins: 90, test: () => save.daily.streak >= 3 },
   { id: "done", icon: "🏆", name: "Haulage Legend", desc: "Finish every route.", coins: 300, test: () => SH.DELIVERIES.every((d) => save.stars[d.id] > 0) }
 ];
-function regionStars(r) { return SH.DELIVERIES.filter((d) => d.region === r).reduce((n, d) => n + (save.stars[d.id] || 0), 0); }
+function regionStars(r) { return SH.regionStars(r, save.stars); }
+
+// ════ Contracts: three jobs a day, paid once each ═════════════════
+function jobs() {
+  const today = localDate();
+  if (save.jobs.date !== today) save.jobs = { date: today, got: {}, paid: {} };
+  return SH.contractsFor(today);
+}
+function countJobs(report) {
+  const fresh = [];
+  jobs().forEach((c) => {
+    if (save.jobs.paid[c.id]) return;
+    save.jobs.got[c.id] = (save.jobs.got[c.id] || 0) + c.count(report);
+    if (save.jobs.got[c.id] >= c.goal) { save.jobs.paid[c.id] = true; save.coins += c.pay; fresh.push(c); }
+  });
+  return fresh;
+}
 function checkGoals(report) {
   const fresh = [];
   GOALS.forEach((g) => {
@@ -154,6 +170,14 @@ function drainEvents(g) {
     else if (ev.type === "lost") { thud(0.6); toast("Cargo lost!", 800); }
     else if (ev.type === "broken") { beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
     else if (ev.type === "land") thud(Math.min(1, ev.air));
+    else if (ev.type === "pickup") { beep(660, 0.12, "triangle", 0.08); beep(880, 0.16, "triangle", 0.08, 0.1); toast("Loaded " + ev.items.length + " more!", 1100); }
+    else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
+    else if (ev.type === "ruined") toast("Cake toppled!", 900);
+    else if (ev.type === "splash") beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
+    else if (ev.type === "zone") {
+      const say = { wind: "Gusty! Mind the load", slick: g.regionIndex === 3 ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
+      if (say) hint(say, 2600);
+    }
   });
 }
 
@@ -169,8 +193,8 @@ function startDelivery(delivery) {
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
-  const label = delivery.daily ? "Daily delivery" : SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
-  toast(label + ": " + game.cargo.length + " loads", 1700);
+  const label = delivery.long ? "Long Haul" : delivery.daily ? "Daily delivery" : SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
+  toast(label + ": " + game.total + " loads", 1700);
   const d = localDate();
   if (!save.days.includes(d)) save.days = save.days.concat(d).slice(-60);
   persist();
@@ -197,16 +221,18 @@ function coach(g) {
 
 function hud(g) {
   const live = g.live();
-  $("load").textContent = "📦 " + live + "/" + g.cargo.length;
-  $("load").className = live - 1 < g.need && g.cargo.length > 1 ? "chip warn" : "chip";
+  $("load").textContent = "📦 " + live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
+  $("load").className = live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
   $("coins").textContent = "🪙 " + g.coinsTaken;
-  $("clock").textContent = Math.floor(g.time) + "s / " + g.par + "s";
+  $("clock").textContent = g.delivery.long ? Math.max(0, Math.round(g.truck.getPosition().x - 8)) + " m" : Math.floor(g.time) + "s / " + g.par + "s";
   const f = g.fuel / g.maxFuel;
   $("fuel").style.width = (f * 100).toFixed(1) + "%";
   $("fuel").className = f < 0.25 ? "low" : "";
   $("prog").style.width = Math.min(100, (g.truck.getPosition().x / g.terrain.zoneStart) * 100).toFixed(1) + "%";
-  const showStop = g.status === "driving" && g.inZone();
+  const loading = g.status === "driving" && g.inPickup();
+  const showStop = loading || (g.status === "driving" && g.inZone());
   $("stop").hidden = !showStop;
+  $("stop").firstElementChild.textContent = loading ? "Stop to load" : "Stop to unload";
   if (showStop) $("stopbar").style.width = (g.stopProgress() * 100).toFixed(0) + "%";
 }
 
@@ -219,8 +245,10 @@ function finishDelivery(g) {
   s.topSpeed = Math.max(s.topSpeed, r.topSpeed);
   save.coins += r.earned; s.earned += r.earned;
   const beforeRegion = maxRegion();
-  let streakLine = "";
-  if (r.status === "done") {
+  let streakLine = "", longBest = false;
+  if (d.long) {
+    if (r.score > (save.long[r.truck] || 0)) { save.long[r.truck] = r.score; longBest = r.score > 0; }
+  } else if (r.status === "done") {
     s.deliveries += 1; s.crates += r.kept; s.eggs += r.kinds.eggs;
     if (d.daily) {
       if (save.daily.last !== today) {
@@ -234,35 +262,42 @@ function finishDelivery(g) {
       if (r.stars > (save.stars[d.id] || 0)) save.stars[d.id] = r.stars;
       if (!save.best[d.id] || r.time < save.best[d.id]) save.best[d.id] = Math.round(r.time * 10) / 10;
       if (r.express) save.express[d.id] = true;
+      if (r.medal > (save.medal[d.id] || 0)) save.medal[d.id] = r.medal;
+      // Keep the pedals of the fastest run, for the ghost.
+      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 1200) save.ghost[d.id] = { truck: r.truck, rec: g.rec.slice() };
     }
     if (save.tutorial < 1 && d.id === "bakery-1") save.tutorial = 1;
     else if (save.tutorial < 2 && d.id === "bakery-2") save.tutorial = 2;
   } else s.failed += 1;
+  const done = countJobs(r);
   const goals = checkGoals(r);
   const newRegion = maxRegion() > beforeRegion ? SH.REGIONS[maxRegion()].name : null;
   persist();
 
   const why = { load: "Too much of the load is gone. You need " + g.need + " of " + r.total + " to make the delivery.", flip: "The truck ended up on its roof.", fuel: "You ran out of fuel." }[r.reason] || "";
   const list = r.lines.map((l) => `<li><span>${esc(l.label)}</span><b>+${l.coins}</b></li>`).join("");
-  const next = d.daily ? null : following(d);
+  const next = d.daily || d.long ? null : following(d);
+  const medalName = ["", "Bronze", "Silver", "Gold"][r.medal];
   const canAdvance = r.status === "done" && next;
   const stars = "★".repeat(r.stars) + "☆".repeat(3 - r.stars);
-  sheet.innerHTML = `<h2>${r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
-    <div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c}</span>`).join("")}</div>
-    ${why ? `<p>${esc(why)}</p>` : ""}
-    ${r.status === "done" ? `<p>${r.time.toFixed(1)}s, Express time ${r.par}s</p>` : ""}
+  sheet.innerHTML = `<h2>${d.long ? "Long Haul: " + r.metres + " m" : r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
+    ${d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0)}</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c}</span>`).join("")}</div>`}
+    ${why && !d.long ? `<p>${esc(why)}</p>` : ""}
+    ${r.missedPickup ? "<p>You drove past the pickup stop, so those loads were left behind.</p>" : ""}
+    ${r.status === "done" && !d.long ? `<p>${r.time.toFixed(1)}s${medalName ? ", " + medalName + " medal" : ""}. Gold ${r.medals.gold}s, silver ${r.medals.silver}s, bronze ${r.medals.bronze}s</p>` : ""}
     ${list ? `<ul class="lines">${list}<li class="total"><span>Earned</span><span>🪙 ${r.earned}</span></li></ul>` : ""}
     ${streakLine ? `<div class="unlocked">📅 ${esc(streakLine)}</div>` : ""}
     ${newRegion ? `<div class="unlocked">🗺️ New region: ${esc(newRegion)}</div>` : ""}
+    ${done.map((c) => `<div class="unlocked">📋 ${esc(c.text)} +${c.pay}</div>`).join("")}
     ${goals.map((g2) => `<div class="unlocked">${g2.icon} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
-    ${r.status !== "done" ? `<p>${esc(failTip(r))}</p>` : ""}
+    ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
     <div class="row" style="margin-top:8px">
       ${canAdvance ? '<button class="btn primary" data-act="next">Next delivery</button>' : ""}
       <button class="btn${canAdvance ? "" : " primary"}" data-act="retry">Try again</button>
       <button class="btn" data-act="garage">Garage</button>
     </div>`;
   veil.classList.add("on");
-  if (r.status === "done") [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
+  if (r.status === "done" || d.long) [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
   else [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
   $("drive").hidden = true;
 }
@@ -296,7 +331,7 @@ sheet.addEventListener("click", (e) => {
   const a = b.dataset.act;
   ensureAudio();
   if (a === "garage") toMenu("garage");
-  if (a === "retry") startDelivery(state.delivery);
+  if (a === "retry") startDelivery(state.delivery.long ? SH.longHaul(state.delivery.region, Date.now().toString(36)) : state.delivery);
   if (a === "next") startDelivery(following(state.delivery));
   if (a === "resume") { veil.classList.remove("on"); state.mode = "drive"; kick(); }
   if (a === "reset-yes") { try { localStorage.removeItem(KEY); } catch (x) { /* ignore */ } location.reload(); }
@@ -344,6 +379,7 @@ function homeScreen() {
     <div class="menu">
       <button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}</small></button>
       <button class="btn" data-nav="daily">Daily delivery<small>${doneToday ? "Done today · " + save.daily.streak + "-day streak" : "+" + SH.BALANCE.dailyPay + " coins"}</small></button>
+      <button class="btn" data-nav="long">Long Haul<small>${save.long[save.truck] ? "Best " + save.long[save.truck] : "How far can you get?"}</small></button>
       <div class="dock">
         <button class="btn" data-nav="routes">Routes</button>
         <button class="btn" data-nav="garage">Garage</button>
@@ -357,12 +393,12 @@ function routesScreen() {
   const tabs = SH.REGIONS.map((r, i) => `<button class="tab" data-region="${i}" aria-pressed="${state.regionTab === i}"${regionOpen(i) ? "" : " disabled"}>${esc(r.name)}${regionOpen(i) ? "" : " 🔒"}</button>`).join("");
   const region = SH.REGIONS[state.regionTab];
   const cells = SH.DELIVERIES.filter((d) => d.region === state.regionTab).map((d) => {
-    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, exp = save.express[d.id];
+    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3;
     return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(region.name)} route ${d.index + 1}, ${st} stars">
-      <b>${d.index + 1}</b><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small><em>${exp ? "Express ✓" : d.load.length + " loads · " + d.len + "m"}</em></button>`;
+      <b>${d.index + 1}</b><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small><em>${md ? ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
-    <p class="sub">${esc(region.blurb)} Clear every route to open the next region.</p><div class="routes">${cells}</div>
+    <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
     <p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills would be free and the rest would be a one-time unlock.</p></section>`;
 }
 
@@ -384,8 +420,9 @@ function goalsScreen() {
   const s = save.stats;
   const stats = [[s.deliveries, "Deliveries"], [s.crates, "Loads delivered"], [(s.metres / 1000).toFixed(1) + " km", "Distance"], [s.bestAir.toFixed(1) + "s", "Best air"], [(s.topSpeed * 3.6).toFixed(0) + " km/h", "Top speed"], [s.earned, "Coins earned"]]
     .map(([v, l]) => `<div><b>${v}</b><span>${esc(l)}</span></div>`).join("");
+  const work = jobs().map((c) => { const got = Math.min(c.goal, Math.floor(save.jobs.got[c.id] || 0)), paid = save.jobs.paid[c.id]; return `<div class="goal${paid ? " done" : ""}"><span class="ic">📋</span><b>${esc(c.text)}${paid ? " ✓" : ""}</b><small>${got} of ${c.goal} today</small><em>+${c.pay}</em></div>`; }).join("");
   const list = GOALS.map((g) => `<div class="goal${save.achieved[g.id] ? " done" : ""}"><span class="ic">${g.icon}</span><b>${esc(g.name)}${save.achieved[g.id] ? " ✓" : ""}</b><small>${esc(g.desc)}</small><em>+${g.coins}</em></div>`).join("");
-  ui.innerHTML = `<section class="panel">${panelHead("Goals")}<div class="stats">${stats}</div>${list}</section>`;
+  ui.innerHTML = `<section class="panel">${panelHead("Goals")}<div class="stats">${stats}</div><h3 class="small">Today's contracts</h3>${work}<h3 class="small">Goals</h3>${list}</section>`;
 }
 
 function settingsScreen() {
@@ -411,6 +448,7 @@ ui.addEventListener("click", (e) => {
       d.paid = save.daily.last === localDate();
       return startDelivery(d);
     }
+    if (nav === "long") return startDelivery(SH.longHaul(maxRegion(), Date.now().toString(36)));
     if (nav === "routes") state.regionTab = nextRoute().region;
     state.screen = nav;
     return renderScreen();
