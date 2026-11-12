@@ -1,7 +1,9 @@
 // Snack Haul 3D view. The physics stay on a 2D plane (x, y); this file draws that
 // plane in true 3D with a side-on camera. Models are built from code, so nothing
-// here needs a download. Codex GLB models can replace the build*() functions later.
+// here needs a download. An authored GLB from assets.js replaces a code-built
+// model wherever one has been delivered; rails are always drawn here.
 import * as THREE from "./vendor/three.module.min.js";
+import { model, instanceGeometry, hasModel } from "./assets.js";
 
 const SH = window.SnackHaul;
 
@@ -105,6 +107,9 @@ function canvasTex(w, h, paint) {
 // ════ Trucks ══════════════════════════════════════════════════════
 const PAINT = { tuktuk: ["#3fb7a6", "#fff3d6"], monster: ["#7a3fb8", "#f4c21f"], pickup: ["#d8452e", "#f2e2c4"], van: ["#f2ead8", "#e7a23c"], buggy: ["#f4c21f", "#2d2d33"], hauler: ["#2f6fb8", "#f2f2ee"] };
 
+// Body widths the asset plan gives Codex. Code-built trucks keep their own.
+const AUTHORED_WIDTH = { pickup: 1.8, tuktuk: 1.6, van: 1.8, buggy: 1.8, hauler: 1.95, monster: 2.0 };
+
 function doorDecal(text, color) {
   return canvasTex(256, 128, (x, w, h) => {
     x.clearRect(0, 0, w, h);
@@ -116,9 +121,10 @@ function doorDecal(text, color) {
 }
 
 function buildTruck(spec, rail, quality) {
-  const D = SH.dimsFor(spec), width = spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
+  const authored = model("trucks/truck_" + spec.id);
+  const D = SH.dimsFor(spec), width = authored ? AUTHORED_WIDTH[spec.id] || 1.8 : spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
   const [paint, trim] = PAINT[spec.id];
-  const body = new Kit(), metal = new Kit(), dark = new Kit(), glass = new Kit();
+  const body = new Kit(), metal = new Kit(), dark = new Kit(), glass = new Kit(), rails = new Kit(), brakes = [];
   const half = width / 2, bedTop = D.bedHeight;
 
   // Chassis and bed floor
@@ -135,13 +141,13 @@ function buildTruck(spec, rail, quality) {
     const z = side * (half - 0.05);
     for (let i = 0; i < posts; i++) {
       const x = lerp(left, right, i / (posts - 1));
-      metal.add(box(0.07, rail + 0.04, 0.07), trim, m(x, bedTop + rail / 2, z));
+      rails.add(box(0.07, rail + 0.04, 0.07), trim, m(x, bedTop + rail / 2, z));
     }
     const bars = rail > 0.5 ? 3 : 2;
-    for (let b = 1; b <= bars; b++) metal.add(box(right - left, 0.045, 0.05), trim, m((left + right) / 2, bedTop + (rail * b) / bars, z));
+    for (let b = 1; b <= bars; b++) rails.add(box(right - left, 0.045, 0.05), trim, m((left + right) / 2, bedTop + (rail * b) / bars, z));
   });
-  for (let i = 0; i < 4; i++) metal.add(box(0.05, rail + 0.04, 0.09), trim, m(-D.bedHalf + 0.03, bedTop + rail / 2, -half + 0.2 + i * ((width - 0.4) / 3)));
-  metal.add(box(0.05, 0.05, width - 0.1), trim, m(-D.bedHalf + 0.03, bedTop + rail, 0));
+  for (let i = 0; i < 4; i++) rails.add(box(0.05, rail + 0.04, 0.09), trim, m(-D.bedHalf + 0.03, bedTop + rail / 2, -half + 0.2 + i * ((width - 0.4) / 3)));
+  rails.add(box(0.05, 0.05, width - 0.1), trim, m(-D.bedHalf + 0.03, bedTop + rail, 0));
 
   // Cab
   const cx = D.cabX, back = cx - D.cabHalfX, nose = D.bedHalf + (spec.id === "hauler" ? 0.2 : 0.32);
@@ -200,7 +206,7 @@ function buildTruck(spec, rail, quality) {
       const y = spec.id === "hauler" ? 0.92 : 0.44;
       const lamp = new THREE.Mesh(cyl(0.11, 0.11, 0.05, 12), new THREE.MeshStandardMaterial({ color: "#fff6d8", emissive: "#ffdf9c", emissiveIntensity: 1.6 }));
       lamp.applyMatrix4(m(nose + 0.03, y, z, 0, 0, Math.PI / 2));
-      root.add(lamp);
+      if (!authored) root.add(lamp);
     });
     metal.add(roundedSlab(0.1, 0.13, width + 0.14, 0.04), "#c9c9c4", m(nose + 0.09, 0.09, 0));
     metal.add(box(0.05, 0.1, 0.16), "#2a2a2e", m(cx + 0.18, spec.id === "hauler" ? 1.4 : 1.0, half + 0.1));
@@ -211,22 +217,49 @@ function buildTruck(spec, rail, quality) {
   [-0.72, 0.72].forEach((z) => {
     const lamp = new THREE.Mesh(BOX, new THREE.MeshStandardMaterial({ color: "#c22", emissive: "#ff2a1a", emissiveIntensity: 0.9 }));
     lamp.applyMatrix4(m(-D.bedHalf - 0.03, 0.03, z, 0, 0, 0, 0.05, 0.14, 0.22));
-    lamp.userData.brake = true;
-    root.add(lamp);
+    if (!authored) { root.add(lamp); brakes.push(lamp); }
   });
   [D.rearX, D.frontX].forEach((x) => {
     [-1, 1].forEach((side) => dark.add(cyl(D.wheelR + 0.05, D.wheelR + 0.05, 0.16, 16), "#17171a", m(x, D.axleY + 0.3, side * (half - 0.3), Math.PI / 2, 0, 0, 1, 1, 1)));
   });
 
+  // The authored truck, when Codex has delivered one. The game recolours its
+  // "paint" and "trim" materials and brightens anything under "lights_brake".
+  let seat = null;
+  if (authored) {
+    authored.traverse((o) => {
+      if (o.name === "up_engine" || o.name === "up_suspension") o.visible = false;
+      if (!o.isMesh) return;
+      o.castShadow = quality.shadows;
+      const name = o.material.name;
+      let lit = false;
+      for (let up = o; up && !lit; up = up.parent) lit = up.name === "lights_brake";
+      if (name === "paint" || name === "trim" || lit) { o.material = o.material.clone(); o.material.name = name; }
+      if (name === "paint") o.material.color.set(paint);
+      else if (name === "trim") o.material.color.set(trim);
+      if (lit) brakes.push(o);
+      if (o.material.transparent) o.renderOrder = 2;
+    });
+    const mark = authored.getObjectByName("seat");
+    if (mark) seat = mark.getWorldPosition(new THREE.Vector3());
+    root.add(authored);
+  }
+
   // The driver: the Corgi from the SnackPack cast.
-  const drv = new Kit(), dx = spec.id === "buggy" ? cx + 0.02 : cx - 0.05, dy = spec.id === "hauler" ? 1.22 : spec.id === "buggy" ? 0.98 : 0.94;
-  drv.add(blob(0.2, 2), "#e8a050", m(dx, dy, 0.35));
-  drv.add(blob(0.13, 2), "#fff3e0", m(dx + 0.15, dy - 0.05, 0.35));
-  drv.add(blob(0.05, 1), "#2a1a12", m(dx + 0.26, dy - 0.02, 0.35));
-  drv.add(new THREE.ConeGeometry(0.075, 0.2, 8), "#d88a3a", m(dx - 0.08, dy + 0.22, 0.26));
-  drv.add(new THREE.ConeGeometry(0.075, 0.2, 8), "#d88a3a", m(dx - 0.08, dy + 0.22, 0.44));
-  drv.add(blob(0.035, 1), "#1a1a1e", m(dx + 0.14, dy + 0.06, 0.53));
-  const driver = new THREE.Mesh(drv.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
+  const dx = spec.id === "buggy" ? cx + 0.02 : cx - 0.05, dy = spec.id === "hauler" ? 1.22 : spec.id === "buggy" ? 0.98 : 0.94;
+  let driver = model("driver/corgi_driver");
+  if (driver) driver.position.copy(seat || new THREE.Vector3(dx, dy, 0.35));
+  else {
+    const drv = new Kit();
+    drv.add(blob(0.2, 2), "#e8a050", m(dx, dy, 0.35));
+    drv.add(blob(0.13, 2), "#fff3e0", m(dx + 0.15, dy - 0.05, 0.35));
+    drv.add(blob(0.05, 1), "#2a1a12", m(dx + 0.26, dy - 0.02, 0.35));
+    drv.add(new THREE.ConeGeometry(0.075, 0.2, 8), "#d88a3a", m(dx - 0.08, dy + 0.22, 0.26));
+    drv.add(new THREE.ConeGeometry(0.075, 0.2, 8), "#d88a3a", m(dx - 0.08, dy + 0.22, 0.44));
+    drv.add(blob(0.035, 1), "#1a1a1e", m(dx + 0.14, dy + 0.06, 0.53));
+    driver = new THREE.Mesh(drv.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
+    if (seat) driver.position.set(seat.x - dx, seat.y - dy, seat.z - 0.35);
+  }
   root.add(driver);
 
   const add = (kit, mat) => {
@@ -235,34 +268,40 @@ function buildTruck(spec, rail, quality) {
     root.add(mesh);
     return mesh;
   };
-  add(body, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.34, metalness: 0.28 }));
-  add(metal, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.38, metalness: 0.7 }));
-  add(dark, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
-  if (glass.pos.length) {
-    const pane = add(glass, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.08, metalness: 0.5, transparent: true, opacity: 0.62 }));
-    pane.renderOrder = 2;
-  }
-  if (spec.id !== "buggy") {
-    const decal = new THREE.Mesh(new THREE.PlaneGeometry(0.66, 0.33), new THREE.MeshStandardMaterial({ map: doorDecal("SNACK HAUL", spec.id === "van" ? "#c9742a" : "#2d2118"), transparent: true, roughness: 0.5 }));
-    decal.position.set(back + 0.56, spec.id === "hauler" ? 0.42 : 0.44, half + 0.02);
-    root.add(decal);
+  const metalMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.38, metalness: 0.7 });
+  add(rails, metalMat);
+  if (!authored) {
+    add(body, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.34, metalness: 0.28 }));
+    add(metal, metalMat);
+    add(dark, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
+    if (glass.pos.length) {
+      const pane = add(glass, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.08, metalness: 0.5, transparent: true, opacity: 0.62 }));
+      pane.renderOrder = 2;
+    }
+    if (spec.id !== "buggy") {
+      const decal = new THREE.Mesh(new THREE.PlaneGeometry(0.66, 0.33), new THREE.MeshStandardMaterial({ map: doorDecal("SNACK HAUL", spec.id === "van" ? "#c9742a" : "#2d2118"), transparent: true, roughness: 0.5 }));
+      decal.position.set(back + 0.56, spec.id === "hauler" ? 0.42 : 0.44, half + 0.02);
+      root.add(decal);
+    }
   }
 
-  // Wheels turn as a pair, driven by the physics wheel.
-  const wheelGeo = wheelModel(D.wheelR, spec.id === "buggy");
+  // Wheels turn as a pair, driven by the physics wheel. An authored tuk-tuk has
+  // one front wheel on the centre line; physics still treats it as an axle.
+  const wheelName = "wheels/wheel_" + spec.id, wheelGlb = hasModel(wheelName);
+  const wheelGeo = wheelGlb ? null : wheelModel(D.wheelR, spec.id === "buggy");
   const wheelMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.74, metalness: 0.12 });
-  const wheels = [0, 1].map(() => {
-    const g = new THREE.Group();
-    [-1, 1].forEach((side) => {
-      const w = new THREE.Mesh(wheelGeo, wheelMat);
+  const wheels = [0, 1].map((axle) => {
+    const g = new THREE.Group(), single = authored && spec.id === "tuktuk" && axle === 1;
+    (single ? [0] : [-1, 1]).forEach((side) => {
+      const w = wheelGlb ? model(wheelName) : new THREE.Mesh(wheelGeo, wheelMat);
       w.position.z = side * (half - 0.08);
-      w.castShadow = quality.shadows;
+      w.traverse((o) => { if (o.isMesh) o.castShadow = quality.shadows; });
       if (side < 0) w.rotation.y = Math.PI;
       g.add(w);
     });
     return g;
   });
-  return { root, wheels, brakes: root.children.filter((c) => c.userData.brake), driver };
+  return { root, wheels, brakes, driver };
 }
 
 function wheelModel(r, chunky) {
@@ -299,9 +338,29 @@ function crateTexture() {
   }));
 }
 
+// Fills a cargo group with two authored units side by side. False if not delivered.
+const CARGO_Z = [-0.29, 0.29];
+function fillCargo(group, name, quality) {
+  if (!hasModel(name)) return false;
+  group.clear();
+  CARGO_Z.forEach((z) => {
+    const unit = model(name);
+    unit.position.z = z;
+    unit.traverse((o) => { if (o.isMesh) o.castShadow = quality.shadows; });
+    group.add(unit);
+  });
+  return true;
+}
+const DAMAGED = { eggs: "_broken", cake: "_ruined", icecream: "_melted" };
+
 function buildCargo(type, quality) {
   const group = new THREE.Group(), S = SH.DIM.crate - 0.02, zs = [-0.29, 0.29];
   const shadow = (mesh) => { mesh.castShadow = quality.shadows; return mesh; };
+  group.userData.type = type;
+  if (fillCargo(group, "cargo/cargo_" + type, quality)) {
+    if (type === "jelly") group.userData.wobble = true;
+    return group;
+  }
   if (type === "crate") {
     const mat = (texCache.crateMat ||= new THREE.MeshStandardMaterial({ map: crateTexture(), roughness: 0.78 }));
     zs.forEach((z) => { const c = shadow(new THREE.Mesh(box(S, S, S), mat)); c.position.z = z; group.add(c); });
@@ -480,6 +539,10 @@ function propKit(kind, theme) {
   return k.build();
 }
 
+// Scenery kinds and the authored files that replace them.
+const PROP_FILES = { chilliPlant: "chilli_plant", hut: "beach_hut", lamp: "lantern_post", stall: "market_stall" };
+function propFile(kind, region) { return "props/" + (kind === "rock" ? "rock_" + region : PROP_FILES[kind] || kind); }
+
 const SCENERY = {
   bakery: { leaf: ["#5f9e3f", "#78b24a", "#e0a23f"], rock: "#a79c8e", fence: "#efe6d6", fills: [["oak", 24], ["bush", 10], ["rock", 5]], front: ["bush", "rock"], landmarks: ["cottage"], fencing: true },
   dunes: { leaf: ["#8caf54", "#a3bd5c", "#c9bb62"], rock: "#c9a877", fence: "#c7a26e", fills: [["cactus", 12], ["hay", 7], ["rock", 7], ["bush", 5]], front: ["rock", "bush"], landmarks: ["barn"], fencing: true },
@@ -646,7 +709,7 @@ export class World3D {
     const kitTheme = Object.assign({}, scenery, { snowTrees: scenery.snowTrees });
     const place = (kind, list, shadows) => {
       if (!list.length) return;
-      const mesh = new THREE.InstancedMesh(propKit(kind, kitTheme), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), list.length);
+      const mesh = new THREE.InstancedMesh(instanceGeometry(propFile(kind, theme.id)) || propKit(kind, kitTheme), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), list.length);
       list.forEach((t, i) => mesh.setMatrixAt(i, t));
       mesh.castShadow = shadows && q.shadows;
       mesh.receiveShadow = false;
@@ -769,7 +832,7 @@ export class World3D {
     coin.add(cyl(0.34, 0.34, 0.08, 18), "#f6bb35", m(0, 0, 0, Math.PI / 2));
     coin.add(cyl(0.24, 0.24, 0.1, 18), "#ffd86a", m(0, 0, 0, Math.PI / 2));
     coin.add(box(0.07, 0.24, 0.12), "#e29a1e", m(0, 0, 0));
-    this.coinMesh = new THREE.InstancedMesh(coin.build(), new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.35, roughness: 0.3, emissive: "#c98a10", emissiveIntensity: 0.75 }), Math.max(1, game.coins.length));
+    this.coinMesh = new THREE.InstancedMesh(instanceGeometry("road/coin") || coin.build(), new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.35, roughness: 0.3, emissive: "#c98a10", emissiveIntensity: 0.75 }), Math.max(1, game.coins.length));
     this.coinMesh.frustumCulled = false;
     this.coinMesh.castShadow = q.shadows;
     scene.add(this.coinMesh);
@@ -780,7 +843,7 @@ export class World3D {
     can.add(box(0.28, 0.08, 0.1), "#2a2a2e", m(-0.05, 0.47, 0));
     can.add(cyl(0.06, 0.08, 0.24, 8), "#f2c04a", m(0.2, 0.5, 0, 0, 0, -0.5));
     can.add(box(0.32, 0.32, 0.45), "#f6efe0", m(0, 0, 0));
-    this.canMesh = new THREE.InstancedMesh(can.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: 0.2, emissive: "#3a0c04", emissiveIntensity: 0.6 }), Math.max(1, game.cans.length));
+    this.canMesh = new THREE.InstancedMesh(instanceGeometry("road/fuel_can") || can.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: 0.2, emissive: "#3a0c04", emissiveIntensity: 0.6 }), Math.max(1, game.cans.length));
     this.canMesh.frustumCulled = false;
     this.canMesh.castShadow = q.shadows;
     scene.add(this.canMesh);
@@ -788,7 +851,7 @@ export class World3D {
     // Road hazards: a physics bump is drawn as a log across the road.
     const logList = game.rocks.filter((rock) => rock.kind !== "bump");
     if (logList.length) {
-      const logGeo = propKit("log", SCENERY[theme.id]);
+      const logGeo = instanceGeometry("road/log") || propKit("log", SCENERY[theme.id]);
       const logs = new THREE.InstancedMesh(logGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 }), logList.length);
       logList.forEach((rock, i) => logs.setMatrixAt(i, m(rock.x, rock.y, 0, 0, 0, 0, rock.r, rock.r, 4.6)));
       logs.castShadow = q.shadows; logs.frustumCulled = false;
@@ -952,6 +1015,11 @@ export class World3D {
         const v = b.getLinearVelocity().length();
         const s = 1 + Math.sin(c.wob) * Math.min(0.09, 0.02 + v * 0.008);
         c.group.scale.set(1 / s, s, 1 / s);
+      }
+      if ((c.info.broken || c.info.ruined) && !c.swapped) {
+        c.swapped = true;
+        const type = c.group.userData.type;
+        if (DAMAGED[type]) fillCargo(c.group, "cargo/cargo_" + type + DAMAGED[type], this.quality);
       }
       if (c.info.lost || c.info.broken) {
         c.age += dt;

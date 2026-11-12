@@ -1,5 +1,6 @@
 // Snack Haul app shell: saves, menus, audio, the driving loop and progression.
 import { World3D } from "./render3d.js";
+import { Assets, loadAssets, soundData } from "./assets.js";
 
 const SH = window.SnackHaul;
 const KEY = "sp_snackhaul_v1";
@@ -69,8 +70,9 @@ function checkGoals(report) {
   return fresh;
 }
 
-// ════ Audio: all synthesised until the Codex sound pack lands ═════
-const audio = { ctx: null };
+// ════ Audio: an authored sample plays when assets.js has one, and the
+// synthesiser below covers everything that has not been delivered ═══
+const audio = { ctx: null, buffers: {}, decoding: {}, loops: null, music: null, musicName: "" };
 function ensureAudio() {
   if (!save.sound) return;
   if (audio.ctx) { if (audio.ctx.state === "suspended") audio.ctx.resume(); return; }
@@ -94,8 +96,63 @@ function ensureAudio() {
     const nf = ctx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = 900; nf.Q.value = 0.7;
     audio.noise = ctx.createGain(); audio.noise.gain.value = 0;
     src.connect(nf); nf.connect(audio.noise); audio.noise.connect(audio.master); src.start();
+    decodeSounds();
   } catch (e) { audio.ctx = null; }
 }
+// Decodes every loaded sound once the audio context exists. Safe to call again.
+function decodeSounds() {
+  if (!audio.ctx) return;
+  Object.keys(Assets.sounds).forEach((name) => {
+    if (audio.buffers[name] || audio.decoding[name]) return;
+    audio.decoding[name] = true;
+    try {
+      audio.ctx.decodeAudioData(soundData(name).slice(0), (buffer) => {
+        audio.buffers[name] = buffer;
+        if (audio.wantMusic && !audio.music) setMusic(audio.wantMusic);
+        if (audio.wantEngine && !audio.loops) engineLoops(audio.wantEngine);
+      }, () => {});
+    } catch (e) { /* an undecodable file falls back to the synthesiser */ }
+  });
+}
+function source(name, loop, gainValue) {
+  const src = audio.ctx.createBufferSource(), gain = audio.ctx.createGain();
+  src.buffer = audio.buffers[name]; src.loop = !!loop; gain.gain.value = gainValue;
+  src.connect(gain); gain.connect(audio.master);
+  return { src, gain };
+}
+// Plays an authored effect. Returns false when there is none, so callers can
+// write play("coin") || beep(...).
+function play(name, vol = 1, rate = 1) {
+  if (!save.sound || !audio.ctx || !audio.buffers["sfx/" + name]) return false;
+  const s = source("sfx/" + name, false, vol);
+  s.src.playbackRate.value = rate;
+  s.src.start();
+  return true;
+}
+function stopLoop(loop) {
+  if (!loop) return;
+  try { loop.gain.gain.setTargetAtTime(0, audio.ctx.currentTime, 0.15); loop.src.stop(audio.ctx.currentTime + 0.8); } catch (e) { /* already stopped */ }
+}
+// Idle and drive loops for one truck. Without both files the oscillators stay in charge.
+function engineLoops(truckId) {
+  audio.wantEngine = truckId;
+  if (!audio.ctx) return;
+  if (audio.loops) { stopLoop(audio.loops.idle); stopLoop(audio.loops.drive); audio.loops = null; }
+  if (!truckId || !audio.buffers["engine/" + truckId + "_idle"] || !audio.buffers["engine/" + truckId + "_drive"]) return;
+  audio.loops = { idle: source("engine/" + truckId + "_idle", true, 0), drive: source("engine/" + truckId + "_drive", true, 0) };
+  audio.loops.idle.src.start(); audio.loops.drive.src.start();
+}
+function setMusic(name) {
+  audio.wantMusic = name;
+  if (!audio.ctx || audio.musicName === name) return;
+  stopLoop(audio.music); audio.music = null; audio.musicName = "";
+  if (!name || !save.sound || !audio.buffers["music/" + name]) return;
+  audio.music = source("music/" + name, true, 0);
+  audio.music.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, 0.6);
+  audio.music.src.start();
+  audio.musicName = name;
+}
+const MUSIC_LEVEL = 0.32;
 function beep(freq, dur, type, vol, delay = 0) {
   if (!save.sound || !audio.ctx) return;
   const o = audio.ctx.createOscillator(), g = audio.ctx.createGain(), t = audio.ctx.currentTime + delay;
@@ -103,15 +160,24 @@ function beep(freq, dur, type, vol, delay = 0) {
   g.gain.setValueAtTime(vol || 0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   o.connect(g); g.connect(audio.master); o.start(t); o.stop(t + dur);
 }
-function thud(power) { beep(70 + power * 40, 0.22, "sine", Math.min(0.3, 0.1 + power * 0.14)); }
+function thud(power) { play(power > 0.55 ? "land_hard" : "land_soft", 0.5 + power * 0.5) || beep(70 + power * 40, 0.22, "sine", Math.min(0.3, 0.1 + power * 0.14)); }
 function engineSound(game, on) {
   if (!audio.ctx) return;
   const t = audio.ctx.currentTime, speed = game ? Math.abs(game.speed()) : 0, gas = game && game.gasOn;
-  const rev = 46 + speed * 9 + (gas ? 22 : 0);
+  const rev = 46 + speed * 9 + (gas ? 22 : 0), live = on && save.sound;
+  if (audio.loops) {
+    // Authored loops: cross-fade idle into drive and pitch both with speed.
+    const pitch = 0.85 + Math.min(1.1, speed * 0.045) + (gas ? 0.12 : 0);
+    audio.loops.idle.src.playbackRate.setTargetAtTime(pitch, t, 0.1);
+    audio.loops.drive.src.playbackRate.setTargetAtTime(pitch, t, 0.1);
+    audio.loops.idle.gain.gain.setTargetAtTime(!live ? 0 : gas ? 0.12 : 0.5, t, 0.08);
+    audio.loops.drive.gain.gain.setTargetAtTime(!live ? 0 : gas ? 0.6 : Math.min(0.3, speed * 0.03), t, 0.08);
+  }
+  if (audio.music) audio.music.gain.gain.setTargetAtTime(save.sound ? MUSIC_LEVEL : 0, t, 0.3);
   audio.o1.frequency.setTargetAtTime(rev, t, 0.08);
   audio.o2.frequency.setTargetAtTime(rev / 2, t, 0.08);
   audio.filter.frequency.setTargetAtTime(gas ? 900 : 420, t, 0.1);
-  audio.engineGain.gain.setTargetAtTime(!on || !save.sound ? 0 : gas ? 0.085 : 0.035, t, 0.06);
+  audio.engineGain.gain.setTargetAtTime(!live || audio.loops ? 0 : gas ? 0.085 : 0.035, t, 0.06);
   audio.noise.gain.setTargetAtTime(!on || !save.sound || !game ? 0 : Math.min(0.05, game.slipRear * 0.006 + speed * 0.002), t, 0.08);
 }
 
@@ -161,19 +227,20 @@ function tick(now) {
   }
 }
 
+const LOST_SOUND = { melon: "melon_splat", jelly: "jelly_boing", milk: "milk_clink" };
 function drainEvents(g) {
   g.events.splice(0).forEach((ev) => {
     if (ev.type === "done") ev.at = g.truck.getPosition();
     world.react(ev);
-    if (ev.type === "coin") beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
-    else if (ev.type === "fuel") { beep(520, 0.12, "sine", 0.1); beep(780, 0.16, "sine", 0.1, 0.1); toast("Fuel!", 700); }
-    else if (ev.type === "lost") { thud(0.6); toast("Cargo lost!", 800); }
-    else if (ev.type === "broken") { beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
+    if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
+    else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
+    else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
+    else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
     else if (ev.type === "land") thud(Math.min(1, ev.air));
-    else if (ev.type === "pickup") { beep(660, 0.12, "triangle", 0.08); beep(880, 0.16, "triangle", 0.08, 0.1); toast("Loaded " + ev.items.length + " more!", 1100); }
+    else if (ev.type === "pickup") { play("pickup_load", 0.8) || (beep(660, 0.12, "triangle", 0.08), beep(880, 0.16, "triangle", 0.08, 0.1)); toast("Loaded " + ev.items.length + " more!", 1100); }
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
-    else if (ev.type === "ruined") toast("Cake toppled!", 900);
-    else if (ev.type === "splash") beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
+    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast("Cake toppled!", 900); }
+    else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
       const say = { wind: "Gusty! Mind the load", slick: g.regionIndex === 3 ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
       if (say) hint(say, 2600);
@@ -189,6 +256,8 @@ function startDelivery(delivery) {
   state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {};
   state.input.gas = state.input.brake = false;
   syncPedals();
+  engineLoops(save.truck);
+  setMusic("music_" + SH.REGIONS[delivery.region].id);
   world.reduceMotion = !save.shake;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
@@ -216,7 +285,7 @@ function coach(g) {
   }
   if (save.tutorial < 2 && !g.grounded() && g.airTime > 0.3 && !h.air) { h.air = true; hint("In the air: GAS tips the nose up, BRAKE tips it down"); }
   if (g.stuckTime > 3.5 && !h.stuck) { h.stuck = true; hint("Stuck? Hold BRAKE to back up, then take a run at it", 5000); }
-  if (!h.fuel && g.fuel / g.maxFuel < 0.22) { h.fuel = true; toast("Low fuel!", 1100); beep(330, 0.2, "square", 0.04); }
+  if (!h.fuel && g.fuel / g.maxFuel < 0.22) { h.fuel = true; toast("Low fuel!", 1100); play("low_fuel", 0.7) || beep(330, 0.2, "square", 0.04); }
 }
 
 function hud(g) {
@@ -297,8 +366,9 @@ function finishDelivery(g) {
       <button class="btn" data-act="garage">Garage</button>
     </div>`;
   veil.classList.add("on");
-  if (r.status === "done" || d.long) [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
-  else [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
+  engineLoops(null);
+  if (r.status === "done" || d.long) play("delivered", 0.9) || [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
+  else play("failed", 0.8) || [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
   $("drive").hidden = true;
 }
 function failTip(r) {
@@ -314,6 +384,7 @@ function toMenu(screen) {
   veil.classList.remove("on");
   driveEl.hidden = true;
   state.mode = "menu"; state.game = null; state.screen = screen || "home";
+  engineLoops(null); setMusic("music_menu");
   engineSound(null, false);
   renderScreen();
   kick();
@@ -460,7 +531,7 @@ ui.addEventListener("click", (e) => {
     if (!save.trucks.includes(id)) {
       if (save.coins < spec.cost) return;
       save.coins -= spec.cost; save.trucks.push(id);
-      beep(880, 0.2, "triangle", 0.08);
+      play("buy", 0.8) || beep(880, 0.2, "triangle", 0.08);
     }
     save.truck = id;
     checkGoals(null); persist();
@@ -470,14 +541,14 @@ ui.addEventListener("click", (e) => {
     const id = b.dataset.up, cost = SH.upgradeCost(level(id));
     if (cost != null && save.coins >= cost) {
       save.coins -= cost; save.upgrades[id] = level(id) + 1;
-      beep(740, 0.14, "triangle", 0.08);
+      play("buy", 0.8) || beep(740, 0.14, "triangle", 0.08);
       checkGoals(null); persist(); renderScreen();
     }
     return;
   }
   if ((b = t("[data-set]"))) {
     const group = b.dataset.set, v = b.dataset.val;
-    if (group === "sound") { save.sound = v === "1"; if (save.sound) ensureAudio(); else engineSound(null, false); }
+    if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || "music_menu"); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
     if (group === "shake") save.shake = v === "1";
     if (group === "quality") { save.quality = v; world && world.setQuality(v); }
     persist();
@@ -495,5 +566,11 @@ if (!world) {
 } else {
   renderScreen();
   kick();
+  // Authored models and sounds arrive in the background. The menu truck is
+  // rebuilt once they are in; a delivery already under way keeps what it has.
+  loadAssets((a) => {
+    decodeSounds();
+    if (a.done && Object.keys(a.models).length && state.mode === "menu") refreshShowcase();
+  });
 }
-window.__snackHaul = { state, save: () => save, world: () => world, kick, startDelivery, finishDelivery, SH };
+window.__snackHaul = { state, save: () => save, world: () => world, kick, startDelivery, finishDelivery, SH, assets: Assets, audio };

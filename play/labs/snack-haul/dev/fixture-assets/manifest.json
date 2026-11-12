@@ -1,0 +1,18 @@
+{
+ "version": "ea4fd425e2",
+ "files": [
+  "audio/engine/pickup_drive.ogg",
+  "audio/engine/pickup_idle.ogg",
+  "audio/sfx/coin.ogg",
+  "audio/sfx/crate_thud.ogg",
+  "audio/sfx/delivered.ogg",
+  "models/cargo/cargo_crate.glb",
+  "models/cargo/cargo_eggs_broken.glb",
+  "models/cargo/cargo_eggs.glb",
+  "models/driver/corgi_driver.glb",
+  "models/props/oak.glb",
+  "models/road/coin.glb",
+  "models/trucks/truck_pickup.glb",
+  "models/wheels/wheel_pickup.glb"
+ ]
+}
