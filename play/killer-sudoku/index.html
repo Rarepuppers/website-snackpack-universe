@@ -254,6 +254,14 @@
         <img class="game-icon" src="../tiles/atlas-quest.svg" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
         <h3>Atlas Quest</h3>
       </a>
+      <a class="game-tile" href="../sokoban/">
+        <picture><source srcset="../tiles/sokoban.webp" type="image/webp"><img class="game-icon" src="../tiles/sokoban.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
+        <h3>Sokoban</h3>
+      </a>
+      <a class="game-tile" href="../chess-puzzles/">
+        <picture><source srcset="../tiles/chess-puzzles.webp" type="image/webp"><img class="game-icon" src="../tiles/chess-puzzles.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
+        <h3>Chess Puzzles</h3>
+      </a>
       <a class="game-tile" href="../freecell/">
         <picture><source srcset="../tiles/freecell.webp" type="image/webp"><img class="game-icon" src="../tiles/freecell.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
         <h3>FreeCell</h3>
@@ -269,14 +277,6 @@
       <a class="game-tile" href="../golf-solitaire/">
         <picture><source srcset="../tiles/golf-solitaire.webp" type="image/webp"><img class="game-icon" src="../tiles/golf-solitaire.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
         <h3>Golf Solitaire</h3>
-      </a>
-      <a class="game-tile" href="../mahjong/">
-        <picture><source srcset="../tiles/mahjong.webp" type="image/webp"><img class="game-icon" src="../tiles/mahjong.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
-        <h3>Mahjong Solitaire</h3>
-      </a>
-      <a class="game-tile" href="../checkers/">
-        <picture><source srcset="../tiles/checkers.webp" type="image/webp"><img class="game-icon" src="../tiles/checkers.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
-        <h3>Checkers</h3>
       </a>
     </div>
     <p class="related-games-more"><a class="text-link" href="../">See all games in the arcade →</a></p>
@@ -329,13 +329,18 @@ const PACKS = [
     { key: 'medium-plus', title: 'Steady Cages Plus', sub: '12 more steady grids — Pro', pro: true, puzzles: MEDIUM.slice(8) },
     { key: 'hard', title: 'Pure Killer', sub: 'No starting digits — Pro', pro: true, puzzles: HARD },
 ];
+/** Undo frames kept. A save holds them all, so an uncapped list grows with every tap. */
+const MAX_UNDO_HISTORY = 120;
+const validNotes = (notes) => notes === undefined || (Array.isArray(notes) && notes.length === 81
+    && Array.from(notes).every(mask => Number.isInteger(mask) && mask >= 0 && mask <= 1022 && (mask & 1) === 0));
 function validKillerState(value, p) {
     if (!value || typeof value !== 'object')
         return false;
     const st = value;
     if (!Array.isArray(st.values) || st.values.length !== 81
         || !Array.from(st.values).every(v => Number.isInteger(v) && v >= 0 && v <= 9)
-        || !Array.isArray(st.given) || st.given.length !== 81 || !Array.from(st.given).every(v => typeof v === 'boolean'))
+        || !Array.isArray(st.given) || st.given.length !== 81 || !Array.from(st.given).every(v => typeof v === 'boolean')
+        || !validNotes(st.notes))
         return false;
     if (!p)
         return true;
@@ -359,6 +364,36 @@ function cageOfMap(p) {
 const rowOf = (i) => Math.floor(i / 9);
 const colOf = (i) => i % 9;
 const boxOf = (i) => Math.floor(rowOf(i) / 3) * 3 + Math.floor(colOf(i) / 3);
+/** Every other cell sharing a row, column or box with cell i. */
+function peerCells(i) {
+    const out = [];
+    for (let c = 0; c < 81; c++) {
+        if (c !== i && (rowOf(c) === rowOf(i) || colOf(c) === colOf(i) || boxOf(c) === boxOf(i)))
+            out.push(c);
+    }
+    return out;
+}
+function noteDigits(st, i) {
+    const mask = st.notes?.[i] ?? 0;
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((d) => mask & (1 << d));
+}
+/** Pencil a digit in or out. Givens and filled cells can't hold notes. */
+function toggleNote(st, i, d) {
+    if (!validKillerState(st) || !Number.isInteger(i) || i < 0 || i >= 81 || !Number.isInteger(d) || d < 1 || d > 9)
+        return st;
+    if (st.given[i] || st.values[i] !== 0)
+        return st;
+    const notes = st.notes ? st.notes.slice() : new Array(81).fill(0);
+    notes[i] ^= 1 << d;
+    return { ...st, notes };
+}
+function clearNotes(st, i) {
+    if (!st.notes?.[i])
+        return st;
+    const notes = st.notes.slice();
+    notes[i] = 0;
+    return { ...st, notes };
+}
 function setValue(st, i, v) {
     if (!validKillerState(st) || !Number.isInteger(i) || i < 0 || i >= 81 || !Number.isInteger(v) || v < 0 || v > 9)
         return st;
@@ -366,7 +401,16 @@ function setValue(st, i, v) {
         return st;
     const values = st.values.slice();
     values[i] = values[i] === v ? 0 : v;
-    return { values, given: st.given };
+    if (!st.notes)
+        return { values, given: st.given };
+    // A placed digit answers its own cell's notes and rules itself out of its peers'.
+    const notes = st.notes.slice();
+    if (values[i] !== 0) {
+        notes[i] = 0;
+        for (const peer of peerCells(i))
+            notes[peer] &= ~(1 << values[i]);
+    }
+    return { values, given: st.given, notes };
 }
 /** Cells currently breaking a rule (duplicate in unit, or a bad cage). */
 function conflictCells(st, p) {
