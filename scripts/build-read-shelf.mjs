@@ -224,7 +224,7 @@ function nextBlock(i) {
 
 // The homepage section: a few books spread across the reading path, so the
 // first thing a parent sees is something they can read now, not an app page.
-const HOME_FEATURED = ["pip-sits", "hen-berrys-digraph-dash", "panda-cake-discovers-her-abcs", "luckybugs-art-gallery", "panda-cakes-market-basket", "animal-architects"];
+const HOME_FEATURED = ["pip-sits", "hen-berrys-digraph-dash", "panda-cake-discovers-her-abcs", "polly-roger-and-the-red-wings-of-copan", "rosas-copan-report", "animal-architects"];
 
 function homeBlock() {
   const words = (n) => (NUMBER_WORDS[n] ?? String(n)).toLowerCase();
