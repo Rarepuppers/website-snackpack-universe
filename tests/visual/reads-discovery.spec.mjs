@@ -59,12 +59,12 @@ test('recommendations avoid quiet-pair trap and preserve stage progression',()=>
  expect(nextChoices([{slug:'x'},{slug:'y'}],'x').map(x=>x.book.slug)).toEqual(['y']);
  expect(nextChoices([{slug:'x'}],'x')).toEqual([]);expect(nextChoices(shelf,'missing')).toEqual([]);
 });
-test('homepage features six shelf groups with full images and usable phone/zoom layout',async({page})=>{
+test('homepage features six shelf books with full images and usable phone/zoom layout',async({page})=>{
  for(const width of [320,390,1280]){
   await page.setViewportSize({width,height:900});await page.goto('/');const grid=page.locator('.storybook-grid');await grid.scrollIntoViewIfNeeded();
   await expect(grid.locator('a')).toHaveCount(6);
   const links=await grid.locator('a').evaluateAll(xs=>xs.map(a=>a.getAttribute('href')));
-  expect(links).toEqual(['/read/pip-sits/','/read/hen-berrys-digraph-dash/','/read/panda-cake-discovers-her-abcs/','/read/luckybugs-art-gallery/','/read/panda-cakes-market-basket/','/read/animal-architects/']);
+  expect(links).toEqual(['/read/pip-sits/','/read/hen-berrys-digraph-dash/','/read/panda-cake-discovers-her-abcs/','/read/polly-roger-and-the-red-wings-of-copan/','/read/rosas-copan-report/','/read/animal-architects/']);
   for(const a of await grid.locator('a').all()){await a.focus();await expect(a).toBeFocused();await expect.poll(()=>a.locator('img').evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);expect(await a.locator('img').evaluate(i=>getComputedStyle(i).objectFit)).toBe('contain');}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.evaluate(()=>document.documentElement.style.zoom='2');expect(await grid.evaluate(g=>[...g.querySelectorAll('a')].every(a=>a.getBoundingClientRect().right<=innerWidth+1))).toBe(true);
