@@ -11,7 +11,7 @@ Shipped changes are in [release notes](docs/RELEASE-NOTES.md).
 exported app data, allowing importer quote/dash typography. Both app
 quizzes used by all 29 published Spelling books match the website. Every PDF contains
 its story prose. The full current shelf and both new music/flight books are covered by
-[this batch’s delivery record](docs/READS-DISCOVERY-DELIVERY-2026-10-20.md). There
+[this batch’s delivery record](docs/archive/READS-DISCOVERY-DELIVERY-2026-10-20.md). There
 is no text re-import or PDF rebuild backlog. This is a source/parity audit,
 not a fresh visual or scientific fact review of every illustration/sentence.
 
@@ -56,7 +56,7 @@ source commit contains the relevant changes; no new build was run here.
 - Release inclusion checklist is monorepo
   `docs/READS-APP-RELEASE-CHECKLIST-2026-10-20.md`. This batch does not build apps.
 
-See [delivery and validation](docs/READS-QUALITY-DELIVERY-2026-10-20.md).
+See [delivery and validation](docs/archive/READS-QUALITY-DELIVERY-2026-10-20.md).
 
 ## Earlier improvements - 19 October
 
@@ -79,7 +79,7 @@ See [delivery and validation](docs/READS-QUALITY-DELIVERY-2026-10-20.md).
   a future style-unification commission would involve 14 pages and must
   preserve the vest/button/pocket plot rather than replacing two covers.
 
-Full implementation/verification: [delivery record](docs/READS-POLISH-DELIVERY-2026-10-19.md).
+Full implementation/verification: [delivery record](docs/archive/READS-POLISH-DELIVERY-2026-10-19.md).
 Publication commands and safeguards: [workflow](docs/READING-PUBLICATION.md).
 The accepted detailed plan is monorepo `docs/READS-NEXT-BATCH-PLAN-2026-10-19.md`.
 
@@ -91,7 +91,7 @@ The accepted detailed plan is monorepo `docs/READS-NEXT-BATCH-PLAN-2026-10-19.md
 - Pork-ulele's Picnic Song and Captain Beakon's Air Show pass all eight page reviews and four quizzes. Seven pictures retained, one corrected proof delivered app-first. Colour wording corrected app-first; exact imports and both rendered five-page PDFs accepted.
 - Decodable importer work and permanent source/art/PDF guards are complete; six-book round-trip verification remains required on publication.
 
-See [current delivery](docs/READS-DISCOVERY-DELIVERY-2026-10-20.md). The existing 15 November gate is unchanged.
+See [current delivery](docs/archive/READS-DISCOVERY-DELIVERY-2026-10-20.md). The existing 15 November gate is unchanged.
 
 ## Work remaining now
 
@@ -109,7 +109,7 @@ Mark reassigned the website handoff to Codex on 19 October. Blanket Fort,
 Library Day, Moonlight Story and Garden Race are now imported with the app
 text, corrected quizzes, reviewed art, four new printable PDFs, responsive
 images, social cards and shelf/offline entries. Publication verification is
-recorded in `docs/SHORT-READS-PUBLICATION-2026-10-19.md`. App native builds
+recorded in `docs/archive/SHORT-READS-PUBLICATION-2026-10-19.md`. App native builds
 and submissions remain with Claude unless Mark assigns a specific release.
 
 ## Deferred until 15 November 2026

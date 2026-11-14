@@ -79,7 +79,7 @@ story/questions/answers, collection source PDF hashes/text and generated
 discovery output. Mutation tests against real artifacts reject changed prose,
 quiz, art, PDF and missing companion sources. CI explicitly labels evidence-
 only verification; it does not claim current app parity without the apps.
-See [the publication workflow](READING-PUBLICATION.md).
+See [the publication workflow](../READING-PUBLICATION.md).
 
 ## Acceptance evidence
 
