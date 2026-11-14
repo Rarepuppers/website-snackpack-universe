@@ -235,9 +235,9 @@ const BOOKS = {
       "Rosa, a young scarlet macaw in a white shirt and blue skirt, holds up her open notebook at the front of a cosy classroom.",
       "A wide green valley with a winding river and hills, with small grey Maya ruins among very tall trees.",
       "Rosa stands small on the grass looking up at the steep, carved Hieroglyphic Stairway under its protective canopy, with seated stone figures, an altar and a carved stela.",
-      "Rosa and Polly Roger stand on the grass of the Copán ball court, looking up at a weathered stone macaw head.",
+      "Rosa stands alone on the grass of the Copán ball court, sketching one of three weathered stone macaw heads along the top of the sloping wall.",
       "A wild scarlet macaw holds a piece of fruit beside its nest hole high in a tall tree above the forest.",
-      "Two macaw chicks peep out of a wooden nest box high in a tree as Rosa and Polly watch from a branch."
+      "Back in the classroom, Rosa points to a painting of red macaws flying over Copán while Panda-Cake, Hop-Tart and Ted-E-Bear listen, Hop-Tart with a paw raised."
     ]
   },
 

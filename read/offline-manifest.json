@@ -1,7 +1,7 @@
 {
  "version": 2,
  "books": 58,
- "bytes": 57471514,
+ "bytes": 57445362,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -290,8 +290,8 @@
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.webp",
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.webp"
    ],
-   "html_sha256": "3fc9ec1e0d4d74d39bba7b44f55ae347404f1f9542fdbc30308f83b48611125f",
-   "bytes": 1432460
+   "html_sha256": "bd3c0b1a156067f3fb13a0411e2d43b0af7d9128e7e960d31d97f2739be0bebc",
+   "bytes": 1433510
   },
   {
    "slug": "rosas-copan-report",
@@ -305,8 +305,8 @@
     "/read/rosas-copan-report/pages/rosa-copan-report-p5.webp",
     "/read/rosas-copan-report/pages/rosa-copan-report-p6.webp"
    ],
-   "html_sha256": "d5672f18c5b6a8dee2f64f3629454121cafae3389301c8eed4c1f1b035067a9c",
-   "bytes": 1458832
+   "html_sha256": "8f3f5bbb47e82750f9651e9d1b5bd8497e092ffd215320881c4863bde19ad459",
+   "bytes": 1431630
   },
   {
    "slug": "baby-bulldogs-at-the-playground",
