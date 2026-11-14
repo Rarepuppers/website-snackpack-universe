@@ -1,6 +1,6 @@
 // Snack Haul app shell: saves, menus, audio, the driving loop and progression.
 import { World3D } from "./render3d.js";
-import { Assets, loadAssets, soundData } from "./assets.js";
+import { Assets, loadAssets, soundData, has, url, hasModel } from "./assets.js";
 
 const SH = window.SnackHaul;
 const KEY = "sp_snackhaul_v1";
@@ -10,7 +10,7 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 // ════ Save ════════════════════════════════════════════════════════
 function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-const DEFAULTS = { coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} } };
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} } };
 const save = Object.assign({}, DEFAULTS, load());
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0 }, save.stats);
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* plays on without storage */ } }
@@ -46,6 +46,13 @@ const GOALS = [
   { id: "done", icon: "🏆", name: "Haulage Legend", desc: "Finish every route.", coins: 300, test: () => SH.DELIVERIES.every((d) => save.stars[d.id] > 0) }
 ];
 function regionStars(r) { return SH.regionStars(r, save.stars); }
+
+// ════ Authored images: each falls back to the emoji or text it replaces ═
+const ico = (name, fallback = "", cls = "ico") => (has("ui/" + name + ".webp") ? `<img class="${cls}" src="${url("ui/" + name + ".webp")}" alt="">` : fallback);
+const artUrl = (name) => (has("art/" + name + ".webp") ? url("art/" + name + ".webp") : "");
+const DRIVERS = [["corgi", "Corgi-on-the-Cob"], ["barkbq", "Bark-B-Q"], ["waffle", "Belgian Waffle"], ["booklava", "Booklava"]];
+const TOPPERS = [["", "None"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
+function look() { return { driver: save.driver, topper: save.topper, upgrades: save.upgrades }; }
 
 // ════ Contracts: three jobs a day, paid once each ═════════════════
 function jobs() {
@@ -110,6 +117,7 @@ function decodeSounds() {
         audio.buffers[name] = buffer;
         if (audio.wantMusic && !audio.music) setMusic(audio.wantMusic);
         if (audio.wantEngine && !audio.loops) engineLoops(audio.wantEngine);
+        if (audio.wantRoad && name.startsWith("road/") && !(audio.road || {})[name.slice(5)]) roadLoops(audio.wantRoad);
       }, () => {});
     } catch (e) { /* an undecodable file falls back to the synthesiser */ }
   });
@@ -153,6 +161,20 @@ function setMusic(name) {
   audio.musicName = name;
 }
 const MUSIC_LEVEL = 0.32;
+// Tyre noise by region, swapped on bridges and ice, plus a quiet backdrop.
+const SURFACE = { bakery: "road_gravel", dunes: "road_sand", harbour: "road_sand", frost: "road_snow", chilli: "road_gravel", market: "road_cobble" };
+const AMBIENT = { dunes: "wind", harbour: "waves", frost: "wind", market: "night" };
+function roadLoops(regionId) {
+  audio.wantRoad = regionId;
+  if (!audio.ctx) return;
+  Object.values(audio.road || {}).forEach(stopLoop);
+  audio.road = {}; audio.roadRegion = regionId;
+  if (!regionId) return;
+  const start = (name, level) => { if (!audio.buffers["road/" + name] || audio.road[name]) return; const l = source("road/" + name, true, 0); l.level = level; l.src.start(); audio.road[name] = l; };
+  [SURFACE[regionId], "road_planks", "road_ice"].forEach((name) => start(name, 0));
+  if (AMBIENT[regionId]) { start(AMBIENT[regionId], 0.22); if (audio.road[AMBIENT[regionId]]) audio.road[AMBIENT[regionId]].ambient = true; }
+}
+let lastSkid = 0, lastTick = 0;
 function beep(freq, dur, type, vol, delay = 0) {
   if (!save.sound || !audio.ctx) return;
   const o = audio.ctx.createOscillator(), g = audio.ctx.createGain(), t = audio.ctx.currentTime + delay;
@@ -174,11 +196,22 @@ function engineSound(game, on) {
     audio.loops.drive.gain.gain.setTargetAtTime(!live ? 0 : gas ? 0.6 : Math.min(0.3, speed * 0.03), t, 0.08);
   }
   if (audio.music) audio.music.gain.gain.setTargetAtTime(save.sound ? MUSIC_LEVEL : 0, t, 0.3);
+  let tyres = false;
+  if (audio.road) {
+    const zone = game && game.zone ? game.zone.type : "", under = zone === "bridge" ? "road_planks" : zone === "slick" ? "road_ice" : SURFACE[audio.roadRegion];
+    const rolling = live && game && game.grounded() ? Math.min(0.34, speed * 0.035) : 0;
+    Object.keys(audio.road).forEach((name) => {
+      const l = audio.road[name];
+      if (!l.ambient) tyres = true;
+      l.gain.gain.setTargetAtTime(l.ambient ? (live ? l.level : 0) : name === under ? rolling : 0, t, 0.12);
+    });
+  }
+  if (live && game && game.brakeOn && speed > 5 && game.grounded() && t - lastSkid > 1.4) { lastSkid = t; play("brake_skid", Math.min(0.5, speed * 0.05)); }
   audio.o1.frequency.setTargetAtTime(rev, t, 0.08);
   audio.o2.frequency.setTargetAtTime(rev / 2, t, 0.08);
   audio.filter.frequency.setTargetAtTime(gas ? 900 : 420, t, 0.1);
   audio.engineGain.gain.setTargetAtTime(!live || audio.loops ? 0 : gas ? 0.085 : 0.035, t, 0.06);
-  audio.noise.gain.setTargetAtTime(!on || !save.sound || !game ? 0 : Math.min(0.05, game.slipRear * 0.006 + speed * 0.002), t, 0.08);
+  audio.noise.gain.setTargetAtTime(!on || !save.sound || !game || tyres ? 0 : Math.min(0.05, game.slipRear * 0.006 + speed * 0.002), t, 0.08);
 }
 
 // ════ World ═══════════════════════════════════════════════════════
@@ -194,6 +227,7 @@ function showcaseRegion() { return state.screen === "routes" ? state.regionTab :
 function refreshShowcase() {
   if (!world) return;
   world.showView = state.screen === "home" ? "home" : "panel";
+  world.look = look();
   world.showcase(save.truck, showcaseRegion(), railFor(save.truck));
 }
 
@@ -236,7 +270,7 @@ function drainEvents(g) {
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
     else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
-    else if (ev.type === "land") thud(Math.min(1, ev.air));
+    else if (ev.type === "land") { thud(Math.min(1, ev.air)); if (ev.air > 0.35 && g.live()) play("crate_thud", Math.min(0.7, ev.air * 0.6)); }
     else if (ev.type === "pickup") { play("pickup_load", 0.8) || (beep(660, 0.12, "triangle", 0.08), beep(880, 0.16, "triangle", 0.08, 0.1)); toast("Loaded " + ev.items.length + " more!", 1100); }
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
     else if (ev.type === "ruined") { play("cake_squash", 0.8); toast("Cake toppled!", 900); }
@@ -244,6 +278,8 @@ function drainEvents(g) {
     else if (ev.type === "zone") {
       const say = { wind: "Gusty! Mind the load", slick: g.regionIndex === 3 ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
       if (say) hint(say, 2600);
+      const sound = { bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
+      if (sound) play(sound, 0.6);
     }
   });
 }
@@ -258,6 +294,9 @@ function startDelivery(delivery) {
   syncPedals();
   engineLoops(save.truck);
   setMusic("music_" + SH.REGIONS[delivery.region].id);
+  roadLoops(SH.REGIONS[delivery.region].id);
+  state.hudLoad = state.hudCoins = null;
+  world.look = look();
   world.reduceMotion = !save.shake;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
@@ -290,9 +329,10 @@ function coach(g) {
 
 function hud(g) {
   const live = g.live();
-  $("load").textContent = "📦 " + live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
+  const loadText = live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
+  if (state.hudLoad !== loadText) { state.hudLoad = loadText; $("load").innerHTML = ico("load", "📦") + " " + loadText; }
   $("load").className = live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
-  $("coins").textContent = "🪙 " + g.coinsTaken;
+  if (state.hudCoins !== g.coinsTaken) { state.hudCoins = g.coinsTaken; $("coins").innerHTML = ico("coin", "🪙") + " " + g.coinsTaken; }
   $("clock").textContent = g.delivery.long ? Math.max(0, Math.round(g.truck.getPosition().x - 8)) + " m" : Math.floor(g.time) + "s / " + g.par + "s";
   const f = g.fuel / g.maxFuel;
   $("fuel").style.width = (f * 100).toFixed(1) + "%";
@@ -302,7 +342,11 @@ function hud(g) {
   const showStop = loading || (g.status === "driving" && g.inZone());
   $("stop").hidden = !showStop;
   $("stop").firstElementChild.textContent = loading ? "Stop to load" : "Stop to unload";
-  if (showStop) $("stopbar").style.width = (g.stopProgress() * 100).toFixed(0) + "%";
+  if (showStop) {
+    const progress = g.stopProgress();
+    $("stopbar").style.width = (progress * 100).toFixed(0) + "%";
+    if (progress > 0.02 && progress < 1 && g.time - lastTick > 0.3) { lastTick = g.time; play("stop_tick", 0.35, 0.9 + progress * 0.4); }
+  }
 }
 
 function finishDelivery(g) {
@@ -350,15 +394,15 @@ function finishDelivery(g) {
   const canAdvance = r.status === "done" && next;
   const stars = "★".repeat(r.stars) + "☆".repeat(3 - r.stars);
   sheet.innerHTML = `<h2>${d.long ? "Long Haul: " + r.metres + " m" : r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
-    ${d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0)}</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c}</span>`).join("")}</div>`}
+    ${d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0)}</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c === "★" ? ico("star_on", c, "ico star") : ico("star_off", c, "ico star")}</span>`).join("")}</div>`}
     ${why && !d.long ? `<p>${esc(why)}</p>` : ""}
     ${r.missedPickup ? "<p>You drove past the pickup stop, so those loads were left behind.</p>" : ""}
-    ${r.status === "done" && !d.long ? `<p>${r.time.toFixed(1)}s${medalName ? ", " + medalName + " medal" : ""}. Gold ${r.medals.gold}s, silver ${r.medals.silver}s, bronze ${r.medals.bronze}s</p>` : ""}
-    ${list ? `<ul class="lines">${list}<li class="total"><span>Earned</span><span>🪙 ${r.earned}</span></li></ul>` : ""}
-    ${streakLine ? `<div class="unlocked">📅 ${esc(streakLine)}</div>` : ""}
-    ${newRegion ? `<div class="unlocked">🗺️ New region: ${esc(newRegion)}</div>` : ""}
-    ${done.map((c) => `<div class="unlocked">📋 ${esc(c.text)} +${c.pay}</div>`).join("")}
-    ${goals.map((g2) => `<div class="unlocked">${g2.icon} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
+    ${r.status === "done" && !d.long ? `<p>${r.time.toFixed(1)}s${medalName ? ", " + ico("medal_" + medalName.toLowerCase()) + " " + medalName + " medal" : ""}. Gold ${r.medals.gold}s, silver ${r.medals.silver}s, bronze ${r.medals.bronze}s</p>` : ""}
+    ${list ? `<ul class="lines">${list}<li class="total"><span>Earned</span><span>${ico("coin", "🪙")} ${r.earned}</span></li></ul>` : ""}
+    ${streakLine ? `<div class="unlocked">${ico("daily", "📅")} ${esc(streakLine)}</div>` : ""}
+    ${newRegion ? `<div class="unlocked">${ico("map", "🗺️")} New region: ${esc(newRegion)}</div>` : ""}
+    ${done.map((c) => `<div class="unlocked">${ico("contracts", "📋")} ${esc(c.text)} +${c.pay}</div>`).join("")}
+    ${goals.map((g2) => `<div class="unlocked">${ico("goal_" + g2.id, g2.icon)} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
     ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
     <div class="row" style="margin-top:8px">
       ${canAdvance ? '<button class="btn primary" data-act="next">Next delivery</button>' : ""}
@@ -366,7 +410,11 @@ function finishDelivery(g) {
       <button class="btn" data-act="garage">Garage</button>
     </div>`;
   veil.classList.add("on");
-  engineLoops(null);
+  engineLoops(null); roadLoops(null);
+  if (r.status === "done" && !d.long) for (let i = 0; i < r.stars; i++) setTimeout(() => play("star", 0.6, 1 + i * 0.08), 500 + i * 170);
+  if (r.medal) setTimeout(() => play("medal", 0.7), 1150);
+  if (goals.length) setTimeout(() => play("goal", 0.7), 1500);
+  if (done.length) setTimeout(() => play("contract_done", 0.7), 1800);
   if (r.status === "done" || d.long) play("delivered", 0.9) || [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
   else play("failed", 0.8) || [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
   $("drive").hidden = true;
@@ -384,7 +432,7 @@ function toMenu(screen) {
   veil.classList.remove("on");
   driveEl.hidden = true;
   state.mode = "menu"; state.game = null; state.screen = screen || "home";
-  engineLoops(null); setMusic("music_menu");
+  engineLoops(null); roadLoops(null); setMusic("music_menu");
   engineSound(null, false);
   renderScreen();
   kick();
@@ -429,7 +477,10 @@ function bindPedal(button, name) {
 }
 bindPedal($("gas"), "gas"); bindPedal($("brake"), "brake");
 const KEYS = { ArrowRight: "gas", KeyD: "gas", ArrowLeft: "brake", KeyA: "brake" };
+const HORNS = { pickup: "horn_pickup", van: "horn_pickup", hauler: "horn_monster", monster: "horn_monster", tuktuk: "horn_tuktuk", buggy: "horn_tuktuk" };
+function horn() { if (state.mode === "drive") play(HORNS[save.truck] || "horn_pickup", 0.7); }
 window.addEventListener("keydown", (e) => {
+  if (e.code === "KeyH" && !e.repeat) horn();
   if (KEYS[e.code] && state.mode === "drive") { state.input[KEYS[e.code]] = true; syncPedals(); e.preventDefault(); }
   if (e.code === "Escape") pause();
 });
@@ -440,35 +491,36 @@ function renderScreen() {
   ({ home: homeScreen, routes: routesScreen, garage: garageScreen, goals: goalsScreen, settings: settingsScreen })[state.screen]();
   refreshShowcase();
 }
-const purse = () => `<div class="purse"><span class="pill">🪙 ${save.coins}</span><span class="pill">★ ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
+const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
 const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">← Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
 
 function homeScreen() {
   const n = nextRoute(), today = localDate(), doneToday = save.daily.last === today;
   ui.innerHTML = `<div class="home">
-    <div class="topbar"><div class="brand"><h1>Snack Haul</h1><p>Get the load there in one piece.</p></div>${purse()}</div>
+    <div class="topbar"><div class="brand"><h1>${artUrl("logo") ? `<img class="logo" src="${artUrl("logo")}" alt="Snack Haul">` : "Snack Haul"}</h1><p>Get the load there in one piece.</p></div>${purse()}</div>
     <div class="menu">
       <button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}</small></button>
-      <button class="btn" data-nav="daily">Daily delivery<small>${doneToday ? "Done today · " + save.daily.streak + "-day streak" : "+" + SH.BALANCE.dailyPay + " coins"}</small></button>
-      <button class="btn" data-nav="long">Long Haul<small>${save.long[save.truck] ? "Best " + save.long[save.truck] : "How far can you get?"}</small></button>
+      <button class="btn" data-nav="daily">${ico("daily")} Daily delivery<small>${doneToday ? "Done today · " + save.daily.streak + "-day streak" : "+" + SH.BALANCE.dailyPay + " coins"}</small></button>
+      <button class="btn" data-nav="long">${ico("long_haul")} Long Haul<small>${save.long[save.truck] ? "Best " + save.long[save.truck] : "How far can you get?"}</small></button>
       <div class="dock">
-        <button class="btn" data-nav="routes">Routes</button>
-        <button class="btn" data-nav="garage">Garage</button>
-        <button class="btn" data-nav="goals">Goals</button>
-        <button class="btn" data-nav="settings" aria-label="Settings">⚙️</button>
+        <button class="btn" data-nav="routes">${ico("routes")} Routes</button>
+        <button class="btn" data-nav="garage">${ico("garage")} Garage</button>
+        <button class="btn" data-nav="goals">${ico("goals")} Goals</button>
+        <button class="btn" data-nav="settings" aria-label="Settings">${ico("settings", "⚙️")}</button>
       </div>
     </div></div>`;
 }
 
 function routesScreen() {
-  const tabs = SH.REGIONS.map((r, i) => `<button class="tab" data-region="${i}" aria-pressed="${state.regionTab === i}"${regionOpen(i) ? "" : " disabled"}>${esc(r.name)}${regionOpen(i) ? "" : " 🔒"}</button>`).join("");
+  const tabs = SH.REGIONS.map((r, i) => `<button class="tab" data-region="${i}" aria-pressed="${state.regionTab === i}"${regionOpen(i) ? "" : " disabled"}>${ico("region_" + r.id)} ${esc(r.name)}${regionOpen(i) ? "" : " " + ico("lock", "🔒")}</button>`).join("");
   const region = SH.REGIONS[state.regionTab];
   const cells = SH.DELIVERIES.filter((d) => d.region === state.regionTab).map((d) => {
     const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3;
     return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(region.name)} route ${d.index + 1}, ${st} stars">
-      <b>${d.index + 1}</b><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small><em>${md ? ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
+      <b>${d.index + 1}</b><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small><em>${md ? ico("medal_" + ["", "bronze", "silver", "gold"][md]) + " " + ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
+    ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
     <p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills would be free and the rest would be a one-time unlock.</p></section>`;
 }
@@ -477,22 +529,29 @@ function garageScreen() {
   const trucks = SH.TRUCKS.map((t) => {
     const owned = save.trucks.includes(t.id), selected = save.truck === t.id;
     return `<button class="truck" data-truck="${t.id}" aria-pressed="${selected}"${!owned && save.coins < t.cost ? " disabled" : ""}>
-      <b>${esc(t.name)}</b><small>${esc(t.desc)}</small><span class="price">${selected ? "Driving" : owned ? "Owned" : "🪙 " + t.cost}</span></button>`;
+      ${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small><span class="price">${selected ? "Driving" : owned ? "Owned" : ico("coin", "🪙") + " " + t.cost}</span></button>`;
   }).join("");
   const ups = SH.UPGRADES.map((u) => {
     const lv = level(u.id), cost = SH.upgradeCost(lv);
-    return `<div class="up"><b>${u.icon} ${esc(u.name)}</b><span class="pips">${"●".repeat(lv)}${"○".repeat(SH.MAX_LEVEL - lv)}</span><small>${esc(u.desc)}</small>
-      ${cost == null ? '<button class="btn" disabled>Max</button>' : `<button class="btn" data-up="${u.id}"${save.coins < cost ? " disabled" : ""}>🪙 ${cost}</button>`}</div>`;
+    return `<div class="up"><b>${ico("up_" + u.id, u.icon)} ${esc(u.name)}</b><span class="pips">${"●".repeat(lv)}${"○".repeat(SH.MAX_LEVEL - lv)}</span><small>${esc(u.desc)}</small>
+      ${cost == null ? '<button class="btn" disabled>Max</button>' : `<button class="btn" data-up="${u.id}"${save.coins < cost ? " disabled" : ""}>${ico("coin", "🪙")} ${cost}</button>`}</div>`;
   }).join("");
-  ui.innerHTML = `<section class="panel">${panelHead("Garage")}<h3 class="small">Trucks</h3><div class="tiles">${trucks}</div><h3 class="small">Upgrades</h3><p class="sub">These apply to every truck.</p>${ups}</section>`;
+  // Drivers and roof toppers appear once their models are delivered.
+  const pick = (kind, list, folder, suffix) => {
+    const have = list.filter(([id]) => id === "" || hasModel(folder + id + suffix));
+    if (have.length < 2) return "";
+    return `<div class="set"><b>${ico(kind)} ${kind === "driver" ? "Driver" : "Roof topper"}</b><div class="opts">${have.map(([id, name]) => `<button class="tab" data-look="${kind}" data-val="${id}" aria-pressed="${save[kind] === id}">${esc(name)}</button>`).join("")}</div></div>`;
+  };
+  const style = pick("driver", DRIVERS, "driver/", "_driver") + pick("topper", TOPPERS, "toppers/topper_", "");
+  ui.innerHTML = `<section class="panel">${panelHead("Garage")}<h3 class="small">Trucks</h3><div class="tiles">${trucks}</div>${style ? '<h3 class="small">Style</h3>' + style : ""}<h3 class="small">Upgrades</h3><p class="sub">These apply to every truck.</p>${ups}</section>`;
 }
 
 function goalsScreen() {
   const s = save.stats;
   const stats = [[s.deliveries, "Deliveries"], [s.crates, "Loads delivered"], [(s.metres / 1000).toFixed(1) + " km", "Distance"], [s.bestAir.toFixed(1) + "s", "Best air"], [(s.topSpeed * 3.6).toFixed(0) + " km/h", "Top speed"], [s.earned, "Coins earned"]]
     .map(([v, l]) => `<div><b>${v}</b><span>${esc(l)}</span></div>`).join("");
-  const work = jobs().map((c) => { const got = Math.min(c.goal, Math.floor(save.jobs.got[c.id] || 0)), paid = save.jobs.paid[c.id]; return `<div class="goal${paid ? " done" : ""}"><span class="ic">📋</span><b>${esc(c.text)}${paid ? " ✓" : ""}</b><small>${got} of ${c.goal} today</small><em>+${c.pay}</em></div>`; }).join("");
-  const list = GOALS.map((g) => `<div class="goal${save.achieved[g.id] ? " done" : ""}"><span class="ic">${g.icon}</span><b>${esc(g.name)}${save.achieved[g.id] ? " ✓" : ""}</b><small>${esc(g.desc)}</small><em>+${g.coins}</em></div>`).join("");
+  const work = jobs().map((c) => { const got = Math.min(c.goal, Math.floor(save.jobs.got[c.id] || 0)), paid = save.jobs.paid[c.id]; return `<div class="goal${paid ? " done" : ""}"><span class="ic">${ico("contracts", "📋", "ico badge")}</span><b>${esc(c.text)}${paid ? " ✓" : ""}</b><small>${got} of ${c.goal} today</small><em>+${c.pay}</em></div>`; }).join("");
+  const list = GOALS.map((g) => `<div class="goal${save.achieved[g.id] ? " done" : ""}"><span class="ic">${ico("goal_" + g.id, g.icon, "ico badge")}</span><b>${esc(g.name)}${save.achieved[g.id] ? " ✓" : ""}</b><small>${esc(g.desc)}</small><em>+${g.coins}</em></div>`).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Goals")}<div class="stats">${stats}</div><h3 class="small">Today's contracts</h3>${work}<h3 class="small">Goals</h3>${list}</section>`;
 }
 
@@ -511,6 +570,8 @@ ui.addEventListener("click", (e) => {
   const t = (s) => e.target.closest(s);
   let b;
   ensureAudio();
+  if ((b = t("button")) && !b.disabled) play("button", 0.45);
+  if ((b = t("[data-look]"))) { save[b.dataset.look] = b.dataset.val; persist(); return renderScreen(); }
   if ((b = t("[data-nav]"))) {
     const nav = b.dataset.nav;
     if (nav === "play") return startDelivery(nextRoute());
@@ -570,7 +631,13 @@ if (!world) {
   // rebuilt once they are in; a delivery already under way keeps what it has.
   loadAssets((a) => {
     decodeSounds();
-    if (a.done && Object.keys(a.models).length && state.mode === "menu") refreshShowcase();
+    if (!a.done) return;
+    // Icons, portraits and models are in: redraw the menu and dress the pedals.
+    if (has("ui/gas.webp") && !$("gas").querySelector("img")) $("gas").insertAdjacentHTML("afterbegin", ico("gas", "", "ico pedal-ico"));
+    if (has("ui/brake.webp") && !$("brake").querySelector("img")) $("brake").insertAdjacentHTML("afterbegin", ico("brake", "", "ico pedal-ico"));
+    if (has("ui/pause.webp")) $("pause").innerHTML = ico("pause", "II");
+    world.assetStamp = a.version || String(a.files.size);
+    if (a.files.size && state.mode === "menu") renderScreen();
   });
 }
 window.__snackHaul = { state, save: () => save, world: () => world, kick, startDelivery, finishDelivery, SH, assets: Assets, audio };

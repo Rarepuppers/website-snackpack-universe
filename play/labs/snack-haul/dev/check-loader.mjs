@@ -79,14 +79,44 @@ console.log("With fixture assets");
   await page.close();
 }
 
-console.log("With no assets (the shipped empty manifest)");
+console.log("With no assets (an empty manifest)");
 {
-  const { page, errors } = await open("");
+  const { page, errors } = await open("?assets=dev/empty-assets/");
   const s = await inspect(page);
   if (shots) await page.screenshot({ path: path.join(shots, "loader-none.png") });
   expect(s.models === 0 && s.sounds === 0, "nothing loaded");
   expect(!s.names.includes("body") && s.brakes === 2, "code-built truck in use");
   expect(s.cargoUnits >= 1 && !s.loops, "code-built cargo and synthesised engine in use");
+  expect(errors.length === 0, "no page errors" + (errors.length ? ": " + errors.join(" | ") : ""));
+  await page.close();
+}
+
+console.log("With the delivered assets");
+{
+  const { page, errors } = await open("");
+  const s = await inspect(page);
+  const extra = await page.evaluate(() => {
+    const H = window.__snackHaul, w = H.world(), out = { tuktukFront: -1, icons: document.querySelectorAll("#drive img.ico").length, sky: !!(w.scene.background && w.scene.background.isTexture && w.scene.background.image && w.scene.background.image.tagName === "IMG") };
+    // Break a tray of eggs and check the damaged model takes its place.
+    H.startDelivery(H.SH.findDelivery("bakery-4"));
+    const eggs = w.cargo.find((c) => c.info.type === "eggs");
+    if (eggs) { const before = eggs.group.children[0]; eggs.info.broken = true; w.syncActors(H.state.game, 0.016); out.swapped = eggs.swapped === true && eggs.group.children[0] !== before && eggs.group.children.length === 2; }
+    H.save().trucks.push("tuktuk"); H.save().truck = "tuktuk";
+    H.startDelivery(H.SH.findDelivery("market-3"));
+    out.tuktukFront = w.truckModel.wheels[1].children.length; out.tuktukRear = w.truckModel.wheels[0].children.length;
+    let glow = 0; w.scene.traverse((o) => { if (o.isInstancedMesh && o.material.isMeshBasicMaterial && o.material.vertexColors && !o.material.transparent) glow++; });
+    out.glowMeshes = glow;
+    return out;
+  });
+  if (s.models) {
+    expect(s.failed.length === 0, `all listed files loaded (${s.models} models, ${s.sounds} sounds)` + (s.failed.length ? ": " + s.failed.join("; ") : ""));
+    expect(s.names.includes("body") && s.names.includes("seat"), "authored truck in use");
+    expect(extra.tuktukFront === 1 && extra.tuktukRear === 2, `tuk-tuk has one front wheel and two rear (${extra.tuktukFront}, ${extra.tuktukRear})`);
+    expect(extra.swapped === true, "broken eggs swap to the damaged model");
+    expect(extra.glowMeshes > 0, `night scenery has glowing parts (${extra.glowMeshes} meshes)`);
+    expect(extra.icons >= 2, `authored icons in the driving display (${extra.icons})`);
+    expect(s.decoded.length === s.sounds, `every sound decoded (${s.decoded.length} of ${s.sounds})`);
+  } else console.log("  (none delivered: skipped)");
   expect(errors.length === 0, "no page errors" + (errors.length ? ": " + errors.join(" | ") : ""));
   await page.close();
 }

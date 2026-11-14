@@ -17,9 +17,9 @@ const walk = (dir) => {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
-    else if (/\.(glb|ogg)$/.test(entry.name)) {
+    else if (/\.(glb|ogg|webp)$/.test(entry.name)) {
       const rel = path.relative(root, full).replace(/\\/g, "/");
-      if (!/^(models|audio)\//.test(rel)) continue;
+      if (!/^(models|audio|art|ui)\//.test(rel)) continue;
       files.push(rel);
       hash.update(rel).update(fs.readFileSync(full));
     }

@@ -131,12 +131,15 @@ export function parseGlb(buffer) {
 }
 
 // One merged geometry with colours baked into the vertices, for instanced scenery.
-function mergeForInstancing(root) {
+// part: "base" leaves out glowing surfaces, "glow" keeps only them.
+const glows = (mat) => mat.name === "glow" || mat.emissive.r + mat.emissive.g + mat.emissive.b > 0.01;
+function mergeForInstancing(root, part) {
   const pos = [], nor = [], col = [], v = new THREE.Vector3(), normalMatrix = new THREE.Matrix3();
   root.updateMatrixWorld(true);
   root.traverse((o) => {
-    if (!o.isMesh) return;
-    const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry, p = g.attributes.position, n = g.attributes.normal, c = g.attributes.color, base = o.material.color;
+    if (!o.isMesh || glows(o.material) !== (part === "glow")) return;
+    const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry, p = g.attributes.position, n = g.attributes.normal, c = g.attributes.color;
+    const base = part === "glow" && o.material.emissive.r + o.material.emissive.g + o.material.emissive.b > 0.01 ? o.material.emissive : o.material.color;
     normalMatrix.getNormalMatrix(o.matrixWorld);
     for (let i = 0; i < p.count; i++) {
       v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); pos.push(v.x, v.y, v.z);
@@ -161,8 +164,33 @@ export function model(name) {
 export function instanceGeometry(name) {
   const entry = Assets.models[name];
   if (!entry) return null;
-  if (entry.merged === undefined) entry.merged = mergeForInstancing(entry.root);
+  if (entry.merged === undefined) entry.merged = mergeForInstancing(entry.root, "base");
   return entry.merged;
+}
+// The glowing parts of the same model (lanterns, lit windows), or null.
+export function instanceGlow(name) {
+  const entry = Assets.models[name];
+  if (!entry) return null;
+  if (entry.glow === undefined) entry.glow = mergeForInstancing(entry.root, "glow");
+  return entry.glow;
+}
+// True when the manifest lists this file: "ui/coin.webp", "art/sky_bakery.webp".
+export function has(file) { return Assets.files.has(file); }
+export function url(file) { return BASE + file + (Assets.version ? "?v=" + Assets.version : ""); }
+// A texture from a listed image, or null. Loaded by XHR into a blob, so it is
+// same-origin for WebGL even when the game runs from file://.
+const textures = {};
+export function texture(file) {
+  if (!has(file)) return null;
+  if (textures[file]) return textures[file];
+  const tex = new THREE.Texture();
+  tex.colorSpace = THREE.SRGBColorSpace;
+  request(url(file), "arraybuffer").then((data) => {
+    const blob = URL.createObjectURL(new Blob([data], { type: "image/webp" })), img = new Image();
+    img.onload = () => { tex.image = img; tex.needsUpdate = true; URL.revokeObjectURL(blob); if (tex.userData.onReady) { const run = tex.userData.onReady; tex.userData.onReady = null; run(); } };
+    img.src = blob;
+  }).catch(() => {});
+  return (textures[file] = tex);
 }
 export function hasModel(name) { return !!Assets.models[name]; }
 // name is the path under assets/audio without the extension: "sfx/coin".

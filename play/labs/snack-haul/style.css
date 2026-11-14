@@ -120,3 +120,16 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
 .lines li.total { font-weight: 800; color: var(--sun); border: 0; }
 .unlocked { background: var(--panel-2); border-radius: 10px; padding: 6px 9px; margin: 6px 0; font-size: .86rem; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Authored icons and art (assets/ui, assets/art). Each falls back to text. */
+.ico { width: 1.3em; height: 1.3em; vertical-align: -0.3em; object-fit: contain; }
+.ico.star { width: 1.5em; height: 1.5em; }
+.ico.badge { width: 34px; height: 34px; vertical-align: middle; }
+.ico.pedal-ico { width: 46px; height: 46px; display: block; margin: 0 auto 2px; opacity: .92; }
+.brand h1 .logo { display: block; width: min(32vw, 300px); height: auto; filter: drop-shadow(0 6px 14px #0006); }
+.truck .portrait { display: block; width: 100%; max-height: 58px; object-fit: contain; margin-bottom: 4px; }
+.banner { height: 78px; border-radius: 13px; background-size: cover; background-position: center 62%; margin-bottom: 8px; display: flex; align-items: flex-end; justify-content: flex-end; padding: 6px 8px; }
+.banner span { background: #2b1d14cc; border-radius: 10px; padding: 3px 6px; }
+.banner .ico { width: 26px; height: 26px; vertical-align: middle; }
+.pause .ico { width: 22px; height: 22px; vertical-align: middle; }
+.set .opts { flex-wrap: wrap; }

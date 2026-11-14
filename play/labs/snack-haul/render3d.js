@@ -3,9 +3,11 @@
 // here needs a download. An authored GLB from assets.js replaces a code-built
 // model wherever one has been delivered; rails are always drawn here.
 import * as THREE from "./vendor/three.module.min.js";
-import { model, instanceGeometry, hasModel } from "./assets.js";
+import { model, instanceGeometry, instanceGlow, hasModel, texture } from "./assets.js";
 
 const SH = window.SnackHaul;
+// buildRoute keeps the truck in a local called "model", so it reaches the loader by this name.
+const authoredModel = model;
 
 // ════ Region looks ════════════════════════════════════════════════
 const THEMES = [
@@ -120,7 +122,7 @@ function doorDecal(text, color) {
   });
 }
 
-function buildTruck(spec, rail, quality) {
+function buildTruck(spec, rail, quality, look = {}) {
   const authored = model("trucks/truck_" + spec.id);
   const D = SH.dimsFor(spec), width = authored ? AUTHORED_WIDTH[spec.id] || 1.8 : spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
   const [paint, trim] = PAINT[spec.id];
@@ -228,7 +230,7 @@ function buildTruck(spec, rail, quality) {
   let seat = null;
   if (authored) {
     authored.traverse((o) => {
-      if (o.name === "up_engine" || o.name === "up_suspension") o.visible = false;
+      if (o.name === "up_engine" || o.name === "up_suspension") o.visible = ((look.upgrades || {})[o.name.slice(3)] || 0) >= 3;
       if (!o.isMesh) return;
       o.castShadow = quality.shadows;
       const name = o.material.name;
@@ -243,11 +245,18 @@ function buildTruck(spec, rail, quality) {
     const mark = authored.getObjectByName("seat");
     if (mark) seat = mark.getWorldPosition(new THREE.Vector3());
     root.add(authored);
+    // A roof ornament sits on the truck's "topper" marker.
+    const roof = authored.getObjectByName("topper"), hat = look.topper ? model("toppers/topper_" + look.topper) : null;
+    if (roof && hat) {
+      hat.position.copy(roof.getWorldPosition(new THREE.Vector3()));
+      hat.traverse((o) => { if (o.isMesh) o.castShadow = quality.shadows; });
+      root.add(hat);
+    }
   }
 
   // The driver: the Corgi from the SnackPack cast.
   const dx = spec.id === "buggy" ? cx + 0.02 : cx - 0.05, dy = spec.id === "hauler" ? 1.22 : spec.id === "buggy" ? 0.98 : 0.94;
-  let driver = model("driver/corgi_driver");
+  let driver = model("driver/" + (look.driver || "corgi") + "_driver") || model("driver/corgi_driver");
   if (driver) driver.position.copy(seat || new THREE.Vector3(dx, dy, 0.35));
   else {
     const drv = new Kit();
@@ -423,6 +432,12 @@ function buildCargo(type, quality) {
 }
 
 // ════ Scatter kits ════════════════════════════════════════════════
+// Runs fn now if the texture's image has arrived, or when it does.
+function whenReady(tex, fn) {
+  if (tex.image) fn();
+  else { const before = tex.userData.onReady; tex.userData.onReady = () => { before && before(); fn(); }; }
+}
+
 function propKit(kind, theme) {
   const k = new Kit();
   switch (kind) {
@@ -541,15 +556,18 @@ function propKit(kind, theme) {
 
 // Scenery kinds and the authored files that replace them.
 const PROP_FILES = { chilliPlant: "chilli_plant", hut: "beach_hut", lamp: "lantern_post", stall: "market_stall" };
+// Kinds propKit() can draw. Any other kind appears only once its model is delivered.
+const CODE_KINDS = new Set(["oak", "bush", "rock", "fence", "cottage", "cactus", "hay", "barn", "pine", "cabin", "crag", "chilliPlant", "palm", "hut", "lamp", "townhouse", "stall", "log"]);
+function usable(kind, region) { return CODE_KINDS.has(kind) || hasModel(propFile(kind, region)); }
 function propFile(kind, region) { return "props/" + (kind === "rock" ? "rock_" + region : PROP_FILES[kind] || kind); }
 
 const SCENERY = {
-  bakery: { leaf: ["#5f9e3f", "#78b24a", "#e0a23f"], rock: "#a79c8e", fence: "#efe6d6", fills: [["oak", 24], ["bush", 10], ["rock", 5]], front: ["bush", "rock"], landmarks: ["cottage"], fencing: true },
-  dunes: { leaf: ["#8caf54", "#a3bd5c", "#c9bb62"], rock: "#c9a877", fence: "#c7a26e", fills: [["cactus", 12], ["hay", 7], ["rock", 7], ["bush", 5]], front: ["rock", "bush"], landmarks: ["barn"], fencing: true },
-  frost: { leaf: ["#3f6f6b", "#528782"], rock: "#a9bfd8", fence: "#7a5234", fills: [["pine", 30], ["rock", 7]], front: ["rock", "pine"], landmarks: ["cabin"], snowTrees: true, fencing: false },
-  chilli: { leaf: ["#3f7a3a", "#4f8a44"], rock: "#6b372c", fence: "#3a2422", fills: [["crag", 16], ["rock", 12], ["chilliPlant", 7]], front: ["rock", "chilliPlant"], landmarks: [], fencing: false },
-  harbour: { leaf: ["#3f9a5a", "#5fb46a"], rock: "#6f7780", fence: "#f4ead6", fills: [["palm", 14], ["hut", 4], ["rock", 6], ["bush", 5]], front: ["rock", "bush"], landmarks: ["cottage"], fencing: true },
-  market: { leaf: ["#2f5a4a", "#3a6a56"], rock: "#4a4d66", fence: "#3a3550", fills: [["lamp", 10], ["stall", 6], ["townhouse", 9], ["bush", 4]], front: ["bush", "rock"], landmarks: [], fencing: false }
+  bakery: { leaf: ["#5f9e3f", "#78b24a", "#e0a23f"], rock: "#a79c8e", fence: "#efe6d6", fills: [["oak", 24], ["bush", 10], ["rock", 5]], front: ["bush", "rock"], landmarks: ["cottage", "windmill"], fencing: true },
+  dunes: { leaf: ["#8caf54", "#a3bd5c", "#c9bb62"], rock: "#c9a877", fence: "#c7a26e", fills: [["cactus", 12], ["hay", 7], ["rock", 7], ["bush", 5]], front: ["rock", "bush"], landmarks: ["barn", "silo"], fencing: true },
+  frost: { leaf: ["#3f6f6b", "#528782"], rock: "#a9bfd8", fence: "#7a5234", fills: [["pine", 30], ["rock", 7]], front: ["rock", "pine"], landmarks: ["cabin", "ski_lodge"], snowTrees: true, fencing: false },
+  chilli: { leaf: ["#3f7a3a", "#4f8a44"], rock: "#6b372c", fence: "#3a2422", fills: [["crag", 16], ["rock", 12], ["chilliPlant", 7]], front: ["rock", "chilliPlant"], landmarks: ["chilli_stall", "chilli_shrine"], fencing: false },
+  harbour: { leaf: ["#3f9a5a", "#5fb46a"], rock: "#6f7780", fence: "#f4ead6", fills: [["palm", 14], ["hut", 4], ["rock", 6], ["bush", 5], ["boat", 2]], front: ["rock", "bush"], landmarks: ["cottage", "honey_shop", "lighthouse"], fencing: true },
+  market: { leaf: ["#2f5a4a", "#3a6a56"], rock: "#4a4d66", fence: "#3a3550", fills: [["lamp", 10], ["stall", 6], ["townhouse", 9], ["bush", 4], ["crate_stack", 4], ["planter", 4]], front: ["bush", "rock"], landmarks: ["clock_tower"], fencing: false }
 };
 
 // ════ The world ═══════════════════════════════════════════════════
@@ -567,6 +585,7 @@ export class World3D {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(30, 1, 1, 900);
+    this.look = { driver: "corgi", topper: "", upgrades: {} };
     this.quality = QUALITY[qualityName] || QUALITY.high;
     this.autoQuality = !QUALITY[qualityName];
     this.width = 1; this.height = 1; this.showView = "home";
@@ -624,6 +643,9 @@ export class World3D {
       g.addColorStop(0, theme.skyTop); g.addColorStop(0.5, theme.skyMid); g.addColorStop(0.82, theme.skyLow); g.addColorStop(1, theme.skyLow);
       x.fillStyle = g; x.fillRect(0, 0, w, h);
     });
+    // The painted sky replaces the gradient once its image is in.
+    const skyArt = texture("art/sky_" + theme.id + ".webp");
+    if (skyArt) whenReady(skyArt, () => { if (this.theme === theme) this.scene.background = skyArt; });
     this.scene.fog = new THREE.Fog(theme.fog, 70, theme.fogFar);
     this.scene.add(new THREE.HemisphereLight(theme.hemi[0], theme.hemi[1], theme.hemi[2]));
     const sun = new THREE.DirectionalLight(theme.sun, theme.sunI);
@@ -694,6 +716,18 @@ export class World3D {
     }
     const peaks = new THREE.Mesh(mountains.build(), new THREE.MeshLambertMaterial({ vertexColors: true }));
     this.scene.add(peaks);
+    // The painted ridge line tiles along the whole route and replaces the cones.
+    const ridgeArt = texture("art/ridge_" + theme.id + ".webp");
+    if (ridgeArt) whenReady(ridgeArt, () => {
+      if (this.theme !== theme || !peaks.parent) return;
+      const wide = x1 - x0 + 700, tall = 120;
+      ridgeArt.wrapS = THREE.RepeatWrapping; ridgeArt.repeat.set(Math.round(wide / (tall * 4)), 1); ridgeArt.needsUpdate = true;
+      const ridge = new THREE.Mesh(new THREE.PlaneGeometry(wide, tall), new THREE.MeshBasicMaterial({ map: ridgeArt, transparent: true, fog: false, depthWrite: false }));
+      ridge.position.set((x0 + x1) / 2, tall / 2 - 24, -240);
+      ridge.renderOrder = -1;
+      this.scene.remove(peaks);
+      this.scene.add(ridge);
+    });
 
     // Clouds
     const cloud = new Kit();
@@ -709,8 +743,18 @@ export class World3D {
     const kitTheme = Object.assign({}, scenery, { snowTrees: scenery.snowTrees });
     const place = (kind, list, shadows) => {
       if (!list.length) return;
-      const mesh = new THREE.InstancedMesh(instanceGeometry(propFile(kind, theme.id)) || propKit(kind, kitTheme), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), list.length);
+      const file = propFile(kind, theme.id);
+      const mesh = new THREE.InstancedMesh(instanceGeometry(file) || propKit(kind, kitTheme), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), list.length);
       list.forEach((t, i) => mesh.setMatrixAt(i, t));
+      // Lanterns and lit windows are drawn unlit, so they shine at night.
+      const lit = instanceGlow(file);
+      if (lit) {
+        const glowMesh = new THREE.InstancedMesh(lit, new THREE.MeshBasicMaterial({ vertexColors: true }), list.length);
+        glowMesh.material.color.setScalar(theme.night ? 1.7 : 1);
+        list.forEach((t, i) => glowMesh.setMatrixAt(i, t));
+        glowMesh.frustumCulled = false;
+        this.scene.add(glowMesh);
+      }
       mesh.castShadow = shadows && q.shadows;
       mesh.receiveShadow = false;
       mesh.frustumCulled = false;
@@ -718,6 +762,7 @@ export class World3D {
     };
     const span = x1 - x0;
     scenery.fills.forEach(([kind, per100]) => {
+      if (!usable(kind, theme.id)) return;
       const list = [], n = Math.round((span / 100) * per100 * q.density);
       for (let i = 0; i < n; i++) {
         const x = x0 + r() * span, z = -5.5 - Math.pow(r(), 1.5) * 66, s = 0.8 + r() * 0.8;
@@ -733,9 +778,9 @@ export class World3D {
       }
       place(kind, list, true);
     });
-    scenery.landmarks.forEach((kind) => {
+    scenery.landmarks.filter((kind) => usable(kind, theme.id)).forEach((kind, nth, all) => {
       const list = [];
-      for (let x = 34 + r() * 30; x < terrain.total + 30; x += 60 + r() * 50) {
+      for (let x = 34 + r() * 30 + nth * 45; x < terrain.total + 30; x += (60 + r() * 50) * all.length) {
         const z = -13 - r() * 14;
         list.push(m(x, surface(x, z) - 0.2, z, 0, (r() - 0.5) * 0.7, 0, 1 + r() * 0.3));
       }
@@ -822,7 +867,7 @@ export class World3D {
     this.setStage(t, game.regionIndex, game.delivery.id);
     const scene = this.scene, q = this.quality, theme = this.theme;
 
-    const model = buildTruck(game.spec, game.rail, q);
+    const model = buildTruck(game.spec, game.rail, q, this.look);
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
     this.cargo = game.cargo.map((c) => { const g = buildCargo(c.type, q); scene.add(g); return { info: c, group: g, age: 0, wob: 0 }; });
@@ -878,14 +923,27 @@ export class World3D {
     this.zoneMesh = zone;
 
     const depot = new Kit(), dx = t.total + 7;
-    depot.add(box(12, 6.4, 10), "#efe2c6", m(dx, zy + 3.2, 0));
-    depot.add(box(12.6, 0.5, 10.6), "#b5482f", m(dx, zy + 6.6, 0));
-    depot.add(box(0.9, 5.4, 7), "#463225", m(dx - 6, zy + 2.7, 0));
-    for (let i = 0; i < 8; i++) depot.add(box(1.9, 0.18, 1.2), i % 2 ? "#e0483c" : "#fff6e6", m(dx - 7.1, zy + 4.8 + 0, -4.2 + i * 1.2, 0, 0, 0.5));
-    depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, -3.2));
-    depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, 3.2));
-    depot.add(box(0.5, 1, 6.6), "#e0483c", m(t.zoneStart, zy + 10.6, 0));
-    this.scene.add(new THREE.Mesh(depot.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75 })));
+    const place = (name, x, y, z) => {
+      const o = authoredModel(name);
+      if (!o) return false;
+      o.position.set(x, y, z);
+      o.traverse((c) => { if (c.isMesh) c.castShadow = q.shadows; });
+      scene.add(o);
+      return true;
+    };
+    if (!place("road/depot", t.total + 4.5, zy, 0)) {
+      depot.add(box(12, 6.4, 10), "#efe2c6", m(dx, zy + 3.2, 0));
+      depot.add(box(12.6, 0.5, 10.6), "#b5482f", m(dx, zy + 6.6, 0));
+      depot.add(box(0.9, 5.4, 7), "#463225", m(dx - 6, zy + 2.7, 0));
+      for (let i = 0; i < 8; i++) depot.add(box(1.9, 0.18, 1.2), i % 2 ? "#e0483c" : "#fff6e6", m(dx - 7.1, zy + 4.8 + 0, -4.2 + i * 1.2, 0, 0, 0.5));
+    }
+    if (!place("road/zone_gate", t.zoneStart, zy, 0)) {
+      depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, -3.2));
+      depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, 3.2));
+      depot.add(box(0.5, 1, 6.6), "#e0483c", m(t.zoneStart, zy + 10.6, 0));
+    }
+    place("road/start_shop", 3, SH.heightAt(t, 3), -7.2);
+    if (depot.pos.length) this.scene.add(new THREE.Mesh(depot.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75 })));
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(6, 1.1), new THREE.MeshBasicMaterial({ map: canvasTex(512, 96, (x, w, h) => {
       x.fillStyle = "#e0483c"; x.fillRect(0, 0, w, h);
       x.fillStyle = "#fff"; x.font = "800 62px sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText("UNLOAD HERE", w / 2, h / 2 + 4);
@@ -911,22 +969,36 @@ export class World3D {
       }
     };
     const post = (x, h, color, z) => kit.add(box(0.16, h, 0.16), color, m(x, SH.heightAt(t, x) + h / 2, z));
+    // An authored model standing beside the road. False when it has not been delivered.
+    const stand = (name, x, z) => {
+      const o = model(name);
+      if (!o) return false;
+      o.position.set(x, SH.heightAt(t, x), z);
+      o.traverse((c) => { if (c.isMesh) c.castShadow = this.quality.shadows; });
+      this.scene.add(o);
+      return true;
+    };
+    // Authored pieces repeated along the road share one draw call each.
+    const planks = [], posts = [], humps = [];
+    const plankGeo = instanceGeometry("road/bridge_plank"), postGeo = instanceGeometry("road/bridge_post"), humpGeo = instanceGeometry("road/speed_bump");
     (t.features || []).forEach((f) => {
       if (f.type === "slick") {
         strip(glow, f.x0, f.x1, this.theme.night ? "#7fd0ff" : "#c8f0ff", 0.035, 4.7);
-        [f.x0, f.x1].forEach((x) => { post(x, 2.2, "#2f7fd0", -3.0); kit.add(blob(0.3, 0), "#9fe0ff", m(x, SH.heightAt(t, x) + 2.4, -3.0)); });
+        [f.x0, f.x1].forEach((x) => { if (!stand("road/ice_marker", x, -3.0)) { post(x, 2.2, "#2f7fd0", -3.0); kit.add(blob(0.3, 0), "#9fe0ff", m(x, SH.heightAt(t, x) + 2.4, -3.0)); } });
       } else if (f.type === "ford") {
         strip(glow, f.x0, f.x1, "#3fb6d8", 0.3, 9);
       } else if (f.type === "bridge") {
-        for (let x = f.x0; x < f.x1; x += 0.75) kit.add(box(0.66, 0.1, 5), Math.round(x / 0.75) % 2 ? "#a9773f" : "#8f6233", m(x + 0.375, SH.heightAt(t, x + 0.375) + 0.03, 0, 0, 0, 0));
-        [f.x0, f.x1].forEach((x) => [-2.6, 2.6].forEach((z) => post(x, 2.4, "#6d4a2c", z)));
+        if (plankGeo) for (let x = f.x0; x < f.x1 - 0.1; x += 1.5) { const ya = SH.heightAt(t, x), yb = SH.heightAt(t, x + 1.5); planks.push(m(x + 0.75, (ya + yb) / 2 - 0.08, 0, 0, 0, Math.atan2(yb - ya, 1.5), 1, 1, 1.68)); }
+        else for (let x = f.x0; x < f.x1; x += 0.75) kit.add(box(0.66, 0.1, 5), Math.round(x / 0.75) % 2 ? "#a9773f" : "#8f6233", m(x + 0.375, SH.heightAt(t, x + 0.375) + 0.03, 0, 0, 0, 0));
+        [f.x0, f.x1].forEach((x) => [-2.6, 2.6].forEach((z) => { if (postGeo) posts.push(m(x, SH.heightAt(t, x), z)); else post(x, 2.4, "#6d4a2c", z); }));
           } else if (f.type === "wind") {
-        [f.x0, f.x1].forEach((x) => { post(x, 4, "#f2f2ee", -3.2); for (let i = 0; i < 4; i++) kit.add(box(0.45, 0.42 - i * 0.07, 0.42 - i * 0.07), i % 2 ? "#ffffff" : "#ff7a2f", m(x - 0.3 - i * 0.45, SH.heightAt(t, x) + 3.8 - i * 0.06, -3.2)); });
+        [f.x0, f.x1].forEach((x) => { if (stand("road/wind_sock", x, -3.2)) return; post(x, 4, "#f2f2ee", -3.2); for (let i = 0; i < 4; i++) kit.add(box(0.45, 0.42 - i * 0.07, 0.42 - i * 0.07), i % 2 ? "#ffffff" : "#ff7a2f", m(x - 0.3 - i * 0.45, SH.heightAt(t, x) + 3.8 - i * 0.06, -3.2)); });
       } else if (f.type === "ramp") {
         for (let i = 0; i < 3; i++) kit.add(box(0.5, 0.06, 4.4), i % 2 ? "#2a2a2e" : "#ffcf3a", m(f.x0 + 1.5 + i * 1.3, SH.heightAt(t, f.x0 + 1.5 + i * 1.3) + 0.04, 0, 0, 0, 0.12 + i * 0.1));
       } else if (f.type === "pickup") {
         strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
         const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx);
+        if (stand("road/pickup_stand", cx, -5.8)) return;
         kit.add(box(6, 3.2, 3), "#efe2c6", m(cx, y + 1.6, -6.5));
         kit.add(box(6.6, 0.4, 3.6), "#3f9a5a", m(cx, y + 3.4, -6.5));
         kit.add(box(0.3, 5.5, 0.3), "#d8d2c6", m(cx, y + 2.75, -3.4));
@@ -934,7 +1006,19 @@ export class World3D {
         [-1, 0, 1].forEach((i) => kit.add(box(0.6, 0.6, 0.6), "#eab765", m(cx + i * 0.9, y + 0.3, -4.4)));
       }
     });
-    game.rocks.filter((rock) => rock.kind === "bump").forEach((rock, i) => kit.add(cyl(rock.r, rock.r, 4.7, 8), i % 2 ? "#2a2a2e" : "#ffcf3a", m(rock.x, rock.y, 0, Math.PI / 2)));
+    game.rocks.filter((rock) => rock.kind === "bump").forEach((rock, i) => {
+      if (humpGeo) humps.push(m(rock.x, SH.heightAt(t, rock.x), 0, 0, 0, 0, 1, 1.12, 1.6));
+      else kit.add(cyl(rock.r, rock.r, 4.7, 8), i % 2 ? "#2a2a2e" : "#ffcf3a", m(rock.x, rock.y, 0, Math.PI / 2));
+    });
+    [[plankGeo, planks], [postGeo, posts], [humpGeo, humps]].forEach(([geo, list]) => {
+      if (!geo || !list.length) return;
+      const mesh = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 }), list.length);
+      list.forEach((matrix, i) => mesh.setMatrixAt(i, matrix));
+      mesh.castShadow = this.quality.shadows; mesh.frustumCulled = false;
+      this.scene.add(mesh);
+    });
+    // Long Haul: a flag every 100 metres.
+    if (game.delivery.long) for (let x = 108; x < t.zoneStart; x += 100) stand("road/checkpoint_flag", x, -3.3);
     if (kit.pos.length) {
       const mesh = new THREE.Mesh(kit.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
       mesh.castShadow = this.quality.shadows;
@@ -952,14 +1036,14 @@ export class World3D {
   showcase(truckId, regionIndex, rail) {
     this.lastBuild = { truck: truckId, region: regionIndex, rail };
     const id = "show-" + regionIndex;
-    const key = id + truckId + rail + this.quality.name;
+    const key = id + truckId + rail + this.quality.name + JSON.stringify(this.look) + (this.assetStamp || "");
     if (this.showKey === key && this.showcasing) return;
     this.showKey = key;
     const d = { id, region: regionIndex, index: 0, len: 60, heat: 0.2, load: [] };
     const pts = [];
     for (let x = 0; x <= 110; x += SH.SAMPLE) pts.push({ x, y: Math.sin(x * 0.04) * 0.5 * Math.min(1, x / 30) });
     this.setStage({ pts, total: 110 }, regionIndex, id);
-    const spec = SH.truckSpec(truckId), model = buildTruck(spec, rail, this.quality), D = SH.dimsFor(spec);
+    const spec = SH.truckSpec(truckId), model = buildTruck(spec, rail, this.quality, this.look), D = SH.dimsFor(spec);
     const ground = SH.heightAt({ pts }, 50);
     const y = ground + spec.wheelR - D.axleY;
     model.root.position.set(50, y, 0);
