@@ -450,7 +450,7 @@ function drawFromStock(state) {
     const stock = state.stock.slice(0, -1);
     const card = state.stock[state.stock.length - 1];
     const hands = state.hands.map((h, i) => (i === state.currentIdx ? sortHand([...h, card]) : h));
-    return { ...state, stock, hands, phase: 'meld', justDrewFromDiscard: false };
+    return { ...state, stock, hands, phase: 'meld', justDrewFromDiscard: false, takenDiscardId: null };
 }
 function drawFromDiscard(state) {
     if (state.phase !== 'draw' || !state.discard.length)
@@ -458,7 +458,7 @@ function drawFromDiscard(state) {
     const discard = state.discard.slice(0, -1);
     const card = state.discard[state.discard.length - 1];
     const hands = state.hands.map((h, i) => (i === state.currentIdx ? sortHand([...h, card]) : h));
-    return { ...state, discard, hands, phase: 'meld', justDrewFromDiscard: true };
+    return { ...state, discard, hands, phase: 'meld', justDrewFromDiscard: true, takenDiscardId: cardId(card) };
 }
 function layMeld(state, cardIds) {
     if (state.phase !== 'meld')
@@ -501,6 +501,8 @@ function discardAndEndTurn(state, cardIdStr) {
     const card = hand.find((c) => cardId(c) === cardIdStr);
     if (!card)
         return state;
+    if (cardIdStr === state.takenDiscardId && hand.length > 1)
+        return state;
     const remaining = hand.filter((c) => cardId(c) !== cardIdStr);
     const hands = state.hands.map((h, i) => (i === state.currentIdx ? remaining : h));
     const discard = [...state.discard, card];
@@ -510,7 +512,7 @@ function discardAndEndTurn(state, cardIdStr) {
     const nextIdx = (state.currentIdx + 1) % state.players.length;
     if (state.stock.length === 0)
         return endRound({ ...state, hands, discard }, null);
-    return { ...state, hands, discard, currentIdx: nextIdx, phase: 'draw', justDrewFromDiscard: false, message: null };
+    return { ...state, hands, discard, currentIdx: nextIdx, phase: 'draw', justDrewFromDiscard: false, takenDiscardId: null, message: null };
 }
 function endRound(state, wentOutIdx) {
     const scores = state.scores.map((s, i) => (i === wentOutIdx ? s : s - state.hands[i].reduce((sum, c) => sum + cardValue(c), 0)));
@@ -675,7 +677,9 @@ function cpuPlayTurn(state) {
         }, 0);
         return connections * cardValue(c);
     };
-    const toDiscard = hand.reduce((worst, c) => {
+    // The card just taken from the pile can't go straight back (see takenDiscardId).
+    const discardable = hand.length > 1 ? hand.filter((c) => cardId(c) !== s.takenDiscardId) : hand;
+    const toDiscard = discardable.reduce((worst, c) => {
         const usefulness = scoreCard(c) - scoreCard(worst);
         if (usefulness < 0)
             return c;
@@ -683,7 +687,7 @@ function cpuPlayTurn(state) {
         if (usefulness === 0 && player.difficulty === 'sharp' && cardValue(c) > cardValue(worst))
             return c;
         return worst;
-    }, hand[0]);
+    }, discardable[0]);
     return discardAndEndTurn(s, cardId(toDiscard));
 }
 // END generated rummy-500 policy
@@ -884,7 +888,9 @@ function cpuPlayTurn(state) {
   }
   discardCardBtn.addEventListener("click", function () {
     var sel = pickedCards(); if (!myTurn() || st.phase !== "meld" || sel.length !== 1) return;
-    st = discardAndEndTurn(st, cardId(sel[0])); picked = [];
+    var next = discardAndEndTurn(st, cardId(sel[0]));
+    if (next === st) { setStatus("You can't discard the card you just took from the pile. Pick another card."); return; }
+    st = next; picked = [];
     if (window.SnackPackAudio) window.SnackPackAudio.play("tick");
     afterHumanAction();
   });
