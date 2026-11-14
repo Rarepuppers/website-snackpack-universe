@@ -114,11 +114,45 @@ and submissions remain with Claude unless Mark assigns a specific release.
 
 ## Deferred until 15 November 2026
 
-- Re-measure books per visit, views per visit, internal book referrals,
-  direct/chat discovery, ABC discovery and Animal Architects engagement.
-  Use `node scripts/report-referrals.mjs --history`, Cloudflare `/read/*`
-  paths and GSC page/query rows. Account for time live and small samples;
-  search demand and the historical "$0" claim are not verified facts.
+- **Re-measured 15 November 2026 (done; replaces the re-measure to-do).**
+  Cloudflare, 30 days to 14 November vs the 30 days before (counts bucket
+  to 10). Two things distort the raw totals: page turns and shelf filters
+  were logged as views until the 6 November `spa: false` fix, and one
+  Honduras classroom (country HN, about 2,100 `/read/` views from 2 to 11
+  November, with almost no new visits) arrived inside the site. Raw `/read/*`
+  views went 970 → 5,390 and are not usable. Visits (arrivals from outside
+  the site) are not affected:
+  - **Reach tripled and held.** `/read/*` visits went 450 → 1,400 (about 15 →
+    47 a day). The clean 7–14 November week still ran 45 a day. Hub visits
+    went 340 → 650; homepage visits 550 → 710.
+  - **Books per visit: not shown to be up.** Book pages opened from inside the
+    site, per `/read/` visit: 0.80 before, 1.54 in the inflated 16 Oct–1 Nov
+    window, and **0.50 in the clean week without Honduras** (1.00 with it).
+    Views per visit in the clean week without Honduras: 1.56 (2.16 before,
+    which may also include some filter-change views). The October changes
+    brought more arrivals, but each visit does not read more books.
+  - **Shared links: book pages reached with no referrer went 110 → 750.**
+    These are people opening a specific book directly, which fits links
+    pasted into chats. Pasted links that picked up a trailing word
+    (`/Please`) are a sign of this, and are now recovered by 404.html.
+    Named chat-app referrers stayed tiny: Telegram 10 → 0, m.facebook.com
+    10 → 0, no WhatsApp or l.facebook.com. chatgpt.com fell 60 → 10
+    site-wide. A school portal, `bisibahcesehir.k12net.com`, sent 120.
+  - ABC discovery: `/read/panda-cake-discovers-her-abcs/` 120 views / 20
+    visits. Animal Architects: 140 views and **no outside visits**, so nobody
+    arrives looking for it; this does not show demand for another Zoo book.
+    `/read/sound-cards/` had 10 views in Cloudflare.
+  - **Search Console** (28 days to 12 November vs the 28 before): `/read/`
+    URLs went 70 → 353 impressions and 5 → 17 clicks, from 9 to 62 pages.
+    The Cat and the Rat PDF leads (61 impressions / 6 clicks at position
+    7.8). `/read/sound-cards/` 48 at position 26.6; the `/read/` hub 42 / 4.
+    Whole site: 2,153 → 7,518 impressions, 66 → 211 clicks, position 10.3 →
+    7.7. About 70% of that is `/play/thirteen/` (5,377 / 116).
+  - Verdict: the build-out widened reach (more visits, more directly shared
+    book links, early search impressions) but did not increase books per
+    visit. Measure next from 7 November onward only, with HN separate, and
+    count visits rather than views. Raw scripts are kept outside the repo; the
+    `report-referrals` history row is dated 2026-11-14.
 - Decide whether to commission the other four complete ABC books:
   Eggs-Benedict, Meow-inara, French-Toast and Wise Owl. Audit words, image
   subjects and character consistency first. Wise Owl's old-word art means

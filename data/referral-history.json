@@ -134,6 +134,19 @@
       "search": 0,
       "internal": 0,
       "direct": 500
+    },
+    {
+      "site": "www.snackpackuniverse.com",
+      "date": "2026-11-14",
+      "windowDays": 30,
+      "total": 9540,
+      "assistants": {
+        "chatgpt.com": 10
+      },
+      "assistantTotal": 10,
+      "search": 240,
+      "internal": 4730,
+      "direct": 4440
     }
   ],
   "note": "Written by scripts/report-referrals.mjs. Counts come from Cloudflare Web Analytics and are bucketed to the nearest 10 -- treat any +/-10 move as noise."
