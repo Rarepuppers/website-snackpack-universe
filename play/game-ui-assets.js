@@ -11,6 +11,7 @@
     { key: "felt-green", name: "Felt Green", tier: "free", src: BASE + "card-decks/backs/felt-green.png" },
     { key: "classic-navy", name: "Classic Navy", tier: "free", src: BASE + "card-decks/backs/classic-navy.png" },
     { key: "snackpack-gold", name: "SnackPack Gold", tier: "free", src: BASE + "card-decks/backs/snackpack-gold.png" },
+    { key: "winter-hearth", name: "Winter Hearth", tier: "free", src: BASE + "card-decks/backs/winter-hearth.png" },
     { key: "royal-plum", name: "Royal Plum", tier: "pro", src: PRO + "card-decks/backs/royal-plum.png" },
     { key: "midnight-neon", name: "Midnight Neon", tier: "pro", src: PRO + "card-decks/backs/midnight-neon.png" },
     { key: "marble-rose", name: "Marble Rose", tier: "pro", src: PRO + "card-decks/backs/marble-rose.png" },

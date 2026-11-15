@@ -24,6 +24,13 @@
                       "file":  "backs/snackpack-gold.png"
                   },
                   {
+                      "key":  "winter-hearth",
+                      "name":  "Winter Hearth",
+                      "tier":  "free",
+                      "role":  "seasonal",
+                      "file":  "backs/winter-hearth.png"
+                  },
+                  {
                       "key":  "royal-plum",
                       "name":  "Royal Plum",
                       "tier":  "pro",

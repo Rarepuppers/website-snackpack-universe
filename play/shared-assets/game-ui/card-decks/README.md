@@ -29,6 +29,7 @@ Generated free backs:
 - Felt Green
 - Classic Navy
 - SnackPack Gold
+- Winter Hearth (seasonal Winter Table set, free)
 
 Generated Pro backs:
 

@@ -12,6 +12,7 @@
                   "felt-green",
                   "classic-navy",
                   "snackpack-gold",
+                  "winter-hearth",
                   "royal-plum",
                   "midnight-neon",
                   "marble-rose",
@@ -39,6 +40,13 @@
                              "tier":  "free",
                              "role":  "brand",
                              "file":  "backs/snackpack-gold.png"
+                         },
+                         {
+                             "key":  "winter-hearth",
+                             "name":  "Winter Hearth",
+                             "tier":  "free",
+                             "role":  "seasonal",
+                             "file":  "backs/winter-hearth.png"
                          },
                          {
                              "key":  "royal-plum",
