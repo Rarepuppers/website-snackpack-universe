@@ -14,3 +14,5 @@ The supplied Home capture shows historical counts (24 games, 30 Trail steps). Re
 | hearts | 57296 | 669617 |
 
 Validation: all dimensions/budgets and PNG fallbacks checked; six WebP sources decoded successfully in a 390px-wide local browser gallery.
+
+**Published 15 Nov 2026 (Claude):** the five gameplay shots. Home was left out because it shows the old counts (24 games); add a fresh native Home capture later.
