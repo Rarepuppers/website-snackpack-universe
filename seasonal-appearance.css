@@ -99,3 +99,18 @@
   .topbar-inner > .season-controls { margin-inline-start: auto; }
   .topbar-inner > .season-controls .theme-toggle { width: 34px; height: 34px; }
 }
+/* At enlarged text sizes the two controls and the brand can leave too little
+   room to scroll a complete navigation link into view. */
+@media (max-width: 760px) {
+  .topbar:has(.season-controls) { container: seasonal-header / inline-size; }
+}
+@container seasonal-header (max-width: 260px) {
+  .topbar-inner:has(> .season-controls) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 3px 8px;
+  }
+  .topbar-inner:has(> .season-controls) > nav { grid-area: 2 / 1 / 3 / -1; }
+  .topbar-inner > .season-controls { grid-area: 1 / 2; }
+}

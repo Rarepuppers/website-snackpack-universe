@@ -17,6 +17,7 @@ for (const surface of surfaces) for (const theme of themes) for (const [viewport
     await page.addInitScript(({ selectedTheme }) => {
       localStorage.clear();
       localStorage.setItem("snackpack.theme.v1", selectedTheme);
+      localStorage.setItem("snackpack.seasonal-appearance.v1", "classic");
       let seed = 123456789;
       Math.random = () => ((seed = (1664525 * seed + 1013904223) >>> 0) / 4294967296);
       Date.now = () => Date.UTC(2026, 7, 29, 2, 0, 0);
