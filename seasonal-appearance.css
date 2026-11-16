@@ -1,0 +1,116 @@
+.season-toggle { flex: none; margin-inline-start: 5px; }
+.season-dialog {
+  box-sizing: border-box;
+  width: min(25rem, calc(100% - 2rem));
+  padding: 1.4rem;
+  border: 1px solid var(--season-line, #8e9fac);
+  border-radius: 1rem;
+  color: var(--season-ink, #182a35);
+  background: var(--season-panel, #f5faff);
+  text-align: left;
+}
+.season-dialog::backdrop { background: #091828a6; }
+.season-dialog h2 { margin: 0 0 1rem; color: inherit; font: 750 1.4rem/1.2 system-ui, sans-serif; }
+.season-dialog p { margin: .8rem 0; }
+.season-dialog .season-help { font-size: .88rem; }
+.season-field { display: grid; gap: .25rem; font-weight: 700; }
+.season-dialog select, .season-dialog button {
+  min-height: 2.75rem; padding: .4rem .7rem; border: 1px solid var(--season-line, #8e9fac);
+  border-radius: .5rem; background: var(--season-panel, #f5faff);
+  color: inherit; font: inherit;
+}
+.season-dialog button { cursor: pointer; font-weight: 700; }
+.season-dialog :focus-visible, .season-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+:root[data-theme="dark"] .season-dialog { --season-panel: #182631; --season-ink: #f2f6ff; --season-line: #91a0b3; }
+
+:root {
+  --woods-art: url("/winter/art/woodland.webp");
+  --woods-shadow: #0a3040;
+  --woods-shadow-soft: #0a3040d9;
+}
+:root[data-winter-scene="1"], :root[data-winter-scene="3"] {
+  --woods-art: url("/winter/art/dawn.webp");
+  --woods-shadow: #21223f;
+  --woods-shadow-soft: #21223fd9;
+}
+:root[data-season="winter"][data-theme] {
+  --bg: #eef5f1;
+  --bg-soft: #f6faf7;
+  --bg-top: #f7fbf8;
+  --bg-bottom: #d7e6df;
+  --surface-strong: #fcfefb;
+  --panel-a: #fbfdfa;
+  --panel-b: #e7f1eb;
+}
+:root[data-season="winter"][data-theme="light"] {
+  --bg: #eaf3fa;
+  --bg-soft: #f5f9fd;
+  --bg-top: #f6fbff;
+  --bg-bottom: #d7e7f2;
+  --surface-strong: #fbfdff;
+  --panel-a: #f8fcff;
+  --panel-b: #e4eff9;
+}
+:root[data-season="winter"][data-theme="dark"] {
+  --bg: #101e25;
+  --bg-soft: #182b34;
+  --bg-top: #182b35;
+  --bg-bottom: #0d171d;
+  --surface-strong: #1a2b32;
+  --panel-a: #1a2c35;
+  --panel-b: #12202a;
+}
+:root[data-season="winter"][data-winter-scene="1"][data-theme="cream"],
+:root[data-season="winter"][data-winter-scene="3"][data-theme="cream"] {
+  --bg-top: #fbf8ff;
+  --bg-bottom: #e2e2f1;
+  --panel-b: #ece8f6;
+}
+:root[data-season="winter"] .home-page .hero-card { padding: 0; overflow: hidden; }
+:root[data-season="winter"] .home-page .hero-card picture { display: none; }
+.winter-home-feature { display: none; }
+:root[data-season="winter"] .winter-home-feature { display: flex; }
+.winter-home-feature {
+  flex-direction: column;
+  justify-content: end;
+  align-items: start;
+  min-height: clamp(15rem, 28vw, 23rem);
+  padding: clamp(.85rem, 2.4vw, 1.65rem);
+  color: #fff7e7;
+  text-decoration: none;
+  background: linear-gradient(0deg, #091e2bf5 0%, transparent 59%), var(--woods-art) 72% 58% / cover;
+}
+.winter-home-feature strong { font: 600 clamp(1.75rem, 3vw, 3rem)/1.04 var(--serif); }
+.winter-home-feature span { margin-top: .4rem; color: #ffd28a; font-weight: 800; }
+.winter-home-feature:hover span { text-decoration: underline; }
+.winter-home-feature:focus-visible { outline-offset: -5px; outline-color: #ffd28a; }
+.winter-entry { margin-block: 0 1.5rem; }
+.winter-entry a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 800; }
+:root[data-season="winter"] .winter-entry a {
+  padding-inline: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: .7rem;
+  background: var(--surface-strong);
+}
+
+
+.season-controls { display: flex; align-items: center; flex: none; }
+@media (max-width: 760px) {
+  .topbar-inner > .season-controls { margin-inline-start: auto; }
+  .topbar-inner > .season-controls .theme-toggle { width: 34px; height: 34px; }
+}
+/* At enlarged text sizes the two controls and the brand can leave too little
+   room to scroll a complete navigation link into view. */
+@media (max-width: 760px) {
+  .topbar:has(.season-controls) { container: seasonal-header / inline-size; }
+}
+@container seasonal-header (max-width: 260px) {
+  .topbar-inner:has(> .season-controls) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 3px 8px;
+  }
+  .topbar-inner:has(> .season-controls) > nav { grid-area: 2 / 1 / 3 / -1; }
+  .topbar-inner > .season-controls { grid-area: 1 / 2; }
+}
