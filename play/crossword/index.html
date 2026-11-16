@@ -55,7 +55,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "Is this Crossword free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and no download required." } },
-    { "@type": "Question", "name": "Is there a new crossword every day?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Daily grid is the same puzzle for everyone on a given date. There are also General, Animals, Movies and Space sets you can play any time." } },
+    { "@type": "Question", "name": "Is there a new crossword every day?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Daily grid is the same puzzle for everyone on a given date. General, Animals, Movies, Space and Winter sets are available any time." } },
     { "@type": "Question", "name": "How do I play Crossword with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "The bindings are: A to Z to fill the selected square, Backspace or Delete to clear it, the arrow keys to move between squares, Space to switch between across and down. Every other control is reachable by Tab." } },
     { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up, and your best result is kept too. There is no account and nothing is uploaded." } },
     { "@type": "Question", "name": "Can I play Crossword offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device, so it loads and plays on a plane or a dead signal. If you would rather have it from the store, Crossword is also in Snackpack Brain Games Vol 2 on Android." } }
@@ -153,7 +153,7 @@
       <div class="page-hero-card" style="text-align:center;">
         <span class="eyebrow">Free · No download</span>
         <h1>Crossword</h1>
-        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Quick themed mini crosswords. Read the across and down clues, fill the grid, and check your answers as you go. Pick a theme or take on the daily puzzle. No ads, no sign-in.</p>
+        <p class="lead" style="max-width:560px;margin-left:auto;margin-right:auto;">Quick themed mini crosswords. Read the across and down clues, fill the grid, and check your answers as you go. Choose Winter under Options for snowy and holiday clues, or take on the daily puzzle. No ads, no sign-in.</p>
       </div>
     </div>
   </section>
@@ -167,11 +167,12 @@
             <span class="readout-chip"><span>Best</span><b id="cw-best">—</b></span>
           </div>
           <div class="game-controls">
-            <div class="seg" role="group" aria-label="Theme">
+            <div class="seg" role="group" aria-label="Theme" data-game-options-managed>
               <button type="button" data-mode="general" aria-pressed="true">General</button>
               <button type="button" data-mode="animals" aria-pressed="false">Animals</button>
               <button type="button" data-mode="movies" aria-pressed="false">Movies</button>
               <button type="button" data-mode="space" aria-pressed="false">Space</button>
+              <button type="button" data-mode="winter" aria-pressed="false">Winter</button>
               <button type="button" data-mode="daily" aria-pressed="false">Daily</button>
             </div>
             <button class="btn-game btn-game--primary" id="cw-new" type="button">New</button>
@@ -334,6 +335,18 @@
 
   // ════ Puzzle packs (extracted from the Vol 2 app's crossword/packs) ════
   var PACKS = {
+    "winter": [
+      {"id":"win-01","pack":"winter","title":"Snow Day","grid":["D###F#####","R#SNOWMAN#","I#H#R#####","FROSTY####","T#V#######","##E#######","#BLIZZARD#","###C##N###","#S#I#IGLOO","#L#C##E###","#U#L#FLAKE","#SLED#####","#H########"],"clues":{"across":{"3":"Frosty figure with a carrot nose","4":"Icy cold","5":"Fierce snowstorm","9":"Dome of snow blocks","10":"Single crystal of snow","11":"Ride it down a snowy hill"},"down":{"1":"Bank of wind-blown snow","2":"Snow wall for a snowball fight","3":"Tool for clearing a driveway","6":"Frozen spike hanging from a roof","7":"Shape you make lying in the snow","8":"Half-melted snow"}}},
+      {"id":"win-02","pack":"winter","title":"Bundle Up","grid":["#H####B##","SOCKS#O##","#O##WOOL#","#D##E#T##","####A#S#M","#F##T###I","#LAYERS#T","#E##R#C#T","#E#P##A#E","#C#A##R#N","#EARMUFFS","###K#####","#BEANIE##"],"clues":{"across":{"3":"Pair for your feet","5":"Fiber from sheep","8":"Several clothes worn together","11":"Warm covers for your ears","12":"Close-fitting knit hat"},"down":{"1":"Coat part that covers your head","2":"Footwear for snow","4":"Knitted top","6":"Gloves without separate fingers","7":"Soft warm fabric","9":"Long wrap for the neck","10":"Hooded winter coat"}}},
+      {"id":"win-03","pack":"winter","title":"By the Fire","grid":["#M#B####C##","QUILT#C#A##","#G#A##O#N#S","###N##C#D#L","#K#K##O#L#I","FIREPLACE#P","#N#T###H##P","#D#####I##E","#LOG##EMBER","#I#####N##S","#N#####E###","#G#STORY###"],"clues":{"across":{"4":"Patchwork bed cover","8":"Hearth in the living room","10":"Piece of firewood","11":"Glowing bit of coal","12":"Tale told at bedtime"},"down":{"1":"Cup with a handle","2":"Cozy cover for a cold night","3":"Wax light with a wick","5":"Hot chocolate","6":"Soft indoor shoes","7":"Small sticks to start a fire","9":"Smoke goes up it"}}},
+      {"id":"win-04","pack":"winter","title":"Winter Animals","grid":["#####P####","##HARE####","#####N#M#P","##W##G#O#O","SEAL#U#OWL","##L##I#S#A","##REINDEER","##U#####R#","HUSKY###M#","#####F##I#","####ROBIN#","#####X##E#"],"clues":{"across":{"2":"Snowshoe ___","6":"Flippered swimmer on the ice","7":"Snowy night hunter","8":"Antlered deer of the far north","10":"Sled dog","12":"Red-breasted winter bird"},"down":{"1":"Flightless bird of the Antarctic","3":"Largest deer","4":"___ bear","5":"Tusked Arctic sea mammal","9":"Stoat in its white winter coat","11":"Arctic ___ with a white coat"}}},
+      {"id":"win-05","pack":"winter","title":"Holiday Kitchen","grid":["#######L###","#####FEAST#","#######T###","####C##K###","C##GINGER#C","A#S#D#####O","NUTMEG####O","D#U#R###R#K","Y#F##P##O#I","C#FRUITCAKE","A#I##E##S#S","N#N#####T##","EGGNOG#####"],"clues":{"across":{"2":"Big celebration meal","5":"Spice in a festive bread man","8":"Spice dusted over eggnog","11":"Dense cake with candied fruit","12":"Creamy holiday drink"},"down":{"1":"Fried potato pancake","3":"Warm spiced apple drink","4":"Striped hooked treat","6":"Baked treats left out on a plate","7":"Bread filling for a bird","9":"Holiday centerpiece from the oven","10":"Pumpkin or apple dessert"}}},
+      {"id":"win-06","pack":"winter","title":"Lights and Decorations","grid":["###ORNAMENT","##########I","##########N","####L#M#B#S","###PINECONE","####G#N#W#L","#G##H#O##G#","#LANTERN#A#","#I##S#A##R#","#T####HOLLY","STAR#####A#","#E#######N#","WREATH###D#"],"clues":{"across":{"1":"Bauble on a branch","6":"Woody seed holder from a conifer","9":"Light in a case","10":"Spiky leaves with red berries","11":"Shape at the treetop","12":"Ring of greenery on a door"},"down":{"2":"Shiny strands on a tree","3":"Strings of tiny bulbs","4":"Candleholder with nine branches","5":"Ribbon knot","7":"Sparkly specks","8":"Decorative rope of leaves"}}},
+      {"id":"win-07","pack":"winter","title":"Ringing in the New Year","grid":["##F#######C","#MIDNIGHT#O","##R####A##U","#RESOLUTION","##W####S##T","CLOCK###C#D","O#R#####H#O","N#K#####E#W","F#S#P###E#N","E##JANUARY#","T###R######","TOAST######","I###Y######"],"clues":{"across":{"3":"When the year turns","5":"Promise for the year ahead","6":"Everyone watches it strike twelve","9":"First month","10":"Raised glasses and good wishes"},"down":{"1":"Bursts of light in the sky","2":"Ten, nine, eight...","4":"Party ___","6":"Tossed paper bits","7":"Shout of joy","8":"Celebration with friends"}}},
+      {"id":"win-08","pack":"winter","title":"Winter Sports","grid":["#########C#","####H##B#U#","##SNOWBOARD","##K#C##B#L#","#RINK##S#I#","P#I#E##L#N#","O#N#Y##E#G#","LUGE#J#D###","E####U#####","SLALOM#####","###I#P#####","###F#######","SKATING####"],"clues":{"across":{"4":"Single board for the slopes","5":"Sheet of ice for skaters","7":"Feet-first racing sled","9":"Race around gates","11":"Gliding on ice"},"down":{"1":"Stone sliding with brooms","2":"Stick game played with a puck","3":"Team racing sled","4":"Sliding down a slope on boards","6":"Skiers push with them","8":"Ski ___","10":"Chair that carries skiers up"}}},
+      {"id":"win-09","pack":"winter","title":"Gifts and Giving","grid":["##C####W###","SHARE##R###","U#R##THANKS","R#D####P#I#","P######P#N#","R######I#D#","I#D##R#N#N#","STOCKING#E#","E#N##B###S#","#TAG#BOX#S#","##T##O#####","PRESENT####"],"clues":{"across":{"3":"Give part to others","4":"What you say for a gift","8":"Long sock hung on the mantel","9":"Gift label","10":"Container under the paper","11":"Wrapped surprise"},"down":{"1":"Folded greeting","2":"___ paper","3":"Unexpected treat","5":"Being generous and caring","6":"Give to a good cause","7":"Fabric tie on a package"}}},
+      {"id":"win-10","pack":"winter","title":"Songs and Sounds","grid":["###D####C#","###RECITAL","#C#U#H##R#","#HUM#O##O#","#I##JINGLE","#M###R###N","BELLS##H#C","#S###PIANO","#######R#R","#######M#E","#######O##","#######N##","##MELODY##"],"clues":{"across":{"3":"Music performance","6":"Sing with closed lips","7":"Short catchy tune","9":"They jingle","11":"Keyboard instrument","12":"Tune"},"down":{"1":"You beat it with sticks","2":"Seasonal song","4":"Group of singers","5":"Ringing tones","8":"One more song, please!","10":"Notes sung together"}}}
+    ],
     "general": [
       {"id":"gen-01","pack":"general","title":"Everyday Things","grid":["##########B##","#######BROOM#","########A#O##","####CLOCK#KEY","#####A##E####","#####MAP#####","S##CUP#######","U##A#########","NEST#########"],"clues":{"across":{"2":"Tool for sweeping floors","4":"It tells the time","6":"It opens a lock","7":"Folded guide for travellers","9":"You drink from it","10":"A bird's home"},"down":{"1":"Bound pages you read","3":"Tool for gathering leaves","5":"It gives light in a room","8":"Star at the centre of our sky","9":"Purring house pet"}}},
       {"id":"gen-02","pack":"general","title":"Around the House","grid":["####L######C#####","#SOFA#####SHELF##","##V#M#M#B##A##O##","##E#PLATE##I##RUG","SINK##T#DOOR##K##"],"clues":{"across":{"3":"Living-room seat for several","5":"Board for storing books","9":"You eat dinner off it","10":"Small floor covering","11":"Where you wash dishes","12":"You open it to enter"},"down":{"1":"Bedside light","2":"You sit on it","4":"You bake in it","6":"Utensil with prongs","7":"Wipe your feet on it","8":"You sleep on it"}}},
@@ -423,19 +436,47 @@
   // A shared daily result links back with ?daily=<n>. Honour it on load so the
   // recipient lands on the same board being compared, not a fresh one — without
   // this the share is pointless to send.
-  var sharedDaily = new URLSearchParams(location.search).has("daily");
+  // Replay links before the first winter schedule keep their original grids.
+  // Use the same UTC calendar as the arcade daily hub.
+  var WINTER_DAILY = {
+    "12-01": "win-01",
+    "12-06": "win-02",
+    "12-11": "win-04",
+    "12-16": "win-03",
+    "12-21": "win-06",
+    "12-25": "win-05",
+    "12-29": "win-09",
+    "01-01": "win-07",
+    "01-08": "win-08",
+    "01-15": "win-10"
+  };
+  var FIRST_WINTER_DAILY = "2026-12-01";
+  var DAY_MS = 86400000;
+
+  var dailyQuery = new URLSearchParams(location.search).get("daily");
   var preferredMode = window.SnackPackStore.get("sp_crossword_mode");
-  var mode = sharedDaily ? "daily" : (PACKS[preferredMode] ? preferredMode : "general");
-  // Honour ?daily=<n> so a shared result opens the board it actually refers to,
-  // rather than silently serving today's. Falls back to today when absent.
-  function dailyNumber() {
-    var q = new URLSearchParams(location.search).get("daily");
-    if (/^\d{4}-\d{2}-\d{2}$/.test(q || "")) {
-      var t = Date.parse(q + "T00:00:00Z");
-      if (!isNaN(t)) return Math.floor(t / 86400000);
+  var mode = dailyQuery !== null || preferredMode === "daily"
+    ? "daily"
+    : (Object.keys(PACKS).includes(preferredMode) ? preferredMode : "general");
+  var dailyDay = resolveDailyDay();
+
+  function resolveDailyDay() {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dailyQuery || "")) {
+      var date = new Date(dailyQuery + "T00:00:00Z");
+      if (Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === dailyQuery && date.getTime() >= 0) {
+        return Math.floor(date.getTime() / DAY_MS);
+      }
     }
-    var n = q == null ? NaN : parseInt(q, 10);
-    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+    if (/^\d+$/.test(dailyQuery || "")) {
+      var day = Number(dailyQuery);
+      // 9999-12-31 is the latest date that fits the day-key format.
+      if (Number.isSafeInteger(day) && day <= 2932896) return day;
+    }
+    return Math.floor(Date.now() / DAY_MS);
+  }
+
+  function dailyDate() {
+    return new Date(dailyDay * DAY_MS).toISOString().slice(0, 10);
   }
   var puzzle, meta, userGrid, checkGrid, selR, selC, dir, activeClue;
   var solved, started, elapsed, timerId;
@@ -447,15 +488,28 @@
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function startTimer() { if (timerId) return; var t0 = Date.now() - elapsed * 1000; timerId = setInterval(function () { elapsed = Math.floor((Date.now() - t0) / 1000); timeEl.textContent = fmt(elapsed); }, 250); }
 
-  function allPuzzles() {
+  function standardPuzzles() {
     var out = [];
     ["general", "animals", "movies", "space"].forEach(function (k) { (PACKS[k] || []).forEach(function (p) { out.push(p); }); });
     return out;
   }
+  function dailyPuzzle() {
+    var date = dailyDate();
+    if (date >= FIRST_WINTER_DAILY) {
+      var winterId = WINTER_DAILY[date.slice(5)];
+      var winterPuzzle = winterId && PACKS.winter.find(function (p) { return p.id === winterId; });
+      if (winterPuzzle) return winterPuzzle;
+    }
+    var usual = standardPuzzles();
+    return usual[dailyDay % usual.length];
+  }
   function pickPuzzle() {
-    if (mode === "daily") { var all = allPuzzles(); return all[dailyNumber() % all.length]; }
-    var arr = PACKS[mode] || PACKS.general;
-    return arr[Math.floor(Math.random() * arr.length)];
+    if (mode === "daily") return dailyPuzzle();
+    var choices = PACKS[mode];
+    if (mode === "winter" && puzzle) {
+      choices = choices.filter(function (p) { return p.id !== puzzle.id; });
+    }
+    return choices[Math.floor(Math.random() * choices.length)];
   }
 
   function whiteCount(p) {
@@ -464,7 +518,7 @@
     return n;
   }
   function harderPuzzle() {
-    var all = allPuzzles();
+    var all = mode === "winter" ? PACKS.winter.slice() : standardPuzzles();
     var cur = whiteCount(puzzle);
     var bigger = all.filter(function (p) { return p.id !== puzzle.id && whiteCount(p) > cur; });
     if (bigger.length) return bigger[Math.floor(Math.random() * bigger.length)];
@@ -642,8 +696,9 @@
       var cwDaily = mode === "daily";
       window.SnackPackShare.result({
         game: "Crossword",
-        puzzle: cwDaily ? dailyNumber() : null,
-        headline: (cwDaily ? "Today's crossword" : puzzle.title) + " solved in " + fmt(elapsed),
+        puzzle: cwDaily ? dailyDay : null,
+        dailyDate: cwDaily ? dailyDate() : null,
+        headline: (cwDaily ? "Daily crossword" : puzzle.title) + " solved in " + fmt(elapsed),
         stats: improved ? ["new personal best"] : []
       });
     }
@@ -794,18 +849,20 @@
       if (meta.cells[nr] && meta.cells[nr][nc] && !meta.cells[nr][nc].isBlack) selectCell(nr, nc);
       e.preventDefault();
     } else if (e.key === " ") {
+      if (e.target instanceof Element && e.target.closest("button, a, summary") && !gridEl.contains(e.target)) return;
       selectCell(selR, selC); e.preventDefault();
     }
   });
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (btn.dataset.mode === mode) return;
       if (resume) resume.save();
-      mode = btn.dataset.mode;
+      if (btn.dataset.mode === "daily") dailyDay = resolveDailyDay();
+      setMode(btn.dataset.mode);
       window.SnackPackStore.set("sp_crossword_mode", mode);
-      document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
-      if (resume) resume.variantChanged();
       build();
+      if (resume) resume.variantChanged();
     });
   });
 
@@ -813,7 +870,7 @@
   build();
   resume = window.SnackPackResume.attach({
     game: "crossword",
-    variant: function () { return mode === "daily" ? "daily_" + dailyNumber() : mode; },
+    variant: function () { return mode === "daily" ? "daily_" + dailyDay : mode; },
     serialize: function () {
       return { puzzleId: puzzle.id, mode: mode, userGrid: userGrid, checkGrid: checkGrid,
         selR: selR, selC: selC, dir: dir, activeClue: activeClue, started: started, elapsed: elapsed };
@@ -822,8 +879,10 @@
       return s && typeof s.puzzleId === "string" && Array.isArray(s.userGrid) && Array.isArray(s.checkGrid) && Number.isFinite(s.elapsed);
     },
     restore: function (s) {
-      var restoredPuzzle = allPuzzles().find(function (p) { return p.id === s.puzzleId; });
-      if (!restoredPuzzle) throw new Error("Puzzle no longer exists");
+      var restoredPuzzle = mode === "daily"
+        ? dailyPuzzle()
+        : PACKS[mode].find(function (p) { return p.id === s.puzzleId; });
+      if (s.mode !== mode || !restoredPuzzle || restoredPuzzle.id !== s.puzzleId) return false;
       stopTimer(); hideVictory(); mode = s.mode; puzzle = restoredPuzzle; meta = buildGridMeta(puzzle);
       userGrid = s.userGrid.map(function (row) { return row.slice(); }); checkGrid = s.checkGrid.map(function (row) { return row.slice(); });
       selR = s.selR; selC = s.selC; dir = s.dir; activeClue = s.activeClue; started = !!s.started; elapsed = s.elapsed; solved = false;

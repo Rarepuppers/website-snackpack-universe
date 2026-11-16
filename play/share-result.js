@@ -19,6 +19,7 @@
  *     mount: document.querySelector(".game-stage"),
  *     game:  "Sudoku",
  *     puzzle: 212,                       // optional daily number
+ *     dailyDate: "2026-12-01",           // optional UTC date, or null for free play
  *     headline: "Easy solved in 4:31",   // the one-line result
  *     stats: ["0 mistakes", "no hints"], // optional short facts
  *     grid: ["🟩🟩🟩", "🟩⬜🟩"]           // optional spoiler-free rows
@@ -161,10 +162,9 @@
     opts = opts || {};
     if (!opts.game) return null;
 
-    // Every game routes its win through here, so this is the one place that
-    // needs to know a daily puzzle was finished. It self-filters on ?daily=,
-    // so a free-play win is correctly ignored. See daily-state.js.
-    if (window.SnackPackDaily) window.SnackPackDaily.recordIfDaily(opts.headline);
+    // Games that supply a date can distinguish today's board from an archive
+    // replay. Other games still use the daily link as their signal.
+    if (window.SnackPackDaily) window.SnackPackDaily.recordIfDaily(opts.headline, opts.dailyDate);
 
     var mount =
       opts.mount ||

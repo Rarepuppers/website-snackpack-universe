@@ -52,6 +52,7 @@
     var slug = match[1].replace(/[^a-z0-9]+/g, "_");
     var attributes = ["mode", "level", "diff", "difficulty", "size", "layout", "cells", "suits", "draw", "players", "theme"];
     document.querySelectorAll(".game-controls [role=group], .game-controls .seg, .fc-actions [role=group], .fc-actions .fc-seg").forEach(function (group) {
+      if (group.hasAttribute("data-game-options-managed")) return;
       var attr = attributes.find(function (name) { return group.querySelector("[data-" + name + "]"); });
       if (!attr) return;
       var key = "sp_" + slug + "_pref_" + attr;

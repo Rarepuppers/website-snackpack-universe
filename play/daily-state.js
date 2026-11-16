@@ -6,11 +6,8 @@
  * them. Editing 32 win handlers to do the same thing would be 32 chances to get
  * it wrong.
  *
- * What counts: the page must have been opened with ?daily= — that is the only
- * honest signal that the player was on the shared board. A win in free play is
- * a win, but it is not today's puzzle, and counting it would make the streak a
- * lie. Note a deal/puzzle NUMBER is not a reliable signal here: FreeCell shows
- * "Deal 774" in free play too.
+ * Games can pass the UTC date of their board so only today's daily counts.
+ * Callers without a date use the existing ?daily= link signal.
  *
  * Storage (localStorage, per-origin so /play/ and /daily/ share it):
  *   sp_daily_done   {"date":"2026-08-14","games":{"sudoku":"Easy in 4:31"}}
@@ -98,8 +95,12 @@
   }
 
   // Called by share-result.js on every win. Returns true if it counted.
-  function recordIfDaily(headline) {
-    if (!new URLSearchParams(location.search).has("daily")) return false;
+  function recordIfDaily(headline, dailyDate) {
+    if (dailyDate === undefined) {
+      if (!new URLSearchParams(location.search).has("daily")) return false;
+    } else if (dailyDate !== today()) {
+      return false;
+    }
     var slug = slugFromPath();
     if (!slug) return false;
     record(slug, headline);
