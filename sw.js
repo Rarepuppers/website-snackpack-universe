@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v61";
+const CACHE = "snackpack-arcade-v62";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
@@ -83,6 +83,8 @@ const SHELL = [
   "/play/stats/",
   "/play/stats/stats.js",
   "/theme.js",
+  "/seasonal-appearance.css",
+  "/seasonal-appearance.js",
   "/play/audio.js",
   // All eight cues are now mapped to concrete game actions and stay available
   // offline with the rest of the arcade shell.

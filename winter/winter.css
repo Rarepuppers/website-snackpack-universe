@@ -1,0 +1,136 @@
+.winter-main {
+  --winter-paper: #f9fbf7;
+  --winter-ink: #182e30;
+  --winter-muted: #47615f;
+  --winter-line: #cadad3;
+  --winter-link: #1f5e52;
+  padding-bottom: 2rem;
+}
+:root[data-theme="dark"] .winter-main {
+  --winter-paper: #192d34;
+  --winter-ink: #f0f2e6;
+  --winter-muted: #bad0ca;
+  --winter-line: #4e656a;
+  --winter-link: #b7e4d3;
+}
+.winter-page .winter-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: clamp(29rem, 51vw, 37rem);
+  margin-top: 1rem;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 1.4rem;
+  color: #fff7e7;
+  background: var(--woods-shadow) var(--woods-art) 68% 61% / cover no-repeat;
+}
+.winter-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, var(--woods-shadow) 1%, var(--woods-shadow-soft) 32%, transparent 66%);
+}
+.winter-hero-copy { padding: clamp(1.5rem, 5vw, 4.5rem); }
+.winter-kicker {
+  margin: 0 0 .45rem;
+  color: var(--winter-link);
+  font-weight: 800;
+  font-size: .77rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.winter-hero .winter-kicker { color: #ffd68d; }
+.winter-hero h1 {
+  margin: 0;
+  color: inherit;
+  font: 600 clamp(3rem, 7.5vw, 7rem) / .98 Fraunces, Georgia, serif;
+  letter-spacing: -.045em;
+}
+.winter-intro { max-width: 22rem; margin: 1.1rem 0 1.4rem; color: #fff7e7; font-size: 1.06rem; }
+.winter-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.winter-button {
+  display: inline-flex; align-items: center; min-height: 2.75rem; padding: .55rem .85rem;
+  border-radius: .55rem; font-weight: 800; font-size: .9rem; text-decoration: none;
+}
+.winter-primary { background: #ffd28a; color: #32220d; }
+.winter-secondary { background: var(--woods-shadow); border: 1px solid #aac4c1; color: #fff6e6; }
+.winter-button:hover { text-decoration: underline; }
+.winter-collection { margin-top: 2.75rem; scroll-margin-top: 8rem; }
+.winter-section-head {
+  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap;
+  margin-bottom: 1rem; gap: .25rem 1rem;
+}
+.winter-section-head h2, .winter-card h3, .winter-activity h2 {
+  margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; line-height: 1.08;
+}
+.winter-section-head h2 { font-size: clamp(2rem, 4vw, 3.35rem); }
+.winter-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.winter-card {
+  display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); overflow: hidden;
+  color: var(--winter-ink); background: var(--winter-paper);
+  border: 1px solid var(--winter-line); border-radius: 1rem;
+}
+.winter-card img { display: block; width: 100%; height: 100%; min-height: 13rem; object-fit: cover; }
+.winter-card-copy { align-self: center; padding: 1rem .9rem; }
+.winter-card h3 { color: inherit; font-size: clamp(1.4rem, 2.25vw, 2.15rem); }
+.winter-card-copy p:not(.winter-kicker) { color: var(--winter-muted); margin: .65rem 0; font-size: .94rem; }
+.winter-card button {
+  display: inline-flex; align-items: center; min-height: 2.75rem; text-align: left;
+  padding: 0; border: 0; background: none; color: var(--winter-link);
+  font: inherit; font-size: .91rem; font-weight: 800; text-decoration: underline; cursor: pointer;
+}
+.winter-footer { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; padding-block: 1.25rem; }
+.winter-page :focus-visible { outline: 3px solid #ca7b28; outline-offset: 3px; }
+.winter-activity {
+  --activity-bg: #f9fbf7; --activity-ink: #182e30; --activity-tile: #e7efea; --activity-line: #819b91;
+  width: min(37rem, calc(100% - 1.5rem)); max-height: calc(100% - 1.5rem);
+  padding: 1.2rem; border: 1px solid var(--activity-line);
+  border-radius: 1rem; color: var(--activity-ink); background: var(--activity-bg);
+}
+:root[data-theme="dark"] .winter-activity {
+  --activity-bg: #172c35; --activity-ink: #f0f2e6; --activity-tile: #24414b; --activity-line: #9bb7b6;
+}
+.winter-activity::backdrop { background: #06171dd0; }
+.winter-activity .dialog-top { display: flex; justify-content: space-between; align-items: start; gap: .7rem; margin-bottom: 1rem; }
+.winter-activity h2 { color: inherit; font-size: clamp(1.75rem, 5vw, 2.6rem); }
+.winter-activity .quiet, .winter-activity .tile {
+  min-height: 2.75rem; padding: .35rem .65rem; border: 1px solid var(--activity-line);
+  border-radius: .55rem; background: var(--activity-tile); color: inherit; font: inherit; font-weight: 750;
+  cursor: pointer;
+}
+.winter-activity .quiet:disabled { opacity: .55; }
+.winter-activity .story-art {
+  display: block; width: 100%; height: clamp(8rem, 28vh, 19rem);
+  object-fit: cover; object-position: center 39%; border-radius: .6rem;
+}
+.winter-activity .story-prose { margin-block: .75rem; font: 1.15rem / 1.5 Fraunces, Georgia, serif; }
+.winter-activity .activity-controls { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+.winter-activity .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .45rem; }
+.winter-activity .tile { min-height: 3.35rem; padding-inline: .2rem; }
+.winter-activity .tile.open, .winter-activity .tile.visited { color: #fff8e9; background: #205449; }
+.winter-activity .tile small { display: block; font-size: clamp(.55rem, 2.75vw, .75rem); }
+.winter-activity button:disabled { cursor: default; }
+.winter-activity .game-feedback { min-height: 2.4em; margin-bottom: .5rem; }
+@media (max-width: 840px) {
+  .winter-card { grid-template-columns: 1fr; }
+  .winter-card img { height: 11rem; min-height: 0; }
+}
+@media (max-width: 540px) {
+  .winter-page .winter-hero { align-items: start; min-height: 32rem; background-size: auto 73%; background-position: 76% bottom; }
+  .winter-hero::before { background: linear-gradient(180deg, var(--woods-shadow) 14%, var(--woods-shadow-soft) 38%, transparent 73%); }
+  .winter-hero-copy { padding: 1.3rem .95rem; }
+  .winter-hero h1 { font-size: clamp(2.8rem, 11.8vw, 3.85rem); }
+  .winter-hero h1 br { display: none; }
+  .winter-grid { grid-template-columns: 1fr; }
+  .winter-card { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); }
+  .winter-card img { height: 100%; min-height: 9.5rem; }
+  .winter-card-copy { padding: .65rem; }
+  .winter-kicker { font-size: .65rem; }
+}
+
+
+.winter-more { display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin-top: 1rem; }
+.winter-more a { text-decoration: underline; }
