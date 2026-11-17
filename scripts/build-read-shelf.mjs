@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 // Reading-path groups, in order. `intro` is shown under the group heading.
 const GROUPS = [
+  { id: "christmas", title: "Christmas picture books · read together", intro: "Two original woodland Christmas stories, each with 24 illustrated pages. Share them aloud with ages 4–8, or print a copy to keep." },
   { id: "alphabet", title: "Alphabet books · all the letters", intro: "Meet A to Z in a complete illustrated picture book. Read together, name the letters and look for familiar things in every picture." },
   { id: "stage-1", title: "Stage 1 · first sounds", intro: "Start with s, a, t, p, i and n. Prepare the tricky words and word endings together before these supported first reads." },
   { id: "stage-2", title: "Stage 2 · six more sounds", intro: "Adds c, e, h, r, m and d. Ready when Stage 1 words feel easy." },
@@ -55,6 +56,8 @@ const GROUPS = [
 // `added` is the date the book first went live (git history); the hub marks
 // books added in the last 30 days as "New", worked out in the reader's browser.
 const SHELF = [
+  {"slug": "nutmeg-and-the-tree-that-wouldnt-come", "group": "christmas", "age": [4, 8], "added": "2026-11-18", "title": "Nutmeg and the Tree That Wouldn’t Come", "eyebrow": "Christmas picture book · 24 pages", "blurb": "Nutmeg has picked the perfect little fir for the Christmas party. She has a cart, a wooden star and Corgi to help her. Then the fir holds on tight. With everyone expecting a tree in the square, Nutmeg has to look a little closer at the place where it grows.", "cover": "pages/cover", "ext": "jpg", "alt": "Nutmeg holds a wooden star by its red loop beside a snow-covered fir in a cracked barrel outside the glowing library.", "w": 1024, "h": 1536},
+  {"slug": "vincent-van-mouse-and-the-christmas-shadow-show", "group": "christmas", "age": [4, 8], "added": "2026-11-18", "title": "Vincent Van Mouse and the Christmas Shadow Show", "eyebrow": "Christmas picture book · 24 pages", "blurb": "Vincent has painted the whole village for the library’s Christmas window. Then a gust tears a hole right through his favourite picture. With the audience already on its way, a lamp and a scrap of card give him an idea for a show nobody has seen before.", "cover": "pages/cover", "ext": "jpg", "alt": "Vincent peeks around a red curtain beside a golden screen filled with a large star shadow and crooked-chimney rooftops.", "w": 1024, "h": 1536},
   { slug: "panda-cake-discovers-her-abcs", group: "alphabet", age: [3, 5], added: "2026-10-18", title: "Panda-Cake Discovers Her ABCs", eyebrow: "Alphabet picture book · A-Z · 26 pages", blurb: "Acorn to zucchini: join Panda-Cake in the kitchen and garden for every letter of the alphabet.", cover: "pages/letter-a", ext: "jpg", alt: "", w: 1200, h: 800 },
   { slug: "pip-sits", group: "stage-1", age: [4, 5], added: "2026-08-12", title: "Pip Sits", eyebrow: "Stage 1 · first reader · 6 pages", blurb: "A supported Stage 1 bridge using s, a, t, p, i and n, with tricky words and -s endings to prepare together.", cover: "pages/cover", ext: "jpg", alt: "Pip Sits first-reader book cover.", w: 1024, h: 1536 },
   { slug: "nan-and-pip", group: "stage-1", age: [4, 5], added: "2026-08-13", title: "Nan and Pip", eyebrow: "Stage 1 decodable · 6 pages", blurb: "A take-turns story that repeats a small set of words so a new reader builds confidence.", cover: "pages/cover", ext: "jpg", alt: "Nan and Pip decodable book cover.", w: 1024, h: 1536 },
@@ -137,7 +140,7 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KIND = { christmas: "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
 const KINDS = [["alphabet", "ABCs"], ["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 function filterBar() {
@@ -244,7 +247,7 @@ function homeBlock() {
         <div>
           <span class="eyebrow">Free bookshelf</span>
           <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
-          <p class="section-copy">Explore alphabet pictures, staged phonics with adult preparation, Reading Trail practice, shared stories, number adventures and animal facts from the SnackPack apps. Read them in your browser or print the PDF. No account, no ads, no download.</p>
+          <p class="section-copy">Explore alphabet pictures, staged phonics with adult preparation, Reading Trail practice, shared stories, number adventures and animal facts from SnackPack apps, alongside original web picture books. Read them in your browser or print the PDF. No account, no ads, no download.</p>
         </div>
         <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
       </div>

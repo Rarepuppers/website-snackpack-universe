@@ -56,6 +56,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Check Christmas web-original publication
+        run: node scripts/check-christmas-publication.mjs
+
       - name: Check JavaScript syntax
         run: node scripts/check-javascript.mjs
 

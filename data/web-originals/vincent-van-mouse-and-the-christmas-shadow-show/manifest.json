@@ -1,0 +1,935 @@
+{
+  "schemaVersion": 1,
+  "id": "vincent-shadow-show",
+  "title": "Vincent Van Mouse and the Christmas Shadow Show",
+  "language": "en-GB",
+  "ageRange": "4–8",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 878,
+  "blurb": "Vincent has painted the whole village for the library’s Christmas window. Then a gust tears a hole right through his favourite picture. With the audience already on its way, a lamp and a scrap of card give him an idea for a show nobody has seen before.",
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "alt": "Vincent peeks around a red curtain beside a golden screen filled with a large star shadow and crooked-chimney rooftops.",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "a5ea16401301dd68b34ae6b6fabbb52998a35586c0103c0708944300e71d24cd",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "sha256": "6c46fee878e895198413215c34eb5bbc787ba8fec73a8b870d744184d3c7de60",
+        "bytes": 368564
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "sha256": "cc477a47d297dbfbba5d8ae0a0f33102300dc2a38750218de0941385c43dd9ba",
+        "bytes": 243334
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "sha256": "89e9519971239f747fe7c7c9d067a8d5bb7f674d7fb1e73e20a95d1251248e65",
+        "bytes": 91824
+      }
+    ],
+    "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+    "generator": "built-in image_gen",
+    "sourceFile": "exec-c344d657-b11e-4afc-84d3-325f15bdc559.png"
+  },
+  "pages": [
+    {
+      "number": 1,
+      "text": "Vincent Van Mouse had painted six chimneys, four puddles and the little bakery door. He paused over a roof that he knew by heart. His own house had just enough room for a crooked chimney and a mouse.",
+      "illustrationDirection": "High oblique view of Vincent at a long table painting a recognisable snowy village street. The crooked chimney is near the middle of the painting. Other houses are subordinate, with no readable signage.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "alt": "Vincent paints a snowy street with six chimneys, four blue puddles and a bakery; the central chimney bends crookedly.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f123a30d50196581d768b3d7d734061d30e3073f3338fabceb18859175219150",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "sha256": "961090b586ad38e830161141bae099688b54aabee32725c999df9e88807c41d9",
+            "bytes": 489624
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "sha256": "e4f8e5a0ba293f3b155361e0e4a1c419eae1e89d96e07c87967573cafb031646",
+            "bytes": 303086
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "sha256": "3fcf1183ea11c2a8516adff2d2dd364a2ababb204a20a447e1697f752e3edbf6",
+            "bytes": 118646
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-357d1b8d-5fec-46f6-897b-f024924f1c64.png"
+      }
+    },
+    {
+      "number": 2,
+      "text": "The picture was for the library’s Christmas window. Tonight, when the snow made the streets go blue, everyone would come to see it. Vincent imagined them finding their houses. He wondered who would spot his first.",
+      "illustrationDirection": "Side view of Vincent and the intact panoramic painting, looking toward the empty deep-silled library window from inside. A couple of small evergreen decorations, understated. Late-afternoon blue outdoors.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "alt": "Vincent gazes towards the empty library window with his intact snowy village painting spread across the table.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fe75fade1b7835c796bf5c8f0a43d8be815cd95192332a51eca37e18924d74b2",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "sha256": "ad197996fb93bb1d2524acf0868e8448edc4a1381b33ebbfc7266ba4f90cab98",
+            "bytes": 497602
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "sha256": "0fc4d9c8f568f149c58690e82a43553b1bae2e8d89f85029609af31f26371cce",
+            "bytes": 313890
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "sha256": "2948b510079a0c49ac2b28af5c29655ad53b6989600240cbce0804ced9d17257",
+            "bytes": 123958
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-e2054d76-78cd-429b-aec3-d4327eea586b.png"
+      }
+    },
+    {
+      "number": 3,
+      "text": "Panda-Cake brought a tin of biscuits for the audience. “There’s a bit of red on your nose,” he told him. Vincent rubbed his cheek. “Other side.” He rubbed his chin. Panda-Cake handed him a clean rag, which he forgot to use.",
+      "illustrationDirection": "Character close-up, red paint dot clearly on Vincent’s nose. Panda-Cake offers a cloth, a closed round biscuit tin behind him on the table. Gentle visual humour about where Vincent is wiping.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "alt": "Vincent rubs his chin while red paint remains on his nose; Panda-Cake offers a clean rag beside the biscuit tin.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1be3c62364b90918975fb527e4e646455681dc96c625052c31e517c364d7f5ce",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "sha256": "520d80c0b1c6b11a45e62f9ac801399925ce379ec9440e643d18b748ac37079a",
+            "bytes": 468384
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "sha256": "4202896b4bc5e31af658e7fce33a2efaa64c48fc0f524a1083b54a3096d853bb",
+            "bytes": 302186
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "sha256": "041301738a8f1971d72dfad6037e9e0eed43f7d80d72731a38ccc93f72a1c699",
+            "bytes": 122296
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-dfc73fa5-987e-452f-ad81-1bda297a974a.png"
+      }
+    },
+    {
+      "number": 4,
+      "text": "Together they lifted the long painting. “I’ll hold this end,” said Panda-Cake. “You hold yours.” Vincent trotted backwards towards the window. The picture sagged in the middle, like a washing line.",
+      "illustrationDirection": "Wide interior shot of the two carrying opposite edges of the same painting between the worktable and the window. The middle sags visibly. Keep the route and furniture clear for the page turn.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "alt": "Vincent and Panda-Cake carry opposite ends of the long painting towards the window, letting the middle sag.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0eeafed089ad230c68a71b77f5a77891444f02e03b573a7437d47c789550bee1",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "sha256": "b12e7a106794226d9349698b3f0f3ede2488f5cbe3f05db9a0c5ae93869a3905",
+            "bytes": 482772
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "sha256": "761d5e51b99fd502bb6974aaa5379dd48cc570727b4cba911647260f8e3928a8",
+            "bytes": 303520
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "sha256": "70a014847e4dbe490609fa4d5d91d8341a143953a6b58f2e280d5b7cc7a5e6fd",
+            "bytes": 118474
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-77a247e2-01d6-412b-a992-78a4d1922065.png"
+      }
+    },
+    {
+      "number": 5,
+      "text": "Professor Hooten opened the hall door to bring in the chairs. Cold air rushed past him. The small paper stars on the shelf trembled. Then the great sheet of painted paper gave a shiver of its own.",
+      "illustrationDirection": "From beside the hall door, Hooten holds it open beside a chair. A cold gust lifts small cut paper stars and makes the long intact painting bow. No visible wind markings or motion comics.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "alt": "Hooten opens the hall door with a chair beside him; paper stars lift from the shelf while Vincent and Panda-Cake hold the painting.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bfcb64d29bb01bb060326323c1ca8b64cc14a3ee7f5868e69ae19d465ca3413a",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "sha256": "86c7a125bb02f74c1df3d68dac9d8bb8284edae42413c7a0746bc1b890e3b505",
+            "bytes": 480906
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "sha256": "f8200dee3157fb6a6b7470971898c3353de1b8ce240cde57229884fb1bd713b4",
+            "bytes": 303712
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "sha256": "bb5a72affa82fb2ed9668f5ed9a6fafe1b95b365e6a3e2f0f72e3af4396fb600",
+            "bytes": 118236
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-522b007b-e90e-4220-be85-1a805781c435.png"
+      }
+    },
+    {
+      "number": 6,
+      "text": "“Hold it there!” cried Vincent. He gripped his end with both paws. Panda-Cake held his. The gust pushed the middle up and over the corner of the window latch.",
+      "illustrationDirection": "Close view of the sharp silhouette of the latch catching the bowed wet paper while Vincent and Panda-Cake hold both ends. No tear visible yet.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "alt": "The bowed painting catches over a brass window latch as Vincent and Panda-Cake grip the paper.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "842762e2f55627e9598b5e0c0702b919a983ec2b8d31022aff7be5d099ee690a",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "sha256": "4167e24fc5a840c19ed15df955ea66d29303dd05f370c736c4ef741640164b5d",
+            "bytes": 483336
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "sha256": "462b14b589669a4af26c0b4ac8edf8b0636662b25d280ae319b1dd668dce9fed",
+            "bytes": 307260
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "sha256": "59f58537c694875c501ee85d0aeb6d4b3c8f264b0cb26835039db51469042ec4",
+            "bytes": 124776
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-28f5eb00-32f6-403d-955c-3538689dfc8d.png"
+      }
+    },
+    {
+      "number": 7,
+      "text": "Rrrrip. A rip ran down the Christmas street, stopping just above the bottom edge. Half of Vincent’s chimney folded back. He could see Panda-Cake through the hole where his house ought to have been.",
+      "illustrationDirection": "View through the torn central opening to Panda-Cake’s concerned face. One floppy flap shows part of a crooked chimney. Make the tear dramatic with paper fibres but keep the expressions gentle.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "alt": "Vincent sees Panda-Cake through a ragged opening in the painting; a flap carries part of the crooked chimney and the lower edge remains joined.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "55043dd3948915f60a7e3fa5ac013b0e71e1cd0fff8a56c912167664cd9d847e",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "sha256": "4b15ed6e16f5c2f4e3b442849875fb58b17d868ef5240cf291707a263b51037a",
+            "bytes": 470026
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "sha256": "97c4660da72d37c06025497418a6abf84320cff29095fd9f0bf0c207df11f8f6",
+            "bytes": 301028
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "sha256": "f4b5c20b801cebea693b2d2921387da41b09b6571094aecaec67f9031f04252c",
+            "bytes": 120660
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-aa5ba648-fb53-455c-ace2-18df8dbe9703.png"
+      }
+    },
+    {
+      "number": 8,
+      "text": "Hooten shut the door. “That was a big gust,” he said softly. Vincent put the painting on the table. He tried to press the chimney flat. His paw was shaking, so Panda-Cake set the rag beside him and waited.",
+      "illustrationDirection": "Quiet close scene at the table, torn painting flat except for its flap. Vincent tries to smooth it, Hooten by the shut door, Panda-Cake’s paw setting down the white rag. No joke on this page.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "alt": "Vincent presses the torn flap flat while Panda-Cake sets a clean rag beside him and Hooten stands by the closed door.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a9fa132374b5e32a3cf6f6995546b3c4f847a443178a349f580b456c85dfcd22",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "sha256": "d6af6436c8dd03fad80bbb62834fc0a9661bd3e32d7ccae49b2bf58273d78b08",
+            "bytes": 394238
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "sha256": "b71f927cf759e10b6b32337a837c31d91c0ecdedbaa419fda6ba7d22419a77f0",
+            "bytes": 274368
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "sha256": "8227339d7905e1aa36d7c3fdb84044938648da46d1c541f090b48d3fb5716b82",
+            "bytes": 114938
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-3a1ae802-4791-41ee-98b2-fbd69fd495e7.png"
+      }
+    },
+    {
+      "number": 9,
+      "text": "They tried to mend the rip from behind. The two sides almost met. But the paint had stuck to the latch and come away, leaving a white stripe down the wall of Vincent’s house. He tucked his brush inside his apron.",
+      "illustrationDirection": "Close overhead of the mended but scarred watercolour. Only a single irregular white stripe where pigment lifted. Vincent’s brush going into the blue apron pocket at the bottom of frame.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "alt": "A white scar runs down the mended painting as Vincent puts his brush into his apron and his friends look on.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7d912ce0ea1946b7720eaec0e2cb37fb6af38ed87396ec302adcd5c8a5ebc924",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "sha256": "1377f82e5b5e82a12cda7b5c5095d03378afeeee8eda8dd655a367f5fa728be4",
+            "bytes": 487360
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "sha256": "66a5758011e1b723b4fbcb73a85086c25e460a5f525dde3d2a3a26a5414f9134",
+            "bytes": 311562
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "sha256": "b051513c228ec315327e48bc9a552c71cd892da7669983f6ce3fa5fbfed2d199",
+            "bytes": 124210
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-2608ef57-78f5-4618-a4e4-d16ec0fa1070.png"
+      }
+    },
+    {
+      "number": 10,
+      "text": "Outside, one child stood on tiptoe to peer through the glass. Another was brushing snow off the window ledge with a mitten. Vincent could see them. He slid down in his chair so they couldn’t see him.",
+      "illustrationDirection": "From inside the blue twilight window, two bundled animal children outside, one peering in and one brushing the ledge. Vincent crouches behind the window-height chair. Keep the contrast cosy.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "alt": "Vincent hides low behind his chair while a rabbit peers through the window and a hedgehog brushes snow from the outside ledge.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "903b5eaa9ce0044debe4c4044da5c04d81687277cedbc0c3d941993f68fbf3bd",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "sha256": "0e6e258cfd7f7c9ef78e416a94d8ac11c90fa5a082cc4e1dab2e36dc76107686",
+            "bytes": 433280
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "sha256": "441445b5c495d7b5d872bc220509796190b82a604e2e61bf44a4e45a130100fc",
+            "bytes": 292130
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "sha256": "16f44e9a183d4af9a26173afb4d9cd7bda172e058f49dd6fcb06b0d14712da6e",
+            "bytes": 121596
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-b4d110cf-9187-41ba-9fa4-195209a7305e.png"
+      }
+    },
+    {
+      "number": 11,
+      "text": "Panda-Cake took a cardboard star from the shelf. “We could put a star over the white bit.” The desk lamp was already on. When he picked up the star, its shadow swept over the wall.",
+      "illustrationDirection": "View across the craft table, showing the lit electric lamp, Panda-Cake lifting one small cardboard star between the light and wall, and its single large dark shape crossing the wall. Torn painting remains below.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "alt": "Panda-Cake lifts a cardboard star between the desk lamp and the wall, casting a large shadow as Vincent watches beside his scarred painting.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "eb2a6c554b840c00744b10119474f08c01b91ac196c75d43caf3394e1e2fbf85",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "sha256": "ec6d341aaacb19351c5eeafc16c7af6df103f391310efca5dbdbbd82e80ee141",
+            "bytes": 374520
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "sha256": "98fe792438c6a792f938eaf380d2766f87b51c6245d015c9698c77fcd201c8c2",
+            "bytes": 252540
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "sha256": "58e5bfafcf5592cd2ea6aca710c2218816b2f5cb54bf997f7ad579d0697e0222",
+            "bytes": 103916
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-2ae570e3-4bc1-4258-b248-e80bda173a48.png"
+      }
+    },
+    {
+      "number": 12,
+      "text": "“Hold it there,” said Vincent. This time he said it very quietly. He watched the star grow when Panda-Cake moved it towards the lamp. When he moved back, it shrank. He climbed out of his chair.",
+      "illustrationDirection": "Medium shot of Vincent climbing down, face bright with attention, watching one enlarged shadow. Shadow corresponds to the star nearer the lamp. Do not depict two time states in one picture.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "alt": "Vincent climbs down from his chair as Panda-Cake holds the star nearer the lamp and its shadow grows across the wall.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "85842fed5259cdfd0f0c568a114f1283c44d7768c5c030dd8fda19ed34c3e1d5",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "sha256": "1d60661e4c2c0011ec5a77448ea4be7a529cfc0fe0dd5d815409f959801286e8",
+            "bytes": 348704
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "sha256": "dbb213f19aa96496dda8c3089c717886f1ae6ec1d0c85dcf87e15300dc157c14",
+            "bytes": 225970
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "sha256": "b00295c7b39f833d99da712d941b5f7a2d4087c1ebfa52a40f04fedaf707468d",
+            "bytes": 90246
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-c38a0c58-17ef-499b-96d8-a7e1ba7ed044.png"
+      }
+    },
+    {
+      "number": 13,
+      "text": "Vincent snipped round the torn flap and lifted it. On the wall, the scrap became a steep little roof. He tipped it sideways, and there was his crooked chimney. “There you are,” he said.",
+      "illustrationDirection": "Clear optical silhouette of the crooked chimney on the wall. Vincent holds up the corresponding cut or torn-off painted scrap between the desk lamp and wall. Let his recognition tell the story.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "alt": "Vincent raises a roof-shaped scrap from his painting and recognises its crooked chimney in the matching shadow on the wall.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "53d02805182513fb0e5aac37cf54b467096835bc1363f0aa72bf25afef2e7b10",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "sha256": "cfb66b1bcf33d04fd7213c709cd2ebdf718dbcbc979587d951075b74458289a1",
+            "bytes": 361268
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "sha256": "9b4e8bb21dc1c961190552bfa7464693a61ac15539339589e31cf115ef6495b8",
+            "bytes": 242062
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "sha256": "c8facdd3bac847c07df6aaf29d936868456739ef990471261048de0b9b64f307",
+            "bytes": 97866
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-562c3448-17bc-4871-b67f-52937cefcff8.png"
+      }
+    },
+    {
+      "number": 14,
+      "text": "“Hooten, may we borrow a sheet?” asked Vincent. “And could the chairs face this way?” He pointed away from the window, towards the warm end of the hall, where two low bookcases stood with a gap between them.",
+      "illustrationDirection": "Wider hall geography, Vincent points to a gap between two sturdy waist-high bookcases at one end of the hall. Hooten holds one chair in the foreground. Keep the window off to the side.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "alt": "Vincent points to the gap between two low bookcases while Hooten turns a chair to face that end of the hall.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5eeff34e4e55046f9594e77c3be9a101203aea35466ee4152ca8812cb0ee6cd4",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "sha256": "7906cd27b6311d3faa5bad973f8b18c0c08ea2213f552975e834512b5de51d19",
+            "bytes": 396972
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "sha256": "95e3b141a307b3d9d97b339ade042943bad4c1680fc9f9d85388800f5980bb91",
+            "bytes": 260816
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "sha256": "f0cfef28f9f32ef84b793e90f19a392d099d061eb4051e2c07aee1873aa1fdb9",
+            "bytes": 106680
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-4becc157-8740-4fcf-bb2a-44557ed4c473.png"
+      }
+    },
+    {
+      "number": 15,
+      "text": "Hooten clipped a plain sheet to two tall poles behind the bookcases and set the lamp on a table behind it. Panda-Cake walked round to the front. Vincent lifted his roof. A house popped up on the sheet. “I can see it from here!” he called.",
+      "illustrationDirection": "Audience-side three-quarter angle of taut cream fabric and a projected crooked-roof silhouette. Show Panda-Cake on the viewing side and only a hint of the lamp table round the fabric edge. Lamp and cutout stay hidden to the audience.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "alt": "Panda-Cake watches a single crooked roof-and-chimney shadow appear on the newly hung cream sheet.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "df112102457f16a38ba17b5094136a7a437aa23596a68913923f0d4a022da9aa",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "sha256": "bbacdf3e5c45db1b2797b5d16653e0d27186553b41b6b08cf1bf42da1c3d703c",
+            "bytes": 252868
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "sha256": "0b9a63fd98eea5280cbe323030b4049763bb46562d2f35f5e4e86f5d91c872f6",
+            "bytes": 176162
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "sha256": "5d9eabe25be5a89ff71730d80cfbd67a64b4df1c69cbf2f51aa432140b54a336",
+            "bytes": 78186
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-1be54012-132e-406e-9258-8de9f6758325.png"
+      }
+    },
+    {
+      "number": 16,
+      "text": "Vincent took his little scissors. From the snowy strip below the rip, he snipped a new row of roofs. Panda-Cake cut a cardboard squirrel with a parcel under its arm.",
+      "illustrationDirection": "Overhead craft-table composition. Vincent cuts a new rooftop outline from the snowy-blue strip below the rip, using blunt scissors. The remaining panorama retains the cut-out roof opening and white scar. Panda-Cake’s simple squirrel silhouette has one parcel shape. Lamp and set are in the background.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "alt": "Vincent cuts a snowy-blue rooftop strip from the damaged picture while Panda-Cake cuts a cardboard squirrel carrying a parcel.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5b30963ba0984b6fdbbb354116f0dd28e900a4b31f2fdd980a400fe47c6f0c27",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "sha256": "f3eb197b7f1ad6641938ba78f7d18771434f38c243d61db417a8067882d8fa21",
+            "bytes": 407650
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "sha256": "b735c371c8ad4983a454c73d6ae563caa7ced46a9adb95ce010f9575d50f302e",
+            "bytes": 279440
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "sha256": "869e68817eb463085ed97ba78691cc493893a02dcb391906511b1da58dafad86",
+            "bytes": 117698
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-c37a429f-e9b0-45a4-bcc4-f973680b5555.png"
+      }
+    },
+    {
+      "number": 17,
+      "text": "The squirrel looked very fine from the front, until Panda-Cake tried to make it walk. Its parcel bumped a roof. Its tail went up a chimney. “That’s the wrong way home,” said Vincent, laughing for the first time since the rip.",
+      "illustrationDirection": "One comic action from the audience side. The squirrel shadow’s tail comically overlaps the crooked chimney shape. In a sliver offstage, show Vincent laughing, or let his rounded ears peek around the curtain edge.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "alt": "An oversized squirrel shadow bumps its parcel against a roof while its curled tail overlaps a crooked chimney. Vincent laughs beside the glowing screen.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4eb2cd10acbb4a5b9f3998d15d694f4dda7f168d176253073b53b99ae23a32e7",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "sha256": "29d5c186fc348044b16eed53d921e648321300f20d46ed47638df7985191e43c",
+            "bytes": 224858
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "sha256": "632d379743857e3148e8b5f16cc02331e396eae6e478f5a59efc7b241b7c2fd1",
+            "bytes": 155780
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "sha256": "ffd6d533ed0de2f9614fddd067eb7cdf775414683e0d1e1aa55b927cd619fe7c",
+            "bytes": 68776
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-ba57360e-ce7f-455b-ae9b-def015ba6deb.png"
+      }
+    },
+    {
+      "number": 18,
+      "text": "They tried again. This time the squirrel stood farther from the lamp, beside the sheet. Small enough! It trotted down the street between the roofs. Vincent practised making the star rise. Panda-Cake practised three little taps.",
+      "illustrationDirection": "Backstage rehearsal showing the moving squirrel cutout closer to the sheet and the lamp farther behind. A spoon and tin wait near Panda-Cake. Balance foreground real props with the glowing cloth.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "alt": "Behind the screen, Vincent holds a cardboard star and Panda-Cake holds a squirrel puppet; one desk lamp casts their shadows above a mounted cardboard street.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dd396afa86e81840bc7c3d8520cfdc12b7c709d028d8ac7da75bdb91a703c9e2",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "sha256": "821e4fd6f1483cfd2179a528a5ca5a911e6562b73cc51231be18481da1485dde",
+            "bytes": 330092
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "sha256": "2439c6a0a8bd571d87ffb70bdc4ee2098482d23473cacae394691a7d78f77ac3",
+            "bytes": 226716
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "sha256": "82173afe36f825f28037182fae06e74026019c276f826e605fddabf1b21a54ef",
+            "bytes": 92950
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-99b79516-2ba7-4fcc-be48-ad8736bcd599.png"
+      }
+    },
+    {
+      "number": 19,
+      "text": "Hooten went out to the waiting children. “The Christmas picture is ready,” he said. “Come inside and find a chair.” Behind the sheet, Vincent heard boots tapping and two last chairs scraping along the floor.",
+      "illustrationDirection": "From the warm hall doorway, Hooten welcomes the two bundled children from page ten and a few neighbours. Rows of low chairs look toward the bright sheet. Nobody crosses the backstage lighting area.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "alt": "Hooten welcomes a rabbit and hedgehog into the warm hall, where a fox and badger sit facing the glowing blank screen.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f6911fbe7b62131e74042517576b55cdb6fae55f3d8e4017745b983d391090e6",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "sha256": "e628c0803482490a5e804cba242636018e6b657e0c640104e560eaf4426554b9",
+            "bytes": 381348
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "sha256": "0cec30c5510d5457046756d44cbad753a6daa9da3318a0b974c5a862d6ef254f",
+            "bytes": 254168
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "sha256": "b9321038b7b9d3f18f01c12c90ea6f345c5eca75c1fec37db09452177c9f59b2",
+            "bytes": 105254
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-0afb71ff-8411-407e-a089-3e0df7c292da.png"
+      }
+    },
+    {
+      "number": 20,
+      "text": "Panda-Cake tapped his spoon on the biscuit tin. Ting. Ting. Ting. The hall went quiet. Vincent raised the little street. On the sheet, rooftops grew out of a pool of gold.",
+      "illustrationDirection": "Audience perspective. Children in the lower foreground, one illuminated screen reflecting on their faces. Simple, clearly legible silhouette of a street including Vincent’s crooked chimney. No physical puppets visible on this side.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "alt": "Five shadow houses, including one with a crooked chimney, appear on the golden screen as the seated neighbours watch.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2c6b20fa35132bad39865c89ee61151e20fd4fda0d70003daf1a2a79eb62cbac",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "sha256": "a8f42b7a0837e5dc7b7b4030dcf4f527008e11e825d7f62aee50fec798bda011",
+            "bytes": 280948
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "sha256": "f762a2854fb8629692a295d7e09987918a79aa3db095e2c40e43c5eb3fe69dac",
+            "bytes": 193326
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "sha256": "0e7a8742e9df05f30140173b41c1bde12b8aa5cbf17fbe41c99aff0c8bd7c106",
+            "bytes": 83234
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-9a6f5cb4-02a1-458a-b079-84203896c8dd.png"
+      }
+    },
+    {
+      "number": 21,
+      "text": "A squirrel travelled from house to house. At the last door, she set down her parcel and knocked. Then up came the star. A small voice in the front row whispered, “That’s Vincent’s chimney.”",
+      "illustrationDirection": "Main performance hero scene, audience side. Full simple tableau of dark roofs, small squirrel at last door, a round-pointed star above the crooked chimney. One young viewer leans towards a friend.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "alt": "A rabbit whispers to a hedgehog as the audience watches a squirrel, a crooked chimney and a star appear in shadow on the glowing cloth.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cf767ccb9b15d531d57446067b2e9831773c974f26bd6ab61971eb0f71ec2872",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "sha256": "6a3d34796abd8646f5dbba77607e52877a842e5e745edba1a3b6231ca202b0d5",
+            "bytes": 263132
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "sha256": "ef3705f7ad7c40bc435fdbf083edb9771217b594a293a6868ae3ef61615d23b7",
+            "bytes": 191304
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "sha256": "1b81dacd3294765dd3a54264b3d3914f57ae4c4996b5b0a38460ac61c0d395d7",
+            "bytes": 82544
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-dd87891f-9ce0-4f35-a243-1b338102ac8d.png"
+      }
+    },
+    {
+      "number": 22,
+      "text": "Vincent almost forgot to move the star. He had thought his chimney was ruined. Here it was, as crooked as ever, big enough for the whole room to see. He held the star steady while the audience clapped.",
+      "illustrationDirection": "Backstage close-up of Vincent smiling, red nose dot still there. He stands beside the warm desk lamp, holding a cutout on a thin stick, with the roof shape mounted in place. Let the colour and pose convey relief.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "alt": "Vincent smiles beside the brass lamp while holding a cardboard star on a stick above the mounted rooftop cutout.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "929a75718c2616b54c50c2a94c5dbe980f6f27ec735cfb52e50716997dd02f2a",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "sha256": "a9b0ae19a360981d0288b9e9a9e05e8636be838a9701db63643ff7cf2fe3c030",
+            "bytes": 345540
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "sha256": "8e6d26e016715bfb3f7fa80b8252b3fd88553b55d99caf9782c58ec1156739aa",
+            "bytes": 223350
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "sha256": "3bf2557c3e192d90ca83fa0ed8c4edd6892dd1e33127ca106c6ccb5204b512f3",
+            "bytes": 88758
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-6d42479a-9ca3-4294-8055-328d45689782.png"
+      }
+    },
+    {
+      "number": 23,
+      "text": "Afterwards the children took turns with the puppets. One made the squirrel as big as a house. One put the star in the squirrel’s paws. Panda-Cake opened the biscuit tin. Vincent looked down and found another red spot on his apron.",
+      "illustrationDirection": "After-show play, supervised with Hooten present. A child controls the squirrel puppet safely away from the electric lamp. Another tries a star near the sheet. Panda-Cake opens the tin and Vincent examines his new apron spot.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "alt": "Hooten supervises two children holding cardboard puppets while Panda-Cake opens the biscuit tin and Vincent examines a red spot on his apron.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e8b6bd01620be6df42b339f06f1d801b5ca1439c6b37c5dc6541a648a4f9ce8e",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "sha256": "806ab1e96c608e531d94056828009a3c316883b369f1d2cb055078ff47df27f5",
+            "bytes": 298590
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "sha256": "e6f4bbcc50f21c8ec856554d8933c9e028817a79a6992ec291305d98017df97b",
+            "bytes": 206194
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "sha256": "0a5a819ea2db06426f309ba03f9c709eff17b4dc1f42cc4289863053590f8b13",
+            "bytes": 92030
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "vincent-shadow-show-p23-e4278899.png"
+      }
+    },
+    {
+      "number": 24,
+      "text": "He turned off the lamp and carried the crooked little house to the window. Outside, the snow had stopped. The silhouette sat on the sill beside the last biscuit. Vincent licked a crumb off his paw. “Good night, little house.”",
+      "illustrationDirection": "Quiet close on the library window and sill. Crooked-chimney paper cutout beside one remaining biscuit. Vincent licks a crumb from his paw. Snow outside has stopped, sky is deep indigo, and the desk lamp is off.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "alt": "Vincent licks a biscuit crumb from his paw beside the quiet snowy window. A crooked-chimney paper house and the last biscuit rest on the sill; the lamp is off.",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "50307a6a62265c044ca0fc22a3a90d4bc0f4711f02871b84bdf2719385d6dd5c",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "sha256": "214ecc740020057f5a5e9dac910f2916e4c7fb0ef27a86bb04508bb493b8839d",
+            "bytes": 365826
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "sha256": "e2dcd53dcc3a2d236db4d9cff915de5abab32dbaac800a1bc62c0b8975f4175c",
+            "bytes": 236326
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "sha256": "4abe45e94f74449ac8bd0d8477b60a959d280b34fdb5d1f3ac04995197f49274",
+            "bytes": 94920
+          }
+        ],
+        "review": "Reviewed generated scene and final sequence contact sheet for page action and visual continuity.",
+        "generator": "built-in image_gen",
+        "sourceFile": "exec-098e07e2-e612-440a-814c-7c12ba04bbc0.png"
+      }
+    }
+  ],
+  "webSlug": "vincent-van-mouse-and-the-christmas-shadow-show"
+}
