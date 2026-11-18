@@ -61,6 +61,8 @@ if (hasApps) {
   };
 }
 const prior = fs.existsSync(EVIDENCE) ? JSON.parse(fs.readFileSync(EVIDENCE, 'utf8')) : null;
+const webOriginalsFile = path.join(ROOT, 'data/web-originals.json');
+const webOriginals = fs.existsSync(webOriginalsFile) ? JSON.parse(fs.readFileSync(webOriginalsFile, 'utf8')) : {};
 if (!WRITE && !prior) throw new Error('No publication evidence; run locally with --require-apps --write-evidence after review.');
 const records = [];
 for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
@@ -69,7 +71,13 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   const html = fs.readFileSync(file, 'utf8');
   const cards = [...html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m => m[1]);
   if (!cards.length) continue;
-  const text = cards.map(c => norm(c.split('story-page-copy')[1].match(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/)[1]));
+  const text = cards.map(c => {
+    const copy = c.split('story-page-copy')[1];
+    if (Object.hasOwn(webOriginals, slug)) {
+      return norm([...copy.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(p => p[1]).join(' '));
+    }
+    return norm(copy.match(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/)[1]);
+  });
   const previous = prior?.books.find(b => b.slug === slug);
   const book = hasApps ? candidates.find(b => b.pages.length === text.length && b.pages.every((p, i) => norm(p.text || p.body) === text[i])) : null;
   if (hasApps) assert(book, `${slug}: story differs from every current app export; fix source/import first`);

@@ -1,0 +1,987 @@
+{
+  "schemaVersion": 1,
+  "id": "one-more-story-before-santa",
+  "title": "One More Story Before Santa",
+  "language": "en-GB",
+  "ageRange": "5–7",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 746,
+  "blurb": "Cluck O’Clock and Coop-Accino plan to stay awake on Christmas Eve. He’ll listen for Santa. She’ll keep watch at the window. But first, Hen-Berry has a little story about a house with no chimney.",
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "407c2a849c089c956feeb9e5bb1544064dbeebb2a0a8454a739a6eb9078743ef",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 247138,
+        "sha256": "a737c700655660e06f5275254d1cc91e4fb175dca9b31ba3e42ab85396c1971f"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 175890,
+        "sha256": "d8b0d414d532d6361d04c047519814ae5afd9bdce4d312469898d9c2e5966331"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 80472,
+        "sha256": "a1ed8ad5b6aef147f6317a3af1f00cb8cc2e76ccf14069f0b7656d04855de7ac"
+      }
+    ],
+    "review": "accepted after checking artwork against the page action and visual continuity",
+    "generator": "built-in imagegen",
+    "alt": "Two chicken twins peer and listen by a snowy bedroom window. A light glows on the path below."
+  },
+  "pages": [
+    {
+      "number": 1,
+      "text": "On Christmas Eve, Coop-Accino put three star biscuits on a blue plate. One had a bent point.\n\n“That one looks like it’s waving,” she said. She turned it so it waved at the door.",
+      "illustrationDirection": "Kitchen tabletop close-up at Coop’s eye level. Her wing turns the biscuit with a bent point towards the entry to the hall. Three star biscuits on one blue plate.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "807e0b6e7e8eebdbc92e88217f716cf66247bdb27a06f7b18e8fa61339328917",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 247648,
+            "sha256": "f12e2192fe133863d98aa1246b4394aecf63e9f73ed4f2e98c9f2cd634688d2f"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 175264,
+            "sha256": "ce95527d2bc31e433718d8f40aad277024ebfed4693953035d01fdceeb0ea530"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82498,
+            "sha256": "fb697e6334eca19750787926dcad34667abd761ef583048399730a4348da4d54"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Coop turns one of three star biscuits so its bent point faces the door."
+      }
+    },
+    {
+      "number": 2,
+      "text": "Cluck O’Clock poured a glass of milk. The glass made a tiny clink when he set it down.\n\n“I’d hear that from upstairs,” he said.\n\n“You can hear a biscuit break from upstairs,” said Coop-Accino.",
+      "illustrationDirection": "Low side view as Cluck’s glass settles beside the plate. Coop gives him a sideways look. Warm reflection at the foot of the glass.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e6c5164cdec8527c358ca3ab008dc53033150615aab6917ae57dd1d2e7bcb359",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 243446,
+            "sha256": "8a75f4bd7152658e7042c0d8b08aafcee65373ff1c7e9f1d2e7673b17e307df8"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 175948,
+            "sha256": "bed2f3a73f6dd18d923907f7a942ed2c76beb9e18a31415ce7876816b53286a1"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86106,
+            "sha256": "42e45df33f888c23969ae035fbd513139527766dc5772c3418a8a555df48e6f7"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Cluck sets a glass of milk beside the blue plate while Coop looks over."
+      }
+    },
+    {
+      "number": 3,
+      "text": "“I’ll listen,” said Cluck. “You look.”\n\n“And if one of us sees Santa, we wake the other.”\n\nThey tapped wingtips over the plate. It was a very quiet sort of promise.",
+      "illustrationDirection": "Tight frontal two-shot over the plate. The tips of their wings meet once, above the still-untouched biscuits.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5fd1a6b83834335f7a63b693c474a31f15c0392dc1cbadf6b1dd7b87426f5b65",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 293256,
+            "sha256": "5f3eacf4e28bf3218302dd4fed04b4a5893adc099f55799be38d4eb1354e0e75"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 203416,
+            "sha256": "0e82dd5173f90b2d7c6b020e671e692241d18ee3cd47db6f4aec170d4c9ac260"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94460,
+            "sha256": "d7da76e4d086c2eee0c8f89faa4a05cc88fc4f033ea7d91e25892b90097c90f1"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "The twins tap wingtips above the plate of star biscuits."
+      }
+    },
+    {
+      "number": 4,
+      "text": "On the stairs, Coop stopped. She could see the snow through the landing window, but the dark glass showed mostly her own beak.\n\n“How will he know which house is ours?”",
+      "illustrationDirection": "Profile from the stair tread below. Coop has stopped partway up. Centre her beak reflected in the small stair-landing window.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "364b3b9bd624dde8cacd09e0d1ca14a17be14286586827f923cb406a2e0825df",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 172546,
+            "sha256": "df8c6e67cc55d35a99634b1c513bef9ba287551009df7ebf2f7327837e2822de"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 119992,
+            "sha256": "18cb1749e108c7072236f9278a4f9997b69f0ef472939a43f5df20d5fdc64646"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 54060,
+            "sha256": "650984727e1f4a0e5cc8dd9d99e83c9ce0f26accee69a7535231e5a89d317dd0"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Coop sees her own beak reflected in the dark landing window."
+      }
+    },
+    {
+      "number": 5,
+      "text": "Hen-Berry came up with the bedtime book tucked under her wing.\n\n“One more story,” said Cluck. “A short one. We’ve got a lot of listening to do.”\n\n“And looking,” said Coop.",
+      "illustrationDirection": "View from the bedroom door towards the landing. Hen-Berry arrives with the closed plum-coloured book. The twins make room.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "99c2cb5107b48440596a1ffc5db5bd7ed334645bb4b8adfae179e730ed2a6c88",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 209900,
+            "sha256": "69c534f95e09851316cf2c2267107ae1adf674ac04c73f9c67fb03d41b898175"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 150000,
+            "sha256": "fc59c52b5e67c5ddf79382631840fdf703bb1da16f39435c9a309490f32c1ab0"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 68112,
+            "sha256": "b15793d09fca7302d3c610f6a6b593434f0ddc7fefe82b68996edd755f5ad665"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry carries a bedtime book upstairs to the waiting twins."
+      }
+    },
+    {
+      "number": 6,
+      "text": "Hen-Berry sat between their beds and opened the book.\n\n“Once there was a little mouse who moved into a house with no chimney.”\n\n“None at all?” asked Coop.\n\n“A drainpipe,” said Hen-Berry. “And a very fine front door.”",
+      "illustrationDirection": "Symmetrical bedroom wide. Hen-Berry sits between the beds with the book open. Cluck is beside the blue quilt and Coop beside the cranberry one. Establish the bedroom window beyond them.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aec79266e0ec7fe2994c260e180ba6624a09fb92c1b87c3efbf9c88f375b7eef",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 225610,
+            "sha256": "2ba8143f254178aef6b289aee1a1598e45662f090a265220bab83a3f08b41df6"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 163932,
+            "sha256": "33d638eaa9adbe7c8c4fa348e310390161d103d04b30990374790f67cebfc509"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 75598,
+            "sha256": "17b8c28c61e837e4bb1c24393d05ee4098ec0ee9f3c08a8d8d6e297d86bb7f5e"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry opens a book between the twins’ two beds."
+      }
+    },
+    {
+      "number": 7,
+      "text": "“On Christmas Eve, the mouse drew a chimney on a piece of paper. She stuck it to the door. Then she went down the path to see how it looked.”",
+      "illustrationDirection": "First inset-story scene. Use a softened, flatter paint texture within the full bleed. Show the small grey mouse from behind, halfway down the path, looking back at the paper she stuck to the door. Keep the drawn chimney faint.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "686026315b3713c3ed1a0720e609e24443acafeeb22dbd13c0526af131a66f26",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 237570,
+            "sha256": "09c178f80b6eade9693f9414e2460c427867537897fa0589c1a7d908717f7c82"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 174658,
+            "sha256": "143bb02879263ac347be623146ecf0e6a36059ef9fc4a7a2b823d938fbfbe06b"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86122,
+            "sha256": "3054264907d46133fa4cca2a4735222f73195024a66f72e11b6fd7b2482561e5"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "A little grey mouse looks back at a piece of paper on the door of a low, chimneyless house."
+      }
+    },
+    {
+      "number": 8,
+      "text": "“She couldn’t see the paper. She couldn’t even see the door. So she fetched a little lamp and put it in the front window. From the end of the path, she could see the whole window shining.”",
+      "illustrationDirection": "Reverse to a wider view from the low gate. The lit window is readable across the dark garden. Mouse at the gate with the light now inside.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4af54b8d8538dff3b099f8bfbae6ae7b7e08db34cb9d625e57a90c9a5508a958",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 248146,
+            "sha256": "f5f9154228c510a302d6fd3e3755c894f6a5c3dc036ccdcb2f6480a4f6e86397"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 180796,
+            "sha256": "47cca9dbb15cdcaf1f063ed46603a4ff62e2aa5abce7d2a935321f597f28637b"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83176,
+            "sha256": "9d6a763b0b409ce3fa9c74224b9c92fd04c230a26792532a3e249fd793dbb038"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "From the end of the path, the mouse can see her front window shining."
+      }
+    },
+    {
+      "number": 9,
+      "text": "“Did anyone come?” asked Cluck.\n\n“Her grandad did,” said Hen-Berry. “He’d walked up and down twice looking for the right house.”\n\nCoop shut the book with one wing. “We have a little lamp.”",
+      "illustrationDirection": "Return to the bedroom with a close view of Coop closing the plum book on Hen-Berry’s lap. Catch the bright moment when Coop has an idea.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3ec00e076774bec9fb1310302c38dd35917bdb7aa905900c236fada7a1c3c500",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 208174,
+            "sha256": "d7d95aa3c2c724e903db0f6839d91eff9e663dca45f2fb3dcc8d5e7f6f954751"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 146212,
+            "sha256": "8a0738ef44f7c392e8e96d767f53cbe0a19d5889aea7006180ec19e03e38d3a9"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 67576,
+            "sha256": "f1d85de79da6f6fd10fe6988c9f5fcf39e2608c9c14fed810ef74991eaebb4c9"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Coop closes the bedtime book on Hen-Berry’s lap and looks up eagerly."
+      }
+    },
+    {
+      "number": 10,
+      "text": "Hen-Berry switched on the lamp by the front door. Back upstairs, she showed them the small patch of gold it made on the snow.\n\n“We can keep an eye on that,” said Coop.",
+      "illustrationDirection": "Upstairs viewpoint over the twins’ shoulders. Hen-Berry points through the shut bedroom window to the patch below. The frosted porch fixture is high beside the door and the shrub has two visible tips.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "27d20d787818d3394ddb8514f58e68dfd12e78e57b62f0e554ea8e315186182b",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 212474,
+            "sha256": "554eb34523b9231f6e1aa9d3c9a655e2d10cd463143f67a691523e674cfa6c25"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 150852,
+            "sha256": "0fe2d095c3c01701e02013a4b7fb4e35084280cacdc1ece25a2c4add754d5c7a"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 69036,
+            "sha256": "43a17a6dd8940915bedaeae8490085c0042a00b27f26b62e13dd9835b4cf1ac5"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry points out the gold light on the snow beside the front step."
+      }
+    },
+    {
+      "number": 11,
+      "text": "Hen-Berry tucked them in and left the door ajar.\n\n“Eyes open,” whispered Coop.\n\n“Ears open,” whispered Cluck.\n\nFor a while, all he could hear was Coop trying to breathe quietly.",
+      "illustrationDirection": "Low across the footboards on the same bedroom axis. Hen-Berry has just tucked the twins in. Thin warm stripe from the door, blue from the window.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1de16ea816fee35233068c4ccba8938dab22458f8644d1a2772966a22b611965",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 259634,
+            "sha256": "4a0a1039340d016fc611fc8dd1749fb384a2ebeb001d19b9382b0c99f00d7fe5"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183410,
+            "sha256": "f1b8ca7c6838b0c027854d4ef46d20093215135f06a97c781e36919917e58ff5"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 84216,
+            "sha256": "c3fd615f0beb47d8718865e8c799ae902eaa321fa572569dec9b30a9efc42658"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "The twins whisper from their separate beds with light spilling in from the doorway."
+      }
+    },
+    {
+      "number": 12,
+      "text": "Clink.\n\nCluck sat straight up. “The milk glass!”\n\nClink.\n\nThe sound was coming from somewhere much closer than the kitchen.",
+      "illustrationDirection": "Close at mattress height on Cluck sitting bolt upright. Keep the edge of the table in shadow. Hold back the source of the clink for the next turn.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3e14b00525cacd0f410080f19b4a87a8d92371fc4af462f16ec66f10999b406d",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 219224,
+            "sha256": "8c4ac04ec679106d0be5607a696f79dd7b84c5c87ab5cd75c72292c55f842a36"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 158724,
+            "sha256": "493f05333a022a44b6ead17498c012ea2726e6c47500f0c7ea08e78e6fa78753"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 73668,
+            "sha256": "6bd1454bc06946af700af6e70a58fe6e5b2b3fbc8a9671a54b8e1d0dedc85b1d"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Cluck sits bolt upright in his brass bed with the blue quilt bunched around him."
+      }
+    },
+    {
+      "number": 13,
+      "text": "Coop pointed to the bedside table. The chain of Cluck’s watch was tapping the side of the brass bed as he wriggled.\n\nHe tucked the chain under the watch. “That’s one thing we’ve caught.”",
+      "illustrationDirection": "Detail from Coop’s side of the gap. Her wing points to the gold chain resting against the brass frame. Cluck lifts the loop with a wingtip.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "84925f59bdfe6ff645315d15839ef56b6d5bdbb083d056fab88fcdd523a7b267",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 146790,
+            "sha256": "b9316d10b14896d7f4c5744c983cb816912474da60c9cd723fdbd4e27f95077c"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 101374,
+            "sha256": "bd99c21c813a39ff42cfbce3ef128d9697805c935661b8bfd12b86b3fee638c4"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 46750,
+            "sha256": "d988884cb570b1880a324166040c8076a0a9ff1aae91ed0bfda8d340909b502b"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Coop points to the gold pocket-watch chain touching the brass bedpost."
+      }
+    },
+    {
+      "number": 14,
+      "text": "“Antlers!” said Coop.\n\nTwo dark points poked into the patch of gold. She held the curtain back. The points went down and came up again.\n\n“There. Did you see?”",
+      "illustrationDirection": "Tight exterior view from the window. Two snow-capped tips interrupt the light near the step. Crop the trunk and make the ambiguity believable.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6907000d08a81a3523f890a183aec4f805584ea9a84793528b6106fd4cdd2355",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 78668,
+            "sha256": "89264ae0d628bfba7ce46d735fb604dc5cc9e9ddf4687e2b00f3430df3299b4d"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 55426,
+            "sha256": "1e764628dee7215b22948472d7f70e3d2564e55e61f29fe5409b4bc807a26f6e"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 24298,
+            "sha256": "17b7e77f292427db5b4090bae812113edc38cf9c2da093d1b342996f42a67002"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Two dark points stick into the patch of light below the bedroom window."
+      }
+    },
+    {
+      "number": 15,
+      "text": "Cluck squinted. A lump of snow slid off one point.\n\n“That’s the shrub by the step,” he said.\n\n“I know,” said Coop. “I was just seeing if you knew.”",
+      "illustrationDirection": "Slightly wider view down the same sightline. A small clump of snow is mid-fall. The revealed shrub has both tips and a forked trunk.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "96bc92a42078b6535409b7baf56d52d10097b28c34c32c645be0d5fc7601cfd2",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 252592,
+            "sha256": "17375cd2d31fc1a1236a819eff480f95be03e91593404b4599e8aababea66df5"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 179898,
+            "sha256": "b35c0dafcc4a48257169a95c95c06e990f7de62732f7fb0d47b2d6b7c167d909"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83634,
+            "sha256": "c5a46f44d77cdef50fabe0a2aa1f708b859849aafc7c89585c1c579ca52075db"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Snow slides off a branch, revealing the shrub beside the step."
+      }
+    },
+    {
+      "number": 16,
+      "text": "The snow grew thick. It covered the shrub, then hid the fence. Coop let the curtain fall.\n\n“Eyes open?” Cluck asked.\n\n“Just resting them,” she said.",
+      "illustrationDirection": "Interior three-quarter close-up. Coop lets the curtain slip from her wing as the bottom of the garden disappears behind thick snow.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cc8f2f9df07ca2e42894172e6cfbdbde55eac6580e230511e06906d33e2b6b2c",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 177072,
+            "sha256": "7a0ae33c6144056f7ad595ce93d2940fab48d14e239aff3006c1da1bd8e75cc7"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 128908,
+            "sha256": "57bad0714e61cb1da8ae1f454e8e57408590451cd5ca876e5c70f5d744d8e0e4"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 57696,
+            "sha256": "73d4a76db48578719f5b02031a705ee5a1e93cba2dcd7997007aa08ceaf5165d"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "A sleepy Coop lets her wing drop as snow blows past the bedroom window."
+      }
+    },
+    {
+      "number": 17,
+      "text": "For a little while neither twin spoke. Then the snow thinned and a strip of sky opened above the trees.\n\nCluck saw something curved pass through it.",
+      "illustrationDirection": "View past Cluck from his pillow to the narrow window gap. Show only the upturned tip of a runner high over the pine tops. Give the eye time to find it.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ef06d1e0f86e957f02af3b23d6ac5038d733d06daa6857b3fddc54b6abece513",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 278412,
+            "sha256": "2793a7e5e95e3831c7ea886cd69319348d34f05907919177f909e925c7f7775c"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 187936,
+            "sha256": "b94c8f1803cb02a6acc81ba258744e99b738584e2ebef806468d238dc5bb97e6"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85942,
+            "sha256": "a2c7a7980ff34e70a0293d9cbfbf773049b948b52d6e7f23854bafda43a2d2b2"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Cluck peers at a curved shape passing through a narrow gap above the trees."
+      }
+    },
+    {
+      "number": 18,
+      "text": "He touched Coop’s wing. She lifted the edge of the curtain just as four small shapes crossed the gap. In front, two sets of antlers tipped up, then two more.",
+      "illustrationDirection": "Coop’s view through the opening in the curtain. Four distant reindeer in two pairs travel left to right through a break in the snow. Keep the trailing sleigh behind the snowy edge.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0e983f609375d2f65851fb470608b0177027b837ee90c343e5f5e76d5a498a4d",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 237912,
+            "sha256": "122b97bf0b9ae32df6c6a652a24c2ec67a38eb53619aa5d3d1d505d0b78970de"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 175126,
+            "sha256": "12c12d16d2bb670580167a271a2fefa8eaf80a888fd7124852557956977020af"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82466,
+            "sha256": "364094abf59848f99f74b7958087bf8912bf4735bf6b0d6daf683ad5c4de6431"
+          }
+        ],
+        "review": "accepted after checking all four reindeer, the hidden sleigh and the match to page 19",
+        "generator": "built-in imagegen",
+        "alt": "Four small reindeer shapes with antlers cross a gap above the trees."
+      }
+    },
+    {
+      "number": 19,
+      "text": "Cluck leaned sideways to look again. The bit he’d seen curved up at the front, like the runner on their little sled. A fine line joined it to the shapes ahead.",
+      "illustrationDirection": "Wider exterior from the same window bearing. This time the left edge of the thinning snow reveals the small sleigh and its upturned runners. One fine harness line continues to the same reindeer team. Keep the driver indistinct.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bcc5e23446339f0a71aecf92c057e5cbb3856a1848b39150468a8b6d39ceab39",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 167872,
+            "sha256": "423a2d98621c83eda607783877a87f90db89c7ac67eff17f68c85c3d10e8fe1b"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 117088,
+            "sha256": "c5bff1c375a0d88d7cf2ecbf09c443eb413127af374379e400a7dce5a0ef7b41"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 51264,
+            "sha256": "decae234c0cb4abfbe936da854519f7d013fc5cfcdd3bee46c441db86e0722d4"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "A small sleigh with curved runners trails behind the reindeer above the treetops."
+      }
+    },
+    {
+      "number": 20,
+      "text": "Then the snow closed over the gap. Coop pressed her beak to the window and left a little round mark in the mist.\n\n“Did you see where they went?”\n\n“Past the trees, I think.”",
+      "illustrationDirection": "Close profile of Coop’s beak against the cold glass. The gap is gone. Let the round spot on the misted pane carry the joke.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "afd03439c084d04f291e8bc5c1e3d1cdeefdfcbadcf03c75bf7db830004a90d0",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 252656,
+            "sha256": "e8c0dd4f54349a1adedadfa342109ca5765edf54c0256636a075df4bb792d5b4"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 173476,
+            "sha256": "da5e090fef3a8c78fe06a32dba3fd05f4c5404e985bfa29aaccb359b6de3254d"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 73174,
+            "sha256": "5b34794baa70aef26099fac04ab265bc67608a495015eb35539c6cd3010cc942"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Coop leaves a round mark in the mist on the window as the view disappears."
+      }
+    },
+    {
+      "number": 21,
+      "text": "“I saw the runners,” said Cluck.\n\n“I saw the reindeer,” said Coop.\n\nThey looked at each other, then up at the empty sky. Between them, they had almost the whole thing.",
+      "illustrationDirection": "Medium two-shot from the bedroom doorway. The twins look past each other into the empty sky. Keep their body language delighted and a little doubtful.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2a10be33ec043634e76c115ad27c6c8ed418ac928238a56aba326814959da24b",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 227414,
+            "sha256": "0db858915f4c0c2f92176459c32d5d3532e0ec5dd3f36f5ccfcdd7d920dd65fd"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 164492,
+            "sha256": "e68aa8ea66124587a366f8f561d264efe9027ae9fdb1536934b5d998772e55e3"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 75756,
+            "sha256": "23818404ea72a30054c395decedfd57c5c0b6bf274f239ce3be3885b63222215"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Cluck and Coop catch each other’s eye across the little table between their beds."
+      }
+    },
+    {
+      "number": 22,
+      "text": "From his bed, Cluck could still see the patch of gold by the step.\n\n“Should we go down and check the plate?”\n\nCoop thought about it. Then she pulled her quilt up to her beak. “Morning.”",
+      "illustrationDirection": "Pillow-height wide. Cluck looks past the edge of the curtain to the gold patch. Coop pulls her cranberry quilt up over her chest.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dfcd7087afb34938d03aca295ba13f8f54f0e197caeba4dbdf0e4a71ec13e1b8",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 254740,
+            "sha256": "2284205c14d1b0d184aec97f4a692498d7889b30a64c329ee75c7a766a84497c"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183590,
+            "sha256": "8495def08d1e9c4fda57d26f9341a7032feaa6bc0f6009ed034366488545924f"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83860,
+            "sha256": "814497da58a7080c55874fdbe61048994dac28d6c803ff36ecfb6754c1c2fe0b"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Cluck watches the light from bed while Coop pulls her quilt up to her beak."
+      }
+    },
+    {
+      "number": 23,
+      "text": "Cluck turned his pillow over to the cool side.\n\n“Tell me your bit in the morning?” he asked.\n\n“If you tell me yours.”\n\nThis time their wingtips didn’t quite reach.",
+      "illustrationDirection": "Tight overhead on two pillows and the strip of floor. The wingtips stop just short of each other. The chain remains tucked under the watch.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "66187aae610159326bd8f28227ced4178cae991609b87f166a0aa858d21fa022",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 306596,
+            "sha256": "b7c2f2c946e1a4491bf1e31fd9162228ecaa433e8464b5bed28183f94c6a6013"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 214296,
+            "sha256": "e06bf861071398de18a48a367c0f92157cbf607e09b64c00dabe7463d856881d"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92990,
+            "sha256": "889e906f55abdb1cbe67f2ed7133c0f6b1b41ef6e0e520eeab4fd605c5e64be1"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "The twins stretch a wing towards each other across the gap between their beds."
+      }
+    },
+    {
+      "number": 24,
+      "text": "“Eyes open?” whispered Cluck.\n\nCoop’s eyes had slipped shut.\n\n“Ears open,” she whispered back.\n\nDown by the step, snow fell through the little patch of gold.",
+      "illustrationDirection": "Quiet exterior finish at ground level. Snow falls through the gold light beside the step and the closed bedroom window is dim above. Leave the sky empty.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6442e61e648c7e9b8a88b448b6f34757679fb60b391d5b476478f1212a05faed",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 246874,
+            "sha256": "fbc553a25741c03485eac0aaa23c682936b95a4a48c3e0a399108208fafa4da5"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 174104,
+            "sha256": "8ca639b0de1df8aca44fbf4525356eef0533d2df21258034edb15391275c00db"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78422,
+            "sha256": "a197821d51854a72842114cbdc18f1298924960e204cd4abd89b5920da237d51"
+          }
+        ],
+        "review": "accepted after checking artwork against the page action and visual continuity",
+        "generator": "built-in imagegen",
+        "alt": "Snow falls through the warm light by the front step beneath the twins’ dark window."
+      }
+    }
+  ],
+  "sourceFolder": "sequels/one-more-story-before-santa",
+  "webSlug": "one-more-story-before-santa",
+  "printCoverTitle": true
+}

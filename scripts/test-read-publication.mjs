@@ -10,7 +10,7 @@ const temp = path.join(sandbox, 'site');
 try {
   const evidence = JSON.parse(fs.readFileSync(path.join(root,'data/read-publication-evidence.json'),'utf8'));
   const pins = JSON.parse(fs.readFileSync(path.join(root,'data/decodable-art-pins.json'),'utf8'));
-  const files = new Set(['data/read-publication-evidence.json','data/decodable-art-pins.json','read/index.html',...pins.map(p=>p.web)]);
+  const files = new Set(['data/read-publication-evidence.json','data/decodable-art-pins.json','data/web-originals.json','read/index.html',...pins.map(p=>p.web)]);
   for(const b of evidence.books) for(const p of [`read/${b.slug}/index.html`,b.pdf,...Object.keys(b.art)]) files.add(p);
   for(const p of files){const out=path.join(temp,p);fs.mkdirSync(path.dirname(out),{recursive:true});fs.copyFileSync(path.join(root,p),out);}
   const run=()=>spawnSync(process.execPath,[path.join(root,'scripts/check-read-publication.mjs'),'--site-root='+temp],{encoding:'utf8'});

@@ -222,18 +222,21 @@ function buildPdf(images, title, textPages = []) {
     const pageId = pageIds[i], contentId = pageId + 1, imgId = pageId + 2;
     // Fit inside the shared safe box, preserving aspect, centred on the sheet.
     const copy = img.caption || [];
-    const heading = copy.length ? wrap(copy[0], 16, true, BOX_W) : [];
+    const headingSize = img.coverTitle ? 24 : 16;
+    const headingLeading = headingSize + 4;
+    const heading = copy.length ? wrap(copy[0], headingSize, true, BOX_W) : [];
     const lines = copy.slice(1).flatMap(p => wrap(p, 13, false, BOX_W));
-    const copyH = copy.length ? heading.length * 20 + lines.length * 18 + 24 : 0;
+    const copyH = copy.length ? heading.length * headingLeading + lines.length * 18 + 24 : 0;
     if (copyH > BOX_H / 2) throw new Error(`Page ${i + 1}: story copy too long for a readable picture-book page`);
     const scale = Math.min(BOX_W / img.width, (BOX_H - copyH) / img.height);
     const w = img.width * scale, h = img.height * scale;
     const x = (PAGE_W - w) / 2, y = copy.length ? (PAGE_H + BOX_H) / 2 - h : (PAGE_H - h) / 2;
     let content = `q\n${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm\n/Im0 Do\nQ\n`;
     let textY = y - 26;
-    for (const [font, size, lineHeight, rows] of [['F2', 16, 20, heading], ['F1', 13, 18, lines]]) {
+    for (const [font, size, lineHeight, rows] of [['F2', headingSize, headingLeading, heading], ['F1', 13, 18, lines]]) {
       for (const line of rows) {
-        content += `BT /${font} ${size} Tf 0.13 0.09 0.07 rg ${((PAGE_W - BOX_W) / 2).toFixed(2)} ${textY.toFixed(2)} Td ${pdfText(line)} Tj ET\n`;
+        const textX = (PAGE_W - (img.coverTitle ? textWidth(line, size, true) : BOX_W)) / 2;
+        content += `BT /${font} ${size} Tf 0.13 0.09 0.07 rg ${textX.toFixed(2)} ${textY.toFixed(2)} Td ${pdfText(line)} Tj ET\n`;
         textY -= lineHeight;
       }
     }
@@ -298,11 +301,13 @@ function pagesFor(slug) {
       .map(p => strip(p[1]));
     if (paragraphs.length) captions.set(file[1], [[label ? strip(label[1]) : '', letterHeading ? strip(letterHeading[1]) : ''].filter(Boolean).join(' · '), ...paragraphs]);
   }
-  const cover = html.match(/<img src="\.\/pages\/(cover(?:-r\d+)?\.jpg)"/);
+  const cover = html.match(/<img src="\.\/pages\/(cover(?:-r\d+)?\.jpg)"[^>]*>/);
   if (cover) files.push(cover[1]);
   for (const m of html.matchAll(/<img src="\.\/pages\/([^"]+\.jpg)"[^>]*loading="lazy"/g)) files.push(m[1]);
   const title = (html.match(/<title>([^|<]+)/) || [, slug])[1].trim();
-  return { files, captions, prints, title: decode(title), questions: questionsFor(html) };
+  const coverTitle = cover?.[0].includes(' data-print-cover-title') ? cover[1] : null;
+  if (coverTitle) captions.set(coverTitle, [decode(title)]);
+  return { files, captions, prints, coverTitle, title: decode(title), questions: questionsFor(html) };
 }
 
 const slugs = fs.readdirSync(READ)
@@ -312,13 +317,13 @@ const slugs = fs.readdirSync(READ)
 console.log(WRITE ? "Building PDFs:" : "Dry run (pass --write to emit):");
 let built = 0;
 for (const slug of slugs) {
-  const { files, captions, prints, title, questions } = pagesFor(slug);
+  const { files, captions, prints, coverTitle, title, questions } = pagesFor(slug);
   if (files.length < 2) { console.log(`  SKIP ${slug}: found ${files.length} page(s)`); continue; }
 
   const images = files.map((f) => {
     const p = prints.has(f) ? path.join(READ, slug, prints.get(f)) : path.join(READ, slug, "pages", f);
     const data = fs.readFileSync(p);
-    return { ...jpegInfo(data), data, caption: captions.get(f) };
+    return { ...jpegInfo(data), data, caption: captions.get(f), coverTitle: f === coverTitle };
   });
 
   const textPages = questions.items.length ? questionPages(title, questions) : [];

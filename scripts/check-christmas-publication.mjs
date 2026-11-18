@@ -19,19 +19,21 @@ for(const [slug,manifest] of Object.entries(registry)){
  const book=JSON.parse(fs.readFileSync(path.join(root,manifest)));
  const owner=web.find(b=>b.id==='web-christmas-'+book.id);
  assert(owner,`${slug}: missing web source`);
- assert.equal(book.pages.length,24);
+ assert.equal(book.pages.length,book.storyPageCount);
  assert.deepEqual(owner.pages.map(p=>p.text),book.pages.map(p=>p.text));
  const html=fs.readFileSync(path.join(root,'read',slug,'index.html'),'utf8');
  const cards=[...html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m=>m[1]);
- const text=cards.map(c=>norm(c.split('story-page-copy')[1].match(/<p>([\s\S]*?)<\/p>/)[1]));
+ const paragraphs=cards.map(c=>[...c.split('story-page-copy')[1].matchAll(/<p>([\s\S]*?)<\/p>/g)].map(p=>norm(p[1])));
+ assert.deepEqual(paragraphs,book.pages.map(p=>p.text.split(/\n\s*\n/).map(norm)),`${slug}: paragraph breaks differ from the manuscript`);
+ const text=paragraphs.map(page=>page.join(' '));
  assert.deepEqual(text,owner.pages.map(p=>norm(p.text)),`${slug}: published prose differs`);
  const assets=[book.cover,...book.pages.map(p=>p.art)];
  for(const art of assets){
   assert.equal(art.status,'accepted');
   for(const d of art.derivatives) assert.equal(hash(path.join(root,'read',slug,'pages',d.path)),d.sha256,`${slug}: reviewed WebP differs`);
-  if(source) assert.equal(hash(path.join(source,book.id,art.master)),art.sha256,`${slug}: reviewed master differs`);
+  if(source) assert.equal(hash(path.join(source,book.sourceFolder ?? book.id,art.master)),art.sha256,`${slug}: reviewed master differs`);
  }
- for(let i=0;i<24;i++) assert.equal(norm(cards[i].match(/alt="([^"]+)"/)[1]),norm(book.pages[i].art.alt));
+ for(let i=0;i<book.storyPageCount;i++) assert.equal(norm(cards[i].match(/alt="([^"]+)"/)[1]),norm(book.pages[i].art.alt));
  const art=Object.fromEntries(cards.map(c=>{const rel=`read/${slug}/`+c.match(/<img src="\.\/([^"]+)"/)[1];return [rel,hash(path.join(root,rel))];}));
  const pdf=`read/${slug}/${slug}.pdf`;
  const record={slug,source_id:owner.id,source_art:Object.fromEntries(owner.art.map((rel,i)=>['../'+rel,assets[i].sha256])),text,teaching:owner.pages.map(()=>({sequence:null,observation:null})),expected:[],quizzes:[],art,pdf,pdf_sha256:hash(path.join(root,pdf))};
@@ -40,4 +42,4 @@ for(const [slug,manifest] of Object.entries(registry)){
  else assert.deepEqual(old,record,`${slug}: publication differs from reviewed evidence`);
 }
 if(write){evidence.books.sort((a,b)=>a.slug.localeCompare(b.slug));fs.writeFileSync(evidencePath,JSON.stringify(evidence,null,2)+'\n');}
-console.log('Christmas publication: both web-original sources, 48 pages, 50 reviewed image sets and PDFs verified. Other book evidence preserved.');
+console.log(`Christmas publication: ${Object.keys(registry).length} web-original books with reviewed prose, illustrations and PDFs verified.`);
