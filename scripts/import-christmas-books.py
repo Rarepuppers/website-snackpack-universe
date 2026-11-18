@@ -54,7 +54,8 @@ for source,slug in selected:
         paragraphs = ''.join(f'<p>{e(p, quote=False)}</p>' for p in re.split(r'\n\s*\n', page['text']))
         artwork = picture(f'p{number:02}', page['art'], True)
         cards.append(f'<article class="story-page-card" id="page-{number}">{artwork}<div class="story-page-copy"><span>Page {number} of {page_count}</span>{paragraphs}</div></article>\n')
-    finish=f'<section><div class="shell story-finish-card"><span class="eyebrow">The end · Thank you for reading</span><h2>Share another story</h2><p>A SnackPack original picture book, free to read together.</p><!-- read-next:generated --><!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-secondary" href="./{slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>'
+    finish_copy = 'A SnackPack original picture book, free to read together.' if reading_level == 'Read together' else 'A SnackPack original story, free to read online or print.'
+    finish=f'<section><div class="shell story-finish-card"><span class="eyebrow">The end · Thank you for reading</span><h2>Share another story</h2><p>{finish_copy}</p><!-- read-next:generated --><!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-secondary" href="./{slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>'
     (folder/'index.html').write_text(head+'<body class="story-reader-page"><header class="topbar">'+header+'</header><main>'+hero+'<section class="story-pages" aria-label="Story pages"><div class="shell">'+''.join(cards)+'</div></section>'+finish+'</main>'+tail,encoding='utf-8')
 registry_path.write_text(json.dumps(registry,indent=2)+'\n',encoding='utf-8')
 print('Imported',len(selected),'web-original books')

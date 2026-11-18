@@ -1,16 +1,17 @@
 import {test,expect} from '@playwright/test';
 const books=[
- ['nutmeg-and-the-tree-that-wouldnt-come','Tree That'],
- ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow'],
- ['one-more-story-before-santa','One More Story Before Santa'],
+ ['nutmeg-and-the-tree-that-wouldnt-come','Tree That',24],
+ ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow',24],
+ ['one-more-story-before-santa','One More Story Before Santa',24,'Ages 5–7 · Read together'],
+ ['the-last-parcel-under-the-tree','The Last Parcel Under the Tree',26,'Ages 7–9 · Newly independent'],
 ];
-for(const [slug,query] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
+for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/read/'+slug+'/');
- await expect(page.locator('.story-page-card')).toHaveCount(24);
+ await expect(page.locator('.story-page-card')).toHaveCount(storyPages);
+ if(audience) await expect(page.getByText(audience)).toBeVisible();
  if(slug==='one-more-story-before-santa'){
-   await expect(page.getByText('Ages 5–7 · Read together')).toBeVisible();
    await expect(page.locator('#page-1 .story-page-copy > p')).toHaveCount(2);
    await page.getByRole('button',{name:'Use larger story text'}).click();
    await expect(page.locator('html')).toHaveAttribute('data-read-text','larger');

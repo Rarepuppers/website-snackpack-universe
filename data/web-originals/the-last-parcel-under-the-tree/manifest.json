@@ -1,0 +1,1066 @@
+{
+  "schemaVersion": 1,
+  "id": "the-last-parcel-under-the-tree",
+  "title": "The Last Parcel Under the Tree",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "ageRange": "7–9",
+  "readingMode": "newly-independent",
+  "readingLevel": "Newly independent",
+  "publicationStatus": "published",
+  "storyPageCount": 26,
+  "wordCount": 1217,
+  "blurb": "Ted-E-Bear and Corgi-on-the-Cob find one parcel after everyone has opened their Christmas presents. Its tag says it’s for whoever gets there last. But where is “there”? And how can anybody be last if the door keeps opening?",
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "81c1f0fbd29ced18e35f81a96591f55e02aa11908e9d6ba5871acce514a3a5d3",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 343742,
+        "sha256": "f944c3755d5ca20df248c4f0ee0d35adefe31928cfceaf4b524b686ea9ae3e05"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 243498,
+        "sha256": "6370aebe4f92032c4170ae0e398d7a1550418c41975222b6fca5e095912af0a3"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 108280,
+        "sha256": "c81ed2d4b14897c76f53980fe612427b969fdcd3d96bbaefa0af4dd481e309c9"
+      }
+    ],
+    "review": "accepted after checking the page action, character designs and the clue sequence",
+    "generator": "built-in imagegen",
+    "alt": "Ted and Corgi study a blue-tied parcel under the library’s paper Christmas tree."
+  },
+  "pages": [
+    {
+      "number": 1,
+      "text": "Christmas morning turned the library steps pink.\n\nTed-E-Bear stamped the snow off his boots. Inside, Professor Hooten was putting an extra cup on the table. Every chair had a cup beside it already.\n\n“Who’s that for?” asked Ted.\n\n“We might need it,” said Hooten.",
+      "illustrationDirection": "Ted’s indoor view of the warm hall. Low perspective includes snowy boots near the mat and Hooten setting a cream cup with a blue rim at the end of the table. Behind it is an empty space where a chair could go.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "38bb4561041af47d0e418b6ef2d77d7e96d1042c2da2d6b1e1e558f7da09f13d",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 418002,
+            "sha256": "b568d5d5fcb5086d4659ac4f4f8534e864698ef065027a4b174e633c6b990d6c"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 282706,
+            "sha256": "f9620868f339cd02479ae70afae153c9e6add91a2a5c4472d3251e12e0c8156a"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118664,
+            "sha256": "10d0f0dfdef18cc35974bf2a58ff9349981351ab6d1f9485a4d7977f0b6a8e34"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Hooten sets an extra blue-rimmed cup on the table as Ted arrives."
+      }
+    },
+    {
+      "number": 2,
+      "text": "Corgi-on-the-Cob came skidding up the path with a parcel under his chin.\n\n“Did I miss the presents?”\n\n“You missed a chance to walk slowly,” said Ted.\n\nCorgi shook snow out of his ears. A whole lump dropped down the back of Ted’s scarf.",
+      "illustrationDirection": "Wide on the pink snowy front path. Corgi skids to Ted’s side with a gift under his chin. A small clump of snow drops from his ears into Ted’s scarf.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "059d6742873a6e948a999e8527829b440c78a94a30041ab4c1848343281124fa",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 375550,
+            "sha256": "1192ed7df68bd9553b25cd2a8969623e9b5eb8f3d7d83812ceac3dea3dbbe508"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 261286,
+            "sha256": "6e76c6505b2496166b9b1e5018e1093c10900ecf7841677ba331f666ca140b25"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117676,
+            "sha256": "f233f75f038db7a8585d95f9bb23818d768c3bfe3e37fbbd22cf2bc35ba623f9"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Snow from Corgi’s ears tumbles down the back of Ted’s scarf."
+      }
+    },
+    {
+      "number": 3,
+      "text": "Panda-Cake carried in a warm jug of cocoa. Hooten pulled the chairs into a ring around the paper tree they’d made for the hall.\n\n“A little room by the door, please,” Hooten said.\n\nCorgi moved his chair. Then he moved it back a tiny bit. From there he could see his parcel.",
+      "illustrationDirection": "Tall hall wide. Paper tree across the room from the entry. Hooten gestures to the aisle by the door while Panda-Cake carries the cocoa jug and Corgi edges a chair back towards his parcel.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "664714ff8069ee3ef452bb57b299ba8cef220829255ec503e35d97dd14c90420",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 425904,
+            "sha256": "6eebfbd56077ea1c85392d0fa176e354ec9de1cb936a3fd41fec0f556beb011b"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 280678,
+            "sha256": "864e3415c8be397b5728be9cefec453dbed1bfa71114935a59e537a85308b6db"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 116814,
+            "sha256": "7729d3f6c675af824818605b74e7b9de385b284f8041be60c5aa0414a402720a"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Hooten clears a path to the door while Panda-Cake brings cocoa."
+      }
+    },
+    {
+      "number": 4,
+      "text": "Corgi’s gift from Ted was a red ball with a white stripe. Corgi rolled it along his nose and caught it under his chin.\n\n“I can do three in a row,” he said.\n\nThe ball rolled behind the tree on the second go.",
+      "illustrationDirection": "At Corgi’s height. A round red ball with one white stripe rolls from his nose behind the paper tree on the second attempt.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4b91df7ba6e4a39e1aed0800102ae5853fe6352035e46278606bb45501b31399",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 383944,
+            "sha256": "ef7917b3f98f19af1f8447d527d2964aafe73aab7812bff550249cb05710a951"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 262268,
+            "sha256": "dc55fe0774d1ade551da848843adecd718f4025d0d8255ab5475056082ad3855"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112230,
+            "sha256": "e9a2b70fbc4745fe8d5da732c9a40fbf7cd3eb02fa4eba18a78cd370399d1017"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Corgi loses his new striped ball behind the tree."
+      }
+    },
+    {
+      "number": 5,
+      "text": "Ted opened Corgi’s gift. It was a yellow notebook with a pencil tucked through a loop. The first page was quite clean, except for one sandy paw print.\n\n“That’s so you know which way up it goes,” said Corgi.\n\nTed decided to leave the print right where it was.",
+      "illustrationDirection": "Tight view of Ted in warm window light. His hands hold an open yellow notebook with a single sandy paw mark on the first page and a pencil in its elastic loop.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8b6597523424b4fca34d208771020d4ab14bc05ee258310021a82524deff3a70",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 309618,
+            "sha256": "6dbfa54231efc4f03648b85c85af38d8ecc8a33e2431f1cc32fbc32c7b1ef1f7"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 213344,
+            "sha256": "b946ff4db3568c4234b256fd3e80ebc5a302678f4364fc7d3bed40540c18bbe1"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94708,
+            "sha256": "cf830dceb8ef774b412457398ef360337614d8b4d47651aa340d8747e094b4e5"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted finds a sandy paw print in his new yellow notebook."
+      }
+    },
+    {
+      "number": 6,
+      "text": "Panda-Cake tried on his new green oven mitts. He could pick up the warm jug with them, but he couldn’t pick up a single biscuit.\n\nHe held the plate for Corgi instead.\n\nWhen the paper had been gathered and folded, Hooten said, “That’s the presents opened.”",
+      "illustrationDirection": "Panda-Cake in two green oven mitts offering the biscuit plate to Corgi. Cocoa jug rests securely on the table, folded paper in basket under the tree.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "87cdc795c4aa10e8137a5b157c28d41ac21fd766f97b8d77d536f4a3be475747",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 381078,
+            "sha256": "9dc898b7f611e91f4ab9e3d22ea2b95c043d9e8c5c971e6aca871aa051c87216"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 264324,
+            "sha256": "890a4d7e76093e5189855fcdb03adec10507f50b2b4adeb35a5cce6e2ac86002"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112092,
+            "sha256": "9f811567b9b31eb82f050448c7cc9e9b954547b5df111e02ec59e30fa1206784"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake holds a plate of biscuits in his green oven mitts."
+      }
+    },
+    {
+      "number": 7,
+      "text": "Ted bent to get the red ball from behind the tree. Something blue caught his eye under the lowest branch.\n\nIt was a cord, tied around a plain brown box. A tag stuck out from the knot.\n\n“Wait,” Ted said. “There’s one left.”",
+      "illustrationDirection": "Ted lifts one low paper branch to reach behind the tree. Frame mostly parcel, cord and ball. Light catches the blue knot. Keep the tag’s face turned away.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b7bfa1d90a539f6f7b6779250c994331e35f96433e76da4040b1779acd07b3f1",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 352068,
+            "sha256": "9f0f14d78bfb2d611f9000febba65b53b1dcf42fb205713b29750c37e6de5bc1"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 237436,
+            "sha256": "25c6b0970b6b86a4af04097b9ae51e2225520f5bdf725318f2f34c134e6fb524"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104510,
+            "sha256": "339110200030cc4e10d723c903d87a3444118051893b8302676e871c95da10f7"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "A blue cord catches Ted’s eye as he reaches for the ball behind the tree."
+      }
+    },
+    {
+      "number": 8,
+      "text": "Corgi put his nose right up to the tag. Ted turned it so they could both see.\n\nIt said, “For whoever gets there last.”\n\n“That’s me,” said Corgi. “I was the last one through the door.”\n\nTed looked at the cup without a chair.",
+      "illustrationDirection": "Twin investigator close-up with both faces angled towards the same tag. The tag is plain, with its short edge under the double turn of the blue knot.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3b4a7aeaf1d5ca8d48d16fd93b495dad8c659a12c663c28beaf4f7406567e2fd",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 313028,
+            "sha256": "924cde38607135c611bb19fe643f705e01bd3dc9beb12d08112ea7e1777d3a38"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 217358,
+            "sha256": "4ac6f69f969ad8a549d523d7385f1abe5ae40a2d038d0ce826f623c0fc8486e3"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92544,
+            "sha256": "567f045b7c20c00d5479ac2fdbd290f7960850a32f7dcf4466fa185c29acb3c5"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted turns the tag so he and Corgi can see it together."
+      }
+    },
+    {
+      "number": 9,
+      "text": "“You were the last so far,” Ted said.\n\nCorgi sat down. “If someone else comes, do I give it back?”\n\n“You haven’t picked it up.”\n\n“Good. Then I’ve already given it back.”\n\nHe left the parcel where it was and nudged his ball over to Ted.",
+      "illustrationDirection": "Show the box still in place as Corgi nudges the ball towards Ted. Corgi’s expression is wry. Clear warm foreground and tree-paper texture.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3d0525281204879d0f1bc76baf8e6aef57a0dc432bbb3617e58fa1b9e45012a9",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 281126,
+            "sha256": "437f175f31c5a1259d0766c42c4e43ff814628b39418c9401ddc090b08f64796"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 197022,
+            "sha256": "e71ec23a9bbb6ca622668e0bb00ad42cc89b3077c47b620cde4692b5dbadecea"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 90166,
+            "sha256": "a2b273f3fb214de6aef1411ee8e4594d20e98b49af8844e7de17153b54acc9a2"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Corgi leaves the box under the tree and nudges the ball towards Ted."
+      }
+    },
+    {
+      "number": 10,
+      "text": "They rolled the ball towards the table. It stopped by the extra cup.\n\n“Maybe ‘there’ means here,” said Corgi. “Whoever gets their cocoa last.”\n\nPanda-Cake set the jug down. “That’ll be me if I have to pour it for everyone first.”\n\nHis own cup stood empty next to the jug.",
+      "illustrationDirection": "Ball has reached the table leg immediately beneath the extra cream, blue-rimmed cup. Panda-Cake’s own cup is empty beside the jug at the other end.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "755c820459d2a43f5113853da7136cecef89077ce9dc20f9d3b89be8f64a2bf1",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 301220,
+            "sha256": "56b9e0a23be404d40b04e888eff51c4de51b0b808bf4b6cbccbfe9f459a418a7"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 205762,
+            "sha256": "f30d13ff9bcb43c8cd76eedf69b538d84dfce834ff8677149976792bb364e954"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87274,
+            "sha256": "23188cdfed29c110e21cc471cd2b70fcbda0f1f9dc74b76b73f925a4d7ba618f"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "The red ball stops below the spare cup while Panda-Cake puts down the cocoa jug."
+      }
+    },
+    {
+      "number": 11,
+      "text": "Ted turned to the first clean page of his notebook.\n\nHe wrote DOOR on one line and COCOA on another.\n\n“Presents?” said Corgi.\n\n“We’ve all opened ours.”\n\n“I know. But what if someone hasn’t?”\n\nTed wrote PRESENTS underneath. Now there were three things that “there” could mean.",
+      "illustrationDirection": "High angle over Ted’s opened yellow notebook and his pencil. Corgi peers over the corner. Use three short faint tracks in the notebook. Keep the clue words in the prose.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "382c0f3277596b190521e92a71ea416f3a3689bd159dbd405fad46ea1d7ad6e2",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 394058,
+            "sha256": "43863b4572a7b8e593b7db4eee5b6da7e24bf1958fde32c4eb8713c5ff4efb06"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 269788,
+            "sha256": "6e58e1ad8647f6764ed0fa1469086d135ea1e8236b76f0293cb0e3cee28a21e3"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 114708,
+            "sha256": "5a81e9b7fcb66e3523f153dc00c14dfc9baa1a21bcda6b345f377c3258a88beb"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted makes three notes in his notebook while Corgi peers at the page."
+      }
+    },
+    {
+      "number": 12,
+      "text": "Corgi went back to the tree. He held one end of the blue cord up in the light.\n\n“Look at that knot,” he said. “The end goes back through twice.”\n\nHe pointed towards the wall. The library’s noticeboard hung from a cord with the very same knot.",
+      "illustrationDirection": "Cord close-up. Foreground focus on Corgi raising one loose tail of the blue cord. The double-turn knot remains tied. Show noticeboard knot beyond in the same shot if possible.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1f9a6d18543ddb56556813eb7f1b3da0482955a39911d79a1d5468b7668a5bad",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 374988,
+            "sha256": "84adee54ca4b6f534e480e3cb1f2f23a9cdc4231500f6b4460dc30428d9ad5a5"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 250958,
+            "sha256": "a26acd5886d51b4c5507a59c93a480b17eacde32b548c0b1d2b3b8bc39780867"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100268,
+            "sha256": "075bf1070d3f4aa37fe4cc0ebe4e7a76e00595c96118dcdedc528910412f0be5"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Corgi compares the blue parcel knot with the matching knot on the noticeboard."
+      }
+    },
+    {
+      "number": 13,
+      "text": "Ted climbed onto a low stool so he could see. Both cords had three thin white strands twisted through the blue.\n\n“Hooten keeps a whole spool of it in his drawer,” he said.\n\nJust then, Hooten opened that drawer. Inside, beside the string, lay a little silver camera.",
+      "illustrationDirection": "Ted on the low stool studies the blue-and-white noticeboard cord in second plane. Hooten’s open drawer in foreground has just one spool and the small silver camera.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d09dac59b2978a291eb86b65eaaad73d2c177b2419a81553b87d1103d09bfe77",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 395582,
+            "sha256": "d488d71d35e77b6b291439591475f0e2d57396019a5e60b65fe89cc0262b9ba2"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 271526,
+            "sha256": "5762fb72f8f036f62b593928dc39fd23de280e1b707700d1ba4a0bd3b9679058"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118350,
+            "sha256": "10d83dce8b2f656211efb6a2284e8d4dfb1b6363e7bff42ea38b318bf1740790"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted studies the noticeboard cord. The same blue cord and a silver camera are in Hooten’s drawer."
+      }
+    },
+    {
+      "number": 14,
+      "text": "Before Ted could ask about the cord, there was a knock.\n\nCorgi rushed over. Hooten reached the door first.\n\nOn the step stood a young hare in a plum coat. Her ears stuck out of a knitted hood. She held a tin against her chest.",
+      "illustrationDirection": "The door opens from inside to sharp, pale daylight. Young hare Moss wears a plum coat and deep-purple hood with two ears through its openings. She clutches a biscuit tin.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d9181871c14511cfed186dbf03d45726a24c93be37a6cd9d3a4d7caadd7aff32",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 376130,
+            "sha256": "3fd5530fc628f3e7aacaf605534665c24639c3daa899290d7503009c0b275f96"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 255552,
+            "sha256": "3f4ad30d4a8c5a7a1b2f100499f35565a3ff710489355b92dfb8e01dc22892c7"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111186,
+            "sha256": "cc4437bb809710018d1899bbf04b31957ec7d410b44ceb1ac1d9ad7a966959a2"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "A young hare in a plum coat waits on the snowy step with a tin."
+      }
+    },
+    {
+      "number": 15,
+      "text": "“I’m Moss,” said the hare. “We moved into the house by the bridge. The snow was up to my knees.”\n\nShe looked at the folded wrapping paper.\n\n“I’ve missed it, haven’t I?”\n\n“The cocoa’s warm,” said Panda-Cake. “Come and show me what’s in your tin.”",
+      "illustrationDirection": "Inside the threshold. Moss looks past Panda-Cake to the basket of folded bright paper. Panda-Cake gestures towards the cocoa table.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c18891444f6deabb32f44a6c12ac54090c0ee0983019a1eb864256110ba99fe2",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 404240,
+            "sha256": "f590feafa85da69cccdd3cc6e2ebf43c74e006aa7918d1bf161ba05fadc228bd"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 272600,
+            "sha256": "277cdb65e89fbdec269fcb0a902f7e428a9daf5451cff7f6d1b978ea34d144c1"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115860,
+            "sha256": "615017891d7dafa580a05328e499e61f48f467b430a4ae2b294b963332322db7"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Moss sees the folded wrapping paper as Panda-Cake welcomes her in."
+      }
+    },
+    {
+      "number": 16,
+      "text": "Moss had brought ginger biscuits. Some were shaped like hares. One was shaped like half a hare.\n\n“I dropped that one,” she said.\n\n“That’s the one I’d choose,” said Corgi. “It’s already started.”\n\nMoss smiled and took off her coat. Her ears sprang straight out of the hood.",
+      "illustrationDirection": "Medium at the table. Moss’s hood falls back so both long ears are visible. One broken hare biscuit lies beside two whole ones in the tin. Corgi reaches his nose towards the broken one.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e0b86b333bff5da54d95e0d4f6971b53a37734d95bad43392473d6b4b705d7b7",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 406974,
+            "sha256": "2a8036929e7e498eaacc18fb2678fdb07c77b72fc33bf4933bf119be2caa90fb"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 282834,
+            "sha256": "c9a9767117cf2fd3a66d752bf39ba48f158056851927724943ffb86798085fef"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123950,
+            "sha256": "82815407c1e4fa0fdd2d2672d085b307154b744b87e98f7780d2f0d541717bca"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Corgi picks out a broken hare-shaped biscuit as Moss shrugs off her coat."
+      }
+    },
+    {
+      "number": 17,
+      "text": "Hooten poured cocoa into the extra cup. Ted fetched a chair so Moss could sit at the table.\n\n“You kept her cup ready,” Ted said to Hooten.\n\n“I kept a cup ready,” said Hooten. “I didn’t know whose it would be.”\n\nTed thought about the box under the tree.",
+      "illustrationDirection": "Shift focus to Ted bringing a chair. Hooten pours the cocoa into the same original blue-rimmed cup. Moss in teal jumper at the nearer end.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8cf1642eb3606eeba97b2b7dde14aa1b495cb7fa7bffbe7383e217f91d3fb155",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 418390,
+            "sha256": "e1189a898df356d933efebcd2323cc26c911713f5e4f9cd423460b36d839b20d"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 284680,
+            "sha256": "7e92132b1878ca665733ef12993e2a34c9bb995c88ec242361145d480d3008c2"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 121874,
+            "sha256": "bbe8453597c27fad6a7ae351d8360a285783179850b37837f06d3c47bc09baaf"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted brings a chair while Hooten fills the spare cup for Moss."
+      }
+    },
+    {
+      "number": 18,
+      "text": "Ted held up his notebook.\n\n“We guessed it might mean the door. Or the cocoa. Then Corgi said the presents. Is that what ‘there’ means?”\n\nHooten nodded. “I tied that parcel for whoever came after the others had opened theirs.”\n\n“So there’d still be one,” said Corgi.",
+      "illustrationDirection": "Ted holds open the notebook, Corgi stands alongside, Hooten answers. Arrange the faces in a low triangle. Paper tree and plain parcel behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1f22423867fef77e1f005006848cfb69417b4b87102b9d0cbaf4e1bbcb149b04",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 408254,
+            "sha256": "71280ecf93756953fad799dc068c2c581ff0e6d4271a7a900cd852ce3134f552"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 280244,
+            "sha256": "b811d79a6b1cbbedcc8115021395b7531ebcd90aa3f7d19ae88333bd31a10877"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 119112,
+            "sha256": "3f62a097287674381b426ad309d7fea7414d5ccdc62a3278e1e74ded097fab89"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted shows Hooten their notebook while Corgi waits for his answer."
+      }
+    },
+    {
+      "number": 19,
+      "text": "Ted picked up the box. “Moss, I think it’s yours.”\n\nShe tucked one long ear behind her shoulder so it wouldn’t dip in her cocoa. Then she pulled the loose end of the cord.\n\nInside the box lay a small wooden frame. There was no picture in it.",
+      "illustrationDirection": "Moss pulls the loose end of the blue cord with the box on the table. Tip the open lid enough to reveal a small plain wooden frame and folded paper behind its glass.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "968f6d9bf0b6950581a9ac9f97a60e1d09ef74d0c16561d0d65ee2133dfdb4ff",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 309362,
+            "sha256": "3b72b8d22f7ad33750f3a2d59ac559f63f6af92817d480121a020ac482d489e4"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 221400,
+            "sha256": "a3ec1ed19cb01d502b3da2f5e4506893fc21da8b581d753a27c05cfc6eb49b22"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 102950,
+            "sha256": "ce5733e2b6b751a2a7574d201d9ae691daf988e6ad74b30b4c234e1a8498344f"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Moss opens the parcel and finds an empty wooden picture frame."
+      }
+    },
+    {
+      "number": 20,
+      "text": "A folded note sat behind the glass. Moss read it aloud.\n\n“Choose our first Christmas morning picture.”\n\nProfessor Hooten brought over the silver camera. “I thought we could put up a new one every Christmas,” he said. “You get to choose what goes in the first frame.”",
+      "illustrationDirection": "Moss lifts the folded note with one paw. Hooten offers the same small silver camera. Show the note’s blank reverse and the frame’s simple squared edges.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "86911230202f965c51b65e9ba450cbd18d42c309c3ffb9dc49720f55d1984868",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 350426,
+            "sha256": "b786be48477dcd04f9fc4e2a54203265152328aad1d4486228e1a71f38353568"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246810,
+            "sha256": "b8a5e544a0ff64502c39d56b4c8c4f2c3e2d99a25919737fbaad78265018cf73"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113732,
+            "sha256": "4ddf8661f3feef709928ef96d9095af63090dd451076e220353bbff210b7274b"
+          }
+        ],
+        "review": "accepted after checking Moss’s indoor clothes, note, frame and camera",
+        "generator": "built-in imagegen",
+        "alt": "Moss reads the note while Hooten brings over his silver camera."
+      }
+    },
+    {
+      "number": 21,
+      "text": "“I can take a good one,” said Moss. “I take pictures of the birds by our bridge.”\n\nShe lifted the camera. Through it she could see a bit of the tree and most of Ted. Panda-Cake was hidden behind a chair.\n\n“We’ll have to move the chairs.”",
+      "illustrationDirection": "Show Moss with camera raised from over her shoulder. Ted and a bit of tree are easy to see. A chair presents a comic obstruction and hides Panda-Cake.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "127d421529c4b6307335b3ac80f218d8dd1fe970e0922d570a6ebf53a70b7588",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 355530,
+            "sha256": "8d21a70780e7ff573f98d24e9545cc016b0e7790ff435b880287d41626e9c87b"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246222,
+            "sha256": "df0c54b039c86beb02a9a4d7fd3edc161b4a469b7638f9228e2620e989f85f5a"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 106440,
+            "sha256": "8cbdd6d37e6f6ad3d225b8e1d60b69038681e26692150ee1c73e2ce88ffe82a4"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Moss tries a first view with the camera and finds a chair in the way."
+      }
+    },
+    {
+      "number": 22,
+      "text": "Moss put the chairs near the tree. She asked Hooten to sit down and Panda-Cake to stand behind him.\n\nTed sat on the floor. Corgi lay beside Ted with his nose on the red ball.\n\nMoss raised the camera again. There was exactly one empty chair in the picture.",
+      "illustrationDirection": "Final photo arrangement from Moss’s eye line. Hooten seated left, Panda-Cake standing behind him, empty chair centre, Ted and resting Corgi low right. Paper tree just behind them. The ball is under Corgi’s nose.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d85135f903e4898ac9c941ae249ca3b75763bd93e7118ea4a81e162f83a6f112",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 387100,
+            "sha256": "39b9ae8ba7491db17a79cd2b23ebd6700951af10179d5023ba09254fde262c13"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 263700,
+            "sha256": "2781eecf2be8922a2ce14b5efe4972c8527e74cdf98f13b657c6257191cc6d0e"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 114514,
+            "sha256": "db9960d3ae178dbef2943d77d27995c2a3a3538bd120d002dafbe8a59416e80a"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Moss arranges her friends around one empty chair by the tree."
+      }
+    },
+    {
+      "number": 23,
+      "text": "“That one’s for you,” said Ted.\n\n“I’m usually behind the camera,” Moss said.\n\nHooten showed her a little switch. “This gives you ten seconds to get to the chair.”\n\nMoss set the camera on a low wooden stool and aimed it at the tree. “I can get there in four.”",
+      "illustrationDirection": "Close on Moss setting the silver camera on the same low stool. The lens faces the group. Leave enough floor in frame to trace the ball’s route from the group to the stool.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "916a7fc987ef72bfa08163222d2b1988dc48301808b2af4d76b9b33f24fe83fd",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 207848,
+            "sha256": "346afcc2aae4e9d3b7fcec7b97de147d118a0d5c2c14e2620ae33398a57a4665"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 150258,
+            "sha256": "1724386ee4bc42bb9f84a3bb4a95669abf23e638b85cf6405862df3e56cfa460"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 66774,
+            "sha256": "f79e80d762900ca005bdbea910ea6d4220329601e05e57f7c9cd45dc808b3de4"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Moss puts the camera on a low stool and aims it towards the empty chair."
+      }
+    },
+    {
+      "number": 24,
+      "text": "Moss pressed the button and hurried over. One, two, three, four. She made it.\n\nThen Corgi tried to grin without letting go of his ball. It slipped from under his nose and bumped the stool.\n\nClick.\n\n“I think it took me jumping,” said Corgi.",
+      "illustrationDirection": "Side view of Moss in the central seat and the striped red ball bumping the stool in front. Corgi has begun to spring after it as others start to laugh. Show the cause before the shutter result.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2f6f138b890850930cf6506e63966b191301924af964caa526646f1d47907480",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 345916,
+            "sha256": "233de7f0a851f9d0c015556a793d22828c91ba9eeb59ddfc619487781dfdc563"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 249084,
+            "sha256": "df60fbc58142bf980b246175bf2bce71f28c33a4aacc719019f6237088780a25"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115236,
+            "sha256": "c79f27b03db1f9ea79c3369375ea585daef7047ee82f906828f1da0b493072d0"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "The ball bumps the camera stool just as Corgi springs after it."
+      }
+    },
+    {
+      "number": 25,
+      "text": "Hooten held out the camera. On the little screen was a crooked picture. The tree leaned sideways. Corgi was halfway out of the picture, with his tail straight up.\n\nEveryone else was laughing. Moss was right in the middle of them.\n\n“We could take another,” said Hooten.",
+      "illustrationDirection": "Tilted image displayed on the silver camera’s screen, with group in the same seats and Corgi’s tail cut near the edge. Moss in the centre laughing. Keep the finished photo readable at phone width.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "902621e706d03b2f1d3b29325ea97cbd2f68bf73ac36a3687928be1ca34ba47c",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 369322,
+            "sha256": "ea0f9b87031d54836a62c6f0f486ef3c05b615074ce7572008faa21423ad3e7c"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 262334,
+            "sha256": "b0533ac0cf6f1096e11f67dc6a8b0b96d1abe6ecc39897be5395d8d8f6ed554b"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 119424,
+            "sha256": "9137cd858ba301781f084e0b977815c798b32aa79644a13816766390f3ab0d0a"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "The camera shows a crooked picture of Moss laughing with her friends and Corgi jumping at the edge."
+      }
+    },
+    {
+      "number": 26,
+      "text": "“I choose that one,” said Moss.\n\nShe put the empty frame on the shelf next to the tree. Ted opened his notebook and wrote the date, ready for when they printed the picture.\n\nCorgi carried his ball to the door. He waited there until everybody else had gone through.",
+      "illustrationDirection": "Ted writes at the shelf beside the empty frame. In the distance Corgi pauses at the library doorway with the red ball in his mouth as friends move ahead. Clear soft morning light.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "56ed0356f6a19c26d71d758f7a5f9f5a3a0c918b32c695b911b3862392a5a448",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 417192,
+            "sha256": "deac27b9491ff38dbe598e58aaccc5d291ae3ac8835539f061ebb4904a427a5e"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 283464,
+            "sha256": "739c5b929353a0315a64cba639bf1f5ece7391e7c10690d97cd294e825c8223e"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123444,
+            "sha256": "eb1cf1a817060c8dd5013e5926283888c91fd6f8107738f4e98667ecb908cbfc"
+          }
+        ],
+        "review": "accepted after checking the page action, character designs and the clue sequence",
+        "generator": "built-in imagegen",
+        "alt": "Ted writes beside the empty frame while Corgi waits at the door with his ball."
+      }
+    }
+  ],
+  "sourceFolder": "sequels/the-last-parcel-under-the-tree",
+  "webSlug": "the-last-parcel-under-the-tree"
+}
