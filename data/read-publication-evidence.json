@@ -4443,6 +4443,205 @@
       "pdf_sha256": "5f18124cd94e3ad158883e8c09ee73f5e708f4579bcf5e646a1634f7a75790d9"
     },
     {
+      "slug": "the-last-parcel-under-the-tree",
+      "source_id": "web-christmas-the-last-parcel-under-the-tree",
+      "source_art": {
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/cover.png": "81c1f0fbd29ced18e35f81a96591f55e02aa11908e9d6ba5871acce514a3a5d3",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p01.png": "38bb4561041af47d0e418b6ef2d77d7e96d1042c2da2d6b1e1e558f7da09f13d",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p02.png": "059d6742873a6e948a999e8527829b440c78a94a30041ab4c1848343281124fa",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p03.png": "664714ff8069ee3ef452bb57b299ba8cef220829255ec503e35d97dd14c90420",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p04.png": "4b91df7ba6e4a39e1aed0800102ae5853fe6352035e46278606bb45501b31399",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p05.png": "8b6597523424b4fca34d208771020d4ab14bc05ee258310021a82524deff3a70",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p06.png": "87cdc795c4aa10e8137a5b157c28d41ac21fd766f97b8d77d536f4a3be475747",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p07.png": "b7bfa1d90a539f6f7b6779250c994331e35f96433e76da4040b1779acd07b3f1",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p08.png": "3b4a7aeaf1d5ca8d48d16fd93b495dad8c659a12c663c28beaf4f7406567e2fd",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p09.png": "3d0525281204879d0f1bc76baf8e6aef57a0dc432bbb3617e58fa1b9e45012a9",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p10.png": "755c820459d2a43f5113853da7136cecef89077ce9dc20f9d3b89be8f64a2bf1",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p11.png": "382c0f3277596b190521e92a71ea416f3a3689bd159dbd405fad46ea1d7ad6e2",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p12.png": "1f9a6d18543ddb56556813eb7f1b3da0482955a39911d79a1d5468b7668a5bad",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p13.png": "d09dac59b2978a291eb86b65eaaad73d2c177b2419a81553b87d1103d09bfe77",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p14.png": "d9181871c14511cfed186dbf03d45726a24c93be37a6cd9d3a4d7caadd7aff32",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p15.png": "c18891444f6deabb32f44a6c12ac54090c0ee0983019a1eb864256110ba99fe2",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p16.png": "e0b86b333bff5da54d95e0d4f6971b53a37734d95bad43392473d6b4b705d7b7",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p17.png": "8cf1642eb3606eeba97b2b7dde14aa1b495cb7fa7bffbe7383e217f91d3fb155",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p18.png": "1f22423867fef77e1f005006848cfb69417b4b87102b9d0cbaf4e1bbcb149b04",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p19.png": "968f6d9bf0b6950581a9ac9f97a60e1d09ef74d0c16561d0d65ee2133dfdb4ff",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p20.png": "86911230202f965c51b65e9ba450cbd18d42c309c3ffb9dc49720f55d1984868",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p21.png": "127d421529c4b6307335b3ac80f218d8dd1fe970e0922d570a6ebf53a70b7588",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p22.png": "d85135f903e4898ac9c941ae249ca3b75763bd93e7118ea4a81e162f83a6f112",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p23.png": "916a7fc987ef72bfa08163222d2b1988dc48301808b2af4d76b9b33f24fe83fd",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p24.png": "2f6f138b890850930cf6506e63966b191301924af964caa526646f1d47907480",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p25.png": "902621e706d03b2f1d3b29325ea97cbd2f68bf73ac36a3687928be1ca34ba47c",
+        "../docs/christmas-picture-books-2026/sequels/the-last-parcel-under-the-tree/p26.png": "56ed0356f6a19c26d71d758f7a5f9f5a3a0c918b32c695b911b3862392a5a448"
+      },
+      "text": [
+        "Christmas morning turned the library steps pink. Ted-E-Bear stamped the snow off his boots. Inside, Professor Hooten was putting an extra cup on the table. Every chair had a cup beside it already. \"Who's that for?\" asked Ted. \"We might need it,\" said Hooten.",
+        "Corgi-on-the-Cob came skidding up the path with a parcel under his chin. \"Did I miss the presents?\" \"You missed a chance to walk slowly,\" said Ted. Corgi shook snow out of his ears. A whole lump dropped down the back of Ted's scarf.",
+        "Panda-Cake carried in a warm jug of cocoa. Hooten pulled the chairs into a ring around the paper tree they'd made for the hall. \"A little room by the door, please,\" Hooten said. Corgi moved his chair. Then he moved it back a tiny bit. From there he could see his parcel.",
+        "Corgi's gift from Ted was a red ball with a white stripe. Corgi rolled it along his nose and caught it under his chin. \"I can do three in a row,\" he said. The ball rolled behind the tree on the second go.",
+        "Ted opened Corgi's gift. It was a yellow notebook with a pencil tucked through a loop. The first page was quite clean, except for one sandy paw print. \"That's so you know which way up it goes,\" said Corgi. Ted decided to leave the print right where it was.",
+        "Panda-Cake tried on his new green oven mitts. He could pick up the warm jug with them, but he couldn't pick up a single biscuit. He held the plate for Corgi instead. When the paper had been gathered and folded, Hooten said, \"That's the presents opened.\"",
+        "Ted bent to get the red ball from behind the tree. Something blue caught his eye under the lowest branch. It was a cord, tied around a plain brown box. A tag stuck out from the knot. \"Wait,\" Ted said. \"There's one left.\"",
+        "Corgi put his nose right up to the tag. Ted turned it so they could both see. It said, \"For whoever gets there last.\" \"That's me,\" said Corgi. \"I was the last one through the door.\" Ted looked at the cup without a chair.",
+        "\"You were the last so far,\" Ted said. Corgi sat down. \"If someone else comes, do I give it back?\" \"You haven't picked it up.\" \"Good. Then I've already given it back.\" He left the parcel where it was and nudged his ball over to Ted.",
+        "They rolled the ball towards the table. It stopped by the extra cup. \"Maybe 'there' means here,\" said Corgi. \"Whoever gets their cocoa last.\" Panda-Cake set the jug down. \"That'll be me if I have to pour it for everyone first.\" His own cup stood empty next to the jug.",
+        "Ted turned to the first clean page of his notebook. He wrote DOOR on one line and COCOA on another. \"Presents?\" said Corgi. \"We've all opened ours.\" \"I know. But what if someone hasn't?\" Ted wrote PRESENTS underneath. Now there were three things that \"there\" could mean.",
+        "Corgi went back to the tree. He held one end of the blue cord up in the light. \"Look at that knot,\" he said. \"The end goes back through twice.\" He pointed towards the wall. The library's noticeboard hung from a cord with the very same knot.",
+        "Ted climbed onto a low stool so he could see. Both cords had three thin white strands twisted through the blue. \"Hooten keeps a whole spool of it in his drawer,\" he said. Just then, Hooten opened that drawer. Inside, beside the string, lay a little silver camera.",
+        "Before Ted could ask about the cord, there was a knock. Corgi rushed over. Hooten reached the door first. On the step stood a young hare in a plum coat. Her ears stuck out of a knitted hood. She held a tin against her chest.",
+        "\"I'm Moss,\" said the hare. \"We moved into the house by the bridge. The snow was up to my knees.\" She looked at the folded wrapping paper. \"I've missed it, haven't I?\" \"The cocoa's warm,\" said Panda-Cake. \"Come and show me what's in your tin.\"",
+        "Moss had brought ginger biscuits. Some were shaped like hares. One was shaped like half a hare. \"I dropped that one,\" she said. \"That's the one I'd choose,\" said Corgi. \"It's already started.\" Moss smiled and took off her coat. Her ears sprang straight out of the hood.",
+        "Hooten poured cocoa into the extra cup. Ted fetched a chair so Moss could sit at the table. \"You kept her cup ready,\" Ted said to Hooten. \"I kept a cup ready,\" said Hooten. \"I didn't know whose it would be.\" Ted thought about the box under the tree.",
+        "Ted held up his notebook. \"We guessed it might mean the door. Or the cocoa. Then Corgi said the presents. Is that what 'there' means?\" Hooten nodded. \"I tied that parcel for whoever came after the others had opened theirs.\" \"So there'd still be one,\" said Corgi.",
+        "Ted picked up the box. \"Moss, I think it's yours.\" She tucked one long ear behind her shoulder so it wouldn't dip in her cocoa. Then she pulled the loose end of the cord. Inside the box lay a small wooden frame. There was no picture in it.",
+        "A folded note sat behind the glass. Moss read it aloud. \"Choose our first Christmas morning picture.\" Professor Hooten brought over the silver camera. \"I thought we could put up a new one every Christmas,\" he said. \"You get to choose what goes in the first frame.\"",
+        "\"I can take a good one,\" said Moss. \"I take pictures of the birds by our bridge.\" She lifted the camera. Through it she could see a bit of the tree and most of Ted. Panda-Cake was hidden behind a chair. \"We'll have to move the chairs.\"",
+        "Moss put the chairs near the tree. She asked Hooten to sit down and Panda-Cake to stand behind him. Ted sat on the floor. Corgi lay beside Ted with his nose on the red ball. Moss raised the camera again. There was exactly one empty chair in the picture.",
+        "\"That one's for you,\" said Ted. \"I'm usually behind the camera,\" Moss said. Hooten showed her a little switch. \"This gives you ten seconds to get to the chair.\" Moss set the camera on a low wooden stool and aimed it at the tree. \"I can get there in four.\"",
+        "Moss pressed the button and hurried over. One, two, three, four. She made it. Then Corgi tried to grin without letting go of his ball. It slipped from under his nose and bumped the stool. Click. \"I think it took me jumping,\" said Corgi.",
+        "Hooten held out the camera. On the little screen was a crooked picture. The tree leaned sideways. Corgi was halfway out of the picture, with his tail straight up. Everyone else was laughing. Moss was right in the middle of them. \"We could take another,\" said Hooten.",
+        "\"I choose that one,\" said Moss. She put the empty frame on the shelf next to the tree. Ted opened his notebook and wrote the date, ready for when they printed the picture. Corgi carried his ball to the door. He waited there until everybody else had gone through."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-last-parcel-under-the-tree/pages/p01.jpg": "dd8de2767d487bd12191a5a676ff8b1da231372201544306542bfb6313ae05e0",
+        "read/the-last-parcel-under-the-tree/pages/p02.jpg": "1b50bf4a92bdb97bbb8d3616c3d03e8dc19cc4a20bffde43f9542f51c094ecd9",
+        "read/the-last-parcel-under-the-tree/pages/p03.jpg": "4c95eddc8eb91fa504395b98ad559578cea864d2ca4fbc39189b3b0c1af0775a",
+        "read/the-last-parcel-under-the-tree/pages/p04.jpg": "d78ab01f99a6b1d3224a28646b4b645a13954e910197067227ee399ccf7eea92",
+        "read/the-last-parcel-under-the-tree/pages/p05.jpg": "d064f61a478b9a79c925934c795193d27893f63f183bff9c234020b0f28da93a",
+        "read/the-last-parcel-under-the-tree/pages/p06.jpg": "5fa890c75e1124adc929d57e6ecd2f59a6c2fbb65a66c5d3c64ef30f2e3cc950",
+        "read/the-last-parcel-under-the-tree/pages/p07.jpg": "58318eefea74ccabe9ea8843625c907e64d6690c2d5dbbf6ab2639da9ccbaa29",
+        "read/the-last-parcel-under-the-tree/pages/p08.jpg": "d22fe07f56473734216f25e527260369ac13dc69fc4178b4caa7c5e5484ca689",
+        "read/the-last-parcel-under-the-tree/pages/p09.jpg": "b6329910095f8deb2cf8f1df1701fbb7513cf253daaed6ec7bf29ba29916b360",
+        "read/the-last-parcel-under-the-tree/pages/p10.jpg": "fc4e13db3dee9117e62d20bd998ae2b191fa26858b5a8f381d0053dfbd9d9b60",
+        "read/the-last-parcel-under-the-tree/pages/p11.jpg": "a624cdc212dd3ed67d2ed0ea6df9862ec872df2d60feaae790fa8219b546b4bc",
+        "read/the-last-parcel-under-the-tree/pages/p12.jpg": "074916638879631f847f8acb68dc00ef01b794cc52553f25d3a57d3fa77cab49",
+        "read/the-last-parcel-under-the-tree/pages/p13.jpg": "007084e748432de7be749b08e626c6e57ef82d9990df223d2d2fb50320db8701",
+        "read/the-last-parcel-under-the-tree/pages/p14.jpg": "2a80da86ba66bf31e4ba32941284a02c176e984560560b7149cf62a849ce99b7",
+        "read/the-last-parcel-under-the-tree/pages/p15.jpg": "9f0b165a2d040986d92208f83d04b69be913507fc2dda49be54039ad36d05109",
+        "read/the-last-parcel-under-the-tree/pages/p16.jpg": "a73343aecec235b0f5149c9c6d294f59f54ec022bfcf5b79e879ac8d05c618bb",
+        "read/the-last-parcel-under-the-tree/pages/p17.jpg": "97f95b97ca96e83f0dc9eece53b41f0882fa7d0465a9b04110021b4e3b74d227",
+        "read/the-last-parcel-under-the-tree/pages/p18.jpg": "582a5b50581d649f5cbb09aabb7757f260a0e80228fac95fee9526afc383ba78",
+        "read/the-last-parcel-under-the-tree/pages/p19.jpg": "4b118a47bb3b45d140d0fe78254a07c4e6148d6e5536fe4f493b5a5f91568777",
+        "read/the-last-parcel-under-the-tree/pages/p20.jpg": "f97023fbfab0537b3ba8b1f69057dbb9e0fefa7e11412a81cdb9d851985a9d37",
+        "read/the-last-parcel-under-the-tree/pages/p21.jpg": "1fa63675fa1114aff1546576374bcfd1c6470474d7fbba5c00b9d7e16da1e26c",
+        "read/the-last-parcel-under-the-tree/pages/p22.jpg": "cfdc9c325f86f84d68d4b7fa10cacf52adf126e9800f8f6cf319c509a66bb465",
+        "read/the-last-parcel-under-the-tree/pages/p23.jpg": "f6d539379b0627f2a96aec12dae14dc6076f6877eaedccb087523ffe7b0f1a78",
+        "read/the-last-parcel-under-the-tree/pages/p24.jpg": "a16c4d69ee094337b45e0d6a30e00aedb1540215ee4e258df9351a2c4d348581",
+        "read/the-last-parcel-under-the-tree/pages/p25.jpg": "ecd1102b90b6a67a4016fc92971a889e04f8914e120bebc35caa9e4105d8e542",
+        "read/the-last-parcel-under-the-tree/pages/p26.jpg": "8e88186e13db377c490f20296a340fcbb202a53fa7804e030479b9e76775554d"
+      },
+      "pdf": "read/the-last-parcel-under-the-tree/the-last-parcel-under-the-tree.pdf",
+      "pdf_sha256": "ea7f676a1b7f701bcca4205fd3899e6c48ab72a4ee2238fa01dfb88f6bc3a044"
+    },
+    {
       "slug": "vincent-van-mouse-and-the-christmas-shadow-show",
       "source_id": "web-christmas-vincent-shadow-show",
       "source_art": {
