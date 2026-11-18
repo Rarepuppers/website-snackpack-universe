@@ -315,6 +315,19 @@ for (const file of walkHtml(root)) {
 // Pass 2: reconcile go/ with exactly what pass 1 asked for
 // ---------------------------------------------------------------------------
 
+// The printed payload in the Thirteen QR image has no HTML anchor to collect.
+// Keep scan arrivals and their Play campaign separate from the badge and modal.
+const thirteenQr = {
+  surface: "arcade",
+  campaign: "thirteen-qr",
+  pkg: "com.snackpackuniverse.braingames2",
+  from: "/play/thirteen/",
+};
+wanted.set(
+  `go/${thirteenQr.surface}/${thirteenQr.campaign}/${shortName(thirteenQr.pkg)}/index.html`,
+  interstitial(thirteenQr)
+);
+
 const goRoot = path.join(root, "go");
 const onDisk = new Set();
 if (fs.existsSync(goRoot)) {
