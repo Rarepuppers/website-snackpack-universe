@@ -54,7 +54,8 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 - [Play Picross](https://www.snackpackuniverse.com/play/picross/): Free browser Picross (nonogram) with a daily puzzle.
 - [Play Kakuro](https://www.snackpackuniverse.com/play/kakuro/): Free browser Kakuro with a daily puzzle.
 - [Play Water Sort](https://www.snackpackuniverse.com/play/water-sort/): Free browser colour-sorting puzzle with guaranteed-solvable boards, four difficulties, unlimited undo, reload-safe progress, optional colour patterns and a shared daily board. Includes a strategy guide.
-- [Play Thirteen](https://www.snackpackuniverse.com/play/thirteen/): Free browser Thirteen (Tiến lên) card game vs three computer opponents, with a daily puzzle mode.
+- [Play Thirteen](https://www.snackpackuniverse.com/play/thirteen/): Free Tiến Lên card game with three solo difficulties, optional legal-move hints, a Daily deal and private friend tables. Includes Standard rules and a Classic house variant.
+- [Thirteen rules guide](https://www.snackpackuniverse.com/guides/thirteen-tien-len-rules/): Learn the opening 3♠ rule, suit order, legal combinations, passing and how to chop a 2.
 - [Play Cascade](https://www.snackpackuniverse.com/play/cascade/): Free browser Cascade — a calm falling-blocks puzzle (the SnackPack take on tetromino stacking) with Normal and Turbo modes, keyboard and touch controls, and saved best score. Includes rules, strategy, and history.
 - [Play Flappy Snacky](https://www.snackpackuniverse.com/play/flappy-snacky/): Free browser Flappy Snacky — a one-button tap-to-fly arcade game with Classic, Hard and Night modes and a saved best score. Includes rules, tips, and an about section.
 - [Play Snacky Worm](https://www.snackpackuniverse.com/play/snacky-worm/): Free browser Snacky Worm — the classic Snake game with Classic, Zen (wrap) and Speed modes and a saved best score. Includes rules, tips, and an about section.

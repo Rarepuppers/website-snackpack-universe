@@ -44,9 +44,9 @@
   "@type": "HowTo",
   "name": "How to play Thirteen",
   "step": [
-    { "@type": "HowToStep", "name": "Open the round", "text": "The player holding the 3 of spades leads first and must include it in their opening play." },
-    { "@type": "HowToStep", "name": "Beat the table", "text": "On your turn, play a higher combination of the same shape — single, pair, triple or sequence — or pass." },
-    { "@type": "HowToStep", "name": "Empty your hand", "text": "When everyone else passes, the last player to play leads a new round. The first player to play out their whole hand wins." }
+    { "@type": "HowToStep", "name": "Open the deal", "text": "The player holding the 3 of spades leads first and must include it in their opening play." },
+    { "@type": "HowToStep", "name": "Beat the table", "text": "Play a higher combination of the same shape and length, use a legal chop in Standard, or pass." },
+    { "@type": "HowToStep", "name": "Empty your hand", "text": "When everyone else passes, the last player to play leads a new trick. The first player to play out their whole hand wins." }
   ]
 }
 </script>
@@ -56,12 +56,13 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "Is this Thirteen free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and no download required." } },
-    { "@type": "Question", "name": "What are the rules of Thirteen (Tien Len)?", "acceptedAnswer": { "@type": "Answer", "text": "You shed your hand by beating the last play with the same shape — a higher single, pair, triple or sequence — or by passing. Whoever holds the 3 of spades leads the first round. In Standard rules the 2 is the top card and only a bomb (four of a kind, or three or more consecutive pairs) can beat it; in Classic rules the 2 is the lowest card and there are no bombs." } },
+    { "@type": "Question", "name": "Why is the 2 so strong?", "acceptedAnswer": { "@type": "Answer", "text": "In Standard, 2 is the highest rank and 2 of hearts is the strongest single. A higher-suit 2 can beat a lower-suit 2, and a legal chop can beat any single 2. In Classic, 2 is the lowest rank and Ace is the highest." } },
     { "@type": "Question", "name": "How hard are the computer players?", "acceptedAnswer": { "@type": "Answer", "text": "You choose. Easy always plays its lowest legal combination and spends its 2s early, Normal leads carefully but follows like Easy, and Sharp holds back 2s and bombs and plans its runs. Each difficulty keeps its own win–loss record on your device." } },
     { "@type": "Question", "name": "How do I play Thirteen with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Every card in your hand is a real button, so Tab walks the hand in order and Enter or Space selects a card. Play, Pass and Sort take focus the same way, so a whole turn can be taken without a mouse." } },
-    { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up. There is no account and nothing is uploaded." } },
+    { "@type": "Question", "name": "What is the Daily deal?", "acceptedAnswer": { "@type": "Answer", "text": "Daily gives everyone the same opening deal for the selected rule set and UTC date. Compare results at the same difficulty. Move suggestions are disabled in Daily. Select New game to return to a random deal." } },
+    { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. A solo game in progress is saved in this browser, so you can pick it up on the same device." } },
     { "@type": "Question", "name": "Can I play Thirteen with friends?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Choose Play with friends and share the link. Up to four people can join a table, with no sign-in, and the computer plays any empty seats. Playing with friends needs an internet connection." } },
-    { "@type": "Question", "name": "Can I play Thirteen offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device, so it loads and plays on a plane or a dead signal. If you would rather have it from the store, Thirteen is also in Snackpack Brain Games Vol 2 on Android." } }
+    { "@type": "Question", "name": "Can I play offline?", "acceptedAnswer": { "@type": "Answer", "text": "Solo play works offline after the browser has cached the game. Friend tables need an internet connection. Thirteen is also in Snackpack Brain Games Vol 2 on Android." } }
   ]
 }
 </script>
@@ -199,8 +200,9 @@
           <button class="btn-game btn-game--primary" id="t-play" type="button" disabled>Play</button>
           <button class="btn-game" id="t-pass" type="button" disabled>Pass</button>
           <button class="btn-game" id="t-sort" type="button">Sort</button>
+          <span id="t-suggest-option"><button class="btn-game" id="t-suggest" type="button" disabled>Show legal move</button></span>
         </div>
-        <p class="game-hint" id="t-combohint"></p>
+        <p class="game-hint" id="t-combohint" role="status"></p>
       </div>
     </div>
   </section>
@@ -234,7 +236,9 @@
   <section>
     <div class="shell seo-prose">
       <h2>How to play Thirteen (Tiến Lên)</h2>
-      <p>Thirteen — known in Vietnam as Tiến Lên, written Tien Len without accents, meaning "go forward" — is a shedding-type card game for four players using a standard 52-card deck. Everyone is dealt 13 cards, and the goal is simple: be the first to get rid of them all. The ranking runs 3 (lowest) up to King, then Ace, then 2 (highest), so the humble 2 is the most powerful card in the game. The player holding the 3 of spades leads the very first play and must include it.</p>
+      <p>Thirteen is a Vietnamese card game for four players, also called Tiến Lên or Tien Len. Everyone gets 13 cards. The first player to empty their hand wins the deal. Whoever holds 3♠ opens and must include it, either alone or in a legal combination such as 3♠ and 3♦.</p>
+      <p>In Standard, the ranks go from 3 up through King, Ace and 2. For cards of the same rank, suits go from spades to clubs, diamonds and hearts. For example, 9♥ beats 9♦.</p>
+      <p>For a first game, choose <strong>Easy</strong> and use <strong>Show legal move</strong> on your turn. It selects one legal play for you to check. Select <strong>Play</strong> to confirm it, or change the cards yourself.</p>
 
       <h3>Combinations</h3>
       <ul>
@@ -243,9 +247,10 @@
         <li><strong>Triple</strong> — three of a kind.</li>
         <li><strong>Sequence</strong> — three or more cards in a run (e.g. 5-6-7). Twos can't be used in runs in Standard rules.</li>
         <li><strong>Double sequence</strong> — three or more consecutive pairs.</li>
-        <li><strong>Bomb</strong> (Standard rules) — four of a kind, or three or more consecutive pairs, can "chop" a single 2; four consecutive pairs chop a pair of 2s.</li>
+        <li><strong>Four of a kind</strong> — four cards of the same rank.</li>
       </ul>
-      <p>On your turn you must beat the current play with a higher combination <em>of the same shape and length</em>, or pass. Once three players pass, the last to play wins the round and leads a fresh one with anything they like.</p>
+      <p>On your turn, play a higher combination of the same shape and length, or pass. Passing puts you out until the next trick. Once everyone else has passed, the last player to play clears the table and leads any legal combination.</p>
+      <p>In Standard, a <strong>chop</strong> (also called a bomb) is a special reply. Four of a kind or at least three consecutive pairs can chop a single 2. A pair of 2s can be chopped with at least four consecutive pairs.</p>
 
       <h3>Rule sets</h3>
       <div class="th-rules-table" role="region" aria-label="Standard and Classic rules compared" tabindex="0">
@@ -255,7 +260,7 @@
             <tr><th scope="row">Highest card</th><td>2 (then Ace, King…)</td><td>Ace; the 2 is the <em>lowest</em></td></tr>
             <tr><th scope="row">2s in runs</th><td>Never</td><td>Allowed</td></tr>
             <tr><th scope="row">Runs wrap round (Q-K-A-2-3)</th><td>No</td><td>Yes</td></tr>
-            <tr><th scope="row">Bombs chop 2s</th><td>Yes</td><td>No, because no card needs an answer</td></tr>
+            <tr><th scope="row">Special chops against 2s</th><td>Yes</td><td>No</td></tr>
             <tr><th scope="row">Who opens</th><td colspan="2">Whoever holds the 3♠; the first play must include it</td></tr>
           </tbody>
         </table>
@@ -267,21 +272,23 @@
       <h3>How to win more often</h3>
       <ul>
         <li><strong>Count the dangerous cards.</strong> In Standard there are only four 2s. Once two or three have gone, an Ace becomes a strong single.</li>
-        <li><strong>Don't break a run to win a small round.</strong> A 5-6-7-8 sheds four cards in one go; splitting it to beat a single usually leaves you two awkward leftovers.</li>
-        <li><strong>Lead your weak shapes.</strong> When you win a round, lead the combination you could never use to answer someone else, such as a stray low pair.</li>
-        <li><strong>Hold a bomb for a 2.</strong> Four 8s look like a lot of cards to keep, but they're the only answer when an opponent drops a 2 to take the lead late in the game.</li>
+        <li><strong>Keep useful runs together.</strong> A 5–6–7–8 sheds four cards in one play. If you split it to beat a single, check what combinations you’ll have left.</li>
+        <li><strong>Lead with a weak combination.</strong> When you start a trick, consider playing a low pair you might struggle to use as a reply.</li>
+        <li><strong>Save a chop for a 2.</strong> Four 8s or a run of three pairs can take the lead from an opponent who plays 2♥.</li>
         <li><strong>Watch the card counts.</strong> When an opponent is down to one or two cards, lead pairs or runs they're unlikely to be able to match, not singles.</li>
       </ul>
-      <p><strong>Worked example (Standard):</strong> CPU 2 is down to three cards and leads the 2♥, hoping to take the lead and play out its last two. No single can beat a 2, but your 6♠ 6♣ 7♦ 7♥ 8♠ 8♣, three pairs in a row, is a bomb. It chops the 2, the round is yours, and you lead next instead.</p>
+      <p><strong>Worked example in Standard.</strong> An opponent leads 2♥. You can chop it with 6♠ 6♣, 7♦ 7♥ and 8♠ 8♣. If everyone else passes after your play, you lead the next trick.</p>
 
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is Thirteen free here?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
         <details class="faq-item"><summary>Can I play with friends?</summary><p>Yes. Choose Play with friends and share the invite link. Up to four people can join, with no sign-in, and the computer plays any empty seats. Tables have no names or chat, and playing with friends needs an internet connection.</p></details>
         <details class="faq-item"><summary>Who do I play against?</summary><p>Three computer players at the difficulty you choose. Easy plays its lowest legal cards and spends 2s early, Normal leads carefully but follows like Easy, and Sharp holds back its 2s and bombs. Each difficulty keeps its own win–loss record on this device. Whoever holds the 3 of spades opens.</p></details>
-        <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Standard rules the rank order ends King, Ace, 2, so a 2 beats every other single card and only a bomb can answer it. Save them for when you really need them. Classic rules turn this round: the 2 is the lowest card and the Ace is highest.</p></details>
-        <details class="faq-item"><summary>What's the Daily deal?</summary><p>Toggle Daily and everyone gets the same hand on the same day, so you can compare how you played it against anyone else. Starting a New game drops you out of Daily mode — a daily is one hand, so re-dealing it while still calling it today's would be misleading.</p></details>
-        <details class="faq-item"><summary>Can I play offline?</summary><p>This web version needs a browser. For fully offline play and more games, try the free <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> app.</p></details>
+        <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Standard, 2 is the highest rank and 2 of hearts is the strongest single. A higher-suit 2 can beat a lower-suit 2, and a legal chop can beat any single 2. In Classic, 2 is the lowest rank and Ace is the highest.</p></details>
+        <details class="faq-item"><summary>What is the Daily deal?</summary><p>Daily gives everyone the same opening deal for the selected rule set and UTC date. Compare results at the same difficulty. Move suggestions are disabled in Daily. Select New game to return to a random deal.</p></details>
+        <details class="faq-item"><summary>How do I play Thirteen with a keyboard?</summary><p>Press Tab to move between cards and controls. Enter or Space selects a card or activates a control.</p></details>
+        <details class="faq-item"><summary>Does my progress save?</summary><p>Yes. A solo game in progress is saved in this browser, so you can pick it up on the same device.</p></details>
+        <details class="faq-item"><summary>Can I play offline?</summary><p>Solo play works offline after the browser has cached the game. Friend tables need an internet connection. Thirteen is also in <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> on Android.</p></details>
       </div>
 
       <p style="margin-top:22px;"><a class="text-link" href="../../guides/thirteen-tien-len-rules/" style="color:var(--accent);font-weight:700;">Read the full Thirteen (Tiến Lên) rules →</a></p>
@@ -473,7 +480,7 @@
       case "single": return "Single";
       case "pair": return "Pair";
       case "triple": return "Triple";
-      case "quad": return "Bomb (four of a kind)";
+      case "quad": return "Four of a kind";
       case "sequence": return n + "-card sequence";
       case "pair-sequence": return (n / 2) + "-pair sequence";
     }
@@ -638,6 +645,8 @@ function cpuChoosePlay(state, playerIdx) {
   var playBtn = document.getElementById("t-play");
   var passBtn = document.getElementById("t-pass");
   var sortBtn = document.getElementById("t-sort");
+  var suggestBtn = document.getElementById("t-suggest");
+  var suggestOption = document.getElementById("t-suggest-option");
   var newBtn = document.getElementById("t-new");
   var winsEl = document.getElementById("t-wins");
   var hintEl = document.getElementById("t-combohint");
@@ -695,6 +704,14 @@ function cpuChoosePlay(state, playerIdx) {
     return b;
   }
 
+  function syncHandSelection() {
+    handEl.querySelectorAll("button.th-card").forEach(function (button) {
+      var pressed = selected.some(function (card) { return card.id === button.dataset.id; });
+      button.classList.toggle("is-selected", pressed);
+      button.setAttribute("aria-pressed", String(pressed));
+    });
+  }
+
   function render() {
     if (!gs) return;
     // Opponents
@@ -715,7 +732,7 @@ function cpuChoosePlay(state, playerIdx) {
       tableLabelEl.textContent = comboName(gs.lastCombo);
       tableByEl.textContent = gs.lastPlayerIdx != null ? "played by " + (gs.lastPlayerIdx === 0 ? "you" : gs.players[gs.lastPlayerIdx].name) : "";
     } else {
-      tableLabelEl.textContent = "New round";
+      tableLabelEl.textContent = "New trick";
       tableByEl.textContent = gs.phase !== "playing" ? "" : gs.currentPlayer === 0 ? "You lead" : gs.players[gs.currentPlayer].name + " leads";
     }
 
@@ -723,11 +740,10 @@ function cpuChoosePlay(state, playerIdx) {
     handEl.innerHTML = "";
     var you = gs.players[0];
     you.hand.forEach(function (c) {
-      var el = cardEl(c, { button: true });
-      if (selected.some(function (s) { return s.id === c.id; })) el.classList.add("is-selected");
-      handEl.appendChild(el);
+      handEl.appendChild(cardEl(c, { button: true }));
     });
 
+    syncHandSelection();
     updateActions();
     updateStatus();
   }
@@ -738,14 +754,14 @@ function cpuChoosePlay(state, playerIdx) {
         statusEl.textContent = "You win! 🏆 Hand cleared.";
         statusEl.className = "game-status game-status--win";
       } else {
-        statusEl.textContent = gs.players[gs.winner].name + " wins this round. Try again!";
+        statusEl.textContent = gs.players[gs.winner].name + " wins this deal. Try again!";
         statusEl.className = "game-status game-status--lose";
       }
       return;
     }
     statusEl.className = "game-status";
     if (gs.currentPlayer === 0) {
-      statusEl.textContent = gs.isFirstTurn ? "Your move — you have 3♠, lead the round." : (gs.lastCombo ? "Your move — beat it or pass." : "Your move — lead the round.");
+      statusEl.textContent = gs.isFirstTurn ? "Your move — open with a play that includes 3♠." : (gs.lastCombo ? "Your move — beat it or pass." : "Your move — lead the trick.");
     } else {
       statusEl.textContent = gs.players[gs.currentPlayer].name + " is thinking…";
     }
@@ -759,6 +775,8 @@ function cpuChoosePlay(state, playerIdx) {
     playBtn.disabled = !(myTurn && validPlay);
     passBtn.disabled = !(myTurn && gs.lastCombo && gs.lastPlayerIdx !== 0);
     sortBtn.disabled = gs.phase !== "playing";
+    suggestOption.hidden = dailyMode;
+    suggestBtn.disabled = !myTurn || dailyMode;
     if (!myTurn) { hintEl.textContent = ""; return; }
     if (selected.length === 0) hintEl.textContent = gs.isFirstTurn ? "Tap cards to select — your opening play must include 3♠." : "Tap cards to build a combination.";
     else if (!combo) hintEl.textContent = "That's not a valid combination.";
@@ -823,7 +841,25 @@ function cpuChoosePlay(state, playerIdx) {
     if (selected.some(function (s) { return s.id === id; })) selected = selected.filter(function (s) { return s.id !== id; });
     else selected = selected.concat([c]);
     if (window.SnackPackAudio) window.SnackPackAudio.play("pickup");
-    render();
+    syncHandSelection();
+    updateActions();
+    if (resume) resume.changed();
+  });
+
+  suggestBtn.addEventListener("click", function () {
+    if (dailyMode || gs.phase !== "playing" || gs.currentPlayer !== 0) return;
+    var moves = legalCombos(gs, 0);
+    var move = moves.find(function (candidate) { return candidate.cards.length === gs.players[0].hand.length; }) ||
+      moves.find(function (candidate) { return gs.lastCombo && candidate.type === gs.lastCombo.type; }) ||
+      moves[0];
+    if (!move) {
+      hintEl.textContent = "No legal reply. Pass to sit out the rest of this trick.";
+      return;
+    }
+    selected = move.cards;
+    syncHandSelection();
+    updateActions();
+    hintEl.textContent = "Suggested: " + comboName(move) + ". Choose Play to use it.";
     if (resume) resume.changed();
   });
 
@@ -832,8 +868,9 @@ function cpuChoosePlay(state, playerIdx) {
     var combo = identifyCombo(selected, gs.mode);
     if (!combo || !canBeat(combo, gs.lastCombo, gs.mode)) return;
     if (gs.isFirstTurn && !selected.some(function (c) { return c.value === 3 && c.suit === 0; })) return;
+    var isChop = gs.lastCombo && combo.type !== gs.lastCombo.type;
     applyPlay(gs, 0, combo);
-    if (window.SnackPackAudio) window.SnackPackAudio.play(combo.type === "bomb" ? "success" : "place");
+    if (window.SnackPackAudio) window.SnackPackAudio.play(isChop ? "success" : "place");
     selected = [];
     render();
     if (resume) resume.changed();

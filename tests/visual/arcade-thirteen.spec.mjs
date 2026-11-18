@@ -90,6 +90,30 @@ test("a game on Easy plays to a result, lands in Easy's record, and the level is
   await expect(page.locator("#t-record")).toHaveText("0–0");
 });
 
+test("solo players can select cards by keyboard and preview a legal opening", async ({ page }) => {
+  // An unshuffled deck deals the 3 of spades to the human player.
+  await page.addInitScript(() => { Math.random = () => 0.999; });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/play/thirteen/");
+  const hand = page.locator("#t-hand button");
+  const opener = page.getByRole("button", { name: "3 of spades", exact: true });
+  const suggest = page.getByRole("button", { name: "Show legal move" });
+  await expect(opener).toHaveAttribute("aria-pressed", "false");
+  await opener.focus();
+  await page.keyboard.press("Enter");
+  await expect(opener).toBeFocused();
+  await expect(opener).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Space");
+  await expect(opener).toHaveAttribute("aria-pressed", "false");
+  await suggest.click();
+  await expect(opener).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#t-play")).toBeEnabled();
+  await expect(page.locator("#t-combohint")).toContainText("Suggested:");
+  await expect(hand).toHaveCount(13);
+  await page.goto("/play/thirteen/?daily=2026-11-18");
+  await expect(page.locator("#t-suggest")).toBeHidden();
+});
+
 test("the rules table's Classic claims match the engine", () => {
   const E = (() => {
     const engine = html.slice(html.indexOf("// ════ Engine"), html.indexOf("// ════ UI"));
@@ -105,6 +129,7 @@ test("the rules table's Classic claims match the engine", () => {
   expect(E.identifyCombo([c(2), c(3, 1), c(4, 2)], "classic")?.type).toBe("sequence");
   // Bombs chop 2s in Standard only.
   const two = E.identifyCombo([c(2, 3)], "standard");
+  expect(E.canBeat(two, E.identifyCombo([c(2, 2)], "standard"), "standard")).toBe(true);
   const pairs = [c(6), c(6, 1), c(7, 2), c(7, 3), c(8), c(8, 1)];
   expect(E.canBeat(E.identifyCombo(pairs, "standard"), two, "standard")).toBe(true);
   expect(E.canBeat(E.identifyCombo(pairs, "classic"), E.identifyCombo([c(1, 3)], "classic"), "classic")).toBe(false);

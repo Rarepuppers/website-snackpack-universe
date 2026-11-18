@@ -3,13 +3,10 @@ import { test, expect } from "@playwright/test";
 // Thirteen's table label built "<name> leads" from the player's name, so when
 // the human opened a round it read "You leads" (and "played by You").
 
-test("Thirteen says 'You lead' when the player opens a round", async ({ page }) => {
+test("Thirteen says 'You lead' when the player opens the deal", async ({ page }) => {
+  await page.addInitScript(() => { Math.random = () => 0.999; });
   await page.goto("/play/thirteen/", { waitUntil: "load" });
-  // Whoever holds the 3 of spades opens, so deal until that is the player.
-  for (let i = 0; i < 40 && !/lead the round/i.test(await page.locator("#t-status").textContent()); i++) {
-    await page.locator("#t-new").click();
-  }
-  await expect(page.locator("#t-status")).toContainText(/lead the round/i);
+  await expect(page.locator("#t-status")).toContainText("open with a play that includes 3♠");
   await expect(page.locator("#t-tableby")).toHaveText("You lead");
 });
 
@@ -107,10 +104,14 @@ test("Flag Frenzy moves legacy progress into the sp_ namespace", async ({ page }
 // Thirteen's CPU always led its lowest single card. In Classic, where 2 is the
 // lowest rank, a CPU holding the 3 of spades therefore opened with a 2 — the
 // rules say the opening play must include the 3 of spades. Deal Classic games
-// until a CPU opens, five times, and check every opening play.
+// that put the 3 of spades in different CPU seats and check their opening plays.
 test("Thirteen Classic: a CPU's opening play includes the 3 of spades", async ({ page }) => {
-  test.setTimeout(90_000);
-  await page.addInitScript(() => { const st = window.setTimeout; window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 5), ...a); });
+  await page.addInitScript(() => {
+    window.__testDealRandom = 0.999;
+    Math.random = () => window.__testDealRandom;
+    const st = window.setTimeout;
+    window.setTimeout = (f, d, ...a) => st(f, Math.min(d || 0, 5), ...a);
+  });
   await page.goto("/play/thirteen/");
   await page.locator('.seg [data-mode="classic"]').evaluate((b) => b.click());
   // Record the first cards to land on the table after each deal: later plays
@@ -124,14 +125,15 @@ test("Thirteen Classic: a CPU's opening play includes the 3 of spades", async ({
       window.__openings.push([...table.children].map((c) => c.getAttribute("aria-label")).join(", "));
     }).observe(table, { childList: true });
   });
-  let cpuOpened = 0;
-  for (let deal = 0; deal < 60 && cpuOpened < 5; deal++) {
-    await page.evaluate(() => { window.__fresh = true; document.getElementById("t-new").click(); });
-    await page.waitForTimeout(80);
-    if (/lead the round/i.test(await page.locator("#t-status").textContent())) { await page.evaluate(() => { window.__fresh = false; }); continue; }
-    cpuOpened++;
+  const deals = [0.2, 0.25, 0.3, 0.4, 0.5];
+  for (const [index, random] of deals.entries()) {
+    await page.evaluate((value) => {
+      window.__testDealRandom = value;
+      window.__fresh = true;
+      document.getElementById("t-new").click();
+    }, random);
+    await expect.poll(() => page.evaluate(() => window.__openings.length)).toBe(index + 1);
   }
-  const openings = (await page.evaluate(() => window.__openings)).slice(-5);
-  expect(openings.length).toBe(5);
+  const openings = await page.evaluate(() => window.__openings);
   for (const o of openings) expect(o, `opening play "${o}"`).toMatch(/3 of spades/);
 });
