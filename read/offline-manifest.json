@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 62,
- "bytes": 92739096,
+ "books": 64,
+ "bytes": 117316266,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -126,7 +126,7 @@
     "/read/one-more-story-before-santa/pages/p23.webp",
     "/read/one-more-story-before-santa/pages/p24.webp"
    ],
-   "html_sha256": "b8745d1a8e3954c48d9488b7b7bcd854d3a797d44c8a32932b0e0b744267b3dd",
+   "html_sha256": "b9a221736f53e32f9a1023df51d2fe27a7ed8b86560fa6f97d9a2dfdc033d08e",
    "bytes": 5652364
   },
   {
@@ -162,8 +162,96 @@
     "/read/the-last-parcel-under-the-tree/pages/p25.webp",
     "/read/the-last-parcel-under-the-tree/pages/p26.webp"
    ],
-   "html_sha256": "078056d7d3c40a4799214c6093f144cba429f8f0d2b959362a9b73654a7caed2",
+   "html_sha256": "45536183d22cd4c04f3dd985c5a149ee37627cf6ce7984cd8118d235f119fdf9",
    "bytes": 9806592
+  },
+  {
+   "slug": "sub-zero-and-the-great-snowball-truce",
+   "title": "Sub-Zero and the Great Snowball Truce",
+   "urls": [
+    "/read/sub-zero-and-the-great-snowball-truce/",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/cover.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p01.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p02.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p03.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p04.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p05.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p06.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p07.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p08.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p09.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p10.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p11.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p12.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p13.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p14.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p15.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p16.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p17.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p18.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p19.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p20.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p21.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p22.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
+    "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp"
+   ],
+   "html_sha256": "da66f5cbb3a979fa312e3f493f772b04fbee99a88259c4cb3679024a75b8a21b",
+   "bytes": 6113052
+  },
+  {
+   "slug": "captain-beakon-and-the-bell-across-the-bay",
+   "title": "Captain Beakon and the Bell Across the Bay",
+   "urls": [
+    "/read/captain-beakon-and-the-bell-across-the-bay/",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/cover.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p01.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p02.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p03.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p04.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p05.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p06.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p07.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p08.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p09.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p10.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p11.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p12.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p13.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p14.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p15.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p16.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p17.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p18.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p19.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p20.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p21.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p22.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p23.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p24.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p25.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p26.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p27.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p28.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p29.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p30.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p31.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p32.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p33.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p34.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p35.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p36.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p37.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p38.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p39.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p40.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p41.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p42.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
+    "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp"
+   ],
+   "html_sha256": "03812badaf329fe0364c6f366a9333978aa99c842c255a0523c88d332fac36fe",
+   "bytes": 18464118
   },
   {
    "slug": "panda-cake-discovers-her-abcs",
@@ -197,7 +285,7 @@
     "/read/panda-cake-discovers-her-abcs/pages/letter-y.webp",
     "/read/panda-cake-discovers-her-abcs/pages/letter-z.webp"
    ],
-   "html_sha256": "2dd2232d801200706bdc052f55e7d19bbd57961a712ce6a0fe48789789b80a3f",
+   "html_sha256": "d949476ceac7462f4304bac48a3848d5ec100a58bdde514adc7deb101a07c67f",
    "bytes": 4359456
   },
   {
@@ -213,7 +301,7 @@
     "/read/pip-sits/pages/pip-sits-page-5.webp",
     "/read/pip-sits/pages/pip-sits-page-6.webp"
    ],
-   "html_sha256": "ec6cfb816892812527c2f048708723b49d7351dc477110637def5b71440ad2c5",
+   "html_sha256": "1bc8c68d8154f06e372cebec049170a770aae98d0fa69de8792c3831cac29350",
    "bytes": 964386
   },
   {
@@ -229,7 +317,7 @@
     "/read/nan-and-pip/pages/nan-and-pip-page-5.webp",
     "/read/nan-and-pip/pages/nan-and-pip-page-6.webp"
    ],
-   "html_sha256": "ec939672746027df723a2369d96bcff05df39a0f57a55cc22967f72469cff8e8",
+   "html_sha256": "38eb81a5e9d58ef190ac60a87e9150891f65224c0880ba72cf4bd244eda35002",
    "bytes": 1289002
   },
   {
@@ -247,7 +335,7 @@
     "/read/ten-red-hens/pages/ten-red-hens-page-7.webp",
     "/read/ten-red-hens/pages/ten-red-hens-page-8.webp"
    ],
-   "html_sha256": "405eb9679b4991c98a68ac22fb3c6523295cc316e2ab18224a95b3ace876fe5d",
+   "html_sha256": "0d800130726a08e5e3f5d2ca051c86d409afdcc43dc9c8c6a5b0cbfec43e7a14",
    "bytes": 1554120
   },
   {
@@ -265,7 +353,7 @@
     "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-7.webp",
     "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-8.webp"
    ],
-   "html_sha256": "9ae8611cb722c9dae001e6d823e90ec54ea2e906290f26193af18e74f5ca641a",
+   "html_sha256": "f547f9219f21cefa02e97d44e7e18277dea801b29db6b78de4e9a3250f6ede66",
    "bytes": 1359794
   },
   {
@@ -283,7 +371,7 @@
     "/read/bug-in-a-cup/pages/bug-in-a-cup-page-8.webp",
     "/read/bug-in-a-cup/pages/cover.webp"
    ],
-   "html_sha256": "bffca49cbd53efcb1e164e400047a8067333d08c4ad95faf82c85c760999433e",
+   "html_sha256": "ee8f68ffdff9e7d6f1777cb55735b4862f2259560d93980b3a4c9323a1e02065",
    "bytes": 1074262
   },
   {
@@ -301,7 +389,7 @@
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-7.webp",
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-8.webp"
    ],
-   "html_sha256": "c4e76c1b3c71a019849a4b296b03c11531d305e267f9291fc91df894342b3eed",
+   "html_sha256": "08860edb693bdb2e16eca937011fc457cb54b676dcb6fec596f531dc6b8f36f6",
    "bytes": 892338
   },
   {
@@ -315,7 +403,7 @@
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p4.webp",
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.webp"
    ],
-   "html_sha256": "a3b3545bb30b00b7a41e162c6674f7402d99819379d224ac01fc5289598776ad",
+   "html_sha256": "0ded517444d397309a79f16d16301d879b06629c33030c8a7b34c97b6c1a6164",
    "bytes": 538170
   },
   {
@@ -329,7 +417,7 @@
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p4.webp",
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.webp"
    ],
-   "html_sha256": "1ef02ddf58c3e24091791b93c389c2907d13766c166c6cb8e39e2c389cfbf05e",
+   "html_sha256": "c2b7858024fb6faa608cbdfa00a9b97ade6dec7ac664340f19bf9b140cbf1660",
    "bytes": 552658
   },
   {
@@ -343,7 +431,7 @@
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p4.webp",
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.webp"
    ],
-   "html_sha256": "3ac8d1b9cf8878798e5000d213466059c427fc66e9bdaa7e7e553f8fc9bbc2f5",
+   "html_sha256": "38d0cccb160058f71c55921175d4ff330b0feab8c17fce3066a9faa81085bf84",
    "bytes": 815990
   },
   {
@@ -357,7 +445,7 @@
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p4.webp",
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.webp"
    ],
-   "html_sha256": "abf55aa247fc08c20e0a5a35cb9078519acf42f545c8738e18178fef5c2e379c",
+   "html_sha256": "1fd2a0db3504945fae752cf1f6550207803bba00bf908950be72a4e7f2bfc3dd",
    "bytes": 613708
   },
   {
@@ -371,7 +459,7 @@
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p4.webp",
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.webp"
    ],
-   "html_sha256": "49f3503ed23c6b69724fca4a6e355df44c569bbd35d397c01b0c58746b4f8c7b",
+   "html_sha256": "904918056deaa68f579674d63527bf5376d4515d3636601d948f0a992bfae21d",
    "bytes": 753430
   },
   {
@@ -385,7 +473,7 @@
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p4.webp",
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.webp"
    ],
-   "html_sha256": "6676745fdac0221ba567d0ea2e6ba05e9b96e1d2a9c62b76ffc1ed687e4998f8",
+   "html_sha256": "89651daa1114ab24ef5b3d65cf894b6255cedf881104185b89d7ddc6ed5a71ea",
    "bytes": 546088
   },
   {
@@ -399,7 +487,7 @@
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p4.webp",
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p5.webp"
    ],
-   "html_sha256": "3f9c8ff95a651eabac3e000dc702459eea6a6223f8c589dfcaeb1f612ea2f3d2",
+   "html_sha256": "1c8cec7339123d8d1f4d76224fd681bae26fa6f964f24b23b826f1c94628a057",
    "bytes": 976268
   },
   {
@@ -413,7 +501,7 @@
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p4.webp",
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.webp"
    ],
-   "html_sha256": "7faf34fe2dcd83eb84838b450530db9205f4efa89b106a702acd5d6070e761a7",
+   "html_sha256": "a1a981b8469b63ffdf5cfb07762198e5c37d0b6346ef07fec5fee8cdeeab4c31",
    "bytes": 1122460
   },
   {
@@ -428,7 +516,7 @@
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.webp",
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.webp"
    ],
-   "html_sha256": "9501b0691b777e567a44f9a7787a2acb6e42f07079d1f952e17df3c267ffc751",
+   "html_sha256": "dd3cbd9e962a8fb386d3d4b4ba525219293704c34b0597d3676dbc69edf32792",
    "bytes": 1433510
   },
   {
@@ -443,7 +531,7 @@
     "/read/rosas-copan-report/pages/rosa-copan-report-p5.webp",
     "/read/rosas-copan-report/pages/rosa-copan-report-p6.webp"
    ],
-   "html_sha256": "8131a8ad6f5b224287a79dabb9e72084c7d0a50014bc73dbc1c9b17f275e9f9d",
+   "html_sha256": "e3f80d5c8e140779424e8c9d61e686087655ea024797f8772a35ed6c3b45034c",
    "bytes": 1431630
   },
   {
@@ -456,7 +544,7 @@
     "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p3-r2.webp",
     "/read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p4-r2.webp"
    ],
-   "html_sha256": "86167b186bd8e962591e3a666dd683ebdcd34e7f873ec23007865aec3e0ecf28",
+   "html_sha256": "3834ceb1aae071bb0a6efc806b88a30d6872b0c0fdcc37ad136a4077a317432d",
    "bytes": 704440
   },
   {
@@ -469,7 +557,7 @@
     "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p3-r2.webp",
     "/read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p4-r2.webp"
    ],
-   "html_sha256": "0a403d277d52c49375855502208e0b2b34c9f813fefe398967e365bf837d0794",
+   "html_sha256": "28a91ea977c8bdd6b8b6633b40fb92ebcc513c4bfa37aca7b8fe30c9870af58a",
    "bytes": 519118
   },
   {
@@ -482,7 +570,7 @@
     "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p3.webp",
     "/read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p4.webp"
    ],
-   "html_sha256": "364467d5292961d3d74620ecbce4eb7b3912eb2d54acc264a5b3675ee75f0a11",
+   "html_sha256": "094af029536629ccf375298ee180f819ba40249e681808ff47c62d579b6f5b23",
    "bytes": 546078
   },
   {
@@ -495,7 +583,7 @@
     "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p3.webp",
     "/read/hen-berrys-helping-day/pages/hen-berry-helping-day-p4.webp"
    ],
-   "html_sha256": "78d6e5faecd6aea82f197c525336b62f72ec24af5052d77a2b47f1543305e810",
+   "html_sha256": "40d9694d0f1311fcf2f7ba48219868c3d86915bdfba0d3cdd918016b601f828e",
    "bytes": 759970
   },
   {
@@ -508,7 +596,7 @@
     "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p3.webp",
     "/read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p4.webp"
    ],
-   "html_sha256": "e2fe1e6d1257dfc833c53e73b95ef53888d4512fbcfb0f2d48c1e19f97dd8f2a",
+   "html_sha256": "58b7c72aa6344b78b52bc3048fa1f21e3ab91a7e806c8bf25b62dce087c7d0d7",
    "bytes": 740304
   },
   {
@@ -521,7 +609,7 @@
     "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p3.webp",
     "/read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p4.webp"
    ],
-   "html_sha256": "d75c050b7594791e524ff9b46a8df7fcaec1b0f6f6c79b05eae8f8e6e15b7701",
+   "html_sha256": "0b2400d392c80a3969ecd934efa51885a76f2cb5146cfe9d148f971239c82811",
    "bytes": 512746
   },
   {
@@ -534,7 +622,7 @@
     "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p3.webp",
     "/read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p4.webp"
    ],
-   "html_sha256": "25a3d39b7f9db385b5d5f82c868c3fac7c4e658d55893e8a2db6359b436330c8",
+   "html_sha256": "27bcce6bf70c4792a76cbe8768e3b42cbec0b70ca0f5911e74e68f7bf4faa5c2",
    "bytes": 640332
   },
   {
@@ -547,7 +635,7 @@
     "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p3.webp",
     "/read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p4.webp"
    ],
-   "html_sha256": "012a3c7c04c5960ff5f719805c46a5faa73ac61d1be2f622e49dc5e393af60e1",
+   "html_sha256": "42307c1598e4535dccb8d5f59503ddf1d82b9084be54c20d74d2f081d00b7aee",
    "bytes": 351670
   },
   {
@@ -560,7 +648,7 @@
     "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p3.webp",
     "/read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p4.webp"
    ],
-   "html_sha256": "78aacbc0f05d2baf39c04d2a841257a6bddab79ff8ebd09cd92358b50e4a97a7",
+   "html_sha256": "efca36206a4592bca2873ad2c5dad17a9b84eddc860f7be9050dac7b3dc4ddf2",
    "bytes": 570774
   },
   {
@@ -573,7 +661,7 @@
     "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p3.webp",
     "/read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p4.webp"
    ],
-   "html_sha256": "a1ffa8d454654027a1187c3970fbfb520edf62a17a0cd3cd507d36ed532f02c0",
+   "html_sha256": "2b0c56e393b27dc6a022b7a1fc449c33f078fcec265fa00da25f34054cc94f5e",
    "bytes": 486528
   },
   {
@@ -586,7 +674,7 @@
     "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p3.webp",
     "/read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p4.webp"
    ],
-   "html_sha256": "0fd87431f82a51f05247dc65b74202a41e0325a4b3d0917400b39018ffe90157",
+   "html_sha256": "93b6345517ad8b97f1e7bef1c4575fea3cec911ac78512605420ab432b241769",
    "bytes": 370700
   },
   {
@@ -599,7 +687,7 @@
     "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p3.webp",
     "/read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p4.webp"
    ],
-   "html_sha256": "7a0013d645e3945c528dca8a033ddaacd8dca6d0001da5afd538f67fa0ff1b1a",
+   "html_sha256": "31ad20da1c2a4edae952b2e68340143bb2ae788d86b28fdd42a595e598ce879f",
    "bytes": 836102
   },
   {
@@ -612,7 +700,7 @@
     "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p3-r2.webp",
     "/read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p4-r2.webp"
    ],
-   "html_sha256": "c4e1a35f1cfaaa97d3dbc940e1b5f78e59010d61596ba15b74305c9a40b5365c",
+   "html_sha256": "a995ba0bf2f4dcb23698b60a81656fc75245241710169a502ba2ddde62dff5aa",
    "bytes": 448912
   },
   {
@@ -625,7 +713,7 @@
     "/read/wise-owls-library-day/pages/wise-owl-library-day-p3-r2.webp",
     "/read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.webp"
    ],
-   "html_sha256": "75f416c446c484c66fc8121f2154d984dc4902f2c4124cac9982284e44c87a45",
+   "html_sha256": "d94dcc3f888059cc4404aff8c65f9c778baed1fc5cc4af196ef4b5133061919b",
    "bytes": 520758
   },
   {
@@ -638,7 +726,7 @@
     "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p3-r2.webp",
     "/read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p4-r2.webp"
    ],
-   "html_sha256": "df33511b168551164786b04d773dbbd3e1929a5d3ac8f8a5fbe1008b21a8ad50",
+   "html_sha256": "1de95c35ad4f788f0b4670043fe74b9758fd1dddda2cefc0d7406ad337b7af26",
    "bytes": 432206
   },
   {
@@ -651,7 +739,7 @@
     "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p3-r2.webp",
     "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p4-r2.webp"
    ],
-   "html_sha256": "3fee63d2781411e101a0ec68515b733ea1f4b7ac2ab09e46141c4aa82e550df9",
+   "html_sha256": "2a97c0bc70c8d84d9ea55da17bd5697ea02fad412bbf3256cfcc2628a285bc2e",
    "bytes": 667014
   },
   {
@@ -664,7 +752,7 @@
     "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p3-r2.webp",
     "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p4-r2.webp"
    ],
-   "html_sha256": "245c22d980a5e925bcc91b260cc294a443a4ec582cb36a8888094efdf4e848bd",
+   "html_sha256": "876c2f3cfb8694845407713eb2e84a3f79659cdbb04802a66ae1a21e441a889d",
    "bytes": 493156
   },
   {
@@ -757,7 +845,7 @@
     "/read/ted-e-bear-and-the-button-trail/pages/page-5-r2.webp",
     "/read/ted-e-bear-and-the-button-trail/pages/page-6-r2.webp"
    ],
-   "html_sha256": "17f548189ab50c9b9cdf3dcb4ba8371820365966140b6f5dc8ad2501207d1566",
+   "html_sha256": "125013f701115eb4fe0ac82485477cb3b1312dae6b6ae65875918a59a2e3edff",
    "bytes": 1402566
   },
   {
@@ -772,7 +860,7 @@
     "/read/panda-cakes-market-basket/pages/page-5.webp",
     "/read/panda-cakes-market-basket/pages/page-6.webp"
    ],
-   "html_sha256": "7e14c683bd084b7795b3532f587c66ada4276172327fd98ec1ef09f5cdeee403",
+   "html_sha256": "12b22595af8e2b692846f4850af757d02a9869c7caecc42ff59c366e3fbc2da3",
    "bytes": 842658
   },
   {
@@ -955,7 +1043,7 @@
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-3-r1.png",
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-4-r1.png"
    ],
-   "html_sha256": "8d7c6b67fe936c73eb752b66d0916369db0060acf20fb71553be39081f218eff",
+   "html_sha256": "78d88f424865e866045b5c6bb1200ad23dfff1cf4b66cf89844c007453c1cf3a",
    "bytes": 785216
   },
   {
@@ -969,7 +1057,7 @@
     "/read/wise-owl-festival-of-factors/pages/page-3.webp",
     "/read/wise-owl-festival-of-factors/pages/page-4.webp"
    ],
-   "html_sha256": "a37eadfa6f9cd6183349b26133d54a64ee5739918544afb99c7b707a77d0e86a",
+   "html_sha256": "f1bfb957bf938217929819254b0162d49366dc4e581cee7bc92419f5c0a8b94e",
    "bytes": 676320
   },
   {
@@ -1152,6 +1240,78 @@
   "/read/the-last-parcel-under-the-tree/pages/p24.webp",
   "/read/the-last-parcel-under-the-tree/pages/p25.webp",
   "/read/the-last-parcel-under-the-tree/pages/p26.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/cover.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p01.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p02.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p03.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p04.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p05.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p06.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p07.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p08.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p09.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p10.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p11.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p12.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p13.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p14.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p15.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p16.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p17.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p18.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p19.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p20.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p21.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p22.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
+  "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/cover.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p01.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p02.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p03.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p04.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p05.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p06.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p07.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p08.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p09.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p10.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p11.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p12.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p13.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p14.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p15.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p16.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p17.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p18.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p19.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p20.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p21.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p22.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p23.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p24.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p25.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p26.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p27.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p28.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p29.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p30.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p31.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p32.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p33.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p34.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p35.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p36.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p37.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p38.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p39.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p40.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p41.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p42.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
+  "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp",
   "/read/panda-cake-discovers-her-abcs/",
   "/read/panda-cake-discovers-her-abcs/pages/letter-a.webp",
   "/read/panda-cake-discovers-her-abcs/pages/letter-b.webp",

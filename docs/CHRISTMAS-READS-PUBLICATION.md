@@ -1,10 +1,17 @@
 # Christmas picture books publication
 
-Published sources: `data/web-books.json` plus the edited manuscripts and reviewed art manifests in `data/web-originals/`. The original 50 PNG masters remain in the companion repository under `docs/christmas-picture-books-2026/`.
+Published sources live in `data/web-books.json` and `data/web-originals/`. The companion repository holds the reviewed PNG masters and local handoffs under `docs/christmas-picture-books-2026/`.
 
-The two books have 24 story pages and a cover each, responsive WebPs, JPEG fallbacks, 25-page printable PDFs, social cards, shelf cards, reader controls, offline manifests and sitemap entries. They are original web stories, not app exports or decodables.
+Each web original has a separate cover, numbered story pages, responsive WebPs, JPEG fallbacks, a selectable-text printable, a share card, offline resources and sitemap entries. The local manifest supplies page count, age range, reading level and optional chapter starts.
 
-To import one reviewed original, pass the absolute companion Christmas directory, its relative book folder and the web slug. For the Christmas Eve book, use `python scripts/import-christmas-books.py <absolute-source-directory> --book sequels/one-more-story-before-santa one-more-story-before-santa`. Then rebuild its PDF with `node scripts/build-read-pdfs.mjs --slug=one-more-story-before-santa --write` and rebuild responsive markup, social cards, shelf, breadcrumbs and sitemap. The importer uses the reviewed age range, image dimensions, page count and manuscript paragraph breaks. Inspect rendered PDFs before refreshing evidence. Keep unrelated publication evidence intact.
+To import one reviewed original, pass the absolute companion Christmas directory, relative book folder and web slug:
+
+```powershell
+python scripts/import-christmas-books.py <absolute-source-directory> --book sequels/<slug> <slug>
+node scripts/build-read-pdfs.mjs --slug=<slug> --write
+```
+
+Rebuild responsive markup, social cards, shelf, breadcrumbs and sitemap. Preserve the reviewed WebP bytes from the source manifests when the responsive builder regenerates files. Inspect every page of the printable before refreshing release evidence. Retain the source evidence for other titles.
 
 ```powershell
 node scripts/check-christmas-publication.mjs --write-evidence --source-root=<absolute-source-directory>
@@ -12,8 +19,6 @@ node scripts/check-christmas-publication.mjs
 node scripts/check-read-publication.mjs
 ```
 
-The refresh is scoped to registered Christmas books. It compares website prose and alt text to the reviewed manifests, compares the WebPs to their reviewed hashes, and checks published JPEG and PDF evidence. With a source directory, it also verifies the original master hashes. CI runs this check without a companion checkout.
+The refresh compares website prose, paragraphs, chapter starts, and alt text to the reviewed manifests. It compares WebP, JPEG and PDF hashes to delivery evidence. With a source directory, it also verifies original master hashes. CI can verify the committed evidence without a companion checkout.
 
-Validation on 18 November 2026: both PDF sequences rendered and inspected; text extraction passed for all 60 books; source/art evidence, mutation guards, shelf, responsive images, social cards, collection PDFs, site integrity, contrast and JavaScript checks passed. The Edge reader suite passed 75 tests, followed by a passing rerun of the sole outdated shelf-count assertion after deriving its count from evidence (76 covered in total). Both new books passed mobile navigation, image loading, overflow and shelf-search checks.
-
-Existing limitations: full current-app comparison stops at `centi-peeds-below-zero-burrow`, whose local app prose differs from the published book. The broader verification also reports 154 stale `/go/` redirect outputs. Neither was refreshed in this release. Site integrity reports the existing missing analytics beacon on `/winter/`. Native/device speech is not established by browser tests.
+Run the Reads browser suite to verify the new readers, age filters, images and chapter links. Run the scoped check with `--source-root` for web-original source parity. The broader `--require-apps` check applies to app exports and has previously identified unrelated source drift in `centi-peeds-below-zero-burrow`.

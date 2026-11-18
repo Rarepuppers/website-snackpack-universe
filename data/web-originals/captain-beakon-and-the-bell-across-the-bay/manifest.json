@@ -1,0 +1,1798 @@
+{
+  "schemaVersion": 1,
+  "id": "captain-beakon-and-the-bell-across-the-bay",
+  "title": "Captain Beakon and the Bell Across the Bay",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "ageRange": "12–14",
+  "readingMode": "independent-reading",
+  "readingLevel": "Independent reading",
+  "publicationStatus": "published",
+  "storyPageCount": 44,
+  "wordCount": 4066,
+  "blurb": "Every December, the harbour bell opens the lantern procession with the same three strokes. This year the third stroke never comes. When Polly Roger hears the tune from the wrong shore the following evening, she thinks somebody has moved the bell. Her best clue points to a friend.",
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "0356daeb3372b8a336e0bb73a9eb29ef4d44c9fbbc352323c14c875e0baff9ee",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 372914,
+        "sha256": "cb5c765246c8c58a249e15d46caf07df76dbedccb5eb251e84ee71d80b3e33be"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 244764,
+        "sha256": "b97efc97ab0694b5de264a99a25f56279cd218c79edcecf9d52c23ad2e9c05b9"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 95732,
+        "sha256": "fb380028b9ae288f2d96d0cea7fe9c7f4f13274127b8116067ff83ec12fd3b64"
+      }
+    ],
+    "review": "accepted after checking picture action, character designs and clue continuity",
+    "generator": "built-in imagegen",
+    "alt": "Polly Roger looks across the dark harbour from the market wall towards a stone tower and a blue boathouse."
+  },
+  "pages": [
+    {
+      "number": 1,
+      "text": "Polly Roger could hear the ferry before she could see its lights. The engine slowed outside the harbour wall and the loose handle on the cabin door began to chatter. She made the same sound with her beak. A passenger reached behind her to steady the handle, then gave her a look.\n\n“I might need that noise,” Polly said.\n\nCaptain Beakon strapped his brass telescope into its case. “You collect noises the way other people collect shells.”\n\n“Shells take up room,” said Polly. Then the ferry turned and the harbour came into view.",
+      "illustrationDirection": "Tight on Polly and the vibrating ferry cabin handle. Beakon closes the brass telescope case, with the dawn harbour still blurred through wet glass.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "319e2469ab7d3841989062f1c26da6f88122883998b615fb6cce84dee16d23f5",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 319354,
+            "sha256": "28471903b5c7d0e084b749b0e9a48590a4d632c3fa56e6edfc5c4a86678ca559"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 215004,
+            "sha256": "34d935f889b83d2f2e1bb141695090143d5dd7a994632eccb9b4552aad481d98"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91606,
+            "sha256": "9398eddf1c5a2ecaed5e499724ed28d72535844ba425b3c0afa554b947adbf6a"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly mimics the rattle of a ferry door handle while Beakon packs his telescope."
+      }
+    },
+    {
+      "number": 2,
+      "text": "The town curved round the head of the bay. On the west side, a wide stone quay ran out below the bell tower. The market stood at the head, where two streets met. From there a narrow path followed the east shore past the old net shed and ended at a blue boathouse.\n\nBelgian-Waffle was waiting at the landing with his messenger bag strapped over his waffle vest. He took them to the market wall, where he said the harbour bell sounded best.\n\nPolly could see both shores from there if she stood on tiptoe.",
+      "illustrationDirection": "Establish both shores from above the market wall. West quay and tower to the right when looking out to sea, east path and boathouse to the left. Trio seen from behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4b1da16593abbad8edbe473c62df7d15912c80a14b6e9fdd7d26b34f749ce18e",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 468442,
+            "sha256": "488859044328e569a94c607468c6037df2db022e56da72c525bee2699ff5f246"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 295940,
+            "sha256": "120a2d48d64446a5b6cc5570d37f6480c34e672bc78953702d1849f72eb0fa81"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115462,
+            "sha256": "9b9574aa4d42bf7380c0ddb9a59489cc6336fb8b5dcb052c23426d2983d9fd4a"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "The broad west quay and tower face the narrow east path and blue boathouse across the bay."
+      }
+    },
+    {
+      "number": 3,
+      "text": "They'd come to join the Christmas lantern procession. Last December, Beakon had promised to bring Polly back for the bell. Tonight was the rehearsal. At the real procession in two evenings, the tower would ring, the first lantern would light at the market, and everyone would walk east to the blue boathouse.\n\n“People can hear it behind closed windows,” said Belgian. “No one has to stand in the cold just to know when we're leaving.”\n\nHe tapped the tune on his bag. Two close taps. A space long enough to take a breath. One on its own.",
+      "illustrationDirection": "Close on Belgian’s wing tapping his canvas bag beside the half-open flat lanterns. Polly watches closely.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ff46716c4879df90a5d158c9693e74b076a5c8554a5d607c7d73b02dcc92fd78",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 410214,
+            "sha256": "d3c751d52b7f5fb0fed392c5e162e9fbc8594ea4ad8df2dd33d2a61b879119f4"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 270070,
+            "sha256": "0adfdf39ef21a44d39db50f738f747f34dfd7b10302f138641f2e030025b823e"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108056,
+            "sha256": "05887e31a77cfdc80cbb8bea9833614bee3d1b359eda94e303589d551d62654d"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian taps the harbour bell’s rhythm on his canvas messenger bag."
+      }
+    },
+    {
+      "number": 4,
+      "text": "Marnie, the badger who ran the market, handed Polly a bundle of paper lanterns to unfold. Marnie could lift a long trestle table by herself, but asked for help with anything that creased.\n\n“Leave the gaps between the stalls clear,” she told Belgian. “When the bell goes, the whole quay comes through at once.”\n\nOn the west side, a tall brown rook crossed the quay in a grey coat. Belgian pointed him out. Rowe looked after the bell and had rung it every December for twenty-three years.",
+      "illustrationDirection": "Busy market with Marnie steadying the end of a trestle. A clear gap between two stalls leads the eye towards distant Rowe in his grey coat.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aa256a32234792dc6fdb0362e55e6192ea3fb8e06cc4620c126b28eaeb9681cd",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 426868,
+            "sha256": "7f1f5be17f800a963bba77681d1b3beabe61192dcf65d913782543bb73671f75"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 279916,
+            "sha256": "d78af7eaae0ef3bcfd2ccc1b7bdd08c8ca476b3f4d3459608c058ee3c9d93545"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112334,
+            "sha256": "7f3d123129836e674389889a94a65580b5e7d1d16c1f76b7289f0824c6e4ed7a"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Marnie leaves a clear way between the stalls as Rowe crosses the west quay."
+      }
+    },
+    {
+      "number": 5,
+      "text": "Every clock on the market wall said a slightly different time. Marnie watched Rowe instead. He raised one wing beside the tower door and went inside. From across the bay, the laundrette windows shone behind him.\n\nThe first two strokes came so close that the low note of the first was still humming under the second. Polly knew exactly how long to wait. She held her breath and squeezed a fold flat in the paper lantern.\n\nThe third stroke didn't come.\n\nShe looked up. Rowe had lowered his wing. She could no longer see the tower door.",
+      "illustrationDirection": "From the wall over Polly’s wing, the creased paper lantern occupies the foreground. Keep the tower door very small across the bay.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aa3b3ba288b92f9a11737b688d8dac3243d1f3021f1c2c6c56b31603f6ed2ea0",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 368708,
+            "sha256": "c1d0cdcbe66eb7d4528f7f521e9304fa199cbb4559d2e8ee6af71dd2d9f9256f"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 244170,
+            "sha256": "4bcc6eaa3aa14add9b801f7c953a51a821795201cec4c0b47f5d57e7adc63dd2"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97954,
+            "sha256": "f9165a45aa4106293d467e5428b6829899677cece8c32bc8d6ced030b39a6c9a"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly presses a fold in her paper lantern with the stone bell tower in the distance."
+      }
+    },
+    {
+      "number": 6,
+      "text": "Marnie called towards the west quay. A figure in grey came out of the tower and lifted both wings: stop.\n\n“Keep the paper dry,” Marnie said. Someone had started to light a practice lantern and she went to speak to them.\n\nFor a few seconds Polly thought the bell itself had fallen. Then she realised how many sounds that would have made.\n\nBeakon didn't move from the wall. “What did you hear?”\n\n“Two strokes,” said Polly. “The second one went flat sooner than I expected.”\n\n“Tell me that again later,” he said.",
+      "illustrationDirection": "The moment after the sound. Rowe gestures stop from the west quay and Beakon keeps his place at the wall.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8a31991057222c00c76f077358ba0c02b3f2911ac6401d1ff327af47b9b116bb",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 436566,
+            "sha256": "5f27e3dc69bfea62904d353dc673ec44c3313e573e74d1e1c0d6c51ff8798724"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 284834,
+            "sha256": "440bb11cda3c62e8b9b3080e70156cb6af3d801f408a38b5f090a970141f96e8"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113816,
+            "sha256": "9a922e048f68b4fd7111941235bcb0d233429327f9d4458d0936d98ce6a8ad61"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Rowe lifts both wings outside the tower while Beakon stays at the market wall."
+      }
+    },
+    {
+      "number": 7,
+      "text": "In the café, Belgian laid a dry napkin over each of their damp lanterns. He liked putting things in order when he couldn't fix them. Marnie came in and told the room that Rowe had set the rope aside until the bell could be checked. The procession was still on.\n\nA few people began telling stories about the time snow shut the market or the time the power went out. In all of their stories, somebody rang the bell anyway.\n\nBelgian stacked the napkins too neatly. Polly didn't ask what he was thinking.",
+      "illustrationDirection": "Café table at eye height. Belgian lays the last dry napkin over a damp lantern. The market light is cold outside the glass.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "abc66cca1203cc3e7e33c362366e4d04d150c4435ecf9f25809921cdd911eed3",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 309012,
+            "sha256": "d7187d9d3013421ac2e8ec3313cb94aa133c3088ac4999b68262b5904d5cc679"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 213544,
+            "sha256": "428d2ce4449219961852cccb4551108d7b2888e756423cd4793d7ed28ea27484"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93336,
+            "sha256": "886a3cc29df8a414ce899d783d926f2ee71e7e4e5d6600bea3eff55c2929e6ec"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian carefully covers the damp lanterns with dry napkins."
+      }
+    },
+    {
+      "number": 8,
+      "text": "Next afternoon, Polly helped Beakon carry a box of lantern hooks to the east path. The boards of the old net shed had been bleached grey. Beyond it, the blue boathouse sat with its long side to the water. No boat had been kept there since the slipway wore out. Now somebody had planted winter herbs in pots along the dry side.\n\n“Ada Reed looks after it,” said Belgian. “She lets people mend nets there if it rains.”\n\nOne of the pots was wedging the side door open. Polly smelled damp rope and rosemary.",
+      "illustrationDirection": "At ground level along the east side of the boathouse. Close in on the clay rosemary pot holding the blue side door ajar.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "804ef2eb52baec6dfe52771adcfe7661bcf5e080159de1610526c2ad8c851e34",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 429334,
+            "sha256": "5000ecd50513576c0e45bef05941760157f4f61d4302f673a940817a7fa998c2"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 286774,
+            "sha256": "4d63bebfbf7cbcdcf5e8e07b0f1c10a748e01aa6f7660829ff6b4ba7422452fd"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115812,
+            "sha256": "89a4402caaf99dadb7dbbd8cf367d028bb02e3bca4a88762b4e44af4490e5478"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "A rosemary pot props the blue boathouse door open above the old slipway."
+      }
+    },
+    {
+      "number": 9,
+      "text": "Belgian made two trips to the market while they fastened the hooks. On his third, he brought a long wooden box on a handcart. One board at the end rattled with every bump.\n\nPolly offered to take a handle. Belgian shook his head.\n\n“Easy from here. I've got to get it to the bend before dark.”\n\nHe took the east path past the net shed. Polly turned back to hold the ladder from ground level while Beakon secured the last lantern hook. When she looked again, Belgian and the box were out of sight.",
+      "illustrationDirection": "A tall side angle on Belgian’s cart crossing the bend. One board at the end of the long closed wooden box is a little loose.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a4920e938d2d8fab6ef35182ee1b67dd9cd47061da9869385e7e63978f02ec21",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 396018,
+            "sha256": "28a4ef4477ebe09db74a435e2703568097c4485536e56d51c64b2ee128f69213"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 266240,
+            "sha256": "3d3cddf98a75975abb16376e922dcc5fc0d2f08189925ee5b815f363ceeab083"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107612,
+            "sha256": "c4985c7e12000f1446404943c16757cf2b1c8608854bd774b60e3143b5fb65bf"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian wheels a long wooden box past the net shed towards the blue boathouse."
+      }
+    },
+    {
+      "number": 10,
+      "text": "Polly had hardly got her claws warm when Marnie asked whether she could hear the bell from anywhere but the market wall. Polly began listing places. Then she saw what Marnie actually wanted.\n\n“I can tell people if I hear it,” Polly said.\n\n“You could wait at the wall,” Marnie said. “Some of the stallholders think we're calling the whole thing off. I could use somebody who listens.”\n\nPolly stood a little straighter. She was used to being asked to repeat what she'd heard. This was the first time anybody had asked her to be responsible for it.",
+      "illustrationDirection": "Marnie hands Polly a dry lantern near the inland wall. Their faces are earnest and the stallholders are beginning to fold a table.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ab472c2e437e1bdbaf3649b6c7e88ba2429a8de28f0604d08448ab103c1ee6d3",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 376144,
+            "sha256": "9bd50558b58b92da6eddd25705e1dec8d48b6ad6b9f012a504aab96f2a49b350"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 252564,
+            "sha256": "fae4c4695e3ca62c51cb38a2006158da52598e3a30ccc358af9ca4d87bca2eb7"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 106322,
+            "sha256": "8357ae6834b94736aef7ea358982e83779bcc2c5253a9967b336d443d993b91c"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Marnie asks Polly to listen from the market wall."
+      }
+    },
+    {
+      "number": 11,
+      "text": "Near dusk, the market fell quiet for the time it took the ferry to pass the harbour wall. Polly leaned over the rail.\n\nTwo strokes. A gap. Then one on its own.\n\nShe knew the tune before she had time to decide where it came from. She turned towards the tower. The low window was dark. A moment later she caught a little knock from the east, where the blue boathouse should be.\n\n“It's back,” said a man beside her.\n\nPolly stared out at the bay. “I don't think it's back in the same place.”",
+      "illustrationDirection": "Strong twilight contrast. Polly turns away from the dark tower window. East glow and the boathouse lie beyond her. Keep the source hidden.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ad405326b3c56260e67108a47ad4d0247962879ac86eb69f5ccd9a0335a7dd72",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 240526,
+            "sha256": "4e1b7bfe7f1e5db089e4f2a0bcd69656a027b77e216e68aee5ae1f51ca0269c4"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 162884,
+            "sha256": "4088b370d216fa7734dcb0ecbff51be0c88c5beda724db8941711155b9aa5b9f"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 64350,
+            "sha256": "4acd1c583d75c0c406a728e1e79a04cc621b51ab2ae24dc7c878536f74030e05"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly listens between the dark tower and the far boathouse as dusk falls."
+      }
+    },
+    {
+      "number": 12,
+      "text": "In the café, Polly tried the two sounds for Beakon. For the first night, she lowered her note and let it out slowly. For the second night, she cut the note off sooner and added the little knock with her beak against the side of her cup.\n\n“The tune is the same,” she said.\n\n“And the sound?”\n\n“The notes were higher. Shorter, too. I didn't notice until I tried it.”\n\nBeakon stirred his tea. “Someone rehearsing on another bell would do it.”\n\nPolly had already got a picture of the big bell on a cart. It was hard to put down.",
+      "illustrationDirection": "Quiet close-up. Polly’s beak just above the side of a cup, Beakon listening closely with tea spoon held still.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cb4c6d90fc0cf40512518bfa5c0399a9c23b2501ba0024924a6cc91479830327",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 427198,
+            "sha256": "0349da114f69f6dead237e0632149073f9ac2eef3f1179c8db1b0d1c05be825c"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 276080,
+            "sha256": "3001efdeff4bd7935c1ddd8edbc56d589f36b60ef21b41eeff8db858bcb1da50"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108996,
+            "sha256": "95aae1429fa880784adf1f01668c8902d3a7333345f35db97d9fbdd2f0e51732"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly demonstrates the short note and imitates the last knock against a cup."
+      }
+    },
+    {
+      "number": 13,
+      "text": "The ferry pilot came in carrying an empty flask. She'd been out on the water when the bell rang and was sure it had come from the west.\n\n“I was facing the west,” she said.\n\n“Were you outside?” asked Polly.\n\n“My window was shut. I opened it after the second stroke.”\n\nShe traced the shore in the air with a finger. The ferry had been turning. By the last stroke, she had been facing the market again.\n\n“I still think west,” she said. “But I couldn't swear to it.”",
+      "illustrationDirection": "The gull pilot traces the ferry’s turn with a finger in the air. Her flask is empty by the table.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "60d1031729ce63d40d7e761aed0c8049d724cd61ba6264c149a53acf2c0c7119",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 416106,
+            "sha256": "3c46dfa1aed094d1b8cb49c8b300030b14534197d5db8aa822608ac30590b232"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 273380,
+            "sha256": "ccc4896dc8a934555f238692425c04137c78b22d3dec559bdac4384e41b9d4c4"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110288,
+            "sha256": "ed338e1eaf5583add40e5935578bd0e1dcec134c9c5ea391677f54e18b0e97e9"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "The ferry pilot traces a turn in the bay as she describes where she heard the bell."
+      }
+    },
+    {
+      "number": 14,
+      "text": "At the far end of the café, a fox called Len told someone he'd seen a crate on the east path. He kept repeating how wide it was. Polly sat beside him and asked if the crate had been on a handcart.\n\n“The cart rattled,” said Len. “I heard it after the bell.”\n\n“I saw it in the afternoon.”\n\nLen rubbed the window with his sleeve. “Could have been. I've been moving wet chairs off this path all day. After a while everything with wheels sounds like the same chair.”",
+      "illustrationDirection": "Len rubs a circle clear in a steamy window. Stacks of folded chairs show beyond it in an alcove.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7f3ad91dd18b600ebbf51e06ebcb68ce5b40225aea570b174b63c32f9505a8ea",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 384248,
+            "sha256": "6f6b726460ccddcea96fd89f0e4003285826f5135d9223544a8c1f03889f92fb"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 262516,
+            "sha256": "f071271c0effbd1fb6c45386029b7b8eac19f1e52d5c22de5cca7ca39ce75c11"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111578,
+            "sha256": "39d5c6f8cbfc44ccc592b13f527b96ea96504e3aca3411e5c513ad5db002ecc7"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Len tries to remember when he heard the rattling cart."
+      }
+    },
+    {
+      "number": 15,
+      "text": "Polly drew the three things she knew on the back of a market leaflet. The tower on the west. The tune on the east. The cart that had gone round the head of the bay.\n\nShe put a question mark on the cart. Then she made the question mark smaller, as if that might make the rest of the drawing more useful.\n\nBelgian saw it when he passed their table.\n\n“Is that my cart?”\n\n“It's a cart,” said Polly.\n\nHe waited. She folded the paper so the drawing was inside.",
+      "illustrationDirection": "Over Polly’s shoulder at her small folded drawing. Show only three shapes and lines, with no legible note. Belgian’s bag enters at the top.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "af4cae8e800f2c71486922daf3a5ee86d9dd8252c57abbfddc46c043ae1e8854",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 332216,
+            "sha256": "9ac4d2d1cd59fa32e16c44d705ff0e0b5e5f69cdc9ec77df1cae24f24b1bb8aa"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219300,
+            "sha256": "0a04ed258f03cc7bc5f9c2f9f27c990fcb0d15c29dd319212b7bb37d797d1074"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95678,
+            "sha256": "203f6b3d318234a88afbd616978fff260b8f0097b31139e4a5ff12777a38cb68"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian recognises a cart on the drawing that Polly is folding away."
+      }
+    },
+    {
+      "number": 16,
+      "text": "By morning, somebody at the market was saying the bell had been moved without permission. Somebody else said it had been sold. Nobody could say who had first told them.\n\nPolly went down to the tower with Beakon. A wooden board blocked the entrance, with a fresh notice to say the bell would stay silent while a bell specialist looked at it. Above them, the square louvred opening was too far away to tell what was behind it.\n\nBeakon sat on the seawall. “We can wait for Rowe.”\n\nPolly had hoped they could do something quicker.",
+      "illustrationDirection": "Tall exterior of the west tower door with a plain board and folded official notice. Polly and Beakon stand on public paving below the louvred opening.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1f8866dfea56bde074a8fe91dcc7e9ed7017b2841a747f0dd2b4a095feae30af",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 442408,
+            "sha256": "e75fc3281e350c05a95a93739f54bc4a3fb6d177371bb77c8a3f8b4a899e5a87"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 287906,
+            "sha256": "a41b63465fb7405b8144e772e14e57b59dd47c9fca0c32ed1abe76fbd7a9e317"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112338,
+            "sha256": "c6e093a5b51738e91ffd4b6637b37a50eb17e061355a751e91ff422293cf0004"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "A barrier and notice stand in front of the tower door."
+      }
+    },
+    {
+      "number": 17,
+      "text": "Rowe was at the quay hatch signing out a set of life rings for the procession. He recognised Beakon and came over.\n\n“You stopped after the second stroke,” Polly said.\n\n“Yes.”\n\n“Did the bell go somewhere?”\n\n“It's hanging where it did yesterday,” he said. “And where it did the day before that.”\n\nHe didn't seem offended. He looked tired. When Polly asked if they could see, Rowe showed her a photograph he had taken that morning for the specialist. The bell hung in its frame, a sea-grey cone with a nicked rim.",
+      "illustrationDirection": "Rowe holds an inspection photograph at chest height. Show the dark hanging bell shape framed by beams on the picture surface.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cd2435e84a10c65fff0131e8495548e6a5c7dbc6bca833f20438ca8e8880bb24",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 452856,
+            "sha256": "d1019be7903988cc921bc165e118aae3df457bddac67a5efb5a84d40373af82c"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 301526,
+            "sha256": "120e76e3a5242e895d5a4538008bf184af98114afe1d5cd94a0f8c11d3a1502f"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118772,
+            "sha256": "80acfcd53aa7cb487a2273d6ad2a1d39ea25f1ff90f57bbafcf944cfbed33c1e"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Rowe shows Polly a new photograph of the large bell still hanging inside the tower."
+      }
+    },
+    {
+      "number": 18,
+      "text": "Rowe enlarged the picture until a dark line showed near the rim. From the ground, Polly would have missed it.\n\n“I heard a change on the second stroke,” he said. “I stopped. We'll leave the rope tied back until we know more.”\n\nBeakon asked what it would take to move the bell.\n\n“A crew, a lift and room on the west quay. You can't get it through the stair door on a handcart.” Rowe slid the screen shut. “Wish you could. The specialist wouldn't have to bring so much gear.”",
+      "illustrationDirection": "Close inspection photo on the screen enlarged to show one fine dark line near the bell’s nicked rim. The two adults’ wings frame the device.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8b417bcca550171b15cc3d81ee1255568ba79ec21af81ea45ea4af50c2b516cf",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 419704,
+            "sha256": "6e1e402e2e6ee16cfa62b2c801e542fdabc6f1f6fdafd3048aad736339ababab"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 275664,
+            "sha256": "25d42c3d51e6624e1860bb5acea3b168a009fcef06b28f63976f94229dc278d1"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110850,
+            "sha256": "2f18a0b342bc52b9259cf2ae1a1ffa672eb64a80d5c214dc10b9288d5bc7100c"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "An enlarged inspection photo shows a fine line near the rim of the tower bell."
+      }
+    },
+    {
+      "number": 19,
+      "text": "On the way back, Belgian was stacking empty crates beside the lane. At his feet lay the same long box, upside down and empty. A delivery slip stuck up beneath its lid.\n\n“You can look,” he said. “Don't get it wet. It's my copy.”\n\nPolly read the familiar words at the top and the short description underneath. Wooden stand. East shore. Ada Reed.\n\n“Did she say what it was for?”\n\n“No. I carried a stand with two folding legs. It came out at the boathouse. Then I brought the box back.”",
+      "illustrationDirection": "Close on the long empty wooden box upside down near Belgian. A delivery slip protrudes from under its lid, turned so its face stays plain.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c7bb2ea21dca3a74500974333d0d5f7638b4381313ba2c60f5ade034b33be771",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 372166,
+            "sha256": "ffeb51cddac2a74980fcf9e7c941e99c9b04f7557cfdd953f0e65694546a2597"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 261624,
+            "sha256": "37d7b715fb2f13052d9c5295c8ef6fd7ce0e861d13ccd78b0143aec217d3b9f3"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112352,
+            "sha256": "8a75b4e2401ba5cc31011b60dad806e9d456645f76f5960735373fcc1cefef2d"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "A white delivery slip sticks out beneath the lid of the upturned wooden crate beside Belgian’s blue wing."
+      }
+    },
+    {
+      "number": 20,
+      "text": "As they walked, Polly tried to fit what Belgian had said to the tune she’d heard. A wooden stand might be part of another bell. It could also be a place to hang nets or dry lanterns.\n\n“What did you think it was for?” she asked.\n\nBelgian lifted his good wing. “I thought it was a stand.”\n\nShe took that for a joke until she saw his face. He'd been answering her honestly the whole time and was beginning to wonder what answer she wanted.\n\n“It helps,” she said. “I should have said that first.”",
+      "illustrationDirection": "Chest-high walking two-shot through the market lane. Belgian looks weary and Polly eases her stride to hear him.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0d21aa944c25371ad841e16c7dcfb099809c68016233b1a1f858396eda59f65d",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 485516,
+            "sha256": "b67d0cf9e1c10f272365d0f2d282d4338aacdc0baf6b76842092bf9b57718d21"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 315184,
+            "sha256": "fcee0ae88099aeb193061551d7fd26e7a9e1ac15cc7717c3093d1d8aeb9d5307"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 132024,
+            "sha256": "a8b3edff19fbc43284b0e41002535d7c39526d99c7d00266feb667d65623a3c4"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly walks beside Belgian as he explains the delivery."
+      }
+    },
+    {
+      "number": 21,
+      "text": "The market wall was dry again. Polly stood on her usual stone and did the tune in her head.\n\nIf the first night had happened at the tower, its note had reached her over open water. On the second night, the last short note had arrived at the same time as a shutter or latch knocked on the east shore. She remembered the boathouse door being held open with a pot. She remembered the smell of rosemary.\n\nShe had a place, a sound and a delivery. What she needed was a way to see whether they belonged together.",
+      "illustrationDirection": "A low view of Polly by the dry market stone, looking east towards the boathouse; the rosemary pot remains just visible at that side door.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fcfa757643a06ec3dc0dc28b041d6dec091168d99f747a5bd7b2e0d8cb5f7e63",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 452924,
+            "sha256": "80a6cae7ea23938030d16903d7cf2e01667371dced47a35cac29b75fe4704b1a"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 299648,
+            "sha256": "73a02e7acd02e018de152cd3615271fc5c45f241111174cba77673d45b3489ec"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120682,
+            "sha256": "3c82dee48d887dd5e38cc908184d554de2c351415f9a18fe5b9a52c61bd048e5"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly looks across the bay, thinking about the sound and the blue boathouse."
+      }
+    },
+    {
+      "number": 22,
+      "text": "Marnie found her at the wall and handed her a piece of chalk. On the board by the market gate was a question that someone had written in a hurry. Where will the bell ring?\n\n“I was going to write that there might be a drum,” said Marnie. “But people see guesses and turn them into plans.”\n\n“I heard it from the east,” said Polly.\n\n“You heard a sound. If you write where, someone will ask who.”\n\nPolly looked down at the chalk. She thought of Belgian saying he'd carried a stand.",
+      "illustrationDirection": "Marnie offers a short piece of chalk to Polly beside the slate. Show the pressure of onlookers as distant glances.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e13191873d7f53f2e63b431ee0dca6a7fcec10f7ac448228b97328721f23530a",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 455174,
+            "sha256": "2695a2e388bb3867a5af5c2fbfde9211f835a2dbf913a7e01f88532b886a8832"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 296370,
+            "sha256": "95056dabba3fb35268dbfea2b463e380382c9a7152f621fda0e2da5f28a862f9"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 119274,
+            "sha256": "c9b126f80336e1e3f88f32e3b3da622fda5a77da645ba8a4f517028c3051a428"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Marnie gives Polly chalk at the market noticeboard."
+      }
+    },
+    {
+      "number": 23,
+      "text": "Polly drew an arrow towards the east track. Ask Belgian where the bell went, she wrote underneath. If he'd carried something for a rehearsal, he must know the town would want to hear it again. She imagined him saying so at the market wall, where people knew to trust his directions.\n\nMarnie had moved to help a stallholder with a table. There was time to rub the words out and write something smaller.\n\nSomeone behind Polly read the board aloud. Another voice said, “So that's what was in the box.”",
+      "illustrationDirection": "Close angled shot of one short chalk arrow on the board and Polly’s shape reflected dimly. Put the rest of the notice in live text.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1443f1ed524cf118648d9f83b2d8c1945cfaecde8ca609bac8898a772bf32e80",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 301528,
+            "sha256": "57d2c37e2e45bfaf7a94c25fea4ab5689cb8a8c25a91e27e848dc09871e1ba77"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 200808,
+            "sha256": "f6b5c574dbf026bc8092f936230fa394482ba53b17e05235469184781be4f8ef"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 76916,
+            "sha256": "3fdd59e99580fff1781b858cfa1801c37c066f59db578f95eef592d94c313b8d"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly draws an arrow towards the east path on the market board."
+      }
+    },
+    {
+      "number": 24,
+      "text": "Belgian was outside the market gate trying to get his handcart through a knot of people. Len stopped beside it.\n\n“Where'd you take the bell?” he asked.\n\n“What bell?”\n\nLen pointed at the board. Belgian looked up just as Polly reached it. She wiped the writing away with her sleeve. Wet chalk made a broad white bruise on the slate.\n\n“It never went anywhere,” she said.\n\nLen took his hand off the cart. Someone at the back said that was easy to say now. Belgian wheeled the cart into the lane.",
+      "illustrationDirection": "Wet chalk smears under Polly’s sleeve. Belgian stands with both hands still on the cart, with Len to one side.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "879c28144b2d42135c76a00e26db61e6c2c400a9198474c66826a1929000a223",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 414004,
+            "sha256": "d79205ae6e0b4420e58c4d485401dd3acac1ec0c60dfdfa5165ef1490ab2818d"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 278020,
+            "sha256": "c2da3c81ca4bfd3c3311f548edbff2f428cca3dd25f865305459bd685a9870fe"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 116966,
+            "sha256": "16c3f13a7d2500f99954eb2bca3e281600410fd4e03a5a83f8d364ac2f21b1c1"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly wipes off her message as Belgian waits with his handcart."
+      }
+    },
+    {
+      "number": 25,
+      "text": "Polly caught up at the net shed. “I was trying to tell people you knew what had happened.”\n\n“Then why didn't you ask me if I knew?”\n\nPolly could only think of things that would make it worse. She waited while Belgian pulled the cart under the eaves and wedged a stone against one wheel.\n\n“Some people count on me to carry things without making it everybody else's business,” he said. “I told you what was on the slip because I thought it would help.”\n\n“It did,” Polly said. He looked at her then.",
+      "illustrationDirection": "At the sheltered net shed, Belgian puts a stone against the wheel. Polly waits at the edge of the dry patch.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5f367fd742080ef158d7a0f675bd55f974b850c679f929f3381cb56cd04fde20",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 452698,
+            "sha256": "324e35152d6f95b065584ac5c92accf2afaf2e44e45815d8e80520d9384fab01"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 298054,
+            "sha256": "7b346722c4d7492a29c0207dc200a7f3de42df672aa09d57ed1ee823efdf0955"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120078,
+            "sha256": "b26c29e6151031c2441c1025a61bd445cfa2db4bbe1d0f0f8bf9fc823858dd9b"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian chocks the cart wheel beneath the eaves while Polly waits beside him."
+      }
+    },
+    {
+      "number": 26,
+      "text": "Beakon was on the seawall, looking through his telescope at the gulls. He lowered it as Polly came to sit beside him.\n\n“I knew the bell was still in the tower,” she said. “I thought if I wrote it that way, people would ask Belgian about the other one.”\n\n“You wrote the riddle as though you already knew the answer.”\n\n“Can you tell them what I meant?”\n\n“I can go with you,” said Beakon.\n\nThey watched a gull try to land on a post, miss, and turn for another go.",
+      "illustrationDirection": "Polly and Beakon seen from the back on the seawall. A small gull banks to try for a harbour post again.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9e2f8e8cdfe4ee475a3fa16650eebdf11761dec8d884037c834862e85333172d",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 382002,
+            "sha256": "b77e6139867e592bc55369a21daacff97103ac23ea9e535bb637bbbeba5321cd"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 254222,
+            "sha256": "48be96be070a2b3131e3d111566ba4d10638cf80450176d2c8d4b91a66391b28"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108046,
+            "sha256": "750b70a5f198792bc3aff9635ee84bccd69f49b6f5609b67b294d6f5b9481d01"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Beakon lowers his telescope as he and Polly watch a gull turn back towards a post."
+      }
+    },
+    {
+      "number": 27,
+      "text": "Rowe was sitting outside the café with his flask, waiting for a call from the specialist. Polly asked whether she could say what he'd shown her in the photograph.\n\n“You can say the bell is still in the tower,” he said. “And that it won't ring tonight.”\n\n“Will people mind?”\n\n“Some will. I mind.”\n\nHe took a swallow of tea. “I've had my hand on that rope every December for a very long time. Being the one who lets go is part of the job too.”",
+      "illustrationDirection": "Medium on Rowe in a grey coat outside the café with his flask. He faces the distant tower rather than Polly.",
+      "art": {
+        "status": "accepted",
+        "master": "p27.png",
+        "webp": "p27.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d577b534c800262afc17ff138642a3a529d0c1fa31088506d588ff154d2b1a6b",
+        "derivatives": [
+          {
+            "path": "p27.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 303016,
+            "sha256": "dbca48a01a4d84409aa23a36598691a2be64cc43fffc4ac4fa60118163b28cfd"
+          },
+          {
+            "path": "p27-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 206662,
+            "sha256": "9ea0afb36ce95018fb3e980d8c7fe4fd57deb54617fd7e7bd9dd0413c3cedc3d"
+          },
+          {
+            "path": "p27-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86632,
+            "sha256": "281ccdf2ddaa5c799abdb096a32095b361eb45799341fd344857933b918bdd3a"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Rowe sits with his flask and looks towards the tower he has silenced."
+      }
+    },
+    {
+      "number": 28,
+      "text": "At the market board, Marnie gave Polly a clean rag and stood next to her while she wiped off the last white streak. Len was helping stack chairs close enough to hear.\n\nPolly wrote three short lines. The tower bell is still in place. It will stay quiet until it has been checked. Belgian delivered a stand.\n\n“Put your name underneath,” Marnie said.\n\nThat was the part Polly had wanted yesterday. She hadn't expected it to feel quite so different when the words were true.",
+      "illustrationDirection": "Wiped public board on right. Polly lowers the chalk with Marnie nearby. Use the outline of short lines without legible words.",
+      "art": {
+        "status": "accepted",
+        "master": "p28.png",
+        "webp": "p28.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c85499275e6d62cbc2c4126790840a372dc0de9cd967d085a7aaabde9c0af509",
+        "derivatives": [
+          {
+            "path": "p28.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 473124,
+            "sha256": "98943c85c854ca18e1155d94426d1fe1c96622874914e64555e323cef6a934c4"
+          },
+          {
+            "path": "p28-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 312872,
+            "sha256": "588c8554c22c9ad9145ba961e2c9ccdf2e258aab01c1ae8bcc96b2f309be2a4c"
+          },
+          {
+            "path": "p28-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 126956,
+            "sha256": "df4ea7df69bbc348209c23132e7aed366072a420ce1cef49446405ad3b708bb1"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly posts a correction with Marnie beside her."
+      }
+    },
+    {
+      "number": 29,
+      "text": "Polly found Belgian untying a bundle of lantern hooks. She asked him to read the board if he wanted. Then she told him she'd been wrong to put his name on the first notice.\n\nHe took his time with a knot.\n\n“All right,” he said. “But if you want to ask Ada about the stand, you ask her. I can show you the path.”\n\nHe undid the knot and shook out the cord, which was still tangled in the middle. He gave Polly one end to hold.",
+      "illustrationDirection": "Two ends of tangled lantern cord pulled loose between Polly and Belgian. Belgian’s bag and a hook remain visible.",
+      "art": {
+        "status": "accepted",
+        "master": "p29.png",
+        "webp": "p29.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d223a3abce75206d671769f70e9056b320d7e74acdfa4ddf83c3542bbe1ba778",
+        "derivatives": [
+          {
+            "path": "p29.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 416084,
+            "sha256": "87ee2b7bef44ef6d4b8fa6f02fb21dc39e392c66ae71efd2000dfcfb5946958d"
+          },
+          {
+            "path": "p29-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 270960,
+            "sha256": "1c2f47fa80c5a8e3a4471dfe0d6aa5391c6b466ce27fcf1f2bf6f7b19b0aaa7e"
+          },
+          {
+            "path": "p29-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111722,
+            "sha256": "8c02853abe7cefae8c27238016efc2f7327a523f3d2ef3d13c029ce5e7f846d5"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian hands Polly one end of a tangled cord at the market."
+      }
+    },
+    {
+      "number": 30,
+      "text": "They walked east with Beakon. From the narrow path, Polly could see the broad west quay and the level place where a crane might stand beside the tower. Nothing on this side was wide enough for that. A handcart could go east carrying a wooden stand. A great bell could stay exactly where it was.\n\nAt the net shed, a loose board knocked in the wind. Polly stopped.\n\nIt was the sort of sound she'd heard after the third stroke. The two sounds had overlapped. They didn't have to come from the same thing.",
+      "illustrationDirection": "From the narrow east path, echo the geography of page 02. The far wide west quay is clearly level; a loose grey board leans out from the net shed nearby.",
+      "art": {
+        "status": "accepted",
+        "master": "p30.png",
+        "webp": "p30.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "172e4bfe611572444530900ac42476f1d995426ec58358186708ae38b2d728f4",
+        "derivatives": [
+          {
+            "path": "p30.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 491376,
+            "sha256": "e15e734f4cc53a914e4b37a89aca29ee3117cdf3948ccafba4c6df575a5e81d2"
+          },
+          {
+            "path": "p30-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 314186,
+            "sha256": "ad7347c4ac03488dea7d104da415dcbfb69578be168c91df6cf7e71d0f69f530"
+          },
+          {
+            "path": "p30-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 122790,
+            "sha256": "25c9ddfc0b791f37ce2f06f904cbc1f51a0688f833d4b036a15526378972d20f"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "The west quay has room for heavy equipment, while a loose board knocks beside the narrow east path."
+      }
+    },
+    {
+      "number": 31,
+      "text": "At the boathouse the pot of rosemary sat a little way from the side door. One leaf had been trapped in the gap. Belgian stayed by the path while Polly knocked.\n\nAn otter in a rolled-up rust jumper opened the door. The wet weather had curled the fine fur round her ears.\n\n“I'm Ada,” she said. “If you're here about the lantern brackets, they're ready.”\n\n“I'm here because I heard the tune,” said Polly. “And because I said something at the market before I knew what it meant.”",
+      "illustrationDirection": "At the boathouse threshold looking in. Ada in a rust jumper opens the blue door and faces Polly. Rosemary pot has slipped to the side.",
+      "art": {
+        "status": "accepted",
+        "master": "p31.png",
+        "webp": "p31.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d51398c52fec9eb5a0178c6539e037b94b7d53c5a0498efdabd094373039025d",
+        "derivatives": [
+          {
+            "path": "p31.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 471934,
+            "sha256": "afa6a744e3d2b9da413d90684ff770e5e684aaf186bf9d499625589fffa248b1"
+          },
+          {
+            "path": "p31-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 305858,
+            "sha256": "eb44e69f42f1c317d93a1e973fcf29c331ff2f3394f436dcd3117d539f5361ca"
+          },
+          {
+            "path": "p31-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 124712,
+            "sha256": "4aafaba95e93849a70b4c4e7e39241eb033a27dab2e06612c6a20c6265be40fd"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada opens the boathouse door. The rosemary pot stands away from the threshold."
+      }
+    },
+    {
+      "number": 32,
+      "text": "Ada studied Polly for long enough that she heard the water hiss against the old slipway. Then Ada opened the door a little wider. A worktable, a coil of net and several shallow trays of screws filled the dry part of the room. A small brass bell hung from a folding wooden stand beside the far window.\n\nIt was about as wide as a dinner plate. For a moment Polly felt foolish for imagining the tower bell in a crate.\n\n“Does it sound how I think?” she asked.\n\n“That depends what you heard.”",
+      "illustrationDirection": "Reveal the small bell on the folding stand indoors. Keep mesh nets and shallow screw trays away from the bell silhouette.",
+      "art": {
+        "status": "accepted",
+        "master": "p32.png",
+        "webp": "p32.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7b299c804aed48a3f365455388a6a0a670f0ab298a5352fd029575b2a0cf9aa3",
+        "derivatives": [
+          {
+            "path": "p32.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 421276,
+            "sha256": "b496da6915220102ecda61598954ff0f16ac6fe87a2b5ebad269d0c81fe82d0e"
+          },
+          {
+            "path": "p32-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 268292,
+            "sha256": "b79d5f3bd1d49386eadb6e4325cfe518e72bfa5bbae7a36351d1e66d56924915"
+          },
+          {
+            "path": "p32-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107286,
+            "sha256": "ca076331a55719798feadcb25dac5d1fc88f9bfcf3386d1069c806d57d195bf0"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "A small brass practice bell hangs on a folding wooden stand inside Ada’s boathouse."
+      }
+    },
+    {
+      "number": 33,
+      "text": "Ada took a small handled striker from a felt pouch. She asked Beakon to hold the door during the demonstration.\n\nTwo bright strokes close together. A breath. One bright stroke on its own.\n\nPolly knew the tune. She waited until the last note had faded, then made the short, high sound she'd kept in her head. In the doorway Belgian looked up.\n\n“That's what we heard,” said Beakon.\n\n“Almost,” said Polly. While Ada put the striker away, Beakon let the heavy door swing gently towards the catch.\n\nKnock.",
+      "illustrationDirection": "Ada demonstrates with the striker while Beakon holds the blue door safely by the inner handle. Polly listens in profile.",
+      "art": {
+        "status": "accepted",
+        "master": "p33.png",
+        "webp": "p33.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "400305405c3dac504aafec1cf86981fa9a1cdbca145892d33ffd15540938f338",
+        "derivatives": [
+          {
+            "path": "p33.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 426558,
+            "sha256": "8a122765b1b19604e9dd33793807a509710792f56aa3e147dc2d581cfb7ddf4c"
+          },
+          {
+            "path": "p33-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 276336,
+            "sha256": "86fb413bf9e4b8d2a4e44ba1efdbe02bed85a62e45cfb0429128a75cf105e42a"
+          },
+          {
+            "path": "p33-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 109088,
+            "sha256": "8aef8d380e0c99aa59511f6bb110d2ae85521299a75b99af3e6bea527d84d22c"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada rings the small bell as Beakon holds the boathouse door and Polly listens."
+      }
+    },
+    {
+      "number": 34,
+      "text": "“The pot slipped yesterday,” Ada said. She picked up the trapped leaf and brushed it off the sill. “The door swung in as I finished the tune.”\n\nPolly made the knock once, softly. Then she told Ada about the dark tower, the pilot turning in her boat, and Len remembering the wheels later than he'd heard them. She could make a story with every bit now. She didn't need the cart to carry anything except what it had carried.\n\nBelgian was looking at the bell. Ada asked if he'd like to see where the stand folded.",
+      "illustrationDirection": "Tight naturalistic angle on Ada’s paw retrieving a trapped rosemary leaf near the latch. Polly watches the door.",
+      "art": {
+        "status": "accepted",
+        "master": "p34.png",
+        "webp": "p34.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3793e27c1cd0332e0eb022b023a707da5dd81ad3f8bf5e82dfea3400d50ebc57",
+        "derivatives": [
+          {
+            "path": "p34.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 411128,
+            "sha256": "2dfa325bd3a934c28fc092dd89c39f93e42ccdaed19399ea0fd1283863715ff5"
+          },
+          {
+            "path": "p34-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 267770,
+            "sha256": "32d2b021096f2e46acd9d3fb50feac47b42f946d092f7218f7be5d030218e3b8"
+          },
+          {
+            "path": "p34-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107546,
+            "sha256": "8092cd505e1afb1215a12fbfed71b4c209a1090953afde7395f4cdd1012a7bfb"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada picks a trapped rosemary leaf from where the door knocked shut."
+      }
+    },
+    {
+      "number": 35,
+      "text": "Ada used to teach the tune to new lantern carriers. The big bell was hard to get permission to ring, so she bought a little practice bell and used it indoors. Her partner Kit used to listen from the other shore and make a signal with a handkerchief when she got the gap right.\n\n“We stopped practising out here after Kit died,” she said. “This winter I thought I could bear to do it again.”\n\nShe reached over and put one paw against the little brass skirt. It was already still.",
+      "illustrationDirection": "Quiet portrait of Ada steadying the already-still bell with a paw. Spare net and empty place at the window give her space.",
+      "art": {
+        "status": "accepted",
+        "master": "p35.png",
+        "webp": "p35.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8afa1efac6ef53422d9d0b60090daa9e93ffb12820b2e1bd0254a3ef2bf551e3",
+        "derivatives": [
+          {
+            "path": "p35.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 455918,
+            "sha256": "24c1c2269ed44f1201556948d06994e50882a5e1a623531cd1bd8d6251bc1e36"
+          },
+          {
+            "path": "p35-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 299380,
+            "sha256": "e6975c774a2dc7a3c64dd94667a79a95df7282a5f10a5630d2742b7de796c842"
+          },
+          {
+            "path": "p35-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 114316,
+            "sha256": "ff14f1915e345f53ba233f94bf0b73cc8735b2c7c8262f81dfb6c688d94295bd"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada rests a paw on the small brass bell after telling Polly about Kit."
+      }
+    },
+    {
+      "number": 36,
+      "text": "“When Marnie said the big bell had gone quiet, I asked for the stand,” Ada said. “I thought I might have something to offer. Yesterday was a trial with the door open. I hadn't intended to announce anything.”\n\nPolly thought of the chalk in her sleeve. A little brass bell could reach the market wall. There were flats up behind the tower, and houses beside the road. There would be people waiting for a note they could hear from their own tables.\n\n“Would you ring it tonight if Marnie asked?” she said.",
+      "illustrationDirection": "Through the sea-facing window, a line of high flats behind the distant west tower. Ada and Polly stand with the bell and consider who will hear it.",
+      "art": {
+        "status": "accepted",
+        "master": "p36.png",
+        "webp": "p36.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2bb5bf95d8dbc0ca801564d17769cc94796587840bc2cb83e363d4afce6a04da",
+        "derivatives": [
+          {
+            "path": "p36.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 379964,
+            "sha256": "88a199be3c007662ed60df224bf264726f50be0d93883426fe283d81ebd47ecb"
+          },
+          {
+            "path": "p36-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 267246,
+            "sha256": "d2eeec42f24432c75e02ed0ab1dbaa4a8182aecde010c6a3d7e3482e787ed9da"
+          },
+          {
+            "path": "p36-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111334,
+            "sha256": "68e6287c6a2b4ed7a56a9abfef0ae2371edb7a3ae845725d11f9abd1e358db17"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly looks across to the flats behind the tower while Ada stands by the practice bell."
+      }
+    },
+    {
+      "number": 37,
+      "text": "Ada looked across at the square opening in the tower.\n\n“Someone will say I want to take Rowe's place.”\n\n“He could tell them himself,” said Beakon.\n\nPolly didn't know if he would or if he should have to. She asked Ada what she'd want the notice to say. Ada hung the little bell on a wall hook while she tested a wooden joint of the stand.\n\n“I'd want it to say practice bell,” she said. “And I'd want people at the far flats to know that it won't sound as loud.”",
+      "illustrationDirection": "Ada checks one stand joint with the little bell temporarily on a wall hook. Put tension in her expression and warm light on her working paw.",
+      "art": {
+        "status": "accepted",
+        "master": "p37.png",
+        "webp": "p37.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1447e00e28f3325e8c64448e719cb2a77ba7ce62247ee7240dff756bbd49f51a",
+        "derivatives": [
+          {
+            "path": "p37.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 423638,
+            "sha256": "9fedd9e35a1e2aa9cfae1b95922b3ffba240b8d51b3c17b058e62e2d336065b9"
+          },
+          {
+            "path": "p37-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 286976,
+            "sha256": "e8bcc1d79b1ed985fc6c40ea3160ffc625fdb4d9efd83373d1d1d7afee63fc9b"
+          },
+          {
+            "path": "p37-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 119108,
+            "sha256": "28d187818f469cd3d2b849010fb2f2de12746467d596cf135fa6140fc106d14e"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada checks the stand as she decides what she wants the town to know."
+      }
+    },
+    {
+      "number": 38,
+      "text": "They brought Marnie and Rowe to the boathouse by the east path. Ada showed them the stand before she showed them the bell. Rowe asked if he could try one stroke, and she handed him the felt pouch.\n\nThe high note surprised him. He laughed once and waited for it to fade. Then he and Ada worked out who would ring, who would light the first lantern, and where the lantern carrier should stand.\n\nPolly watched them move the stand back from the door. This time somebody put the pot in a place where it couldn't slip.",
+      "illustrationDirection": "Rowe holds the striker with Ada nearby, Marnie in the doorway. The stand is safely within the room and the pot sits aside.",
+      "art": {
+        "status": "accepted",
+        "master": "p38.png",
+        "webp": "p38.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "35a55f025a6d5823d98c86215860dd72c7190a7f78994e4bc1bf97867e45057f",
+        "derivatives": [
+          {
+            "path": "p38.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 455668,
+            "sha256": "bcd15c976fe8aff21ab148f03c3fbd050df58547afc89786ec1474a878042a61"
+          },
+          {
+            "path": "p38-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 296906,
+            "sha256": "b86886ba836d8eefaf7166a9b2ea6cd98a7936bb3ee97c6a9926d95aa7701d36"
+          },
+          {
+            "path": "p38-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 121208,
+            "sha256": "2ab42722d9d6659e900edea194abdd286fb3652273f8bd7938bf0eb68ef8b783"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Rowe tries a note on the practice bell while Ada and Marnie listen."
+      }
+    },
+    {
+      "number": 39,
+      "text": "Marnie had time to change the market notices before dusk. Rowe wrote his own line beneath hers about the inspection. Belgian walked copies down the west shore, all the way to the flats.\n\nPolly went with him. One neighbour couldn't hear the high note from her sitting room. She could see the end of the quay, so they asked whether she'd like a lantern raised there in answer. She said yes, if it was above the rail and somebody could keep it still.\n\nBelgian knew exactly which post she meant. At the market wall on the way back, he pointed across to it so Polly would know it too.",
+      "illustrationDirection": "From the market side looking across to the west quay, Belgian points to the railing where the answering lantern will rise. Polly holds folded notices.",
+      "art": {
+        "status": "accepted",
+        "master": "p39.png",
+        "webp": "p39.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "00e24c86460375197b9dd42d5e3ddd34112c63ff0c4ed1ade053f3deba900707",
+        "derivatives": [
+          {
+            "path": "p39.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 484736,
+            "sha256": "804a9688d6dac85ec217149c02bdc8139a20a612ea083a7e87b3120c0fb51de6"
+          },
+          {
+            "path": "p39-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 322430,
+            "sha256": "dc24253e787fd6f425bedd51c9c439977d66c1c606156dc80643e0fe33ce8b72"
+          },
+          {
+            "path": "p39-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 129666,
+            "sha256": "9492ac4abb308ef890791aeeb26874ebdf9347e85d4a20d68c6dc028b303261c"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Belgian points out the west quay railing that a neighbour can see from her flat."
+      }
+    },
+    {
+      "number": 40,
+      "text": "On the way back, Len called to them from the café door. He was trying to pick up too many folded chairs at once.\n\n“I thought it was your cart,” he said to Belgian.\n\n“It rattles most days,” Belgian said. “You can help me quiet the loose board after Christmas.”\n\nPolly took the chair at the top of Len's pile. He hadn't asked for help. She waited a moment before taking another, and he moved his hand so she could get a better grip.",
+      "illustrationDirection": "Len at the café door holds too many folding chairs. Polly takes the top one; Belgian watches nearby.",
+      "art": {
+        "status": "accepted",
+        "master": "p40.png",
+        "webp": "p40.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fcda18fffed9620e3404502b0209db4d92bd5c272cf6ed023d630ec26175d94a",
+        "derivatives": [
+          {
+            "path": "p40.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 476318,
+            "sha256": "a102319063058a14ab138ed8fabc73ba6f735d0d2fe139e88747f07e5f5a4deb"
+          },
+          {
+            "path": "p40-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 316598,
+            "sha256": "0ad51e20080c75907cb3e19bee420cbb7b78ec1fed68b85e98803243f6209c38"
+          },
+          {
+            "path": "p40-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 127646,
+            "sha256": "cd1b9b4ad809b6d4d06207f2640ca910ee8c932e16ba2d5f1c00da1a5889ea28"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly helps Len carry a stack of chairs outside the café."
+      }
+    },
+    {
+      "number": 41,
+      "text": "The market stalls glowed as the sky darkened. For the first time that week the wind dropped. Some people walked west to watch the tower. Marnie asked them to turn round so they could also see the boathouse.\n\nPolly carried the first paper lantern down to the market wall. She had folded it on the rehearsal night. A small crease still ran down one side. She smoothed it with her claw, then left it there.\n\nAcross the water, the old tower kept its dark square window. Ada opened the blue door.",
+      "illustrationDirection": "Dusk along the market wall. Polly’s lantern shows its small crease. Across water the tower window is dark and Ada’s door has just opened.",
+      "art": {
+        "status": "accepted",
+        "master": "p41.png",
+        "webp": "p41.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dfae0354361793a30f6e82380ec2eb4396a9c1325aebaa9aca31015d16628274",
+        "derivatives": [
+          {
+            "path": "p41.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 418888,
+            "sha256": "52ab10d7631a2efb12c9ff9e084f73df18d2c466af42eff86b4e10945d8a218a"
+          },
+          {
+            "path": "p41-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 275742,
+            "sha256": "2b84f4545faeadc0e6d787c3d5c2df968ec65a723789740eb454a359080e9c2b"
+          },
+          {
+            "path": "p41-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112616,
+            "sha256": "79017ddea1f5559a68657baaa25db48769ece585b04beebdda5272b7bf58c795"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly holds the creased paper lantern as the blue boathouse door opens across the bay."
+      }
+    },
+    {
+      "number": 42,
+      "text": "Polly heard the first bright stroke and then the second. She knew how long the empty space ought to last. Once, she would have filled it by copying the sound herself. Now she waited.\n\nThe third stroke reached the wall. On the west quay, the answering lantern rose above the rail and held there, as steady as a window.\n\nMarnie brought her flame to Polly's lantern. It lit along the crease first. The crowd behind her began walking east in a slow line.",
+      "illustrationDirection": "Tall view of the lantern answer across both shores. Marnie brings her lit lantern to Polly’s in foreground; a small single amber light rises above the far west quay rail.",
+      "art": {
+        "status": "accepted",
+        "master": "p42.png",
+        "webp": "p42.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1574df86f6cf103f96ca265e048b0c0e7160a01c2fc6d3bc3caf686bca406210",
+        "derivatives": [
+          {
+            "path": "p42.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 373560,
+            "sha256": "b97babca4eab29ec934cc15e464ffd92ba3c5d7968e644469e70b515e945cffe"
+          },
+          {
+            "path": "p42-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 248146,
+            "sha256": "90ad2a1fcdc34bc7c30954ddc3b9ea140be20510e28823718d2c06d3db6a6e98"
+          },
+          {
+            "path": "p42-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100848,
+            "sha256": "0517c36c142480f9bbe6b5cced8bd5807648d1fb25849563a5c8e77bc607f3b1"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Marnie lights Polly’s lantern as an answering lantern rises below the silent tower."
+      }
+    },
+    {
+      "number": 43,
+      "text": "By the boathouse, Ada was passing out lantern hooks. The little bell was back in the shelter of the doorway. As Polly passed, Ada put her paw on the top of the stand.\n\n“Next year we could have both,” she said. “The tower for the procession, and this one for practice while we're learning.”\n\nPolly asked whether she could come when they tried it again.\n\n“Bring Belgian,” Ada said. “He knows which board on this floor makes that noise.”\n\nBelgian looked down. He took one step to the right. The board gave a small, familiar creak.",
+      "illustrationDirection": "Lantern carriers pass the sheltered doorway in a loose line. Ada stands next to the small bell, then glances to Belgian’s foot at the creaky board.",
+      "art": {
+        "status": "accepted",
+        "master": "p43.png",
+        "webp": "p43.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b9054de7352e5d1c61389d596358d6b3fd0e81144f2dbb79a2584042310c98d6",
+        "derivatives": [
+          {
+            "path": "p43.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 492594,
+            "sha256": "e9aa544eda8ba9950048ba4ce1dd58f50c1c7bb8567db5405de1519b8155e586"
+          },
+          {
+            "path": "p43-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 328166,
+            "sha256": "c38364aa9cdc036e8130614b324fdb55b29e5bb43d9158d524b776e167d49290"
+          },
+          {
+            "path": "p43-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 130748,
+            "sha256": "df7a13cf6bca54e83d67a4d897927167ea0cc923297cae48aea107455f4fd99b"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Ada hands out hooks by the practice bell as Belgian steps on a creaky board."
+      }
+    },
+    {
+      "number": 44,
+      "text": "After the procession, Polly went back to the wall with Beakon. He asked if she was going to do the bell again for him.\n\n“In a minute,” she said.\n\nThe ferry was nearly through the harbour opening. Across the water, the answering lantern was still there. Polly could just see Belgian holding it up for the neighbour at the window. One of his wings began to dip, then steadied.\n\nPolly set her own lantern on the wall. While the light on the other shore stayed up, she listened to everything else.",
+      "illustrationDirection": "Quiet final wide at night. Polly’s lit lantern sits on the wall beside Beakon. The little light across the water stays above the rail as the ferry leaves.",
+      "art": {
+        "status": "accepted",
+        "master": "p44.png",
+        "webp": "p44.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6b324e89afcf68a3d676436b1071a5fd85840e9781a3814ec896db4c2d00b9c0",
+        "derivatives": [
+          {
+            "path": "p44.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 343490,
+            "sha256": "4be6387260fdf2866f130579c5670a4488ce014b8408074ec451c66cb7647db5"
+          },
+          {
+            "path": "p44-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 223130,
+            "sha256": "8851cb1e7835c1e57b9666f5df00fd74dd7659fc6c499c9923baa9afde101845"
+          },
+          {
+            "path": "p44-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87562,
+            "sha256": "24a239fd45207c9436aa92da4c56ae65ccb7b44fc6d3eb02c2ee3b63a4349bea"
+          }
+        ],
+        "review": "accepted after checking picture action, character designs and clue continuity",
+        "generator": "built-in imagegen",
+        "alt": "Polly sets her lantern down and listens while the answering light stays steady across the bay."
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "title": "The missing stroke",
+      "firstPage": 1
+    },
+    {
+      "title": "The other shore",
+      "firstPage": 8
+    },
+    {
+      "title": "What a cart can carry",
+      "firstPage": 16
+    },
+    {
+      "title": "Taking it down",
+      "firstPage": 24
+    },
+    {
+      "title": "The blue boathouse",
+      "firstPage": 31
+    },
+    {
+      "title": "Both shores",
+      "firstPage": 38
+    },
+    {
+      "title": "The quiet after",
+      "firstPage": 43
+    }
+  ],
+  "sourceFolder": "sequels/captain-beakon-and-the-bell-across-the-bay",
+  "webSlug": "captain-beakon-and-the-bell-across-the-bay"
+}
