@@ -55,7 +55,7 @@ test("practice uses the table, keeps solo stats and restores the paused board", 
   await page.goto("/play/thirteen/");
   const cards = page.locator("#t-hand button");
   const startingCards = await cards.evaluateAll(elements => elements.map(card => card.dataset.id));
-  await page.getByText("Learn", { exact: true }).click();
+  await page.locator("#t-learn summary").click();
   await page.getByRole("button", { name: "Open with 3♠" }).click();
   await page.getByRole("button", { name: "3 of spades", exact: true }).click();
   await page.locator("#t-play").click();
@@ -68,14 +68,18 @@ test("practice uses the table, keeps solo stats and restores the paused board", 
 });
 
 test("pace and high contrast persist after reload", async ({ page }) => {
+  await page.addInitScript(() => { Math.random = () => 0.999; });
   await page.goto("/play/thirteen/");
   await page.getByText("Table settings", { exact: true }).click();
   await page.getByLabel("Game speed").selectOption("fast");
   await page.getByLabel("High-contrast cards").check();
   await expect(page.locator(".thirteen-table")).toHaveClass(/th-high-contrast/);
+  await page.getByRole("button", { name: "Sort by suit" }).click();
+  await expect(page.locator("#t-hand button").nth(1)).toHaveAttribute("data-id", "4-0");
   await page.reload();
   await expect(page.getByLabel("Game speed")).toHaveValue("fast");
   await expect(page.getByLabel("High-contrast cards")).toBeChecked();
+  await expect(page.getByRole("button", { name: "Sort by rank" })).toBeVisible();
 });
 
 test("a series saves its score and resumes between deals", async ({ page }) => {

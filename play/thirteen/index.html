@@ -722,11 +722,13 @@ function cpuChoosePlay(state, playerIdx) {
   var paceEl = document.getElementById("t-pace");
   var contrastEl = document.getElementById("t-contrast");
   var pace = { relaxed: 1700, normal: 1100, fast: 380 };
+  var sortBySuit = false;
   var practiceRecord = {};
   try {
     var savedPace = localStorage.getItem("sp_thirteen_pace");
     if (Object.hasOwn(pace, savedPace)) paceEl.value = savedPace;
     contrastEl.checked = localStorage.getItem("sp_thirteen_contrast") === "true";
+    sortBySuit = localStorage.getItem("sp_thirteen_sort") === "suit";
     var savedPractice = JSON.parse(localStorage.getItem("sp_thirteen_practice") || "{}");
     if (savedPractice && typeof savedPractice === "object") practiceRecord = savedPractice;
   } catch (e) {}
@@ -1040,7 +1042,8 @@ function cpuChoosePlay(state, playerIdx) {
     // Hand
     handEl.innerHTML = "";
     var you = gs.players[0];
-    you.hand.forEach(function (c) {
+    var orderedHand = sortBySuit ? you.hand.slice().sort((a, b) => a.suit - b.suit || rankValue(a, gs.mode) - rankValue(b, gs.mode)) : sortCards(you.hand, gs.mode);
+    orderedHand.forEach(function (c) {
       handEl.appendChild(cardEl(c, { button: true }));
     });
 
@@ -1077,6 +1080,7 @@ function cpuChoosePlay(state, playerIdx) {
     playBtn.disabled = !(myTurn && validPlay);
     passBtn.disabled = !(myTurn && gs.lastCombo && gs.lastPlayerIdx !== 0);
     sortBtn.disabled = gs.phase !== "playing";
+    sortBtn.textContent = sortBySuit ? "Sort by rank" : "Sort by suit";
     suggestOption.hidden = dailyMode && !practice;
     suggestBtn.disabled = !myTurn || (dailyMode && !practice);
     suggestBtn.textContent = practice ? "Hint" : "Show legal move";
@@ -1232,7 +1236,8 @@ function cpuChoosePlay(state, playerIdx) {
 
   sortBtn.addEventListener("click", function () {
     if (!gs) return;
-    gs.players[0].hand = sortCards(gs.players[0].hand, gs.mode);
+    sortBySuit = !sortBySuit;
+    try { localStorage.setItem("sp_thirteen_sort", sortBySuit ? "suit" : "rank"); } catch (e) {}
     render();
   });
 
