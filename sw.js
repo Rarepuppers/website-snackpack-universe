@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v64";
+const CACHE = "snackpack-arcade-v65";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
@@ -71,6 +71,8 @@ const SHELL = [
   "/play/funnel.js",
   "/play/game-events.js",
   "/play/share-result.js",
+  "/play/daily-state.js",
+  "/play/thirteen/",
   "/play/thirteen/table.css",
   "/play/thirteen/training.js",
   "/play/thirteen/session.js",
@@ -192,7 +194,9 @@ self.addEventListener("fetch", (e) => {
   // Navigations: network-first so a page edit lands immediately; fall back to
   // the cached page, then the arcade index, when offline.
   if (req.mode === "navigate") {
-    e.respondWith(networkFirst(req, url.pathname.startsWith('/read/') ? undefined : "/play/"));
+    const fallback = url.pathname.startsWith("/read/") ? undefined
+      : url.pathname === "/play/thirteen/" ? "/play/thirteen/" : "/play/";
+    e.respondWith(networkFirst(req, fallback));
     return;
   }
 

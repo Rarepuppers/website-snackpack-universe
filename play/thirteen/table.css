@@ -50,6 +50,7 @@
   border-radius: 14px;
   color: var(--ink);
   text-align: center;
+  scroll-margin-top: 78px;
 }
 
 .th-practice-banner h2 { margin: 0; font-size: 1.15rem; }

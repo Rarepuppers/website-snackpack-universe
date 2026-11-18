@@ -827,9 +827,11 @@ function cpuChoosePlay(state, playerIdx) {
     }
     practice = { activity: activity, step: 0, usedHint: false, group: group };
     gameSettings.classList.add("th-is-hidden");
+    document.getElementById("t-extras").hidden = true;
     practiceBanner.hidden = false;
     resetPractice();
-    document.getElementById("t-practice-restart").focus();
+    practiceBanner.scrollIntoView({ block: "start" });
+    document.getElementById("t-practice-restart").focus({ preventScroll: true });
   }
 
   function exitPractice() {
@@ -840,6 +842,7 @@ function cpuChoosePlay(state, playerIdx) {
     practice = null;
     pausedGame = null;
     gameSettings.classList.remove("th-is-hidden");
+    document.getElementById("t-extras").hidden = false;
     practiceBanner.hidden = true;
     render();
     scheduleCpu();
@@ -864,7 +867,8 @@ function cpuChoosePlay(state, playerIdx) {
     practiceNext.textContent = nextStep ? "Next step" : "Return to game";
     practiceNextOption.hidden = false;
     updateActions();
-    practiceNext.focus();
+    practiceBanner.scrollIntoView({ block: "start" });
+    practiceNext.focus({ preventScroll: true });
   }
 
   function checkPracticeAction(action) {
@@ -967,6 +971,7 @@ function cpuChoosePlay(state, playerIdx) {
     if (saved) restoreBoard(saved.board);
     else newGame();
     saveSeries();
+    seriesBanner.scrollIntoView({ block: "start" });
   }
 
   function exitSeries() {

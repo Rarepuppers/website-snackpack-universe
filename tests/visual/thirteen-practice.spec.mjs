@@ -122,3 +122,15 @@ test("the featured Daily pins its rules and preserves dated legacy links", async
   await expect(page.locator("#t-daily-description")).toBeHidden();
   expect(await hand.evaluateAll(elements => elements.map(el => el.dataset.id))).toEqual(first);
 });
+
+test("cached Thirteen loads a featured Daily and its lessons offline", async ({ page, context }) => {
+  await page.goto("/play/thirteen/");
+  await page.waitForFunction(() => !!navigator.serviceWorker?.controller);
+  await context.setOffline(true);
+  await page.goto("/play/thirteen/?daily=2026-11-18&featured=1", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#t-daily-description")).toContainText("Standard · Normal");
+  await expect(page.locator("#t-learn summary")).toBeVisible();
+  await page.locator("#t-learn summary").click();
+  await page.locator("#t-practice-opening").click();
+  await expect(page.locator("#t-hand button")).toHaveCount(13);
+});
