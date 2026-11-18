@@ -47,11 +47,13 @@
 
   // ── Room view ──
   var panel = document.createElement("div");
-  panel.className = "game-stage";
+  panel.className = "game-stage thirteen-table";
+  try { panel.classList.toggle("th-high-contrast", localStorage.getItem("sp_thirteen_contrast") === "true"); } catch (e) {}
   panel.innerHTML =
     '<div class="game-toolbar"><div class="game-readout"><span class="readout-chip"><span>Table</span><b>' + code + '</b></span></div>' +
     '<div class="game-controls"><button class="btn-game" id="r-copy" type="button">Copy invite link</button><a class="btn-game" href="' + location.pathname + '">Leave table</a></div></div>' +
     '<p class="game-status" id="r-status" aria-live="polite">Connecting…</p>' +
+    '<p class="game-hint" id="r-series" role="status"></p>' +
     '<div id="r-lobby"></div>' +
     '<div id="r-game" hidden><div class="th-opponents" id="r-opponents"></div>' +
     '<div class="th-table"><div class="th-table-label" id="r-tablelabel">Table</div><div class="th-table-cards" id="r-tablecards"></div><div class="th-table-by" id="r-tableby"></div></div>' +
@@ -95,25 +97,35 @@
   }
 
   function renderLobby() {
+    var previousMode = lobbyEl.querySelector('[data-mode][aria-pressed="true"]')?.dataset.mode || view.mode || "standard";
+    var previousScoring = el("r-scoring")?.value || "";
     var isHost = view.seat === view.host, html = '<ul class="list-clean">';
     view.seats.forEach(function (s, i) {
       html += "<li>" + (i === view.seat ? "You" : "Seat " + (i + 1)) + (s === "cpu" ? " · open, the computer plays if nobody joins" : s === "away" ? " · reconnecting" : " · ready") + (i === view.host ? " · host" : "") + "</li>";
     });
     html += "</ul>";
     if (isHost) {
-      html += '<div class="th-actions"><div class="seg" role="group" aria-label="Rules"><button type="button" data-mode="standard" aria-pressed="true">Standard</button><button type="button" data-mode="classic" aria-pressed="false">Classic</button></div>' +
-        '<button class="btn-game btn-game--primary" id="r-start" type="button">' + (view.winner == null ? "Start game" : "Deal again") + "</button></div>";
+      var nextDeal = view.series && !view.series.finished;
+      html += '<div class="th-actions">';
+      if (!nextDeal) {
+        html += '<div class="seg" role="group" aria-label="Rules"><button type="button" data-mode="standard">Standard</button><button type="button" data-mode="classic">Classic</button></div>';
+        if (view.supportsSeries) html += '<label>Table format <select id="r-scoring"><option value="">Single deal</option><option value="wins">Series · Deals Won</option><option value="cards">Series · Cards Left</option></select></label>';
+      }
+      html += '<button class="btn-game btn-game--primary" id="r-start" type="button">' +
+        (nextDeal ? "Next deal" : view.winner == null ? "Start game" : "Deal again") + "</button></div>";
     }
     lobbyEl.innerHTML = html;
     lobbyEl.querySelectorAll("[data-mode]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.mode === previousMode));
       b.addEventListener("click", function () {
         lobbyEl.querySelectorAll("[data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       });
     });
+    if (el("r-scoring")) el("r-scoring").value = previousScoring;
     var startBtn = el("r-start");
     if (startBtn) startBtn.addEventListener("click", function () {
-      var mode = lobbyEl.querySelector('[data-mode][aria-pressed="true"]').dataset.mode;
-      send({ t: "start", mode: mode });
+      var mode = lobbyEl.querySelector('[data-mode][aria-pressed="true"]')?.dataset.mode || view.mode;
+      send({ t: "start", mode: mode, scoring: el("r-scoring")?.value, revision: view.revision });
       if (!counted && window.SnackPack && window.SnackPack.countFriends) { counted = true; window.SnackPack.countFriends(); }
     });
   }
@@ -135,14 +147,22 @@
       el("r-tablelabel").textContent = view.table.name;
       el("r-tableby").textContent = "played by " + seatName(view.table.seat).replace("You", "you");
     } else {
-      el("r-tablelabel").textContent = "New round";
+      el("r-tablelabel").textContent = "New trick";
       el("r-tableby").textContent = "";
     }
     handEl.innerHTML = "";
     (view.hand || []).forEach(function (c) {
       var card = cardEl(c, true);
-      if (selected.indexOf(c.id) >= 0) card.classList.add("is-selected");
       handEl.appendChild(card);
+    });
+    syncSelection();
+  }
+
+  function syncSelection() {
+    handEl.querySelectorAll("button.th-card").forEach(function (button) {
+      var pressed = selected.includes(button.dataset.id);
+      button.classList.toggle("is-selected", pressed);
+      button.setAttribute("aria-pressed", String(pressed));
     });
     var mine = view.playing && view.turn === view.seat;
     el("r-play").disabled = !mine || !selected.length;
@@ -155,9 +175,17 @@
     gameEl.hidden = !view.playing && !finished;
     if (!view.playing) renderLobby();
     if (view.playing || finished) renderGame();
+    var summary = "";
+    if (view.series) {
+      var format = view.series.scoring === "cards" ? "Cards Left" : "Deals Won";
+      var scores = view.series.points.map((points, seat) => seatName(seat) + " " + points).join(" · ");
+      summary = (view.series.finished ? "Series complete" : "Deal " + view.series.deal + " of 3") + " · " + format + " · " + scores;
+      if (view.series.finished) summary += (view.series.leaders.length > 1 ? " · Shared win: " : " · Winner: ") + view.series.leaders.map(seatName).join(", ");
+    }
+    el("r-series").textContent = summary;
     statusEl.className = "game-status";
     if (finished) {
-      statusEl.textContent = view.winner === view.seat ? "You win! 🏆 Hand cleared." : seatName(view.winner) + " wins this round.";
+      statusEl.textContent = view.winner === view.seat ? "You win! 🏆 Hand cleared." : seatName(view.winner) + " wins this deal.";
       statusEl.className = "game-status game-status--" + (view.winner === view.seat ? "win" : "lose");
     } else if (!view.playing) statusEl.textContent = view.seat === view.host ? "Share the invite link, then start when everyone's here." : "Waiting for the host to start.";
     else if (view.turn === view.seat) statusEl.textContent = view.firstTurn ? "Your move — you have 3♠, lead the round." : view.table ? "Your move — beat it or pass." : "Your move — lead the round.";
@@ -198,9 +226,19 @@
       render();
       trackTurn();
     });
-    socket.addEventListener("close", function () {
+    socket.addEventListener("close", function (event) {
       if (closed) return;
+      if (event.code === 4001) {
+        closed = true;
+        statusEl.textContent = "This table has expired. Leave the table to start a new one.";
+        lobbyEl.hidden = true;
+        gameEl.hidden = true;
+        return;
+      }
       statusEl.textContent = "Reconnecting…";
+      if (el("r-start")) el("r-start").disabled = true;
+      el("r-play").disabled = true;
+      el("r-pass").disabled = true;
       retries++;
       setTimeout(connect, Math.min(5000, 700 * retries));
     });
@@ -211,10 +249,10 @@
     if (!card || !view || !view.playing || view.turn !== view.seat) return;
     var id = card.dataset.id, at = selected.indexOf(id);
     if (at >= 0) selected.splice(at, 1); else selected.push(id);
-    renderGame();
+    syncSelection();
   });
-  el("r-play").addEventListener("click", function () { send({ t: "play", ids: selected }); selected = []; });
-  el("r-pass").addEventListener("click", function () { selected = []; send({ t: "pass" }); });
+  el("r-play").addEventListener("click", function () { send({ t: "play", ids: selected, revision: view.revision }); selected = []; syncSelection(); });
+  el("r-pass").addEventListener("click", function () { selected = []; send({ t: "pass", revision: view.revision }); el("r-pass").disabled = true; });
   el("r-sort").addEventListener("click", function () { send({ t: "sort" }); });
   el("r-copy").addEventListener("click", function () {
     var button = el("r-copy"), link = roomLink(code);

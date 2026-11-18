@@ -13,7 +13,7 @@
  * couple of shared scripts. So we precache the shell and let each game page
  * cache itself the first time it's visited.
  */
-const CACHE = "snackpack-arcade-v63";
+const CACHE = "snackpack-arcade-v64";
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'READ_CACHE_NAME' && event.ports[0]) event.ports[0].postMessage(CACHE);
 });
@@ -71,6 +71,10 @@ const SHELL = [
   "/play/funnel.js",
   "/play/game-events.js",
   "/play/share-result.js",
+  "/play/thirteen/table.css",
+  "/play/thirteen/training.js",
+  "/play/thirteen/session.js",
+  "/play/thirteen/jade-table.jpg",
   "/play/keyboard-grid.js",
   "/play/pause.js",
   "/play/fixed-step-clock.js",

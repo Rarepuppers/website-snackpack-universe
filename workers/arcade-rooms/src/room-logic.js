@@ -1,6 +1,7 @@
 // A friend room as plain data, with no Cloudflare APIs, so it can be tested in Node.
 // Rooms hold a random seat token and the game. No names, chat or player details.
 import { canBeat, comboName, cpuChoose, identifyCombo, newGame, pass, play, sortCards } from "./thirteen.js";
+import { newSeries, settleDeal, seriesScores } from "./thirteen-session.js";
 
 export const CPU_DELAY_MS = 1100;
 export const TURN_LIMIT_MS = 60_000;
@@ -8,7 +9,7 @@ export const RECONNECT_GRACE_MS = 30_000;
 export const ROOM_LIFETIME_MS = 2 * 60 * 60 * 1000;
 
 export function createRoom(now) {
-  return { seats: [null, null, null, null], host: null, game: null, deadline: null, touched: now };
+  return { seats: [null, null, null, null], host: null, game: null, deadline: null, touched: now, revision: 0, series: null };
 }
 
 function seatOf(room, token) { return room.seats.findIndex((s) => s && s.token === token); }
@@ -24,6 +25,7 @@ export function join(room, token, now) {
   }
   room.seats[seat].connected = true;
   room.seats[seat].goneAt = null;
+  if (room.host === null || !room.seats[room.host]?.connected) room.host = seat;
   room.touched = now;
   schedule(room, now);
   return { seat };
@@ -40,6 +42,10 @@ export function leave(room, token, now) {
       const next = room.seats.findIndex((s) => s);
       room.host = next < 0 ? null : next;
     }
+  }
+  if (room.host === seat && room.game) {
+    const next = room.seats.findIndex(s => s?.connected);
+    if (next >= 0) room.host = next;
   }
   schedule(room, now);
 }
@@ -59,18 +65,36 @@ function schedule(room, now) {
   else room.deadline = Math.max(s.goneAt + RECONNECT_GRACE_MS, now + CPU_DELAY_MS);
 }
 
-export function start(room, token, mode, now) {
+export function start(room, token, mode, now, scoring = null, revision) {
   const seat = seatOf(room, token);
-  if (seat !== room.host) return { error: "Only the host can start." };
+  if (seat < 0 || seat !== room.host) return { error: "Only the host can start." };
+  if (revision !== undefined && revision !== (room.revision ?? 0)) return { error: "The table moved on. Try again." };
   if (room.game && room.game.winner === null) return { error: "A game is already running." };
-  room.game = newGame(mode === "classic" ? "classic" : "standard");
+  const continueSeries = room.series && room.series.results.length < 3;
+  if (continueSeries) room.game = newGame(room.game.mode);
+  else {
+    room.series = ["wins", "cards"].includes(scoring) ? newSeries(scoring) : null;
+    room.game = newGame(mode === "classic" ? "classic" : "standard");
+  }
+  room.revision = (room.revision ?? 0) + 1;
   room.touched = now;
   schedule(room, now);
   return {};
 }
 
-export function playCards(room, token, ids, now) {
+function advanced(room, now) {
+  room.revision = (room.revision ?? 0) + 1;
+  room.touched = now;
+  const game = room.game;
+  if (room.series && game.winner !== null) {
+    room.series = settleDeal(room.series, room.series.results.length + 1, game.winner, game.hands.map(hand => hand.length));
+  }
+  schedule(room, now);
+}
+
+export function playCards(room, token, ids, now, revision) {
   const seat = seatOf(room, token), game = room.game;
+  if (revision !== undefined && revision !== (room.revision ?? 0)) return { error: "The table moved on. Try again." };
   if (!game || game.winner !== null || game.turn !== seat) return { error: "It isn't your turn." };
   if (!Array.isArray(ids) || new Set(ids).size !== ids.length) return { error: "That's not a valid combination." };
   const cards = ids.map((id) => game.hands[seat].find((c) => c.id === id));
@@ -81,18 +105,17 @@ export function playCards(room, token, ids, now) {
   if (!opens) return { error: "Your first play must include 3♠." };
   if (!canBeat(combo, game.lastCombo, game.mode)) return { error: `${comboName(combo)} doesn't beat the table.` };
   play(game, seat, combo);
-  room.touched = now;
-  schedule(room, now);
+  advanced(room, now);
   return {};
 }
 
-export function passTurn(room, token, now) {
+export function passTurn(room, token, now, revision) {
   const seat = seatOf(room, token), game = room.game;
+  if (revision !== undefined && revision !== (room.revision ?? 0)) return { error: "The table moved on. Try again." };
   if (!game || game.winner !== null || game.turn !== seat) return { error: "It isn't your turn." };
   if (!game.lastCombo || game.lastSeat === seat) return { error: "You lead this round, so choose a card." };
   pass(game, seat);
-  room.touched = now;
-  schedule(room, now);
+  advanced(room, now);
   return {};
 }
 
@@ -111,7 +134,7 @@ export function tick(room, now) {
   // A leader must play. Anyone else who has timed out, or cannot play, passes.
   if (choice && (!s || !s.connected || !game.lastCombo || game.lastSeat === seat)) play(game, seat, choice);
   else if (choice === null || (game.lastCombo && game.lastSeat !== seat)) pass(game, seat);
-  schedule(room, now);
+  advanced(room, now);
   return true;
 }
 
@@ -122,6 +145,8 @@ export function viewFor(room, token, code) {
     seats: room.seats.map((s) => (s ? (s.connected ? "here" : "away") : "cpu")),
     playing: !!game && game.winner === null,
     deadline: room.deadline,
+    revision: room.revision ?? 0,
+    supportsSeries: true,
   };
   if (game) {
     Object.assign(view, {
@@ -130,6 +155,14 @@ export function viewFor(room, token, code) {
       table: game.lastCombo ? { cards: game.lastCombo.cards, name: comboName(game.lastCombo), seat: game.lastSeat } : null,
       hand: seat >= 0 ? game.hands[seat] : [],
     });
+    if (room.series) {
+      const finished = room.series.results.length === 3;
+      view.series = {
+        scoring: room.series.scoring, finished,
+        deal: room.series.results.length + (view.playing ? 1 : 0),
+        ...seriesScores(room.series),
+      };
+    }
   }
   return view;
 }

@@ -60,9 +60,9 @@ export class Room extends DurableObject {
     try { message = JSON.parse(raw); } catch { return; }
     const now = Date.now();
     let result = {};
-    if (message.t === "start") result = start(room, token, message.mode, now);
-    else if (message.t === "play") result = playCards(room, token, message.ids, now);
-    else if (message.t === "pass") result = passTurn(room, token, now);
+    if (message.t === "start") result = start(room, token, message.mode, now, message.scoring, message.revision);
+    else if (message.t === "play") result = playCards(room, token, message.ids, now, message.revision);
+    else if (message.t === "pass") result = passTurn(room, token, now, message.revision);
     else if (message.t === "sort") sortHand(room, token);
     else return;
     if (result.error) { socket.send(JSON.stringify({ t: "error", message: result.error })); return; }

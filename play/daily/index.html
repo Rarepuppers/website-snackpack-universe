@@ -345,7 +345,8 @@
   // through is on the shared board -- which is also what makes the completion
   // record honest (daily-state only counts wins reached via ?daily=).
   cards.forEach(function (c) {
-    c.href = c.getAttribute("href") + "?daily=" + encodeURIComponent(seed);
+    c.href = c.getAttribute("href") + "?daily=" + encodeURIComponent(seed) +
+      (c.dataset.game === "thirteen" ? "&featured=1" : "");
   });
 
   var pretty = new Date(seed + "T00:00:00Z").toLocaleDateString([], {

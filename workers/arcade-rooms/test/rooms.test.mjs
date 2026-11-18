@@ -45,6 +45,47 @@ test("views never show another player's cards", () => {
   assert.deepEqual(a.counts, [13, 13, 13, 13]);
 });
 
+for (const scoring of ["wins", "cards"]) {
+  test(`friend series records three ${scoring} scores across reconnects`, () => {
+    const room = createRoom(0);
+    join(room, "a", 0);
+    join(room, "b", 0);
+    let now = 1;
+    assert.deepEqual(start(room, "a", "standard", now, scoring, 0), {});
+    const scores = [0, 0, 0, 0];
+    for (let deal = 1; deal <= 3; deal++) {
+      const openingView = viewFor(room, "b", "ABCDEF");
+      assert.equal(openingView.series.deal, deal);
+      assert.ok(openingView.playing);
+      assert.equal(openingView.hand.length, 13);
+      for (let turns = 0; room.game.winner === null; turns++) {
+        assert.ok(turns < 400, "deal terminates");
+        now = room.deadline;
+        tick(room, now);
+      }
+      if (scoring === "wins") scores[room.game.winner]++;
+      else room.game.hands.forEach((hand, seat) => { scores[seat] += hand.length; });
+      leave(room, "b", ++now);
+      assert.equal(join(room, "b", ++now).seat, 1);
+      const result = viewFor(room, "b", "ABCDEF");
+      assert.equal(result.series.finished, deal === 3);
+      assert.deepEqual(result.series.points, scores);
+      if (deal === 1) {
+        leave(room, "a", ++now);
+        assert.equal(room.host, 1);
+      }
+      if (deal < 3) {
+        const revision = result.revision;
+        // The old start action can advance a new server's series as well.
+        assert.deepEqual(start(room, "b", "classic", ++now, undefined, revision), {});
+        assert.equal(room.game.mode, "standard");
+        assert.match(start(room, "b", "standard", ++now, undefined, revision).error, /moved on/);
+      }
+    }
+    assert.equal(room.series.results.length, 3);
+  });
+}
+
 test("cheating is refused", () => {
   const room = createRoom(0);
   join(room, "a", 0); join(room, "b", 0);

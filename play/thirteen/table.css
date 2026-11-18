@@ -1,0 +1,62 @@
+.thirteen-table .th-table {
+  color: #fff1d6;
+  background: radial-gradient(ellipse at 50% 20%, #17614b, #0a392c 82%);
+  background-image: url("./jade-table.jpg"), radial-gradient(ellipse at 50% 20%, #17614b, #0a392c 82%);
+  background-position: center;
+  background-size: cover;
+  border: 1px solid #947744;
+  box-shadow: inset 0 0 0 4px #0a392c, inset 0 0 0 5px #a98e53;
+}
+
+.thirteen-table .th-table-label,
+.thirteen-table .th-table-by {
+  color: inherit;
+}
+
+.thirteen-table .th-card:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+  z-index: 3;
+}
+
+.th-high-contrast .th-table {
+  background: #142520;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: none;
+}
+
+.th-high-contrast .th-card {
+  background: #fff;
+  border-color: #181818;
+  color: #151515;
+  font-weight: 800;
+}
+
+.th-high-contrast .th-card--red { color: #9e1027; }
+.th-high-contrast .th-card.is-selected {
+  background: #ffed9c;
+  border-color: #151515;
+  box-shadow: inset 0 0 0 2px #151515;
+}
+
+.th-is-hidden { display: none; }
+.th-featured .seg { display: none; }
+
+.th-practice-banner {
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  color: var(--ink);
+  text-align: center;
+}
+
+.th-practice-banner h2 { margin: 0; font-size: 1.15rem; }
+.th-practice-banner p { margin: 4px 0 10px; }
+.th-extras { margin-top: 14px; text-align: left; }
+.th-extras details { padding: 8px 0; border-top: 1px solid var(--line); }
+.th-extras summary { cursor: pointer; font-weight: 700; }
+.th-extras label, .th-extras select { margin: 8px 8px 0 0; font: inherit; }
+.th-extras input { margin-left: 0; }
+.th-practice-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }

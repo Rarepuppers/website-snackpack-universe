@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../site.css">
 <link rel="stylesheet" href="../play.css?v=13">
+<link rel="stylesheet" href="./table.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +60,7 @@
     { "@type": "Question", "name": "Why is the 2 so strong?", "acceptedAnswer": { "@type": "Answer", "text": "In Standard, 2 is the highest rank and 2 of hearts is the strongest single. A higher-suit 2 can beat a lower-suit 2, and a legal chop can beat any single 2. In Classic, 2 is the lowest rank and Ace is the highest." } },
     { "@type": "Question", "name": "How hard are the computer players?", "acceptedAnswer": { "@type": "Answer", "text": "You choose. Easy always plays its lowest legal combination and spends its 2s early, Normal leads carefully but follows like Easy, and Sharp holds back 2s and bombs and plans its runs. Each difficulty keeps its own win–loss record on your device." } },
     { "@type": "Question", "name": "How do I play Thirteen with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Every card in your hand is a real button, so Tab walks the hand in order and Enter or Space selects a card. Play, Pass and Sort take focus the same way, so a whole turn can be taken without a mouse." } },
-    { "@type": "Question", "name": "What is the Daily deal?", "acceptedAnswer": { "@type": "Answer", "text": "Daily gives everyone the same opening deal for the selected rule set and UTC date. Compare results at the same difficulty. Move suggestions are disabled in Daily. Select New game to return to a random deal." } },
+    { "@type": "Question", "name": "What is the Daily deal?", "acceptedAnswer": { "@type": "Answer", "text": "The Daily gives everyone the same Standard deal and Normal difficulty for the UTC date. Your first finish counts toward your streak, and later attempts are practice. Hints are disabled during the Daily." } },
     { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. A solo game in progress is saved in this browser, so you can pick it up on the same device." } },
     { "@type": "Question", "name": "Can I play Thirteen with friends?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Choose Play with friends and share the link. Up to four people can join a table, with no sign-in, and the computer plays any empty seats. Playing with friends needs an internet connection." } },
     { "@type": "Question", "name": "Can I play offline?", "acceptedAnswer": { "@type": "Answer", "text": "Solo play works offline after the browser has cached the game. Friend tables need an internet connection. Thirteen is also in Snackpack Brain Games Vol 2 on Android." } }
@@ -162,7 +163,7 @@
 
   <section>
     <div class="shell">
-      <div class="game-stage" data-no-keyboard-reason="Every card in your hand is a real button, so Tab already walks the hand in order and Enter or Space selects a card; keyboard-grid.js roving focus would replace that with a cursor and gain nothing. Play, Pass and Sort take focus the same way. Every other control is reachable by Tab.">
+      <div class="game-stage thirteen-table" data-no-keyboard-reason="Every card in your hand is a real button, so Tab already walks the hand in order and Enter or Space selects a card; keyboard-grid.js roving focus would replace that with a cursor and gain nothing. Play, Pass and Sort take focus the same way. Every other control is reachable by Tab.">
         <div class="game-toolbar">
           <div class="game-readout">
             <span class="readout-chip" title="Games won and lost against this difficulty on this device"><span>Record</span><b id="t-record">0–0</b></span>
@@ -182,6 +183,24 @@
             <button class="btn-game btn-game--primary" id="t-new" type="button">New game</button>
           </div>
         </div>
+        <div class="th-practice-banner" id="t-practice-banner" hidden>
+          <h2 id="t-practice-title"></h2>
+          <p id="t-practice-prompt" role="status"></p>
+          <div class="th-actions">
+            <span id="t-practice-next-option" hidden><button type="button" class="btn-game btn-game--primary" id="t-practice-next">Continue</button></span>
+            <button type="button" class="btn-game" id="t-practice-restart">Retry</button>
+            <button type="button" class="btn-game" id="t-practice-exit">Return to game</button>
+          </div>
+        </div>
+        <div class="th-practice-banner" id="t-series-banner" hidden>
+          <h2 id="t-series-title">Three-Deal Series</h2>
+          <p id="t-series-score" role="status"></p>
+          <div class="th-actions">
+            <span id="t-series-next-option" hidden><button type="button" class="btn-game btn-game--primary" id="t-series-next">Next deal</button></span>
+            <button type="button" class="btn-game" id="t-series-exit">Return to game</button>
+          </div>
+        </div>
+        <p id="t-daily-description" class="game-hint" hidden></p>
         <p class="game-status" id="t-status" aria-live="polite">Dealing…</p>
 
         <div class="th-opponents" id="t-opponents"></div>
@@ -203,6 +222,23 @@
           <span id="t-suggest-option"><button class="btn-game" id="t-suggest" type="button" disabled>Show legal move</button></span>
         </div>
         <p class="game-hint" id="t-combohint" role="status"></p>
+        <div class="th-extras" id="t-extras">
+          <details id="t-learn" hidden><summary>Learn</summary><div id="t-lessons" class="th-practice-list"></div></details>
+          <details id="t-challenges" hidden><summary>Challenges</summary><div id="t-challenge-list" class="th-practice-list"></div></details>
+          <details id="t-series-menu" hidden><summary>Three-Deal Series</summary>
+            <p>Play three deals and compare scores. Choose how to score them.</p>
+            <div class="th-practice-list">
+              <button type="button" class="btn-game" id="t-series-wins">Deals Won</button>
+              <button type="button" class="btn-game" id="t-series-cards">Cards Left</button>
+              <button type="button" class="btn-game" id="t-series-resume" disabled>Resume series</button>
+            </div>
+          </details>
+          <details><summary>Table settings</summary>
+            <label for="t-pace">Game speed</label>
+            <select id="t-pace"><option value="relaxed">Relaxed</option><option value="normal" selected>Normal</option><option value="fast">Fast</option></select>
+            <label><input type="checkbox" id="t-contrast"> High-contrast cards</label>
+          </details>
+        </div>
       </div>
     </div>
   </section>
@@ -238,7 +274,7 @@
       <h2>How to play Thirteen (Tiến Lên)</h2>
       <p>Thirteen is a Vietnamese card game for four players, also called Tiến Lên or Tien Len. Everyone gets 13 cards. The first player to empty their hand wins the deal. Whoever holds 3♠ opens and must include it, either alone or in a legal combination such as 3♠ and 3♦.</p>
       <p>In Standard, the ranks go from 3 up through King, Ace and 2. For cards of the same rank, suits go from spades to clubs, diamonds and hearts. For example, 9♥ beats 9♦.</p>
-      <p>For a first game, choose <strong>Easy</strong> and use <strong>Show legal move</strong> on your turn. It selects one legal play for you to check. Select <strong>Play</strong> to confirm it, or change the cards yourself.</p>
+      <p>Open <strong>Learn</strong> below the table for six short lessons on the opening card, suit order, passing and chops. Try the six <strong>Challenges</strong> when you’re ready to play out a hand from a tricky position. In a regular solo deal, <strong>Show legal move</strong> selects a combination you can review before playing.</p>
 
       <h3>Combinations</h3>
       <ul>
@@ -269,6 +305,9 @@
       <h3>Play with friends</h3>
       <p>Choose <strong>Play with friends</strong> and share the invite link. Up to four people can join a table with no sign-in, and the computer plays any empty seats. If you enjoy Thirteen, try <a class="text-link" href="../big-two/" style="color:var(--accent);">Big Two</a>, a close relative built around five-card hands.</p>
 
+      <h3>Three-Deal Series</h3>
+      <p>Play three deals solo or at a friend table. With <strong>Deals Won</strong>, the first player out earns one point each deal and the most wins takes the series. With <strong>Cards Left</strong>, each card left in hand adds one penalty point and the lowest total wins. Players with equal best scores share the result.</p>
+
       <h3>How to win more often</h3>
       <ul>
         <li><strong>Count the dangerous cards.</strong> In Standard there are only four 2s. Once two or three have gone, an Ace becomes a strong single.</li>
@@ -285,7 +324,7 @@
         <details class="faq-item"><summary>Can I play with friends?</summary><p>Yes. Choose Play with friends and share the invite link. Up to four people can join, with no sign-in, and the computer plays any empty seats. Tables have no names or chat, and playing with friends needs an internet connection.</p></details>
         <details class="faq-item"><summary>Who do I play against?</summary><p>Three computer players at the difficulty you choose. Easy plays its lowest legal cards and spends 2s early, Normal leads carefully but follows like Easy, and Sharp holds back its 2s and bombs. Each difficulty keeps its own win–loss record on this device. Whoever holds the 3 of spades opens.</p></details>
         <details class="faq-item"><summary>Why is the 2 so strong?</summary><p>In Standard, 2 is the highest rank and 2 of hearts is the strongest single. A higher-suit 2 can beat a lower-suit 2, and a legal chop can beat any single 2. In Classic, 2 is the lowest rank and Ace is the highest.</p></details>
-        <details class="faq-item"><summary>What is the Daily deal?</summary><p>Daily gives everyone the same opening deal for the selected rule set and UTC date. Compare results at the same difficulty. Move suggestions are disabled in Daily. Select New game to return to a random deal.</p></details>
+        <details class="faq-item"><summary>What is the Daily deal?</summary><p>The Daily gives everyone the same Standard deal and Normal difficulty for the UTC date. Your first finish counts toward your streak, and later attempts are practice. Hints are disabled during the Daily.</p></details>
         <details class="faq-item"><summary>How do I play Thirteen with a keyboard?</summary><p>Press Tab to move between cards and controls. Enter or Space selects a card or activates a control.</p></details>
         <details class="faq-item"><summary>Does my progress save?</summary><p>Yes. A solo game in progress is saved in this browser, so you can pick it up on the same device.</p></details>
         <details class="faq-item"><summary>Can I play offline?</summary><p>Solo play works offline after the browser has cached the game. Friend tables need an internet connection. Thirteen is also in <a class="text-link" href="../../apps/snackpack-brain-games-vol-2/" style="color:var(--accent);">Snackpack Brain Games Vol 2</a> on Android.</p></details>
@@ -385,6 +424,8 @@
 <script src="../game-ui-controls.js"></script>
 <script src="../game-ui-assets.js"></script><script src="../audio.js"></script><script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script><script defer src="./rooms.js"></script>
+<script src="./training.js"></script>
+<script src="./session.js"></script>
 <script>
 (function () {
   "use strict";
@@ -493,17 +534,20 @@
   // the same deal — which is what makes a shared result worth comparing.
   var urlSeed = new URLSearchParams(location.search).get("daily");
   var dailyMode = !!urlSeed;
+  var featuredDaily = dailyMode && new URLSearchParams(location.search).get("featured") === "1";
+  var dailyDealDay = dailyMode ? dailyNumber() : null;
   // Normalize both the hub's ?daily=YYYY-MM-DD contract and older numeric
   // ?daily=20671 links to the same UTC day number used by the Daily button.
   function todaySeed() { return String(dailyNumber()); }
   // Honour ?daily=<n> so a shared result opens the board it actually refers to,
   // rather than silently serving today's. Falls back to today when absent.
   function dailyNumber() {
-    var q = new URLSearchParams(location.search).get("daily");
+    if (dailyDealDay != null) return dailyDealDay;
+    var q = urlSeed;
     var iso = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? Date.parse(q + "T00:00:00Z") : NaN;
     if (!isNaN(iso)) return Math.floor(iso / 86400000);
     var n = q == null ? NaN : Number(q);
-    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+    return Number.isSafeInteger(n) && Math.abs(n) < 100000000 ? n : Math.floor(Date.now() / 86400000);
   }
   function activeSeed() { return dailyMode ? String(dailyNumber()) : null; }
   function makeRng(seedStr) {
@@ -623,7 +667,9 @@ function cpuChoosePlay(state, playerIdx) {
 
   function initialState(mode) {
     var tSeed = activeSeed();
-    var rng = makeRng(tSeed ? tSeed + "-" + mode : null);
+    var rng = tSeed && window.SnackPackThirteenSession
+      ? window.SnackPackThirteenSession.makeDailyRandom(Number(tSeed), mode)
+      : makeRng(tSeed ? tSeed + "-" + mode : null);
     var hands = dealHands(rng);
     var first = findFirstPlayer(hands);
     return {
@@ -656,6 +702,46 @@ function cpuChoosePlay(state, playerIdx) {
   var selected = [];
   var cpuTimer = null;
   var resume = null;
+  var practice = null;
+  var pausedGame = null;
+  var sessionApi = window.SnackPackThirteenSession;
+  var series = null;
+  var seriesBanner = document.getElementById("t-series-banner");
+  var seriesNext = document.getElementById("t-series-next");
+  var seriesNextOption = document.getElementById("t-series-next-option");
+  var seriesResume = document.getElementById("t-series-resume");
+  var savedSeries = null;
+  var practiceData = window.SnackPackThirteenTraining;
+  var practiceApi = window.SnackPackThirteenPractice;
+  var practiceBanner = document.getElementById("t-practice-banner");
+  var practiceTitle = document.getElementById("t-practice-title");
+  var practicePrompt = document.getElementById("t-practice-prompt");
+  var practiceNext = document.getElementById("t-practice-next");
+  var practiceNextOption = document.getElementById("t-practice-next-option");
+  var gameSettings = document.querySelector(".thirteen-table .game-toolbar");
+  var paceEl = document.getElementById("t-pace");
+  var contrastEl = document.getElementById("t-contrast");
+  var pace = { relaxed: 1700, normal: 1100, fast: 380 };
+  var practiceRecord = {};
+  try {
+    var savedPace = localStorage.getItem("sp_thirteen_pace");
+    if (Object.hasOwn(pace, savedPace)) paceEl.value = savedPace;
+    contrastEl.checked = localStorage.getItem("sp_thirteen_contrast") === "true";
+    var savedPractice = JSON.parse(localStorage.getItem("sp_thirteen_practice") || "{}");
+    if (savedPractice && typeof savedPractice === "object") practiceRecord = savedPractice;
+  } catch (e) {}
+  function setContrast() {
+    handEl.closest(".thirteen-table").classList.toggle("th-high-contrast", contrastEl.checked);
+  }
+  setContrast();
+  paceEl.addEventListener("change", function () {
+    try { localStorage.setItem("sp_thirteen_pace", paceEl.value); } catch (e) {}
+    scheduleCpu();
+  });
+  contrastEl.addEventListener("change", function () {
+    setContrast();
+    try { localStorage.setItem("sp_thirteen_contrast", String(contrastEl.checked)); } catch (e) {}
+  });
   var wins = 0;
   try { wins = parseInt(localStorage.getItem("sp_thirteen_wins") || "0", 10) || 0; } catch (e) {}
   winsEl.textContent = wins;
@@ -677,9 +763,9 @@ function cpuChoosePlay(state, playerIdx) {
     c.sort(function (a, b) { return a.rankKey - b.rankKey || a.cards.length - b.cards.length; });
     return c[0];
   }
-  function cpuLevelPlay(state, idx) {
-    if (level === "sharp") return cpuChoosePlay(state, idx);
-    if (level === "normal" && (!state.lastCombo || state.lastPlayerIdx === idx)) return cpuChoosePlay(state, idx);
+  function cpuLevelPlay(state, idx, choice = level) {
+    if (choice === "sharp") return cpuChoosePlay(state, idx);
+    if (choice === "normal" && (!state.lastCombo || state.lastPlayerIdx === idx)) return cpuChoosePlay(state, idx);
     return cpuEasyPlay(state, idx);
   }
   var recordEl = document.getElementById("t-record");
@@ -712,8 +798,223 @@ function cpuChoosePlay(state, playerIdx) {
     });
   }
 
+  function practiceStep() {
+    return practice.activity.steps[practice.step];
+  }
+
+  function resetPractice() {
+    if (cpuTimer) clearTimeout(cpuTimer);
+    var step = practiceStep();
+    practice.done = false;
+    practice.attempts = [];
+    practice.lostLead = false;
+    gs = practiceApi.position(step, identifyCombo);
+    gs.players[0].hand = sortCards(gs.players[0].hand, gs.mode);
+    selected = [];
+    practiceTitle.textContent = practice.activity.title;
+    practicePrompt.textContent = step.prompt;
+    practiceNextOption.hidden = true;
+    render();
+  }
+
+  function openPractice(activity, group) {
+    if (series) return;
+    if (!practice) {
+      if (resume) resume.save();
+      pausedGame = { state: gs, selection: selected };
+    }
+    practice = { activity: activity, step: 0, usedHint: false, group: group };
+    gameSettings.classList.add("th-is-hidden");
+    practiceBanner.hidden = false;
+    resetPractice();
+    document.getElementById("t-practice-restart").focus();
+  }
+
+  function exitPractice() {
+    if (!practice) return;
+    var returnTo = document.getElementById("t-practice-" + practice.activity.id);
+    gs = pausedGame.state;
+    selected = pausedGame.selection;
+    practice = null;
+    pausedGame = null;
+    gameSettings.classList.remove("th-is-hidden");
+    practiceBanner.hidden = true;
+    render();
+    scheduleCpu();
+    if (returnTo) returnTo.focus();
+  }
+
+  function markPractice(button, activity) {
+    var result = practiceRecord[activity.id];
+    button.textContent = activity.title + (result === "solo" ? " · Cleared unaided" : result === "hint" ? " · Cleared with hint" : result === "complete" ? " · Complete" : "");
+  }
+
+  function completePracticeStep() {
+    var nextStep = practice.step + 1 < practice.activity.steps.length;
+    if (!nextStep) {
+      var record = practice.group === "lessons" ? "complete" : practice.usedHint ? "hint" : "solo";
+      if (practiceRecord[practice.activity.id] !== "solo") practiceRecord[practice.activity.id] = record;
+      try { localStorage.setItem("sp_thirteen_practice", JSON.stringify(practiceRecord)); } catch (e) {}
+      markPractice(document.getElementById("t-practice-" + practice.activity.id), practice.activity);
+    }
+    practice.done = true;
+    practicePrompt.textContent = practiceStep().feedback;
+    practiceNext.textContent = nextStep ? "Next step" : "Return to game";
+    practiceNextOption.hidden = false;
+    updateActions();
+    practiceNext.focus();
+  }
+
+  function checkPracticeAction(action) {
+    if (!practice) return false;
+    var goal = practiceStep().goal;
+    if (goal.kind === "win") {
+      practice.attempts.push(action);
+      return false;
+    }
+    if (practiceApi.meetsGoal(goal, [action], false, false)) {
+      if (action === "pass") applyPass(gs, 0);
+      else applyPlay(gs, 0, action);
+      selected = [];
+      completePracticeStep();
+      render();
+    } else practicePrompt.textContent = practiceStep().prompt + " Try another move.";
+    return true;
+  }
+
+  document.getElementById("t-practice-exit").addEventListener("click", exitPractice);
+  document.getElementById("t-practice-restart").addEventListener("click", function () {
+    practice.usedHint = false;
+    if (practice.step > 0) practice.step = 0;
+    resetPractice();
+  });
+  practiceNext.addEventListener("click", function () {
+    if (practice.step + 1 === practice.activity.steps.length) exitPractice();
+    else {
+      practice.step++;
+      resetPractice();
+      handEl.querySelector("button").focus();
+    }
+  });
+
+  if (practiceData && practiceApi) {
+    [["lessons", "t-learn", "t-lessons"], ["challenges", "t-challenges", "t-challenge-list"]].forEach(function (entry) {
+      var group = entry[0];
+      var list = document.getElementById(entry[2]);
+      practiceData[group].forEach(function (activity) {
+        var button = document.createElement("button");
+        button.id = "t-practice-" + activity.id;
+        button.type = "button";
+        button.className = "btn-game";
+        markPractice(button, activity);
+        button.addEventListener("click", function () { openPractice(activity, group); });
+        list.appendChild(button);
+      });
+      document.getElementById(entry[1]).hidden = false;
+    });
+  }
+
+  function snapshot() {
+    return { ...gs, passed: Array.from(gs.passedPlayers), passedPlayers: undefined, selected: selected.map(card => card.id) };
+  }
+
+  function restoreBoard(p) {
+    if (cpuTimer) clearTimeout(cpuTimer);
+    gs = { ...p, passedPlayers: new Set(p.passed) };
+    selected = gs.players[0].hand.filter(card => (p.selected || []).includes(card.id));
+    render();
+    scheduleCpu();
+    return true;
+  }
+
+  function saveSeries() {
+    if (!series) return;
+    savedSeries = { version: 1, scoring: series.scoring, results: series.results, board: snapshot(), deal: series.deal };
+    try { localStorage.setItem("sp_thirteen_series", JSON.stringify(savedSeries)); } catch (e) {}
+    seriesResume.disabled = false;
+  }
+
+  function updateSeries() {
+    if (!series) return;
+    var complete = series.results.length === 3;
+    var scores = sessionApi.seriesScores(series);
+    var heading = (complete ? "Series complete" : "Deal " + series.deal + " of 3") +
+      " · " + (series.scoring === "cards" ? "Cards Left" : "Deals Won");
+    document.getElementById("t-series-title").textContent = heading;
+    var scoreboard = scores.points.map((score, i) => gs.players[i].name + " " + score).join(" · ");
+    var leaders = scores.leaders.map(seat => gs.players[seat].name).join(", ");
+    document.getElementById("t-series-score").textContent = scoreboard +
+      (complete ? (scores.leaders.length > 1 ? " · Shared win: " : " · Winner: ") + leaders : "");
+    seriesNextOption.hidden = !complete && gs.phase !== "gameover";
+    seriesNext.textContent = complete ? "Return to game" : "Next deal";
+  }
+
+  function startSeries(scoring, saved) {
+    if (!sessionApi || series || practice) return;
+    if (!saved && savedSeries && savedSeries.results.length < 3 &&
+        !window.confirm("Start a new series and replace the saved series?")) return;
+    if (resume) resume.save();
+    pausedGame = { state: gs, selection: selected, daily: dailyMode, featured: featuredDaily };
+    dailyMode = false;
+    featuredDaily = false;
+    series = saved ? { scoring: saved.scoring, results: saved.results, deal: saved.deal, mode: saved.board.mode }
+      : { ...sessionApi.newSeries(scoring), deal: 1, mode: mode };
+    seriesBanner.hidden = false;
+    gameSettings.classList.add("th-is-hidden");
+    document.getElementById("t-extras").hidden = true;
+    if (saved) restoreBoard(saved.board);
+    else newGame();
+    saveSeries();
+  }
+
+  function exitSeries() {
+    saveSeries();
+    series = null;
+    gs = pausedGame.state;
+    selected = pausedGame.selection;
+    dailyMode = pausedGame.daily;
+    featuredDaily = pausedGame.featured;
+    pausedGame = null;
+    seriesBanner.hidden = true;
+    gameSettings.classList.remove("th-is-hidden");
+    document.getElementById("t-extras").hidden = false;
+    render();
+    scheduleCpu();
+    seriesResume.focus();
+  }
+
+  if (sessionApi) {
+    try {
+      var stored = JSON.parse(localStorage.getItem("sp_thirteen_series") || "null");
+      if (stored && stored.version === 1 && sessionApi.isSeries(stored) && [1, 2, 3].includes(stored.deal) &&
+          stored.results.length === stored.deal - (stored.board?.phase === "gameover" ? 0 : 1) &&
+          validThirteenSave(stored.board, stored.board?.mode, true)) savedSeries = stored;
+    } catch (e) {}
+    seriesResume.disabled = !savedSeries;
+    document.getElementById("t-series-menu").hidden = false;
+    seriesResume.addEventListener("click", function () { if (savedSeries) startSeries(savedSeries.scoring, savedSeries); });
+    document.getElementById("t-series-wins").addEventListener("click", function () { startSeries("wins"); });
+    document.getElementById("t-series-cards").addEventListener("click", function () { startSeries("cards"); });
+    document.getElementById("t-series-exit").addEventListener("click", exitSeries);
+    seriesNext.addEventListener("click", function () {
+      if (!series || gs.phase !== "gameover") return;
+      if (series.results.length === 3) return exitSeries();
+      series.deal++;
+      newGame();
+      saveSeries();
+    });
+  }
+
   function render() {
     if (!gs) return;
+    var dailyDescription = document.getElementById("t-daily-description");
+    dailyDescription.hidden = !featuredDaily || !!practice;
+    gameSettings.classList.toggle("th-featured", featuredDaily);
+    if (featuredDaily && !practice) {
+      var state = window.SnackPackDaily?.state();
+      var isPracticeDeal = dailyNumber() !== Math.floor(Date.now() / 86400000) || !!state?.games.thirteen;
+      dailyDescription.textContent = isPracticeDeal ? "Daily practice · Standard · Normal" : "Today's Daily · Standard · Normal";
+    }
     // Opponents
     oppEl.innerHTML = "";
     gs.players.forEach(function (p) {
@@ -746,6 +1047,7 @@ function cpuChoosePlay(state, playerIdx) {
     syncHandSelection();
     updateActions();
     updateStatus();
+    updateSeries();
   }
 
   function updateStatus() {
@@ -768,15 +1070,16 @@ function cpuChoosePlay(state, playerIdx) {
   }
 
   function updateActions() {
-    var myTurn = gs.phase === "playing" && gs.currentPlayer === 0;
+    var myTurn = gs.phase === "playing" && gs.currentPlayer === 0 && !(practice && practice.done);
     var combo = identifyCombo(selected, gs.mode);
     var validPlay = !!combo && canBeat(combo, gs.lastCombo, gs.mode) &&
       (!gs.isFirstTurn || selected.some(function (c) { return c.value === 3 && c.suit === 0; }));
     playBtn.disabled = !(myTurn && validPlay);
     passBtn.disabled = !(myTurn && gs.lastCombo && gs.lastPlayerIdx !== 0);
     sortBtn.disabled = gs.phase !== "playing";
-    suggestOption.hidden = dailyMode;
-    suggestBtn.disabled = !myTurn || dailyMode;
+    suggestOption.hidden = dailyMode && !practice;
+    suggestBtn.disabled = !myTurn || (dailyMode && !practice);
+    suggestBtn.textContent = practice ? "Hint" : "Show legal move";
     if (!myTurn) { hintEl.textContent = ""; return; }
     if (selected.length === 0) hintEl.textContent = gs.isFirstTurn ? "Tap cards to select — your opening play must include 3♠." : "Tap cards to build a combination.";
     else if (!combo) hintEl.textContent = "That's not a valid combination.";
@@ -790,20 +1093,49 @@ function cpuChoosePlay(state, playerIdx) {
     cpuTimer = setTimeout(function () {
       if (!gs || gs.phase !== "playing" || gs.currentPlayer === 0) return;
       var idx = gs.currentPlayer;
-      var play = cpuLevelPlay(gs, idx);
+      var play = cpuLevelPlay(gs, idx, practice || featuredDaily ? "normal" : level);
       if (play === "pass") { applyPass(gs, idx); if(window.SnackPackAudio)window.SnackPackAudio.play("tick"); }
-      else { applyPlay(gs, idx, play); if(window.SnackPackAudio)window.SnackPackAudio.play("place"); }
+      else {
+        if (practice) practice.lostLead = true;
+        applyPlay(gs, idx, play);
+        if (window.SnackPackAudio) window.SnackPackAudio.play("place");
+      }
       render();
       if (resume) resume.changed();
       if (gs.phase === "gameover") { finish(); return; }
+      saveSeries();
       scheduleCpu();
-    }, 1100);
+    }, pace[paceEl.value]);
   }
 
   function finish() {
     if (cpuTimer) clearTimeout(cpuTimer);
+    if (practice) {
+      if (practiceApi.meetsGoal(practiceStep().goal, practice.attempts, gs.winner === 0, practice.lostLead)) completePracticeStep();
+      else practicePrompt.textContent = "Goal missed. Retry this position when you’re ready.";
+      return;
+    }
+    if (series) {
+      series.results = sessionApi.settleDeal(series, series.deal, gs.winner, gs.players.map(player => player.hand.length)).results;
+      updateSeries();
+      saveSeries();
+      seriesNext.focus();
+      return;
+    }
     if (resume) resume.clear();
     if (window.SnackPackAudio) window.SnackPackAudio.play(gs.winner === 0 ? "win" : "invalid");
+    if (featuredDaily) {
+      var date = new Date(dailyNumber() * 86400000).toISOString().slice(0, 10);
+      var headline = gs.winner === 0 ? "Won the Daily deal" : "Finished the Daily deal";
+      if (window.SnackPackDaily && date === window.SnackPackDaily.today()) {
+        window.SnackPackDaily.record("thirteen", headline);
+      }
+      if (window.SnackPackShare) window.SnackPackShare.result({
+        game: "Thirteen", puzzle: dailyNumber(), headline: headline, dailyDate: date,
+        stats: [gs.players[0].hand.length + " cards left"]
+      });
+      return;
+    }
     var r = readRecord(); if (gs.winner === 0) r.won++; else r.lost++;
     try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
     showRecord();
@@ -818,6 +1150,7 @@ function cpuChoosePlay(state, playerIdx) {
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Thirteen",
         puzzle: dailyMode ? dailyNumber() : null,
+        dailyDate: null,
         headline: "Won the " + mode + " deal on " + level[0].toUpperCase() + level.slice(1),
         stats: [wins + (wins === 1 ? " win" : " wins") + " total"]
       });
@@ -826,7 +1159,7 @@ function cpuChoosePlay(state, playerIdx) {
 
   function newGame() {
     if (cpuTimer) clearTimeout(cpuTimer);
-    gs = initialState(mode);
+    gs = initialState(series?.mode || (featuredDaily ? "standard" : mode));
     selected = [];
     render();
     scheduleCpu();
@@ -834,7 +1167,7 @@ function cpuChoosePlay(state, playerIdx) {
 
   handEl.addEventListener("click", function (e) {
     var card = e.target.closest(".th-card");
-    if (!card || !gs || gs.phase !== "playing" || gs.currentPlayer !== 0) return;
+    if (!card || !gs || gs.phase !== "playing" || gs.currentPlayer !== 0 || (practice && practice.done)) return;
     var id = card.dataset.id;
     var c = gs.players[0].hand.find(function (x) { return x.id === id; });
     if (!c) return;
@@ -847,6 +1180,11 @@ function cpuChoosePlay(state, playerIdx) {
   });
 
   suggestBtn.addEventListener("click", function () {
+    if (practice) {
+      practice.usedHint = true;
+      practicePrompt.textContent = practiceStep().hint;
+      return;
+    }
     if (dailyMode || gs.phase !== "playing" || gs.currentPlayer !== 0) return;
     var moves = legalCombos(gs, 0);
     var move = moves.find(function (candidate) { return candidate.cards.length === gs.players[0].hand.length; }) ||
@@ -868,6 +1206,7 @@ function cpuChoosePlay(state, playerIdx) {
     var combo = identifyCombo(selected, gs.mode);
     if (!combo || !canBeat(combo, gs.lastCombo, gs.mode)) return;
     if (gs.isFirstTurn && !selected.some(function (c) { return c.value === 3 && c.suit === 0; })) return;
+    if (checkPracticeAction(combo)) return;
     var isChop = gs.lastCombo && combo.type !== gs.lastCombo.type;
     applyPlay(gs, 0, combo);
     if (window.SnackPackAudio) window.SnackPackAudio.play(isChop ? "success" : "place");
@@ -875,16 +1214,19 @@ function cpuChoosePlay(state, playerIdx) {
     render();
     if (resume) resume.changed();
     if (gs.phase === "gameover") { finish(); return; }
+    saveSeries();
     scheduleCpu();
   });
 
   passBtn.addEventListener("click", function () {
     if (gs.currentPlayer !== 0 || gs.phase !== "playing" || !gs.lastCombo || gs.lastPlayerIdx === 0) return;
+    if (checkPracticeAction("pass")) return;
     applyPass(gs, 0);
     if (window.SnackPackAudio) window.SnackPackAudio.play("tick");
     selected = [];
     render();
     if (resume) resume.changed();
+    saveSeries();
     scheduleCpu();
   });
 
@@ -899,6 +1241,8 @@ function cpuChoosePlay(state, playerIdx) {
   newBtn.addEventListener("click", function () {
     if (resume) resume.clear();
     dailyMode = false;
+    featuredDaily = false;
+    dailyDealDay = null;
     urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", "false");
     newGame();
@@ -909,6 +1253,9 @@ function cpuChoosePlay(state, playerIdx) {
   dailyBtn.addEventListener("click", function () {
     if (resume) resume.save();
     dailyMode = !dailyMode;
+    featuredDaily = dailyMode;
+    dailyDealDay = null;
+    if (dailyMode) dailyDealDay = dailyNumber();
     if (!dailyMode) urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", String(dailyMode));
     if (resume) resume.variantChanged();
@@ -931,6 +1278,12 @@ function cpuChoosePlay(state, playerIdx) {
     btn.addEventListener("click", function () {
       if (resume) resume.save();
       mode = btn.dataset.mode;
+      if (featuredDaily) {
+        featuredDaily = false;
+        dailyMode = false;
+        dailyDealDay = null;
+        dailyBtn.setAttribute("aria-pressed", "false");
+      }
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       if (resume) resume.variantChanged();
       newGame();
@@ -939,8 +1292,32 @@ function cpuChoosePlay(state, playerIdx) {
 
   newGame();
   function validThirteenCard(c){return c&&Number.isInteger(c.value)&&c.value>=1&&c.value<=13&&Number.isInteger(c.suit)&&c.suit>=0&&c.suit<4&&c.id===c.value+"-"+c.suit;}
-  function validThirteenSave(p){if(!p||p.phase!=="playing"||p.mode!==mode||!Array.isArray(p.players)||p.players.length!==4||!Number.isInteger(p.currentPlayer)||p.currentPlayer<0||p.currentPlayer>3||!Array.isArray(p.passed))return false;var cards=[];for(var i=0;i<4;i++){if(!p.players[i]||!Array.isArray(p.players[i].hand))return false;cards=cards.concat(p.players[i].hand);}if(p.lastCombo&&(!Array.isArray(p.lastCombo.cards)||!p.lastCombo.cards.every(validThirteenCard)))return false;return cards.every(validThirteenCard)&&new Set(cards.map(function(c){return c.id;})).size===cards.length&&p.passed.every(function(x){return Number.isInteger(x)&&x>=0&&x<4;});}
-  if(window.SnackPackResume)resume=window.SnackPackResume.attach({game:"thirteen",variant:function(){return(dailyMode?"daily-"+dailyNumber():"random")+"-"+mode+"-"+level;},serialize:function(){return{phase:gs.phase,mode:gs.mode,players:gs.players,currentPlayer:gs.currentPlayer,lastCombo:gs.lastCombo,lastPlayerIdx:gs.lastPlayerIdx,selectedCards:gs.selectedCards,passed:Array.from(gs.passedPlayers),winner:gs.winner,roundStarter:gs.roundStarter,isFirstTurn:gs.isFirstTurn,selected:selected.map(function(c){return c.id;})};},validate:validThirteenSave,restore:function(p){if(cpuTimer)clearTimeout(cpuTimer);gs={phase:p.phase,mode:p.mode,players:p.players,currentPlayer:p.currentPlayer,lastCombo:p.lastCombo,lastPlayerIdx:p.lastPlayerIdx,selectedCards:p.selectedCards||[],passedPlayers:new Set(p.passed),winner:p.winner,roundStarter:p.roundStarter,isFirstTurn:!!p.isFirstTurn};selected=gs.players[0].hand.filter(function(c){return(p.selected||[]).indexOf(c.id)>=0;});render();scheduleCpu();return true;},isActive:function(){return gs&&gs.phase==="playing"&&(selected.length>0||gs.players.reduce(function(n,p){return n+p.hand.length;},0)<52);}});
+  function validThirteenSave(p, rules, allowFinished) {
+    if (!p || !["standard", "classic"].includes(rules) || p.mode !== rules ||
+        !(p.phase === "playing" || (allowFinished && p.phase === "gameover")) ||
+        !Array.isArray(p.players) || p.players.length !== 4 || ![0, 1, 2, 3].includes(p.currentPlayer) ||
+        !Array.isArray(p.passed) || !p.passed.every(seat => [0, 1, 2, 3].includes(seat))) return false;
+    if (!p.players.every((player, seat) => player && player.id === seat &&
+        Array.isArray(player.hand) && player.hand.length <= 13 &&
+        (p.phase === "gameover" && seat === p.winner ? player.hand.length === 0 : player.hand.length > 0))) return false;
+    if (p.lastCombo && (!Array.isArray(p.lastCombo.cards) || !p.lastCombo.cards.every(validThirteenCard))) return false;
+    var cards = p.players.flatMap(player => player.hand).concat(p.lastCombo?.cards || []);
+    return cards.every(validThirteenCard) && new Set(cards.map(card => card.id)).size === cards.length;
+  }
+  if (window.SnackPackResume) resume = window.SnackPackResume.attach({
+    game: "thirteen",
+    variant: function () {
+      if (featuredDaily) return "featured-" + dailyNumber() + "-standard-normal";
+      return (dailyMode ? "daily-" + dailyNumber() : "random") + "-" + mode + "-" + level;
+    },
+    serialize: snapshot,
+    validate: function (board) { return validThirteenSave(board, featuredDaily ? "standard" : mode); },
+    restore: restoreBoard,
+    isActive: function () {
+      return !practice && !series && gs && gs.phase === "playing" &&
+        (featuredDaily || selected.length > 0 || gs.players.reduce((count, player) => count + player.hand.length, 0) < 52);
+    },
+  });
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
