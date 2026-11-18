@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 60,
- "bytes": 77280140,
+ "books": 61,
+ "bytes": 82932504,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -92,8 +92,42 @@
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp"
    ],
-   "html_sha256": "559be141fba714b7248520fceba4f8a27c2e75f48e1639ebc349a2d3e75652e1",
+   "html_sha256": "2f791e830c731e56fe9735c964c59bc5217284f67e9b236bcb27766c6882c660",
    "bytes": 9688408
+  },
+  {
+   "slug": "one-more-story-before-santa",
+   "title": "One More Story Before Santa",
+   "urls": [
+    "/read/one-more-story-before-santa/",
+    "/read/one-more-story-before-santa/pages/cover.webp",
+    "/read/one-more-story-before-santa/pages/p01.webp",
+    "/read/one-more-story-before-santa/pages/p02.webp",
+    "/read/one-more-story-before-santa/pages/p03.webp",
+    "/read/one-more-story-before-santa/pages/p04.webp",
+    "/read/one-more-story-before-santa/pages/p05.webp",
+    "/read/one-more-story-before-santa/pages/p06.webp",
+    "/read/one-more-story-before-santa/pages/p07.webp",
+    "/read/one-more-story-before-santa/pages/p08.webp",
+    "/read/one-more-story-before-santa/pages/p09.webp",
+    "/read/one-more-story-before-santa/pages/p10.webp",
+    "/read/one-more-story-before-santa/pages/p11.webp",
+    "/read/one-more-story-before-santa/pages/p12.webp",
+    "/read/one-more-story-before-santa/pages/p13.webp",
+    "/read/one-more-story-before-santa/pages/p14.webp",
+    "/read/one-more-story-before-santa/pages/p15.webp",
+    "/read/one-more-story-before-santa/pages/p16.webp",
+    "/read/one-more-story-before-santa/pages/p17.webp",
+    "/read/one-more-story-before-santa/pages/p18.webp",
+    "/read/one-more-story-before-santa/pages/p19.webp",
+    "/read/one-more-story-before-santa/pages/p20.webp",
+    "/read/one-more-story-before-santa/pages/p21.webp",
+    "/read/one-more-story-before-santa/pages/p22.webp",
+    "/read/one-more-story-before-santa/pages/p23.webp",
+    "/read/one-more-story-before-santa/pages/p24.webp"
+   ],
+   "html_sha256": "4313bd89a45ab297b769ab893bd5e8bd72ca929c0a0eaf543923db3323f37151",
+   "bytes": 5652364
   },
   {
    "slug": "panda-cake-discovers-her-abcs",
@@ -127,7 +161,7 @@
     "/read/panda-cake-discovers-her-abcs/pages/letter-y.webp",
     "/read/panda-cake-discovers-her-abcs/pages/letter-z.webp"
    ],
-   "html_sha256": "6d006204c7febed863e078d6bf9b58c1b5db1bb7fc050d7bba42124d8d37d4ac",
+   "html_sha256": "c1b9253d7cfac68a077c1572b9982e5bcf7130b1cd73abe8b8bedb88194303a2",
    "bytes": 4359456
   },
   {
@@ -143,7 +177,7 @@
     "/read/pip-sits/pages/pip-sits-page-5.webp",
     "/read/pip-sits/pages/pip-sits-page-6.webp"
    ],
-   "html_sha256": "5842d0023506bde4ffad41331f75c115cce293c384646099b47455529fe607d6",
+   "html_sha256": "591997828794e36f05b2251032c856773088705a17f2a221b50effb62c6e8af0",
    "bytes": 964386
   },
   {
@@ -159,7 +193,7 @@
     "/read/nan-and-pip/pages/nan-and-pip-page-5.webp",
     "/read/nan-and-pip/pages/nan-and-pip-page-6.webp"
    ],
-   "html_sha256": "5f3a3966bb6fdae089fc644a3bdb3250f5e39215d0d4fd51f0ff01dcdc23b0d2",
+   "html_sha256": "32d5bb0c59e6117a023581869f3018929308b29071ec2feeadb818356a4714a2",
    "bytes": 1289002
   },
   {
@@ -177,7 +211,7 @@
     "/read/ten-red-hens/pages/ten-red-hens-page-7.webp",
     "/read/ten-red-hens/pages/ten-red-hens-page-8.webp"
    ],
-   "html_sha256": "1a19414641b55a07dc0651836732e121122de571744b58f562684ca88db5eedd",
+   "html_sha256": "37cf9d16b70b4f4d56ace69376bf3c9ab4c15eaac2845972f89facac94556ea4",
    "bytes": 1554120
   },
   {
@@ -195,7 +229,7 @@
     "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-7.webp",
     "/read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-8.webp"
    ],
-   "html_sha256": "416d6794699fa30fe0c0cd98e36b0153fe008898fd134eaa8a3d55aa800cf66c",
+   "html_sha256": "c9c76986fa53dce8fafdf5ecec8ef2925082e468271adb6699877eaf86f73161",
    "bytes": 1359794
   },
   {
@@ -213,7 +247,7 @@
     "/read/bug-in-a-cup/pages/bug-in-a-cup-page-8.webp",
     "/read/bug-in-a-cup/pages/cover.webp"
    ],
-   "html_sha256": "823766a49e4cb173f36b9f4eff89609a54d8e329eaacd2fedf90a26471086fb8",
+   "html_sha256": "3c3ffec1186f6c1db4247df2e04eec821bbf7461b6e2a121cbeacde61c5b0e53",
    "bytes": 1074262
   },
   {
@@ -231,7 +265,7 @@
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-7.webp",
     "/read/dog-in-the-fog/pages/dog-in-the-fog-page-8.webp"
    ],
-   "html_sha256": "01a8896ee656c0e63fba396ef3d1a9943f978468c9d0508c211bb265d676eed6",
+   "html_sha256": "fd442c2e10281e86fa061054edd7a6b2cd75b754ff8385c0db4eebe07b1013f2",
    "bytes": 892338
   },
   {
@@ -245,7 +279,7 @@
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p4.webp",
     "/read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.webp"
    ],
-   "html_sha256": "ea7cc6bccdbeb408bd058afbd51e3d4d75aca7e3295724ac766ebd01ac9c1f54",
+   "html_sha256": "53ccda4e6e6e7c464642ca9d0de16b1e08ef2da0c9f1b6224130282cd08f980d",
    "bytes": 538170
   },
   {
@@ -259,7 +293,7 @@
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p4.webp",
     "/read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.webp"
    ],
-   "html_sha256": "a8b52ce806fe0f04c47685968d19d11478c3e50da8067321bc36f47f0d219a85",
+   "html_sha256": "d2ae0ebea75ab7fa7857b84cd184f211f7b0d8b621d86bbd20db9da088ceba08",
    "bytes": 552658
   },
   {
@@ -273,7 +307,7 @@
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p4.webp",
     "/read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.webp"
    ],
-   "html_sha256": "9dd3c285bfd1e6120a9afed5c139c0e058cdd2728b24c5fafa65d2ddefddedb0",
+   "html_sha256": "ee71f3eb1b772466f68d12ec28b2810a00b27bb6cacfcbb7447a36efdd24b8ea",
    "bytes": 815990
   },
   {
@@ -287,7 +321,7 @@
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p4.webp",
     "/read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.webp"
    ],
-   "html_sha256": "ae0d7ad3369f7c072f51b1a6a81afb311cfcc1a2f2beef940ade725575d75d68",
+   "html_sha256": "69c7780a3cf40c39d0f963598f411b6e02b5e4628748df7a893adefd52f16183",
    "bytes": 613708
   },
   {
@@ -301,7 +335,7 @@
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p4.webp",
     "/read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.webp"
    ],
-   "html_sha256": "3ae658169ff3f5f42cf8fb59b94f7b13be392f6c6a8a0d69f0221860497d43fd",
+   "html_sha256": "00b0438acce278497f9e095da20192260d178a4758705fa631bbe7d4cb022cbe",
    "bytes": 753430
   },
   {
@@ -315,7 +349,7 @@
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p4.webp",
     "/read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.webp"
    ],
-   "html_sha256": "db4bb89fabce545133766e6237f95aee198fa36052e1d16d3b573ab2eed63ac9",
+   "html_sha256": "4de1b6a7640ed0cdf2bf5b383955c791a4fc8f98f482144af5e46f3ee47eaaf1",
    "bytes": 546088
   },
   {
@@ -329,7 +363,7 @@
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p4.webp",
     "/read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p5.webp"
    ],
-   "html_sha256": "de96373248e5d6b9e206c390e53072ff0a4ec89533f19cd631699bc2dcf8fc7a",
+   "html_sha256": "b97bddfb869bded3017d534f3c971b26c18e9405004eb4bc2b4e095bfae661e8",
    "bytes": 976268
   },
   {
@@ -343,7 +377,7 @@
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p4.webp",
     "/read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.webp"
    ],
-   "html_sha256": "4494cd18ac0efe08e93ef0a3a4190fbff311205f3c85e621aebb700d24887b28",
+   "html_sha256": "a4aa25d0b19d95e1d1922194bed47867541ed898cd0fd3bb53ba21007d129d90",
    "bytes": 1122460
   },
   {
@@ -358,7 +392,7 @@
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p5.webp",
     "/read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.webp"
    ],
-   "html_sha256": "5515e1e422623e38e33936551756d29282bc18a9127166952232090a23eb473b",
+   "html_sha256": "7a3febcbe65539131d4a5db6c790913e82ae463b210bc1150fb49d9687793d15",
    "bytes": 1433510
   },
   {
@@ -373,7 +407,7 @@
     "/read/rosas-copan-report/pages/rosa-copan-report-p5.webp",
     "/read/rosas-copan-report/pages/rosa-copan-report-p6.webp"
    ],
-   "html_sha256": "eb0ea8ebad64d78892cc0c3231ee5d0a9ba10c912b1fc4f3c816a4f13be0e989",
+   "html_sha256": "df73ec911998e0c6a863cdcb31ae06742a33468aa263cbe603f50ada67f47a66",
    "bytes": 1431630
   },
   {
@@ -581,7 +615,7 @@
     "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p3-r2.webp",
     "/read/centi-peeds-garden-race/pages/centi-peed-garden-race-p4-r2.webp"
    ],
-   "html_sha256": "73dd3aa73ae19da99402154be57a3d24c4705b4ae14c2632b4280473775deb44",
+   "html_sha256": "3fee63d2781411e101a0ec68515b733ea1f4b7ac2ab09e46141c4aa82e550df9",
    "bytes": 667014
   },
   {
@@ -594,7 +628,7 @@
     "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p3-r2.webp",
     "/read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p4-r2.webp"
    ],
-   "html_sha256": "cedc1196ec156b1eb9d9a1f5252d7fa3f8ab95b058e36e68ba772f1016e1329e",
+   "html_sha256": "6543c4b5fe5bf5ba013286167518cedd6f0704157c52c37022e5436ae9b5cb39",
    "bytes": 493156
   },
   {
@@ -607,7 +641,7 @@
     "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p3-r2.webp",
     "/read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p4-r2.webp"
    ],
-   "html_sha256": "7c3174d383f7eb8d0ce36c60b0b5e58bfbcf5e9e299d96c69d40118bb8475d4b",
+   "html_sha256": "e5cee6feea3a5f3f8f549d91870d7f6f3474ce5aa9971cd759b564dd3717c77b",
    "bytes": 651064
   },
   {
@@ -620,7 +654,7 @@
     "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p3-r2.webp",
     "/read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p4-r2.webp"
    ],
-   "html_sha256": "dcf0ee7cccf04ff7d3aa1fc6aaa2fb14671da48ce5d538ede0a87fc3a5a93d70",
+   "html_sha256": "76e521d0c56178f614732533409db7777274dacdb25ae3e23b46c91d03fa72d0",
    "bytes": 676352
   },
   {
@@ -633,7 +667,7 @@
     "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p3.webp",
     "/read/luckybugs-art-gallery/pages/luckybug-art-gallery-p4.webp"
    ],
-   "html_sha256": "40932f852b6d4366f6db117b243814c0f6641c2e6fe2f26640b1cffeb78e19f3",
+   "html_sha256": "5f1d18e05dac3d885589d2a5a6731804c54ab367b58572939d3d02331041b330",
    "bytes": 552774
   },
   {
@@ -646,7 +680,7 @@
     "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p3.webp",
     "/read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p4.webp"
    ],
-   "html_sha256": "8ce8a24939b3246ea20c5a9fcf6d4c6014f794f638fc9f6d712471dc75ddeb69",
+   "html_sha256": "f66497f56590e1041449719d289dd345431b08c67a311e4e650a7e6a6dc406e2",
    "bytes": 560330
   },
   {
@@ -659,7 +693,7 @@
     "/read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p3-r2.webp",
     "/read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p4.webp"
    ],
-   "html_sha256": "ec77ac90e66722d65ce0869d3b537089eac45eec35d0751000663942237a4328",
+   "html_sha256": "e2f7fe7534143da66a1e3990bd9aab88c830228188ecbecd5949b3ceed0fa762",
    "bytes": 702920
   },
   {
@@ -672,7 +706,7 @@
     "/read/captain-beakons-air-show/pages/captain-beakon-air-show-p3.webp",
     "/read/captain-beakons-air-show/pages/captain-beakon-air-show-p4.webp"
    ],
-   "html_sha256": "cd8e9758c5d4571450b04205e25feb4dc34dc1662543916693e7cb5cb5dd4a02",
+   "html_sha256": "f819539da88cd94aa7ae9c374a9c6cbf0b19e800423df177fcea7f965c30bdef",
    "bytes": 555444
   },
   {
@@ -687,7 +721,7 @@
     "/read/ted-e-bear-and-the-button-trail/pages/page-5-r2.webp",
     "/read/ted-e-bear-and-the-button-trail/pages/page-6-r2.webp"
    ],
-   "html_sha256": "125013f701115eb4fe0ac82485477cb3b1312dae6b6ae65875918a59a2e3edff",
+   "html_sha256": "694dfc46d87c3e6421956c221e72792cc1d35473fd7038152ed11f7ca7c5f09f",
    "bytes": 1402566
   },
   {
@@ -702,7 +736,7 @@
     "/read/panda-cakes-market-basket/pages/page-5.webp",
     "/read/panda-cakes-market-basket/pages/page-6.webp"
    ],
-   "html_sha256": "12b22595af8e2b692846f4850af757d02a9869c7caecc42ff59c366e3fbc2da3",
+   "html_sha256": "53935d7264f61a234630175dd301044e55d3525aaf3163960ba2111eb297193a",
    "bytes": 842658
   },
   {
@@ -717,7 +751,7 @@
     "/read/sub-zero-and-the-snowflake-post/pages/page-5.webp",
     "/read/sub-zero-and-the-snowflake-post/pages/page-6.webp"
    ],
-   "html_sha256": "403edeaa6742740cdc41eba9040c2edfe560504cda7aa70647b54d84eacb6fbf",
+   "html_sha256": "54623ec08dacf887bed8725ccb0ad8bdf8874fd623e70e8d84e41fccd8d13b2c",
    "bytes": 1007364
   },
   {
@@ -732,7 +766,7 @@
     "/read/luckybugs-pairing-parade/pages/page-5.webp",
     "/read/luckybugs-pairing-parade/pages/page-6.webp"
    ],
-   "html_sha256": "15a76e9251cb05c9af6490ebc827f0d8ec2d8c54a54d9f331103dc4f5fa593c7",
+   "html_sha256": "14d39c2d94d338d001023cb59fdb243f79b753040cf1116eea8b5f07015bfa15",
    "bytes": 1102600
   },
   {
@@ -747,7 +781,7 @@
     "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-5.webp",
     "/read/corgi-on-the-cobs-ten-frame-picnic/pages/page-6.webp"
    ],
-   "html_sha256": "781c8d3d4802d040602edf3f8b03d240efb8bcfb5939f17b76d0e85273c87a11",
+   "html_sha256": "33e4f010c8ac3df244789962e78c2492819c8495eb714f3fbffd62a234de29b3",
    "bytes": 1361124
   },
   {
@@ -762,7 +796,7 @@
     "/read/honey-beats-and-the-number-neighbours/pages/page-5.webp",
     "/read/honey-beats-and-the-number-neighbours/pages/page-6.webp"
    ],
-   "html_sha256": "c5e877e755f1a04fdc3cb27c45212f43180c91a4e6154523618cf5dea8e9e38a",
+   "html_sha256": "736c327a8bafdd1235719cb6dfabb25ef75797b7136c5360ee1e532d12eb8cc0",
    "bytes": 1473564
   },
   {
@@ -779,7 +813,7 @@
     "/read/luckybugs-market-morning/pages/page-6-r2.webp",
     "/read/luckybugs-market-morning/pages/page-7-r2.webp"
    ],
-   "html_sha256": "7574f9c442414b21f1f7498f70e8ddccd6de985486f49760c9f241bd2d1e6acb",
+   "html_sha256": "3e7d86b321c86c9efa320f51d3ef53e371c7e29bf1127dc1d75be216d2e8b12e",
    "bytes": 1770366
   },
   {
@@ -796,7 +830,7 @@
     "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-6.webp",
     "/read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-7.webp"
    ],
-   "html_sha256": "2de2182737001a7b905f20df57203c7f217d21e92234e96424b9fd8186cfe19e",
+   "html_sha256": "85b66351379ef391945ba5f2c1c052a24d786aa6c7557a429ebe3c0143ca2db9",
    "bytes": 1243274
   },
   {
@@ -815,7 +849,7 @@
     "/read/biscuit-bouncers-parcel-parade/pages/page-8-r2.webp",
     "/read/biscuit-bouncers-parcel-parade/pages/page-9-r2.webp"
    ],
-   "html_sha256": "7164b5f08cc268db7c83a0741a24184c6889927bcefcd34a234a67cf84ff71ee",
+   "html_sha256": "e415839ec44fc5efa0f06366534df31c2790c0491a3bdea806d572a305e6f4c9",
    "bytes": 2247974
   },
   {
@@ -832,7 +866,7 @@
     "/read/booklava-and-the-number-that-lost-its-place/pages/page-6.webp",
     "/read/booklava-and-the-number-that-lost-its-place/pages/page-7.webp"
    ],
-   "html_sha256": "49af0802fd72e8477465b76aaaf3b244a575bb8cb88b2a26878a6ebd09351140",
+   "html_sha256": "692fc01fafebdff95b6d91ce7b3c70954c1d15f141febada0c29fbd02e835858",
    "bytes": 1135152
   },
   {
@@ -849,7 +883,7 @@
     "/read/pork-ulele-and-the-clockwork-concert/pages/page-6.webp",
     "/read/pork-ulele-and-the-clockwork-concert/pages/page-7.webp"
    ],
-   "html_sha256": "a6b371b34b39d25bbf5e471e7ddf949ef63416fe5f33eeb6aab5dd7e0f336b76",
+   "html_sha256": "990ef70bba50f3fb993ed62ca5741eacfa504fab8df5f98bd4e6ff2d01ae6cb8",
    "bytes": 1716398
   },
   {
@@ -867,7 +901,7 @@
     "/read/hop-tarts-stepping-stone-switch/pages/model-stepping-3-r1.png",
     "/read/hop-tarts-stepping-stone-switch/pages/model-stepping-4-r1.png"
    ],
-   "html_sha256": "67778830694d99136cdff7e00ec6d378a7915c7b6370e0ad36b8d381e21d323f",
+   "html_sha256": "73327c82612afffe4bab1e66246cca006f16bead46fcdb801af42fc55bbb1764",
    "bytes": 689635
   },
   {
@@ -885,7 +919,7 @@
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-3-r1.png",
     "/read/centi-peeds-below-zero-burrow/pages/model-burrow-4-r1.png"
    ],
-   "html_sha256": "8d7c6b67fe936c73eb752b66d0916369db0060acf20fb71553be39081f218eff",
+   "html_sha256": "8b7529a2fc28d0b89ecab074610297181305e510188814287006405ff1a885a6",
    "bytes": 785216
   },
   {
@@ -899,7 +933,7 @@
     "/read/wise-owl-festival-of-factors/pages/page-3.webp",
     "/read/wise-owl-festival-of-factors/pages/page-4.webp"
    ],
-   "html_sha256": "f1bfb957bf938217929819254b0162d49366dc4e581cee7bc92419f5c0a8b94e",
+   "html_sha256": "a37eadfa6f9cd6183349b26133d54a64ee5739918544afb99c7b707a77d0e86a",
    "bytes": 676320
   },
   {
@@ -931,7 +965,7 @@
     "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-5.webp",
     "/read/cereal-swimmer-and-the-number-line-lagoon/pages/page-6.webp"
    ],
-   "html_sha256": "88c2682571fc2da9200b6b92edf2640989addea148422e24cb9af70a99f3d098",
+   "html_sha256": "61c8fe595d2ffafa328003c2642da131ec8526a7cb143561195d0989a69a5976",
    "bytes": 1504588
   },
   {
@@ -946,7 +980,7 @@
     "/read/animal-architects/pages/animal-architects-p6.webp",
     "/read/animal-architects/pages/animal-architects-p7.webp"
    ],
-   "html_sha256": "33350baf4aaa25879ae74d3b543f2f5ba5e2536917d8a7d1fc67b6a0c2dd4347",
+   "html_sha256": "7ef4f320808fe8c1b141151e6406753fb68b3ab72cc4c325df803a676143ef73",
    "bytes": 1033782
   },
   {
@@ -964,7 +998,7 @@
     "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-7.webp",
     "/read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-8.webp"
    ],
-   "html_sha256": "ead313b9ce9d36995dc60c86f0c3ac81669b7664ca987253559c4be031fe0a4d",
+   "html_sha256": "b9fbef0f2ffe2bc4339566006c226e80bb8a380f46a659696f4571d9b9854567",
    "bytes": 1807350
   }
  ],
@@ -1028,6 +1062,32 @@
   "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p22.webp",
   "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
   "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp",
+  "/read/one-more-story-before-santa/",
+  "/read/one-more-story-before-santa/pages/cover.webp",
+  "/read/one-more-story-before-santa/pages/p01.webp",
+  "/read/one-more-story-before-santa/pages/p02.webp",
+  "/read/one-more-story-before-santa/pages/p03.webp",
+  "/read/one-more-story-before-santa/pages/p04.webp",
+  "/read/one-more-story-before-santa/pages/p05.webp",
+  "/read/one-more-story-before-santa/pages/p06.webp",
+  "/read/one-more-story-before-santa/pages/p07.webp",
+  "/read/one-more-story-before-santa/pages/p08.webp",
+  "/read/one-more-story-before-santa/pages/p09.webp",
+  "/read/one-more-story-before-santa/pages/p10.webp",
+  "/read/one-more-story-before-santa/pages/p11.webp",
+  "/read/one-more-story-before-santa/pages/p12.webp",
+  "/read/one-more-story-before-santa/pages/p13.webp",
+  "/read/one-more-story-before-santa/pages/p14.webp",
+  "/read/one-more-story-before-santa/pages/p15.webp",
+  "/read/one-more-story-before-santa/pages/p16.webp",
+  "/read/one-more-story-before-santa/pages/p17.webp",
+  "/read/one-more-story-before-santa/pages/p18.webp",
+  "/read/one-more-story-before-santa/pages/p19.webp",
+  "/read/one-more-story-before-santa/pages/p20.webp",
+  "/read/one-more-story-before-santa/pages/p21.webp",
+  "/read/one-more-story-before-santa/pages/p22.webp",
+  "/read/one-more-story-before-santa/pages/p23.webp",
+  "/read/one-more-story-before-santa/pages/p24.webp",
   "/read/panda-cake-discovers-her-abcs/",
   "/read/panda-cake-discovers-her-abcs/pages/letter-a.webp",
   "/read/panda-cake-discovers-her-abcs/pages/letter-b.webp",

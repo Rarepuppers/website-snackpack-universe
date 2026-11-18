@@ -2445,6 +2445,191 @@
       "pdf_sha256": "01190259fd1e533412e78ea3c3ea9e99db32b1ff181ecc68a278f3ebe8edd0be"
     },
     {
+      "slug": "one-more-story-before-santa",
+      "source_id": "web-christmas-one-more-story-before-santa",
+      "source_art": {
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/cover.png": "407c2a849c089c956feeb9e5bb1544064dbeebb2a0a8454a739a6eb9078743ef",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p01.png": "807e0b6e7e8eebdbc92e88217f716cf66247bdb27a06f7b18e8fa61339328917",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p02.png": "e6c5164cdec8527c358ca3ab008dc53033150615aab6917ae57dd1d2e7bcb359",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p03.png": "5fd1a6b83834335f7a63b693c474a31f15c0392dc1cbadf6b1dd7b87426f5b65",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p04.png": "364b3b9bd624dde8cacd09e0d1ca14a17be14286586827f923cb406a2e0825df",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p05.png": "99c2cb5107b48440596a1ffc5db5bd7ed334645bb4b8adfae179e730ed2a6c88",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p06.png": "aec79266e0ec7fe2994c260e180ba6624a09fb92c1b87c3efbf9c88f375b7eef",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p07.png": "686026315b3713c3ed1a0720e609e24443acafeeb22dbd13c0526af131a66f26",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p08.png": "4af54b8d8538dff3b099f8bfbae6ae7b7e08db34cb9d625e57a90c9a5508a958",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p09.png": "3ec00e076774bec9fb1310302c38dd35917bdb7aa905900c236fada7a1c3c500",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p10.png": "27d20d787818d3394ddb8514f58e68dfd12e78e57b62f0e554ea8e315186182b",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p11.png": "1de16ea816fee35233068c4ccba8938dab22458f8644d1a2772966a22b611965",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p12.png": "3e14b00525cacd0f410080f19b4a87a8d92371fc4af462f16ec66f10999b406d",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p13.png": "84925f59bdfe6ff645315d15839ef56b6d5bdbb083d056fab88fcdd523a7b267",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p14.png": "6907000d08a81a3523f890a183aec4f805584ea9a84793528b6106fd4cdd2355",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p15.png": "96bc92a42078b6535409b7baf56d52d10097b28c34c32c645be0d5fc7601cfd2",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p16.png": "cc8f2f9df07ca2e42894172e6cfbdbde55eac6580e230511e06906d33e2b6b2c",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p17.png": "ef06d1e0f86e957f02af3b23d6ac5038d733d06daa6857b3fddc54b6abece513",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p18.png": "0e983f609375d2f65851fb470608b0177027b837ee90c343e5f5e76d5a498a4d",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p19.png": "bcc5e23446339f0a71aecf92c057e5cbb3856a1848b39150468a8b6d39ceab39",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p20.png": "afd03439c084d04f291e8bc5c1e3d1cdeefdfcbadcf03c75bf7db830004a90d0",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p21.png": "2a10be33ec043634e76c115ad27c6c8ed418ac928238a56aba326814959da24b",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p22.png": "dfcd7087afb34938d03aca295ba13f8f54f0e197caeba4dbdf0e4a71ec13e1b8",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p23.png": "66187aae610159326bd8f28227ced4178cae991609b87f166a0aa858d21fa022",
+        "../docs/christmas-picture-books-2026/sequels/one-more-story-before-santa/p24.png": "6442e61e648c7e9b8a88b448b6f34757679fb60b391d5b476478f1212a05faed"
+      },
+      "text": [
+        "On Christmas Eve, Coop-Accino put three star biscuits on a blue plate. One had a bent point. \"That one looks like it's waving,\" she said. She turned it so it waved at the door.",
+        "Cluck O'Clock poured a glass of milk. The glass made a tiny clink when he set it down. \"I'd hear that from upstairs,\" he said. \"You can hear a biscuit break from upstairs,\" said Coop-Accino.",
+        "\"I'll listen,\" said Cluck. \"You look.\" \"And if one of us sees Santa, we wake the other.\" They tapped wingtips over the plate. It was a very quiet sort of promise.",
+        "On the stairs, Coop stopped. She could see the snow through the landing window, but the dark glass showed mostly her own beak. \"How will he know which house is ours?\"",
+        "Hen-Berry came up with the bedtime book tucked under her wing. \"One more story,\" said Cluck. \"A short one. We've got a lot of listening to do.\" \"And looking,\" said Coop.",
+        "Hen-Berry sat between their beds and opened the book. \"Once there was a little mouse who moved into a house with no chimney.\" \"None at all?\" asked Coop. \"A drainpipe,\" said Hen-Berry. \"And a very fine front door.\"",
+        "\"On Christmas Eve, the mouse drew a chimney on a piece of paper. She stuck it to the door. Then she went down the path to see how it looked.\"",
+        "\"She couldn't see the paper. She couldn't even see the door. So she fetched a little lamp and put it in the front window. From the end of the path, she could see the whole window shining.\"",
+        "\"Did anyone come?\" asked Cluck. \"Her grandad did,\" said Hen-Berry. \"He'd walked up and down twice looking for the right house.\" Coop shut the book with one wing. \"We have a little lamp.\"",
+        "Hen-Berry switched on the lamp by the front door. Back upstairs, she showed them the small patch of gold it made on the snow. \"We can keep an eye on that,\" said Coop.",
+        "Hen-Berry tucked them in and left the door ajar. \"Eyes open,\" whispered Coop. \"Ears open,\" whispered Cluck. For a while, all he could hear was Coop trying to breathe quietly.",
+        "Clink. Cluck sat straight up. \"The milk glass!\" Clink. The sound was coming from somewhere much closer than the kitchen.",
+        "Coop pointed to the bedside table. The chain of Cluck's watch was tapping the side of the brass bed as he wriggled. He tucked the chain under the watch. \"That's one thing we've caught.\"",
+        "\"Antlers!\" said Coop. Two dark points poked into the patch of gold. She held the curtain back. The points went down and came up again. \"There. Did you see?\"",
+        "Cluck squinted. A lump of snow slid off one point. \"That's the shrub by the step,\" he said. \"I know,\" said Coop. \"I was just seeing if you knew.\"",
+        "The snow grew thick. It covered the shrub, then hid the fence. Coop let the curtain fall. \"Eyes open?\" Cluck asked. \"Just resting them,\" she said.",
+        "For a little while neither twin spoke. Then the snow thinned and a strip of sky opened above the trees. Cluck saw something curved pass through it.",
+        "He touched Coop's wing. She lifted the edge of the curtain just as four small shapes crossed the gap. In front, two sets of antlers tipped up, then two more.",
+        "Cluck leaned sideways to look again. The bit he'd seen curved up at the front, like the runner on their little sled. A fine line joined it to the shapes ahead.",
+        "Then the snow closed over the gap. Coop pressed her beak to the window and left a little round mark in the mist. \"Did you see where they went?\" \"Past the trees, I think.\"",
+        "\"I saw the runners,\" said Cluck. \"I saw the reindeer,\" said Coop. They looked at each other, then up at the empty sky. Between them, they had almost the whole thing.",
+        "From his bed, Cluck could still see the patch of gold by the step. \"Should we go down and check the plate?\" Coop thought about it. Then she pulled her quilt up to her beak. \"Morning.\"",
+        "Cluck turned his pillow over to the cool side. \"Tell me your bit in the morning?\" he asked. \"If you tell me yours.\" This time their wingtips didn't quite reach.",
+        "\"Eyes open?\" whispered Cluck. Coop's eyes had slipped shut. \"Ears open,\" she whispered back. Down by the step, snow fell through the little patch of gold."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/one-more-story-before-santa/pages/p01.jpg": "7bcd849791e9d1fdcc8e63d5d7ecb85e2a908f9c9ff25123168619f6ddb01f75",
+        "read/one-more-story-before-santa/pages/p02.jpg": "bb1b902464067c3e9d8312c24055aae5481c4944e999ea650b4b736caddb8d7a",
+        "read/one-more-story-before-santa/pages/p03.jpg": "4f53a6ef0f2331d33c07feb6d36a7a1716181068c98aff5ac05dce11518ebd2f",
+        "read/one-more-story-before-santa/pages/p04.jpg": "4cc76fffb55121b3ac277b928e23393d33d70ad15e437b40a69711342d4936e0",
+        "read/one-more-story-before-santa/pages/p05.jpg": "dd3000a4454a2f68e403867c00af3a5aed63f70364bca5fabe64d70eeb2225f5",
+        "read/one-more-story-before-santa/pages/p06.jpg": "d2e66c86b5144375f5fdcfbd92cd8d536d20ec4617e429196698a2491059b14e",
+        "read/one-more-story-before-santa/pages/p07.jpg": "a31e285c4d22a47962360ebaa97bb38a059ac777baa5ab595105703f49135ef2",
+        "read/one-more-story-before-santa/pages/p08.jpg": "47bda93b82193d90757a275c31840be309d02767d49010f3b629495bdb23c95b",
+        "read/one-more-story-before-santa/pages/p09.jpg": "c07db9652151927b51c799eb9f6e09a3f61e3f65a52b91cb64ff5cdc46787436",
+        "read/one-more-story-before-santa/pages/p10.jpg": "eb801c40c48b37d0c75a7273b826d50ec1f6a4cbf3e1f3cce698638ae77a761e",
+        "read/one-more-story-before-santa/pages/p11.jpg": "30403430cc9476050739e48983292985c511a4a61d1ea59aca0ef6f4aa64dd0a",
+        "read/one-more-story-before-santa/pages/p12.jpg": "c6fa84e6edfd83f0029a15a52063438ad72233b1f5b46e498879d60a7b917c79",
+        "read/one-more-story-before-santa/pages/p13.jpg": "2b2c6505adc275647f55dc03592756f71299c6cb53b037f94497f374a6f37c41",
+        "read/one-more-story-before-santa/pages/p14.jpg": "a20ec4c9629a1f8563ba20a8cc77de32d0cb01d25e608ab4797979e70f4376c8",
+        "read/one-more-story-before-santa/pages/p15.jpg": "957c6cbb399ffd087d887b8b7f052bec09b3646299c925e4e44ae2b70f256abe",
+        "read/one-more-story-before-santa/pages/p16.jpg": "78d6ab483e75cde595d2fddb460b91ff5321dd5bf166a815acf3590bd8cbfc08",
+        "read/one-more-story-before-santa/pages/p17.jpg": "b85a83345dba01ea1eb5f3c926176ce355bdcd15c541cc5171752be4b37d337a",
+        "read/one-more-story-before-santa/pages/p18.jpg": "3e11f581798cd0e2d4fe7809c6f8b5cea1d694a0452731a49061d579321a1e65",
+        "read/one-more-story-before-santa/pages/p19.jpg": "9422d568e55bfaba9fca837359af6244df7ca54a0b55a246621c7953de8c6758",
+        "read/one-more-story-before-santa/pages/p20.jpg": "d06b971a8a63a5d6c683bb390edd7e5abdf391979b136ddc250dfc656d2ef376",
+        "read/one-more-story-before-santa/pages/p21.jpg": "2f7ec24ac68b7e4a6a43ceec35f885525ef1d8fa0109968eaec09dbfae513fe4",
+        "read/one-more-story-before-santa/pages/p22.jpg": "fb15a83a6c3b202dd25fb1305d97a0c1ff13e00cfff6c0f3533fedc3af14ab0a",
+        "read/one-more-story-before-santa/pages/p23.jpg": "4ed91b7fe3b39f09d8bb1760999db2410eb4b3fca8687db755786665f1db1c09",
+        "read/one-more-story-before-santa/pages/p24.jpg": "60a16f1ba12f549c8f875788da9bf39d2b30ae7b11a9f745f7cf525d574a057d"
+      },
+      "pdf": "read/one-more-story-before-santa/one-more-story-before-santa.pdf",
+      "pdf_sha256": "735f001aec984ce80d8bdce0d2a7a8413dbed6cea26d01c15ad4b3c6cb67ab42"
+    },
+    {
       "slug": "panda-cake-discovers-her-abcs",
       "source_id": "panda-cake-alphabet",
       "source_art": {
