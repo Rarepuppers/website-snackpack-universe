@@ -6,18 +6,20 @@ export function nextChoices(shelf, slug, collections = []) {
   const excluded = new Set([slug, ...(peers?.books || [])]);
   const ordered = shelf.slice(index + 1).concat(shelf.slice(0, index));
   const phonics = /^stage-/.test(book.group) || book.group === 'trail';
+  const appropriate = b => !book.age || !b.age || (b.age[0] <= book.age[1] && b.age[1] >= book.age[0]);
   const next = phonics ? shelf.slice(index + 1).find(b => /^stage-/.test(b.group) || b.group === 'trail') :
-    ordered.find(b => peers?.books.includes(b.slug)) || ordered.find(b => b.group === book.group);
+    ordered.find(b => peers?.books.includes(b.slug)) ||
+    ordered.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
   const choices = [];
   if (next) {
-    const label = phonics ? (next.group === 'trail' ? 'Next Reading Trail practice · read together' : next.group === book.group ? 'More practice at this stage' : 'Next phonics stage · when ready') : 'Related read-together book';
+    const label = phonics ? (next.group === 'trail' ? 'Next Reading Trail practice · read together' : next.group === book.group ? 'More practice at this stage' : 'Next phonics stage · when ready') :
+      next.readingLevel ? `Related book · ${next.readingLevel.toLowerCase()}` : 'Related read-together book';
     choices.push({book:next,label}); excluded.add(next.slug);
   }
-  const appropriate = b => !book.age || !b.age || (b.age[0] <= book.age[1] && b.age[1] >= book.age[0]);
   const eligible = ordered.filter(b => !excluded.has(b.slug) && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
   // Stable variety uses the source shelf position, without random or personal
   // history. A single first-match fallback sent most stories to the same book.
   const wider = eligible.length ? eligible[index % eligible.length] : ordered.find(b => !excluded.has(b.slug) && appropriate(b));
-  if (wider) choices.push({book:wider,label:wider.group === 'numbers' ? 'Explore a number story · read together' : 'Explore another book · read together'});
+  if (wider) choices.push({book:wider,label:wider.group === 'numbers' ? 'Explore a number story · read together' : `Explore another book · ${wider.readingLevel?.toLowerCase() ?? 'read together'}`});
   return choices;
 }

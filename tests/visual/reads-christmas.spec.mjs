@@ -4,6 +4,8 @@ const books=[
  ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow',24],
  ['one-more-story-before-santa','One More Story Before Santa',24,'Ages 5–7 · Read together'],
  ['the-last-parcel-under-the-tree','The Last Parcel Under the Tree',26,'Ages 7–9 · Newly independent'],
+ ['sub-zero-and-the-great-snowball-truce','Great Snowball Truce',24,'Ages 5–7 · Read together'],
+ ['captain-beakon-and-the-bell-across-the-bay','Bell Across the Bay',44,'Ages 12–14 · Independent reading'],
 ];
 for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});
@@ -27,4 +29,16 @@ for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader
  expect(errors).toEqual([]);
  await page.goto('/read/?q='+encodeURIComponent(query));
  await expect(page.locator('.read-library-card:visible')).toHaveCount(1);
+});
+
+test('the harbour mystery is discoverable by age and can open a chapter directly',async({page})=>{
+ await page.goto('/read/?type=stories');
+ await page.getByRole('button',{name:'13–14',exact:true}).click();
+ await expect(page.locator('.read-library-card:visible')).toHaveCount(1);
+ await page.locator('.read-library-card:visible').click();
+ const chapters=page.getByRole('navigation',{name:'Chapters'});
+ await expect(chapters.getByRole('link')).toHaveCount(7);
+ await chapters.getByRole('link',{name:'The blue boathouse'}).click();
+ await expect(page).toHaveURL(/#page-31$/);
+ await expect(page.locator('#page-31').getByRole('heading')).toHaveText('The blue boathouse');
 });

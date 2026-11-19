@@ -1,0 +1,988 @@
+{
+  "schemaVersion": 1,
+  "id": "sub-zero-and-the-great-snowball-truce",
+  "title": "Sub-Zero and the Great Snowball Truce",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "ageRange": "5–7",
+  "readingMode": "read-together",
+  "readingLevel": "Read together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 831,
+  "blurb": "Sub-Zero wants to slide. Biscuit-Bouncer wants to throw. When Hop-Tart’s snowball rules fill the field with flags, the friends invent a game where both teams can win.",
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "8c1ba76bc0dfabc60d93634715bffbb8548e48f5f02805ab2d2658aac3cee69a",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 274698,
+        "sha256": "4660c844481229fd54f1301567d52bb6e8dfe7800aa38a1999e1cc6ce8497243"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 194362,
+        "sha256": "ba75ed4201edd31d3666f3605e3f7421f20715979b56d48acc3d56fcdaee61c4"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 86492,
+        "sha256": "fd3b01b05e6eb07979f30afcff2853586554977d04eee10351c06fa735b5a8b7"
+      }
+    ],
+    "review": "accepted after checking cast, prop continuity and page action",
+    "generator": "built-in imagegen",
+    "alt": "Sub-Zero slides in the snow as Biscuit-Bouncer holds up a soft snowball."
+  },
+  "pages": [
+    {
+      "number": 1,
+      "text": "The morning after Christmas, snow covered the whole hill.\n\nSub-Zero slid down on his tummy. At the bottom he slid a bit farther, just because he could.\n\n“Still going!” he called.",
+      "illustrationDirection": "Low snowy hill view. Sub-Zero glides downhill on his belly, blue-mittened wings out. Long track behind and gentle, open runout ahead.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e779e1339f1bc443068a3edb1eb302db716a6b876de4d0df3600a23f630c5844",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 196624,
+            "sha256": "b9bc3d0f6d345ab5ee871957a27ff27335b46365876e25cd98daa9ca83575bfd"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 139776,
+            "sha256": "0ea20ddc7c99f8ee5f5cfa8a2723f28b6c5aadcc8ae8082c0067a6bf5ad6ba3a"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 61828,
+            "sha256": "ca213f0b70d09a052e0d096224a84ff4e43c3b3f73fb3b6cb1bc52ac6d72a607"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Sub-Zero slides on his tummy down the snowy hill."
+      }
+    },
+    {
+      "number": 2,
+      "text": "Biscuit-Bouncer scooped up a soft snowball. He threw it at the stump.\n\nPoff!\n\nA little white cloud rose from the bark.\n\nTwo Baby Bulldogs bounced out of the snow. “Let’s play!”",
+      "illustrationDirection": "Biscuit at the stump, with a fine puff of loose snow on the bark. Two Bulldogs pop up beyond it.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cb1dc9314ce607332ffced9156fd0087bfc2ef24a76d137dd2ca1fead4c6ad99",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 282624,
+            "sha256": "ca7f5106f9e234783281783115ebb3779c6b3f3abc41e43bf7846ec18ca40a85"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 196706,
+            "sha256": "de8b32f4ed8f20f506335d400d62acebe60cb3ccb067d1d6bce6626f26f95402"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88468,
+            "sha256": "f5abb8509528afb304743a6bc1dd7d833567699e1b81eeb16ede97c6ddc832f8"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer hits a stump with a soft snowball as two Bulldogs pop up."
+      }
+    },
+    {
+      "number": 3,
+      "text": "They made two teams. Sub-Zero and the brindle Bulldog wore blue mittens. Biscuit and the fawn Bulldog wore red.\n\nHop-Tart climbed onto a flat stone. His yellow hat was easy to spot.\n\n“I’ll keep score.”",
+      "illustrationDirection": "Wide field view. Blue pair left and red pair right. Hop-Tart is between them on a grey stone, in a yellow knit hat and green-striped jumper.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7aa0660269546111048a89372e548db7af8de0541b4d60243733c9ff85d43b68",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 194736,
+            "sha256": "0d4c11a869ad66fd0525ea246a4b09b9809a75d9ad1c8deaea12c86966776112"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 138084,
+            "sha256": "cc81be26faefd0d0ede1467e1aea8838e55acef051ad51e6fa2c216dce6d6b85"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 65822,
+            "sha256": "50aee4d4c0556d3f57c163a37464a1592f5ab0564f7910672abdd0df002dd99b"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop-Tart stands on a stone between the red and blue mitten teams."
+      }
+    },
+    {
+      "number": 4,
+      "text": "Hop-Tart waved a white flag.\n\n“Throw at coats, low and soft. When I lift the flag, everybody stops.”\n\nBiscuit rolled his first snowball. Sub-Zero packed his just tight enough to pick up.",
+      "illustrationDirection": "Low from behind loose snowballs. Hop holds the white flag where both teams can see it. Show their gentle scooping and packing gestures.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c4cfc9362cddc5d4c956cceb0cf0212faa28fe9c487fef974b1a757f3073033c",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 257194,
+            "sha256": "f757a818edabbdf9788e704d8138f517c494e548d365ddce6c0d35a2f9093184"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183916,
+            "sha256": "1c90634d81b7512d64ab3d6146917c8701aa8428e17f00996fc6f8ed26bfacf6"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 84344,
+            "sha256": "17f990057afb422b8cc7da994a26ac394250443c796993b98218492201b719f2"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop-Tart holds a white flag while the teams roll soft snowballs."
+      }
+    },
+    {
+      "number": 5,
+      "text": "“Ready?” called Hop.\n\nFour mittens went down.\n\n“Go!”\n\nFour soft snowballs went up.\n\nOne landed on a stump. One went nowhere much at all.",
+      "illustrationDirection": "A burst of action, with loosely packed snow in an irregular low line. Catch one ball striking the stump and another landing nearby.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7771c70b579c3c51e01a22da7571bd58671dfd329ee624bd571804b33e73bfb9",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 285342,
+            "sha256": "739f904ba93e11d45eb0fd9b795540800964bb89b2d5f5eafc3c01485c8a8af3"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 202282,
+            "sha256": "312112a68b58d08310ebaceb56f3da7cc30007454fd2fac0c1b801b0fbb5bee6"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88916,
+            "sha256": "9f5f9885927e2a42ca94d2206cef3b63fad27602179a3c247cdace939725f051"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "The first throws send little puffs of snow across the field."
+      }
+    },
+    {
+      "number": 6,
+      "text": "Biscuit’s snowball caught the blue Bulldog on the hem of his coat.\n\n“One to red!” called Hop.\n\nThen Sub-Zero slid past Biscuit. Biscuit spun to see where he’d gone.\n\nPoff! Snow caught the back of Biscuit’s coat.",
+      "illustrationDirection": "Biscuit turns from one soft puff on the blue Bulldog’s coat hem. Sub-Zero glides past and a second puff sits low on Biscuit’s back.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3a9c9acc5f916c33e9a460aa19f39b4d84bfcf4d388b899096de026b528a1e9f",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 244820,
+            "sha256": "ed9bdb08c5c019f0c2ce0dd9d5a21aba6e2775c030915b17ca2b9f88a63d7dc5"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 174772,
+            "sha256": "22390f60ce6257a9a246332c9f316b33a3b210f74732e3a4ed2087e81aaef134"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 80362,
+            "sha256": "4640f7c56a1cd1afa6daf6cdad466a315ad2cceea32415a64f7827a1724d3b2b"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Sub-Zero slides past as a little puff of snow lands on Biscuit’s coat."
+      }
+    },
+    {
+      "number": 7,
+      "text": "“That was very quick,” said Biscuit. He shook out his coat.\n\n“Can I have a spot where I can stop?”\n\n“Of course,” said Hop. He pushed a yellow flag into the snow. “Rest beside this one.”",
+      "illustrationDirection": "Quiet side view. Biscuit shakes the hem of his coat and Hop sets one yellow flag in an open space near the fence.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c548bc2076bcc4336e14c1cfcede69513a86a042087171577e8bdd91a8ecaf74",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 203216,
+            "sha256": "10f54674ca5e778ceef30c188c49e8dbd458dd2819331a1d433be104bec42ac6"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 147232,
+            "sha256": "facace42f0fb935c861f32e97834058b3cd7294bf7929a97c801a94da3985ee3"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 68010,
+            "sha256": "79735f54cce1b78c65006b9f7cf96dbd1cc86d7fc5253c0cc91154e24d041052"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop brings a yellow flag to mark a spot where Biscuit can rest."
+      }
+    },
+    {
+      "number": 8,
+      "text": "The fawn Bulldog wanted a spot to roll snowballs. Hop put up a red flag.\n\nSub-Zero asked for a clear bit of slope to slide down. Hop put up two blue flags.\n\n“Easy,” said Hop.",
+      "illustrationDirection": "High enough to establish new markers. One red flag beside a little rolling patch and two blue flags down the gentle slope. Keep the yellow rest flag in view.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2f9f98b2556b6170b6c56aa7f73e1379effa34f59e5dbd738ebb3ec6e2554fed",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 267114,
+            "sha256": "0f25ee5ce394884af45289fab43bea51db4db5d2529568c0142cfba70ffe168f"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 188792,
+            "sha256": "1d5bcbf2947de23c7b412be3eb7832d83aac0434315f3675fa22f71263b4d95e"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86146,
+            "sha256": "0b18bde432b1792642b47db6e62168cd0415d889c7d5853b83632ec0ca3e0346"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "The field now has a red rolling flag and two blue flags on the slope."
+      }
+    },
+    {
+      "number": 9,
+      "text": "Then the blue Bulldog asked where all the good snow was.\n\n“By the little drift,” said Hop. He put a green flag there.\n\n“What about the big drift?”\n\nHop had one green flag left.",
+      "illustrationDirection": "Hop holds a spare green flag at the large drift, with the first one already planted by a small drift.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "73825a1ad14acbba672dad7b9db3f0a5bac5025da96651ade3fd1fe135dc7e9c",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 221660,
+            "sha256": "6153e5cec0beb9eb782bd6ed0180aac52170bf8fc75b7e3679c70827552536c6"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 159622,
+            "sha256": "18de518cae73d4cbe4cab0f27561631830699c5fed352bf62caa915b92f2a53b"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74442,
+            "sha256": "d12ff72aa76fa7577b0d7aadb7c05fb4d653f70293d2919118174510ce4706b6"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop has one green flag left after marking the little drift."
+      }
+    },
+    {
+      "number": 10,
+      "text": "Biscuit rolled a snowball by the yellow flag.\n\n“Red is for rolling!” called the fawn Bulldog.\n\nSub-Zero slid between the greens.\n\n“Did green mean go?” he called.\n\nHop opened his mouth. Then he closed it.",
+      "illustrationDirection": "Wide comic confusion. Biscuit has a ball by yellow, fawn Bulldog points to red, Sub-Zero glides between two greens. Hop looks across all six small flags.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6ba3f29511498a6c3ed3468b7d329ae4075b877731b6134a01186285f7c94607",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 289806,
+            "sha256": "cb3f11da52b698cf8319ac93d283f32184bae7eea3d132cfa992ca67d8c35a98"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 211242,
+            "sha256": "60f96a23c81bc34e26d875ebebe657dbf17b2b251d3f4e48350f79e26677fb18"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98368,
+            "sha256": "e81d076eff4c3e3845d24af7a05ec82b7dce1845cb328204713b1fe34a7fabb7"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Everyone moves towards a different flag and Hop pauses on his stone."
+      }
+    },
+    {
+      "number": 11,
+      "text": "“Stop,” called Hop, and raised the white flag. He took off his yellow hat to shake out the snow.\n\nHe hooked the brim over a peg on the low fence post. The hat hung open side up.\n\nThe whole field stopped.",
+      "illustrationDirection": "Freeze the players in the distance. Near crop shows Hop’s bare ears and one white flag as he hooks the yellow hat’s brim on a low peg. Show its open mouth facing up.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "db94f8b2931eb58d30e4960f1f37d6f49798cfa8d15d1125d60ed9ba39fff3dc",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 219782,
+            "sha256": "f054d246f4615cee3c063b4d81e06ed5e13037c1e596ce583ce9d0375f13228e"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 149186,
+            "sha256": "34167684ad3d95b1808e6e485d4c47cdd57e30b0b97d8430a2da2b844b116caa"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 66720,
+            "sha256": "3f1545cd3773a66053977c447f3b0591a0f3dfd338de29e995d4861fefe01aca"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop raises the white flag and hangs his yellow hat open side up on a fence post."
+      }
+    },
+    {
+      "number": 12,
+      "text": "“Would you like a bigger rest spot?” Hop asked Biscuit.\n\nBiscuit looked at the flags. “I like throwing,” he said. “I don’t like turning round and finding snow on my back.”\n\nSub-Zero sat down beside him.",
+      "illustrationDirection": "Calm two-shot at eye level. Biscuit sits beside the yellow flag, surprised rather than cross. Hop listens as Sub-Zero settles beside him.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f2f74a5b030b3487d4022991b14923802edfbbc43f74a9c880c699108044fbd8",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 228606,
+            "sha256": "61e4ea17b424e80ba308c7a576d96ae11e4ac5e40919329917a801b9ddbdf99b"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 167406,
+            "sha256": "1cfef6c424bf8804267a8a6dbbba9fa2547831845fd19f592643ffda2eebfd90"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 77044,
+            "sha256": "feb5d4e18b8155bd34afa4e7289b18b86bd3a588760b21f815c492c2af1c5b70"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop and Sub-Zero listen while Biscuit says what part of the game he enjoys."
+      }
+    },
+    {
+      "number": 13,
+      "text": "“I mostly like sliding,” said Sub-Zero.\n\nThe blue Bulldog thought about that.\n\n“I like rolling a great big snowball.”\n\n“I like knocking things over,” said the fawn Bulldog.\n\nHop looked towards the fence.",
+      "illustrationDirection": "The group sits in snow, hearing three different favourite parts. Hop’s gaze leads towards the fence.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bf1adcb270974b596bd9548f25cdac123dfa5c8edfdf697afd5684a1d8e68276",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 276380,
+            "sha256": "f5e80ff73a54cd41bf0da9753f7d217ce41e387774b353c65918f44196f7c9fb"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 195298,
+            "sha256": "ba61d155a75deca166535f2f431a46b004454be0018dc4740392d7aaced86529"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 89414,
+            "sha256": "4eb71d87ebb840444e356c17ad101166b118f8674c416e024359c1bfc053fbcb"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "The players sit together as Hop-Tart looks towards the fence."
+      }
+    },
+    {
+      "number": 14,
+      "text": "Three empty tubs stood under the fence rail.\n\n“We could throw at those,” said Biscuit.\n\nHe tipped one over with a soft snowball.\n\nSub-Zero slid over and set it up again. “I could do that all day.”",
+      "illustrationDirection": "Introduce three empty lightweight tubs under the rail. One is tipping from a soft snowball and Sub-Zero glides forward to reset it.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5d0c6841d613dec302f6c173188d79a7f32867fdb08255b96b8657578b2ef97b",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 207624,
+            "sha256": "04cacedf0d495f18d6dd00d25f5e0db5bc24655fc566581a12c40036ce98d768"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 148196,
+            "sha256": "ace9ec5fadddcce09ac7408ac792f26c6b0c8cf905d29a2dd2567024b13ec749"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 68182,
+            "sha256": "24509373845ae479796d9cd104e91d17047d0f32e3eb6faa63ebd787bbc8e705"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "A soft snowball tips one of three empty tubs and Sub-Zero slides over to reset it."
+      }
+    },
+    {
+      "number": 15,
+      "text": "They set all three tubs on their rims in a row. They pulled up the little flags.\n\nHop kept just his white flag.\n\n“Throw on my ‘Go’. When the snow lands, I lift the flag. Then the sliders can go.”",
+      "illustrationDirection": "Wide enough to show new lanes. The three upside-down tubs line up between throw line and fence. Hop keeps only the white flag.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e603d651691f633b42501ba6cd2defe9d86af1999b31f6b5ccf4e219c6d3ceb6",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 217150,
+            "sha256": "447853ef73cc6ffd569b080bd4a13d7f581267acf670012e232a817794f00818"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 155816,
+            "sha256": "9bcb539fbbed92124c8886a200a08da973664601760bd48f520ac42d0cdda34f"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 70396,
+            "sha256": "90abf608f75806bb726d785794740b1bb6b95cc259306073240672c6d6123e68"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "The friends line up three tubs and collect the small coloured flags."
+      }
+    },
+    {
+      "number": 16,
+      "text": "“Do we still need teams?” asked the brindle Bulldog.\n\n“We can wear our mittens,” said Biscuit.\n\n“Let’s see how many turns we can finish together,” said Hop.\n\nHe held up one paw to count.",
+      "illustrationDirection": "Mid-shot. Blue and red mittens stay clear. Hop raises one paw and holds the white flag in the other as both teams gather.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2c664645da7aad12dfe46c07ff43f65e394e60815ba3ca15a5997e67105cadee",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 297856,
+            "sha256": "82efd4e17bf6b91c2cb96e030c01d7d6e2214474d1d49a7c1c711b423cd7ac8a"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 210292,
+            "sha256": "2900df3cb03fd30c4d6a6f1201c92bd54ad9afd6263e0598922c5b7580ba7380"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94292,
+            "sha256": "4477df9b5e3f034de82a95294188856a6097542ac7da775c6e1ad32c92de215f"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop counts one practice turn while both mitten teams gather behind the line."
+      }
+    },
+    {
+      "number": 17,
+      "text": "“Ready? Go!”\n\nBiscuit and the fawn Bulldog threw at the tubs.\n\nPoff! Poff!\n\nTwo tubs tipped. The little one wobbled and stayed up.\n\nHop lifted the white flag. Everybody waited until the snow had landed.",
+      "illustrationDirection": "Dynamic target view. The two red players stand behind the line. Two empty tubs tip and the small one wobbles. The blue players wait behind them.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5db209b98ffa6bf951ef9dbd4be7a6b544e5a33728e03e78e12f9111680d9055",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 229274,
+            "sha256": "e13c936f0835c60eb12034a07f65b4b3613d7f36263410ed8d5f70f299d65eb7"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 151078,
+            "sha256": "b3340ed6aa02c17a7abbe8ed03809b25ab92ec63bfd23ae9d867459c63dbd416"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 63596,
+            "sha256": "2d7cb8dfb6898891eeffb65b08e3626c48943f61509c88af6dcaa574e2417d90"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Two of the three tubs tip over as the blue players wait for their turn."
+      }
+    },
+    {
+      "number": 18,
+      "text": "“Sliders ready?”\n\nDown went Sub-Zero and the blue Bulldog.\n\nUp went the tubs.\n\nSub-Zero slid past the last one, scooted back on his bottom and gave it a little pat.\n\n“Still going,” he said.",
+      "illustrationDirection": "Low diagonal from beside the sliding lane. Blue mitten pair slides in once the field is clear. Sub-Zero pats the final tub back into place.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "de21b186aa77bd01b5fbda1fcadb2cec70d61f4200afb94634693949c57899b9",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 197352,
+            "sha256": "9f900e42e37d6bcb8b020d6424e2b88e58ac574fcb006e0ffaa8e33fc7280884"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 140174,
+            "sha256": "e441ba019cb67f256a8d7a699face6356c302ac96cd0ede241b283a58efcb406"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 62776,
+            "sha256": "7681890a5ef38c041bb2a5faa239659e4eb7386de47632d048502198617b5c73"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Sub-Zero and the brindle Bulldog slide in to set the tubs upright again."
+      }
+    },
+    {
+      "number": 19,
+      "text": "The Bulldogs swapped places. Hop played a turn, too. His first snowball rolled along the ground and stopped just short.\n\nThe fawn Bulldog set her paws on a tub anyway.\n\n“I’m practising,” she said.",
+      "illustrationDirection": "Show Hop’s first gentle roll stopping just short of the nearest tub. The fawn Bulldog leans forward with red mittens against a tub, ready to practise.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e11a77a0fee30c814e84b8e44cdb6fc098c6ea0ff4c46110fcc973419dd8dcc1",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 224460,
+            "sha256": "fc1d65a969c10898a429ce640eaed5f2a42d7b051a8c92a061e55559b0355c10"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 162988,
+            "sha256": "db39524565e4db5d34b921cb67cf26ae95260ee87c4867ae246fdf2d88a92f5c"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74932,
+            "sha256": "78daf3461f4bcd95d5c87db515078bce8d2ca7b5f96a2be1ef7d3fba06d03b4f"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop’s snowball stops short while the fawn Bulldog practises setting a tub upright."
+      }
+    },
+    {
+      "number": 20,
+      "text": "“One last go,” said Hop.\n\nBiscuit picked up a snowball as soft as a bun. Hop dropped the flag.\n\nBiscuit threw. The little tub tipped. The snowball bounced off its rim and went up towards the fence.",
+      "illustrationDirection": "Keep the red puppy and small tub clearly connected. The soft snowball arcs after brushing the rim. Catch the motion before it reaches the post.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c93a11dbc9048b005e59d088f2c8b8f0e7361011d231e26a459a44ab6beaff74",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 270666,
+            "sha256": "ea3d1637d6788fcf931126f8acec475f22eca6f94be87cbd202d61dfbadefe03"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 187290,
+            "sha256": "b295cd1f09ee181c1318655a4adb2a5942f42c309e7d6e28aceb2fe520706f9c"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85304,
+            "sha256": "0dc05288e96eae2c1a6ba00d6ee97c7952451e91dc0412b39f2b43b29be6b3f8"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit’s last snowball bounces off the rim of the smallest tub."
+      }
+    },
+    {
+      "number": 21,
+      "text": "Plip.\n\nThe snowball dropped straight into Hop’s hat.\n\nEveryone looked at the hat. It hung a little lower than it had before.\n\nHop looked down at his flag. “I didn’t make a rule for that.”",
+      "illustrationDirection": "Close-up of the single soft snowball dipping into the open yellow hat on the peg. Hop’s ears and white flag enter at the edge.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4e42e4390bd7ae3a6a9f2139bc221e46276c3d53d5e248b996f5e39ebf5f6230",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 230190,
+            "sha256": "1b2d088ea293c16a501703c109233992fc42c4f84cd872e8b772a49bb7d36ea4"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 165896,
+            "sha256": "02b520d13283946c409870631cb3b80a69ec0eaf7f2772ef3107e52da23b870a"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74170,
+            "sha256": "14b60621df2a711cc7d17326d7e1fc5bc98b6d4c7ef4d745fda192836f1e761b"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "The snowball drops into the yellow hat hanging from the fence post."
+      }
+    },
+    {
+      "number": 22,
+      "text": "Sub-Zero slid over to the fence and took down the hat.\n\n“One point to yellow,” he said.\n\n“I win?” asked Hop.\n\n“The hat wins,” said Biscuit. He tipped the snowball into the empty little tub.",
+      "illustrationDirection": "Sub-Zero passes the hat down to Biscuit, who tips its snowball into the open upright little tub.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "789dc4fa2163915b392881d599c84de74553523040747dd05b0beb3820dd9f2b",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 240334,
+            "sha256": "e8bf1e4ab5546f0403779e5b205f73d43347b3a1adc613aeaec29051aebb14a9"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 172046,
+            "sha256": "7a78e8e2f02862935c79fb42c4d5648c67e97342792364c110ee379578b01821"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 73420,
+            "sha256": "8649b5b4fc59df8c626c5389c55d688575225c7c395173691216c71b945f0637"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Sub-Zero hands down the hat and Biscuit tips the snowball into the little tub."
+      }
+    },
+    {
+      "number": 23,
+      "text": "They went to the bench for cocoa. Hop turned his hat right way up and put it on.\n\nA single bit of snow slid down his ear.\n\n“Can the hat have another go tomorrow?” Biscuit asked.",
+      "illustrationDirection": "Warming group at a wooden bench below a low shelter. Five small cups of cocoa. Hop wears his same yellow hat and one clump has just slid down against his ear.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aba793ae4e18d1d697bf1e065a338328d44eaf8781805d001908cef5fd20997c",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 307504,
+            "sha256": "d3ec4cc870c94d8cb021eb35a9448206419e4c35e796031cbd41d7cc846afae8"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219106,
+            "sha256": "3da43a6a1059e9e63fc30a98fcb42b7c81816a150106b399c37fe31b24b665f0"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95800,
+            "sha256": "97e82172160e90bf55054e44d436f011d9892035ec44a48e72d53be07eef8b4c"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "A bit of snow slides out of Hop’s yellow hat as the friends have cocoa."
+      }
+    },
+    {
+      "number": 24,
+      "text": "Hop tucked the hat under his arm.\n\n“The hat is resting.”\n\nBelow the bench, three tubs waited in a row. In the smallest one sat a snowball, shaped almost exactly like a yellow hat.",
+      "illustrationDirection": "Low view beside the bench. Three tubs sit in a row. The small red tub contains the snow from the hat. Hop tucks the hat under his arm.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "46db765e95e9aaf0a081b9454383e7d85bd4629387bcd30e7dadb21a455a853d",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 248040,
+            "sha256": "ad9cadb3249ddc9abb4ddeede385a9c66226c96606bc39d4afb1a35a7553c12d"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 176952,
+            "sha256": "e3c59c0e0e80fccc1c02ba2c32cb73d10f96ee928e6d3d81eec2e5d85a49920b"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74540,
+            "sha256": "cda301428ba3ac79f1ffdd25e085e271fa73c607abca1a70a96ed88ed3055bc6"
+          }
+        ],
+        "review": "accepted after checking cast, prop continuity and page action",
+        "generator": "built-in imagegen",
+        "alt": "Hop tucks the yellow hat under his arm while its snowball rests in the smallest tub."
+      }
+    }
+  ],
+  "sourceFolder": "sequels/sub-zero-and-the-great-snowball-truce",
+  "webSlug": "sub-zero-and-the-great-snowball-truce"
+}

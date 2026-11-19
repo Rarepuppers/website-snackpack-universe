@@ -23,6 +23,11 @@ for(const [slug,manifest] of Object.entries(registry)){
  assert.deepEqual(owner.pages.map(p=>p.text),book.pages.map(p=>p.text));
  const html=fs.readFileSync(path.join(root,'read',slug,'index.html'),'utf8');
  const cards=[...html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m=>m[1]);
+ const chapters=cards.flatMap((card,i)=>{
+  const heading=card.match(/<h2>([^<]+)<\/h2>/);
+  return heading ? [{firstPage:i+1,title:norm(heading[1])}] : [];
+ });
+ assert.deepEqual(chapters,(book.chapters??[]).map(c=>({firstPage:c.firstPage,title:norm(c.title)})),`${slug}: published chapters differ`);
  const paragraphs=cards.map(c=>[...c.split('story-page-copy')[1].matchAll(/<p>([\s\S]*?)<\/p>/g)].map(p=>norm(p[1])));
  assert.deepEqual(paragraphs,book.pages.map(p=>p.text.split(/\n\s*\n/).map(norm)),`${slug}: paragraph breaks differ from the manuscript`);
  const text=paragraphs.map(page=>page.join(' '));

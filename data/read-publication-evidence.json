@@ -397,6 +397,331 @@
       "pdf_sha256": "a0f427b9a337be98ef1212ed376d846007bfdfd0583ce0826a119e2434a6aba0"
     },
     {
+      "slug": "captain-beakon-and-the-bell-across-the-bay",
+      "source_id": "web-christmas-captain-beakon-and-the-bell-across-the-bay",
+      "source_art": {
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/cover.png": "0356daeb3372b8a336e0bb73a9eb29ef4d44c9fbbc352323c14c875e0baff9ee",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p01.png": "319e2469ab7d3841989062f1c26da6f88122883998b615fb6cce84dee16d23f5",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p02.png": "4b1da16593abbad8edbe473c62df7d15912c80a14b6e9fdd7d26b34f749ce18e",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p03.png": "ff46716c4879df90a5d158c9693e74b076a5c8554a5d607c7d73b02dcc92fd78",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p04.png": "aa256a32234792dc6fdb0362e55e6192ea3fb8e06cc4620c126b28eaeb9681cd",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p05.png": "aa3b3ba288b92f9a11737b688d8dac3243d1f3021f1c2c6c56b31603f6ed2ea0",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p06.png": "8a31991057222c00c76f077358ba0c02b3f2911ac6401d1ff327af47b9b116bb",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p07.png": "abc66cca1203cc3e7e33c362366e4d04d150c4435ecf9f25809921cdd911eed3",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p08.png": "804ef2eb52baec6dfe52771adcfe7661bcf5e080159de1610526c2ad8c851e34",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p09.png": "a4920e938d2d8fab6ef35182ee1b67dd9cd47061da9869385e7e63978f02ec21",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p10.png": "ab472c2e437e1bdbaf3649b6c7e88ba2429a8de28f0604d08448ab103c1ee6d3",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p11.png": "ad405326b3c56260e67108a47ad4d0247962879ac86eb69f5ccd9a0335a7dd72",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p12.png": "cb4c6d90fc0cf40512518bfa5c0399a9c23b2501ba0024924a6cc91479830327",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p13.png": "60d1031729ce63d40d7e761aed0c8049d724cd61ba6264c149a53acf2c0c7119",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p14.png": "7f3ad91dd18b600ebbf51e06ebcb68ce5b40225aea570b174b63c32f9505a8ea",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p15.png": "af4cae8e800f2c71486922daf3a5ee86d9dd8252c57abbfddc46c043ae1e8854",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p16.png": "1f8866dfea56bde074a8fe91dcc7e9ed7017b2841a747f0dd2b4a095feae30af",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p17.png": "cd2435e84a10c65fff0131e8495548e6a5c7dbc6bca833f20438ca8e8880bb24",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p18.png": "8b417bcca550171b15cc3d81ee1255568ba79ec21af81ea45ea4af50c2b516cf",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p19.png": "c7bb2ea21dca3a74500974333d0d5f7638b4381313ba2c60f5ade034b33be771",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p20.png": "0d21aa944c25371ad841e16c7dcfb099809c68016233b1a1f858396eda59f65d",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p21.png": "fcfa757643a06ec3dc0dc28b041d6dec091168d99f747a5bd7b2e0d8cb5f7e63",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p22.png": "e13191873d7f53f2e63b431ee0dca6a7fcec10f7ac448228b97328721f23530a",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p23.png": "1443f1ed524cf118648d9f83b2d8c1945cfaecde8ca609bac8898a772bf32e80",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p24.png": "879c28144b2d42135c76a00e26db61e6c2c400a9198474c66826a1929000a223",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p25.png": "5f367fd742080ef158d7a0f675bd55f974b850c679f929f3381cb56cd04fde20",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p26.png": "9e2f8e8cdfe4ee475a3fa16650eebdf11761dec8d884037c834862e85333172d",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p27.png": "d577b534c800262afc17ff138642a3a529d0c1fa31088506d588ff154d2b1a6b",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p28.png": "c85499275e6d62cbc2c4126790840a372dc0de9cd967d085a7aaabde9c0af509",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p29.png": "d223a3abce75206d671769f70e9056b320d7e74acdfa4ddf83c3542bbe1ba778",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p30.png": "172e4bfe611572444530900ac42476f1d995426ec58358186708ae38b2d728f4",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p31.png": "d51398c52fec9eb5a0178c6539e037b94b7d53c5a0498efdabd094373039025d",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p32.png": "7b299c804aed48a3f365455388a6a0a670f0ab298a5352fd029575b2a0cf9aa3",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p33.png": "400305405c3dac504aafec1cf86981fa9a1cdbca145892d33ffd15540938f338",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p34.png": "3793e27c1cd0332e0eb022b023a707da5dd81ad3f8bf5e82dfea3400d50ebc57",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p35.png": "8afa1efac6ef53422d9d0b60090daa9e93ffb12820b2e1bd0254a3ef2bf551e3",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p36.png": "2bb5bf95d8dbc0ca801564d17769cc94796587840bc2cb83e363d4afce6a04da",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p37.png": "1447e00e28f3325e8c64448e719cb2a77ba7ce62247ee7240dff756bbd49f51a",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p38.png": "35a55f025a6d5823d98c86215860dd72c7190a7f78994e4bc1bf97867e45057f",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p39.png": "00e24c86460375197b9dd42d5e3ddd34112c63ff0c4ed1ade053f3deba900707",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p40.png": "fcda18fffed9620e3404502b0209db4d92bd5c272cf6ed023d630ec26175d94a",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p41.png": "dfae0354361793a30f6e82380ec2eb4396a9c1325aebaa9aca31015d16628274",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p42.png": "1574df86f6cf103f96ca265e048b0c0e7160a01c2fc6d3bc3caf686bca406210",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p43.png": "b9054de7352e5d1c61389d596358d6b3fd0e81144f2dbb79a2584042310c98d6",
+        "../docs/christmas-picture-books-2026/sequels/captain-beakon-and-the-bell-across-the-bay/p44.png": "6b324e89afcf68a3d676436b1071a5fd85840e9781a3814ec896db4c2d00b9c0"
+      },
+      "text": [
+        "Polly Roger could hear the ferry before she could see its lights. The engine slowed outside the harbour wall and the loose handle on the cabin door began to chatter. She made the same sound with her beak. A passenger reached behind her to steady the handle, then gave her a look. \"I might need that noise,\" Polly said. Captain Beakon strapped his brass telescope into its case. \"You collect noises the way other people collect shells.\" \"Shells take up room,\" said Polly. Then the ferry turned and the harbour came into view.",
+        "The town curved round the head of the bay. On the west side, a wide stone quay ran out below the bell tower. The market stood at the head, where two streets met. From there a narrow path followed the east shore past the old net shed and ended at a blue boathouse. Belgian-Waffle was waiting at the landing with his messenger bag strapped over his waffle vest. He took them to the market wall, where he said the harbour bell sounded best. Polly could see both shores from there if she stood on tiptoe.",
+        "They'd come to join the Christmas lantern procession. Last December, Beakon had promised to bring Polly back for the bell. Tonight was the rehearsal. At the real procession in two evenings, the tower would ring, the first lantern would light at the market, and everyone would walk east to the blue boathouse. \"People can hear it behind closed windows,\" said Belgian. \"No one has to stand in the cold just to know when we're leaving.\" He tapped the tune on his bag. Two close taps. A space long enough to take a breath. One on its own.",
+        "Marnie, the badger who ran the market, handed Polly a bundle of paper lanterns to unfold. Marnie could lift a long trestle table by herself, but asked for help with anything that creased. \"Leave the gaps between the stalls clear,\" she told Belgian. \"When the bell goes, the whole quay comes through at once.\" On the west side, a tall brown rook crossed the quay in a grey coat. Belgian pointed him out. Rowe looked after the bell and had rung it every December for twenty-three years.",
+        "Every clock on the market wall said a slightly different time. Marnie watched Rowe instead. He raised one wing beside the tower door and went inside. From across the bay, the laundrette windows shone behind him. The first two strokes came so close that the low note of the first was still humming under the second. Polly knew exactly how long to wait. She held her breath and squeezed a fold flat in the paper lantern. The third stroke didn't come. She looked up. Rowe had lowered his wing. She could no longer see the tower door.",
+        "Marnie called towards the west quay. A figure in grey came out of the tower and lifted both wings: stop. \"Keep the paper dry,\" Marnie said. Someone had started to light a practice lantern and she went to speak to them. For a few seconds Polly thought the bell itself had fallen. Then she realised how many sounds that would have made. Beakon didn't move from the wall. \"What did you hear?\" \"Two strokes,\" said Polly. \"The second one went flat sooner than I expected.\" \"Tell me that again later,\" he said.",
+        "In the café, Belgian laid a dry napkin over each of their damp lanterns. He liked putting things in order when he couldn't fix them. Marnie came in and told the room that Rowe had set the rope aside until the bell could be checked. The procession was still on. A few people began telling stories about the time snow shut the market or the time the power went out. In all of their stories, somebody rang the bell anyway. Belgian stacked the napkins too neatly. Polly didn't ask what he was thinking.",
+        "Next afternoon, Polly helped Beakon carry a box of lantern hooks to the east path. The boards of the old net shed had been bleached grey. Beyond it, the blue boathouse sat with its long side to the water. No boat had been kept there since the slipway wore out. Now somebody had planted winter herbs in pots along the dry side. \"Ada Reed looks after it,\" said Belgian. \"She lets people mend nets there if it rains.\" One of the pots was wedging the side door open. Polly smelled damp rope and rosemary.",
+        "Belgian made two trips to the market while they fastened the hooks. On his third, he brought a long wooden box on a handcart. One board at the end rattled with every bump. Polly offered to take a handle. Belgian shook his head. \"Easy from here. I've got to get it to the bend before dark.\" He took the east path past the net shed. Polly turned back to hold the ladder from ground level while Beakon secured the last lantern hook. When she looked again, Belgian and the box were out of sight.",
+        "Polly had hardly got her claws warm when Marnie asked whether she could hear the bell from anywhere but the market wall. Polly began listing places. Then she saw what Marnie actually wanted. \"I can tell people if I hear it,\" Polly said. \"You could wait at the wall,\" Marnie said. \"Some of the stallholders think we're calling the whole thing off. I could use somebody who listens.\" Polly stood a little straighter. She was used to being asked to repeat what she'd heard. This was the first time anybody had asked her to be responsible for it.",
+        "Near dusk, the market fell quiet for the time it took the ferry to pass the harbour wall. Polly leaned over the rail. Two strokes. A gap. Then one on its own. She knew the tune before she had time to decide where it came from. She turned towards the tower. The low window was dark. A moment later she caught a little knock from the east, where the blue boathouse should be. \"It's back,\" said a man beside her. Polly stared out at the bay. \"I don't think it's back in the same place.\"",
+        "In the café, Polly tried the two sounds for Beakon. For the first night, she lowered her note and let it out slowly. For the second night, she cut the note off sooner and added the little knock with her beak against the side of her cup. \"The tune is the same,\" she said. \"And the sound?\" \"The notes were higher. Shorter, too. I didn't notice until I tried it.\" Beakon stirred his tea. \"Someone rehearsing on another bell would do it.\" Polly had already got a picture of the big bell on a cart. It was hard to put down.",
+        "The ferry pilot came in carrying an empty flask. She'd been out on the water when the bell rang and was sure it had come from the west. \"I was facing the west,\" she said. \"Were you outside?\" asked Polly. \"My window was shut. I opened it after the second stroke.\" She traced the shore in the air with a finger. The ferry had been turning. By the last stroke, she had been facing the market again. \"I still think west,\" she said. \"But I couldn't swear to it.\"",
+        "At the far end of the café, a fox called Len told someone he'd seen a crate on the east path. He kept repeating how wide it was. Polly sat beside him and asked if the crate had been on a handcart. \"The cart rattled,\" said Len. \"I heard it after the bell.\" \"I saw it in the afternoon.\" Len rubbed the window with his sleeve. \"Could have been. I've been moving wet chairs off this path all day. After a while everything with wheels sounds like the same chair.\"",
+        "Polly drew the three things she knew on the back of a market leaflet. The tower on the west. The tune on the east. The cart that had gone round the head of the bay. She put a question mark on the cart. Then she made the question mark smaller, as if that might make the rest of the drawing more useful. Belgian saw it when he passed their table. \"Is that my cart?\" \"It's a cart,\" said Polly. He waited. She folded the paper so the drawing was inside.",
+        "By morning, somebody at the market was saying the bell had been moved without permission. Somebody else said it had been sold. Nobody could say who had first told them. Polly went down to the tower with Beakon. A wooden board blocked the entrance, with a fresh notice to say the bell would stay silent while a bell specialist looked at it. Above them, the square louvred opening was too far away to tell what was behind it. Beakon sat on the seawall. \"We can wait for Rowe.\" Polly had hoped they could do something quicker.",
+        "Rowe was at the quay hatch signing out a set of life rings for the procession. He recognised Beakon and came over. \"You stopped after the second stroke,\" Polly said. \"Yes.\" \"Did the bell go somewhere?\" \"It's hanging where it did yesterday,\" he said. \"And where it did the day before that.\" He didn't seem offended. He looked tired. When Polly asked if they could see, Rowe showed her a photograph he had taken that morning for the specialist. The bell hung in its frame, a sea-grey cone with a nicked rim.",
+        "Rowe enlarged the picture until a dark line showed near the rim. From the ground, Polly would have missed it. \"I heard a change on the second stroke,\" he said. \"I stopped. We'll leave the rope tied back until we know more.\" Beakon asked what it would take to move the bell. \"A crew, a lift and room on the west quay. You can't get it through the stair door on a handcart.\" Rowe slid the screen shut. \"Wish you could. The specialist wouldn't have to bring so much gear.\"",
+        "On the way back, Belgian was stacking empty crates beside the lane. At his feet lay the same long box, upside down and empty. A delivery slip stuck up beneath its lid. \"You can look,\" he said. \"Don't get it wet. It's my copy.\" Polly read the familiar words at the top and the short description underneath. Wooden stand. East shore. Ada Reed. \"Did she say what it was for?\" \"No. I carried a stand with two folding legs. It came out at the boathouse. Then I brought the box back.\"",
+        "As they walked, Polly tried to fit what Belgian had said to the tune she'd heard. A wooden stand might be part of another bell. It could also be a place to hang nets or dry lanterns. \"What did you think it was for?\" she asked. Belgian lifted his good wing. \"I thought it was a stand.\" She took that for a joke until she saw his face. He'd been answering her honestly the whole time and was beginning to wonder what answer she wanted. \"It helps,\" she said. \"I should have said that first.\"",
+        "The market wall was dry again. Polly stood on her usual stone and did the tune in her head. If the first night had happened at the tower, its note had reached her over open water. On the second night, the last short note had arrived at the same time as a shutter or latch knocked on the east shore. She remembered the boathouse door being held open with a pot. She remembered the smell of rosemary. She had a place, a sound and a delivery. What she needed was a way to see whether they belonged together.",
+        "Marnie found her at the wall and handed her a piece of chalk. On the board by the market gate was a question that someone had written in a hurry. Where will the bell ring? \"I was going to write that there might be a drum,\" said Marnie. \"But people see guesses and turn them into plans.\" \"I heard it from the east,\" said Polly. \"You heard a sound. If you write where, someone will ask who.\" Polly looked down at the chalk. She thought of Belgian saying he'd carried a stand.",
+        "Polly drew an arrow towards the east track. Ask Belgian where the bell went, she wrote underneath. If he'd carried something for a rehearsal, he must know the town would want to hear it again. She imagined him saying so at the market wall, where people knew to trust his directions. Marnie had moved to help a stallholder with a table. There was time to rub the words out and write something smaller. Someone behind Polly read the board aloud. Another voice said, \"So that's what was in the box.\"",
+        "Belgian was outside the market gate trying to get his handcart through a knot of people. Len stopped beside it. \"Where'd you take the bell?\" he asked. \"What bell?\" Len pointed at the board. Belgian looked up just as Polly reached it. She wiped the writing away with her sleeve. Wet chalk made a broad white bruise on the slate. \"It never went anywhere,\" she said. Len took his hand off the cart. Someone at the back said that was easy to say now. Belgian wheeled the cart into the lane.",
+        "Polly caught up at the net shed. \"I was trying to tell people you knew what had happened.\" \"Then why didn't you ask me if I knew?\" Polly could only think of things that would make it worse. She waited while Belgian pulled the cart under the eaves and wedged a stone against one wheel. \"Some people count on me to carry things without making it everybody else's business,\" he said. \"I told you what was on the slip because I thought it would help.\" \"It did,\" Polly said. He looked at her then.",
+        "Beakon was on the seawall, looking through his telescope at the gulls. He lowered it as Polly came to sit beside him. \"I knew the bell was still in the tower,\" she said. \"I thought if I wrote it that way, people would ask Belgian about the other one.\" \"You wrote the riddle as though you already knew the answer.\" \"Can you tell them what I meant?\" \"I can go with you,\" said Beakon. They watched a gull try to land on a post, miss, and turn for another go.",
+        "Rowe was sitting outside the café with his flask, waiting for a call from the specialist. Polly asked whether she could say what he'd shown her in the photograph. \"You can say the bell is still in the tower,\" he said. \"And that it won't ring tonight.\" \"Will people mind?\" \"Some will. I mind.\" He took a swallow of tea. \"I've had my hand on that rope every December for a very long time. Being the one who lets go is part of the job too.\"",
+        "At the market board, Marnie gave Polly a clean rag and stood next to her while she wiped off the last white streak. Len was helping stack chairs close enough to hear. Polly wrote three short lines. The tower bell is still in place. It will stay quiet until it has been checked. Belgian delivered a stand. \"Put your name underneath,\" Marnie said. That was the part Polly had wanted yesterday. She hadn't expected it to feel quite so different when the words were true.",
+        "Polly found Belgian untying a bundle of lantern hooks. She asked him to read the board if he wanted. Then she told him she'd been wrong to put his name on the first notice. He took his time with a knot. \"All right,\" he said. \"But if you want to ask Ada about the stand, you ask her. I can show you the path.\" He undid the knot and shook out the cord, which was still tangled in the middle. He gave Polly one end to hold.",
+        "They walked east with Beakon. From the narrow path, Polly could see the broad west quay and the level place where a crane might stand beside the tower. Nothing on this side was wide enough for that. A handcart could go east carrying a wooden stand. A great bell could stay exactly where it was. At the net shed, a loose board knocked in the wind. Polly stopped. It was the sort of sound she'd heard after the third stroke. The two sounds had overlapped. They didn't have to come from the same thing.",
+        "At the boathouse the pot of rosemary sat a little way from the side door. One leaf had been trapped in the gap. Belgian stayed by the path while Polly knocked. An otter in a rolled-up rust jumper opened the door. The wet weather had curled the fine fur round her ears. \"I'm Ada,\" she said. \"If you're here about the lantern brackets, they're ready.\" \"I'm here because I heard the tune,\" said Polly. \"And because I said something at the market before I knew what it meant.\"",
+        "Ada studied Polly for long enough that she heard the water hiss against the old slipway. Then Ada opened the door a little wider. A worktable, a coil of net and several shallow trays of screws filled the dry part of the room. A small brass bell hung from a folding wooden stand beside the far window. It was about as wide as a dinner plate. For a moment Polly felt foolish for imagining the tower bell in a crate. \"Does it sound how I think?\" she asked. \"That depends what you heard.\"",
+        "Ada took a small handled striker from a felt pouch. She asked Beakon to hold the door during the demonstration. Two bright strokes close together. A breath. One bright stroke on its own. Polly knew the tune. She waited until the last note had faded, then made the short, high sound she'd kept in her head. In the doorway Belgian looked up. \"That's what we heard,\" said Beakon. \"Almost,\" said Polly. While Ada put the striker away, Beakon let the heavy door swing gently towards the catch. Knock.",
+        "\"The pot slipped yesterday,\" Ada said. She picked up the trapped leaf and brushed it off the sill. \"The door swung in as I finished the tune.\" Polly made the knock once, softly. Then she told Ada about the dark tower, the pilot turning in her boat, and Len remembering the wheels later than he'd heard them. She could make a story with every bit now. She didn't need the cart to carry anything except what it had carried. Belgian was looking at the bell. Ada asked if he'd like to see where the stand folded.",
+        "Ada used to teach the tune to new lantern carriers. The big bell was hard to get permission to ring, so she bought a little practice bell and used it indoors. Her partner Kit used to listen from the other shore and make a signal with a handkerchief when she got the gap right. \"We stopped practising out here after Kit died,\" she said. \"This winter I thought I could bear to do it again.\" She reached over and put one paw against the little brass skirt. It was already still.",
+        "\"When Marnie said the big bell had gone quiet, I asked for the stand,\" Ada said. \"I thought I might have something to offer. Yesterday was a trial with the door open. I hadn't intended to announce anything.\" Polly thought of the chalk in her sleeve. A little brass bell could reach the market wall. There were flats up behind the tower, and houses beside the road. There would be people waiting for a note they could hear from their own tables. \"Would you ring it tonight if Marnie asked?\" she said.",
+        "Ada looked across at the square opening in the tower. \"Someone will say I want to take Rowe's place.\" \"He could tell them himself,\" said Beakon. Polly didn't know if he would or if he should have to. She asked Ada what she'd want the notice to say. Ada hung the little bell on a wall hook while she tested a wooden joint of the stand. \"I'd want it to say practice bell,\" she said. \"And I'd want people at the far flats to know that it won't sound as loud.\"",
+        "They brought Marnie and Rowe to the boathouse by the east path. Ada showed them the stand before she showed them the bell. Rowe asked if he could try one stroke, and she handed him the felt pouch. The high note surprised him. He laughed once and waited for it to fade. Then he and Ada worked out who would ring, who would light the first lantern, and where the lantern carrier should stand. Polly watched them move the stand back from the door. This time somebody put the pot in a place where it couldn't slip.",
+        "Marnie had time to change the market notices before dusk. Rowe wrote his own line beneath hers about the inspection. Belgian walked copies down the west shore, all the way to the flats. Polly went with him. One neighbour couldn't hear the high note from her sitting room. She could see the end of the quay, so they asked whether she'd like a lantern raised there in answer. She said yes, if it was above the rail and somebody could keep it still. Belgian knew exactly which post she meant. At the market wall on the way back, he pointed across to it so Polly would know it too.",
+        "On the way back, Len called to them from the café door. He was trying to pick up too many folded chairs at once. \"I thought it was your cart,\" he said to Belgian. \"It rattles most days,\" Belgian said. \"You can help me quiet the loose board after Christmas.\" Polly took the chair at the top of Len's pile. He hadn't asked for help. She waited a moment before taking another, and he moved his hand so she could get a better grip.",
+        "The market stalls glowed as the sky darkened. For the first time that week the wind dropped. Some people walked west to watch the tower. Marnie asked them to turn round so they could also see the boathouse. Polly carried the first paper lantern down to the market wall. She had folded it on the rehearsal night. A small crease still ran down one side. She smoothed it with her claw, then left it there. Across the water, the old tower kept its dark square window. Ada opened the blue door.",
+        "Polly heard the first bright stroke and then the second. She knew how long the empty space ought to last. Once, she would have filled it by copying the sound herself. Now she waited. The third stroke reached the wall. On the west quay, the answering lantern rose above the rail and held there, as steady as a window. Marnie brought her flame to Polly's lantern. It lit along the crease first. The crowd behind her began walking east in a slow line.",
+        "By the boathouse, Ada was passing out lantern hooks. The little bell was back in the shelter of the doorway. As Polly passed, Ada put her paw on the top of the stand. \"Next year we could have both,\" she said. \"The tower for the procession, and this one for practice while we're learning.\" Polly asked whether she could come when they tried it again. \"Bring Belgian,\" Ada said. \"He knows which board on this floor makes that noise.\" Belgian looked down. He took one step to the right. The board gave a small, familiar creak.",
+        "After the procession, Polly went back to the wall with Beakon. He asked if she was going to do the bell again for him. \"In a minute,\" she said. The ferry was nearly through the harbour opening. Across the water, the answering lantern was still there. Polly could just see Belgian holding it up for the neighbour at the window. One of his wings began to dip, then steadied. Polly set her own lantern on the wall. While the light on the other shore stayed up, she listened to everything else."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p01.jpg": "b003051be2c46918e636c96d7c13d5a3458963dbe9cf13656dc2b19fe1edc746",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p02.jpg": "ae65d6ed759936cd9396b8d854139aea9a7075425c7afce838730b943f145d3a",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p03.jpg": "1bb13c94f1cc590f6981d5c0261378bf5077f199a2b6ca5b1a8fcf8756a7b5ed",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p04.jpg": "eacfcde1edca0dd9afed8757482fa136a9574db48f0170fb75bb09b1b2bdc7ef",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p05.jpg": "420dd653ed79fd3249af558eee9e37739cd56aec31e6ba5771def6671ac273dc",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p06.jpg": "5ffa87856e0ccfa48ae86a6e55c2db0d7044b4253937464f1523806912d2b54f",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p07.jpg": "77931ccb2da38c28f1b1a46e2ed9854fa10c7790615368faf26c64a7b58611ea",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p08.jpg": "f7f9c106843a131603beda96635d7a9bb3e25c914465a216a3c8f619be1e06af",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p09.jpg": "268aff3cd0b13f1831117ab9758ef8433ff5b205f7f47fb50987f27bc842121a",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p10.jpg": "19c2814e709d4f789120dbdbb525470e2842d05ab43903c0f9ef7aeafaa379b9",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p11.jpg": "314f46bceb52af71044f54b1d7a4efd698dce6f69507515903a6ca966c9fcd5d",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p12.jpg": "029005ffb0e7cd319d0906ddfa472996208e3a8ca65e3090a3ca8177d4e0b1a9",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p13.jpg": "1a70c347369a1d2ebfd014439c2589f094ccf8e0025348e1db0386439168e696",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p14.jpg": "187774a9b86166afda62802b590014c39d818354afb70bf9d4981c70b61ef2cf",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p15.jpg": "3b90b3ec7210bb1f1ff6e49a3f227b060c549e41f88e907464c5ccb7caa20604",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p16.jpg": "26d71a7da1fa9a520feb9c68c9254c3c70e62bbd6f08d436dfdab35bd63a5bd8",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p17.jpg": "2233e87723068caba6b7a1cce4fdcd55f2b8b902454194deaa81826135792a19",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p18.jpg": "2b4567c7f47b3f8db55457f9d31b19ea5aeca39c9dd91086896bf3d5d5c16849",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p19.jpg": "97d906790e0330e92d15b363f02dcf170e6948138b510bafcce976777fdefc47",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p20.jpg": "2978227b3056e2244cba967a7b92dbf117c6ce9afd068145e9319b3174c3b1d3",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p21.jpg": "7b5faa403001a117d71c1ba0dd5a2b014411851c6843a98a799797b8fb3c3bf0",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p22.jpg": "cc8f2625f4bf5499d02f11f521be127eacbdaf989320d2e22c53ad9d9ef6de36",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p23.jpg": "c8a8e6e19a83b26da894db746015718f172a5e51a26e2596e296342559f9116e",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p24.jpg": "10cde7e476d2d40c4ef07ed410f84fe5ec06b21a0c000779b38a835b67a1d15b",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p25.jpg": "9519bdf74be5b1cb1b22ebc76a39c7ac6ebe0495d931f99f63ba2166ca3b8766",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p26.jpg": "d5ebacd6863f66b2c010fc6b0422024162a3510c5ae4bce5ee8a92933e23bd98",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p27.jpg": "79239c78f749d8486a5135c7b8158fbb4427e58e55d986f06a831b46aa69c980",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p28.jpg": "420e3114a37d47099f6b82a10c4ba609665f05d3c2e29a8eb31bcadbc7710b4b",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p29.jpg": "3931ee6ba966d508daf635ea579df4ade5380eb67d107b34787f4705ea6c968d",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p30.jpg": "5aac2c7d40bf9983d88d68214e4145255dc1f5acaa77161465e166a4d5e7ba03",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p31.jpg": "7e019024ab0eebffe26c94a1f1ba0a9fe8da672655dd1a45fb87e6db8820ec2e",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p32.jpg": "fed761d9dee087cec79feef5668e242bb3c491c6e618bde0e01271adcd213548",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p33.jpg": "9d3d9a30af4d97d2029798c53836fe52f9f27a390766728edecb34a02744f905",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p34.jpg": "d004f87e7bd44fbc2847a16a06d0ba0354b213b52d9d2bf5ceffcaa56c09dc9e",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p35.jpg": "4b7822bb7281c3b1eb4b1cf07f2f85f45c77cae353985a92c35460bb0a2c7886",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p36.jpg": "fd9ef3db8ab48fe7cc2cf135a2cc452be1b8788ad648dbae60c26a34dd4f1506",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p37.jpg": "e0309d19d3d424c8b2aeae4010ef598e445cbd67cf72f7376564b750a8e3b8b3",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p38.jpg": "6a4f689a5ce4db46cd3a3c6b64799bbfab3bbd4f1b94bf86a9821be3fc7ad530",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p39.jpg": "352ca01975307de7088829613864f1e822dd2e7e21fc488f014ca3bb68f170d4",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p40.jpg": "7801265713613c1bd32fcaf8833192a9171d7aa3a19e8e432aacd137ce91bb7b",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p41.jpg": "40ce5d912601a18beb2134ab22bbfb7b1e37a31cd0a6f195b662dd1c48fd067e",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p42.jpg": "55b2c7547e085b6c54b00f8ef5cbb9cb0cf4c42f0fb8d5e56c45d79f0de0935d",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p43.jpg": "cd40fa564166463896fe703d8e930996a6abcc1db026832ccfd450e92486b0ce",
+        "read/captain-beakon-and-the-bell-across-the-bay/pages/p44.jpg": "b1e6b90366220f3cd5e3b71db7f31050bf92fa2fc498120a6483e04a07fbbb5e"
+      },
+      "pdf": "read/captain-beakon-and-the-bell-across-the-bay/captain-beakon-and-the-bell-across-the-bay.pdf",
+      "pdf_sha256": "6bdec66dc2abd04ec1e8758f585fd7b94d27193c5d03c89cc086ea2805151018"
+    },
+    {
       "slug": "captain-beakons-air-show",
       "source_id": "captain-beakon-air-show",
       "source_art": {
@@ -3747,6 +4072,191 @@
       },
       "pdf": "read/stripe-scouts-trail-clues/stripe-scouts-trail-clues.pdf",
       "pdf_sha256": "b001612db5425a3c2af317752d0062a5f286b4e39967912fe5d9448a1fe11ba3"
+    },
+    {
+      "slug": "sub-zero-and-the-great-snowball-truce",
+      "source_id": "web-christmas-sub-zero-and-the-great-snowball-truce",
+      "source_art": {
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/cover.png": "8c1ba76bc0dfabc60d93634715bffbb8548e48f5f02805ab2d2658aac3cee69a",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p01.png": "e779e1339f1bc443068a3edb1eb302db716a6b876de4d0df3600a23f630c5844",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p02.png": "cb1dc9314ce607332ffced9156fd0087bfc2ef24a76d137dd2ca1fead4c6ad99",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p03.png": "7aa0660269546111048a89372e548db7af8de0541b4d60243733c9ff85d43b68",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p04.png": "c4cfc9362cddc5d4c956cceb0cf0212faa28fe9c487fef974b1a757f3073033c",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p05.png": "7771c70b579c3c51e01a22da7571bd58671dfd329ee624bd571804b33e73bfb9",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p06.png": "3a9c9acc5f916c33e9a460aa19f39b4d84bfcf4d388b899096de026b528a1e9f",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p07.png": "c548bc2076bcc4336e14c1cfcede69513a86a042087171577e8bdd91a8ecaf74",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p08.png": "2f9f98b2556b6170b6c56aa7f73e1379effa34f59e5dbd738ebb3ec6e2554fed",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p09.png": "73825a1ad14acbba672dad7b9db3f0a5bac5025da96651ade3fd1fe135dc7e9c",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p10.png": "6ba3f29511498a6c3ed3468b7d329ae4075b877731b6134a01186285f7c94607",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p11.png": "db94f8b2931eb58d30e4960f1f37d6f49798cfa8d15d1125d60ed9ba39fff3dc",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p12.png": "f2f74a5b030b3487d4022991b14923802edfbbc43f74a9c880c699108044fbd8",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p13.png": "bf1adcb270974b596bd9548f25cdac123dfa5c8edfdf697afd5684a1d8e68276",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p14.png": "5d0c6841d613dec302f6c173188d79a7f32867fdb08255b96b8657578b2ef97b",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p15.png": "e603d651691f633b42501ba6cd2defe9d86af1999b31f6b5ccf4e219c6d3ceb6",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p16.png": "2c664645da7aad12dfe46c07ff43f65e394e60815ba3ca15a5997e67105cadee",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p17.png": "5db209b98ffa6bf951ef9dbd4be7a6b544e5a33728e03e78e12f9111680d9055",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p18.png": "de21b186aa77bd01b5fbda1fcadb2cec70d61f4200afb94634693949c57899b9",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p19.png": "e11a77a0fee30c814e84b8e44cdb6fc098c6ea0ff4c46110fcc973419dd8dcc1",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p20.png": "c93a11dbc9048b005e59d088f2c8b8f0e7361011d231e26a459a44ab6beaff74",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p21.png": "4e42e4390bd7ae3a6a9f2139bc221e46276c3d53d5e248b996f5e39ebf5f6230",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p22.png": "789dc4fa2163915b392881d599c84de74553523040747dd05b0beb3820dd9f2b",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p23.png": "aba793ae4e18d1d697bf1e065a338328d44eaf8781805d001908cef5fd20997c",
+        "../docs/christmas-picture-books-2026/sequels/sub-zero-and-the-great-snowball-truce/p24.png": "46db765e95e9aaf0a081b9454383e7d85bd4629387bcd30e7dadb21a455a853d"
+      },
+      "text": [
+        "The morning after Christmas, snow covered the whole hill. Sub-Zero slid down on his tummy. At the bottom he slid a bit farther, just because he could. \"Still going!\" he called.",
+        "Biscuit-Bouncer scooped up a soft snowball. He threw it at the stump. Poff! A little white cloud rose from the bark. Two Baby Bulldogs bounced out of the snow. \"Let's play!\"",
+        "They made two teams. Sub-Zero and the brindle Bulldog wore blue mittens. Biscuit and the fawn Bulldog wore red. Hop-Tart climbed onto a flat stone. His yellow hat was easy to spot. \"I'll keep score.\"",
+        "Hop-Tart waved a white flag. \"Throw at coats, low and soft. When I lift the flag, everybody stops.\" Biscuit rolled his first snowball. Sub-Zero packed his just tight enough to pick up.",
+        "\"Ready?\" called Hop. Four mittens went down. \"Go!\" Four soft snowballs went up. One landed on a stump. One went nowhere much at all.",
+        "Biscuit's snowball caught the blue Bulldog on the hem of his coat. \"One to red!\" called Hop. Then Sub-Zero slid past Biscuit. Biscuit spun to see where he'd gone. Poff! Snow caught the back of Biscuit's coat.",
+        "\"That was very quick,\" said Biscuit. He shook out his coat. \"Can I have a spot where I can stop?\" \"Of course,\" said Hop. He pushed a yellow flag into the snow. \"Rest beside this one.\"",
+        "The fawn Bulldog wanted a spot to roll snowballs. Hop put up a red flag. Sub-Zero asked for a clear bit of slope to slide down. Hop put up two blue flags. \"Easy,\" said Hop.",
+        "Then the blue Bulldog asked where all the good snow was. \"By the little drift,\" said Hop. He put a green flag there. \"What about the big drift?\" Hop had one green flag left.",
+        "Biscuit rolled a snowball by the yellow flag. \"Red is for rolling!\" called the fawn Bulldog. Sub-Zero slid between the greens. \"Did green mean go?\" he called. Hop opened his mouth. Then he closed it.",
+        "\"Stop,\" called Hop, and raised the white flag. He took off his yellow hat to shake out the snow. He hooked the brim over a peg on the low fence post. The hat hung open side up. The whole field stopped.",
+        "\"Would you like a bigger rest spot?\" Hop asked Biscuit. Biscuit looked at the flags. \"I like throwing,\" he said. \"I don't like turning round and finding snow on my back.\" Sub-Zero sat down beside him.",
+        "\"I mostly like sliding,\" said Sub-Zero. The blue Bulldog thought about that. \"I like rolling a great big snowball.\" \"I like knocking things over,\" said the fawn Bulldog. Hop looked towards the fence.",
+        "Three empty tubs stood under the fence rail. \"We could throw at those,\" said Biscuit. He tipped one over with a soft snowball. Sub-Zero slid over and set it up again. \"I could do that all day.\"",
+        "They set all three tubs on their rims in a row. They pulled up the little flags. Hop kept just his white flag. \"Throw on my 'Go'. When the snow lands, I lift the flag. Then the sliders can go.\"",
+        "\"Do we still need teams?\" asked the brindle Bulldog. \"We can wear our mittens,\" said Biscuit. \"Let's see how many turns we can finish together,\" said Hop. He held up one paw to count.",
+        "\"Ready? Go!\" Biscuit and the fawn Bulldog threw at the tubs. Poff! Poff! Two tubs tipped. The little one wobbled and stayed up. Hop lifted the white flag. Everybody waited until the snow had landed.",
+        "\"Sliders ready?\" Down went Sub-Zero and the blue Bulldog. Up went the tubs. Sub-Zero slid past the last one, scooted back on his bottom and gave it a little pat. \"Still going,\" he said.",
+        "The Bulldogs swapped places. Hop played a turn, too. His first snowball rolled along the ground and stopped just short. The fawn Bulldog set her paws on a tub anyway. \"I'm practising,\" she said.",
+        "\"One last go,\" said Hop. Biscuit picked up a snowball as soft as a bun. Hop dropped the flag. Biscuit threw. The little tub tipped. The snowball bounced off its rim and went up towards the fence.",
+        "Plip. The snowball dropped straight into Hop's hat. Everyone looked at the hat. It hung a little lower than it had before. Hop looked down at his flag. \"I didn't make a rule for that.\"",
+        "Sub-Zero slid over to the fence and took down the hat. \"One point to yellow,\" he said. \"I win?\" asked Hop. \"The hat wins,\" said Biscuit. He tipped the snowball into the empty little tub.",
+        "They went to the bench for cocoa. Hop turned his hat right way up and put it on. A single bit of snow slid down his ear. \"Can the hat have another go tomorrow?\" Biscuit asked.",
+        "Hop tucked the hat under his arm. \"The hat is resting.\" Below the bench, three tubs waited in a row. In the smallest one sat a snowball, shaped almost exactly like a yellow hat."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/sub-zero-and-the-great-snowball-truce/pages/p01.jpg": "0fb60a080f4ec2ee308e96f1e990967dd40958f3ceee60c98988407227cfc0d9",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p02.jpg": "097f3bd279e3fe3347378a1aa7916bd652a9b4e6c557b140899b37ff5dd64993",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p03.jpg": "1f5896eafc25b5a8431b7cf6b600a9eeb720a828d9868ad4f9b324bd1de2fd21",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p04.jpg": "616d4e5455b106bd0ebe09046dc0659f250499e9e9ce57ea099a36971292060b",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p05.jpg": "641dcc00493cfc847ff522f5645343bb261d698e16b9c2efb6b881cbf7fa2008",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p06.jpg": "82a2ba2f63b8d89f158112ce66bb6c6ff49d07b3e453f81208f2a0b8abbf96c1",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p07.jpg": "daf53663bb3060ecb9615d3c8267c5a20e7f13b2867afa8b4fca00c8d920c2eb",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p08.jpg": "201d9ae58fc60d1a1100f6537cf6b304b4b95c67637518a066e20e37dc438491",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p09.jpg": "a4486c481950064b79aa3b63deee94c01abe9a9203d4da58c9b877fca41dd8bc",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p10.jpg": "f6e2488ec1da3c3529369c8881d44ca286470ddb4d2a9114d065e604b98a5300",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p11.jpg": "a3bff97b62457f8551147d2857163b0863a96cc4a52d1b2a802a724aa4188e28",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p12.jpg": "ffa15c19e7596df346ed46295ac8a7c36ce2d28cb50cf00dfda5f5adc6bc91eb",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p13.jpg": "6b682ac570a8dbdba53326d519b46e254176d4a39d95c568e6b9b9dc028eb7df",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p14.jpg": "ce0352466a0c9fb6055883fe9b9ab530ae617402f2e7124b527cde90ec1acc84",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p15.jpg": "2f6dc489ba82d7f8e15f73469603be6268d97c050965e531da93891918489956",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p16.jpg": "9a7ef8b710a4646ad091e5bed06e61a0825cfcbba761244f0492781c17ed964f",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p17.jpg": "835ca8c84a70f73001d1683c88a106d5a6e28e25444b4a7a2b59c3f82b5c703b",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p18.jpg": "278882dbe8e1b3104253ac368e62d6678f4409c523d531153adbbf61d483cda5",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p19.jpg": "264d12eedbf9f7448a772635fee8a549007e69326abba2ae679e331a6fb8d961",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p20.jpg": "82a33dafd6450b04cb58678081c39d86668cf7eaef132639bb3e99646d697d2b",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p21.jpg": "294edbb8e0b8564559075d00500a4ed06d4c2082134ce6f9f0caa5e7a0e36214",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p22.jpg": "1faac12163c9d03989ef7517555e9823e5424443a094c4e8ad3724a2604801db",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p23.jpg": "3ed9e22762579eaf05c8b37551ee6b627b83be8796bea1657005ad829dbc8fc1",
+        "read/sub-zero-and-the-great-snowball-truce/pages/p24.jpg": "d05191b93f8d1974afe9035df61d6e39b78da9e33c4d39c4520687faf6b3b9d0"
+      },
+      "pdf": "read/sub-zero-and-the-great-snowball-truce/sub-zero-and-the-great-snowball-truce.pdf",
+      "pdf_sha256": "aa0b203278b80562033d1439c4d76801c6610f3e99285105f43b4ab188ec20af"
     },
     {
       "slug": "sub-zero-and-the-snowflake-post",
