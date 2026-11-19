@@ -33,6 +33,10 @@
 
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+const BILLING_DIR = process.env.SNACKPACK_BILLING_DIR || path.join(os.homedir(), "billing");
 
 const ORIGIN = "https://www.snackpackuniverse.com";
 const SITEMAP = `${ORIGIN}/sitemap.xml`;
@@ -43,7 +47,7 @@ const PROPERTY = "sc-domain:snackpackuniverse.com";
 // domain -- that is the whole point, so committing it is correct.
 const INDEXNOW_KEY = "900693c096558a71b548e48b92b33acd";
 
-const DEFAULT_KEY_PATH = "D:/billing/api-tokens/snackpack-abc-alphabet-billing-f2c06893aa0b.json";
+const DEFAULT_KEY_PATH = path.join(BILLING_DIR, "api-tokens/snackpack-abc-alphabet-billing-f2c06893aa0b.json");
 
 let failed = false;
 
@@ -177,7 +181,7 @@ async function submitIndexNow(urls) {
 // idle. It costs nothing to use both, and on 2026-09-19 Bing was carrying real
 // volume -- 1,979 impressions on this site, more than Google's 1,181.
 
-const BING_KEY_FILE = "D:/billing/api-tokens/web-analytics.txt";
+const BING_KEY_FILE = path.join(BILLING_DIR, "api-tokens/web-analytics.txt");
 
 async function bingKey() {
   if (process.env.BING_API_KEY) return process.env.BING_API_KEY.trim();

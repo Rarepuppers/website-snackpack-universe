@@ -36,9 +36,13 @@
 // env file. A missing token is reported as skipped, never as a zero: a zero
 // here is a finding, and one produced by a missing key is a lie.
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+const BILLING_DIR = process.env.SNACKPACK_BILLING_DIR || path.join(os.homedir(), "billing");
 
 const ACCOUNT_TAG = "f58a3b6775dbe9c7cad11ec9ed6cfc80";
-const DEFAULT_ENV_FILE = "D:/billing/backup-keys/_root/.env.local";
+const DEFAULT_ENV_FILE = path.join(BILLING_DIR, "backup-keys/_root/.env.local");
 const GRAPHQL = "https://api.cloudflare.com/client/v4/graphql";
 
 // Portfolio Cloudflare Web Analytics properties, including Keeping Up's dedicated site tag.
