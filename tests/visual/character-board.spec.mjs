@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("the portrait board links to the owl, hen and confirmed family", async ({ page }) => {
   await page.goto("/characters/");
-  await expect(page.locator("#crew .cast-card")).toHaveCount(14);
+  await expect(page.locator("#crew .cast-card")).toHaveCount(51);
   await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
   await expect(page.getByRole("heading", { name: "Professor Hooten" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Midnight That Came Early/ })).toBeVisible();
@@ -37,7 +37,7 @@ test("the clue game handles guesses, new six-face pools and reset", async ({ pag
   await page.getByRole("button", { name: "Cluck O’Clock Rooster" }).click();
   await expect(page.getByRole("status")).toContainText("Cluck O’Clock");
   await expect(page.getByRole("link", { name: "Meet this character" })).toBeFocused();
-  for (const name of ["Hen-Berry", "Professor Hooten", "Shelly-Pop", "Eggs-Benedict", "Vincent Van Mouse", "Cluck O’Clock"]) {
+  for (const name of ["Hen-Berry", "Professor Hooten", "Shelly-Pop", "Eggs-Benedict", "Vincent Van Mouse", "Corgi-on-the-Cob"]) {
     await another.click();
     await expect(page.getByRole("heading", { name: "Clue 1 of 3" })).toBeFocused();
     await expect(page.locator("[data-guess]:visible")).toHaveCount(6);
@@ -45,6 +45,30 @@ test("the clue game handles guesses, new six-face pools and reset", async ({ pag
     await answer.click();
     await expect(page.getByRole("status")).toContainText(name);
   }
+});
+
+test("home and Reads link to the catalog, with search by legacy name", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Meet the Characters", exact: true }).first().click();
+  await expect(page).toHaveURL(/\/characters\/$/);
+  const search = page.getByLabel("Find a character");
+  await search.fill("Wise Owl Librarian");
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(1);
+  await expect(page.getByRole("link", { name: "Professor Hooten Owl" })).toBeVisible();
+  await search.fill("nobody here");
+  await expect(page.getByRole("status")).toHaveText("No matching characters");
+  await search.fill("");
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(51);
+  await page.goto("/read/");
+  await expect(page.getByRole("link", { name: "Meet the Characters", exact: true })).toHaveAttribute("href", "/characters/");
+});
+
+test("an app-led profile has its own alternative portrait", async ({ page }) => {
+  await page.goto("/characters/tick-tusk/");
+  await page.getByText("See another portrait", { exact: true }).click();
+  const art = page.locator(".cast-art img");
+  await expect(art).toBeVisible();
+  await expect.poll(() => art.evaluate(image => image.naturalWidth)).toBe(480);
 });
 
 test("Eggs-Benedict has her own story art and shares the chicken fact page with Hen-Berry", async ({ page }) => {
@@ -71,13 +95,21 @@ test.describe("with JavaScript disabled", () => {
 
 test("the colouring page offers two true PDF downloads per sheet", async ({ page }) => {
   await page.goto("/characters/colouring/");
-  const downloads = await page.getByRole("link", { name: /PDF/ }).all();
+  const downloads = await page.locator("[data-scene-sheets]").getByRole("link", { name: /PDF/ }).all();
   expect(downloads).toHaveLength(6);
   for (const link of downloads) {
     const response = await page.request.get(await link.getAttribute("href"));
     expect(response.ok()).toBe(true);
     expect((await response.body()).subarray(0, 5).toString()).toBe("%PDF-");
   }
+});
+
+test("a character profile opens its own colour sheet", async ({ page }) => {
+  await page.goto("/characters/hen-berry/");
+  await page.getByRole("link", { name: "Colour this character" }).click();
+  await expect(page).toHaveURL(/colouring\/#hen-berry$/);
+  await expect(page.locator("#hen-berry").getByRole("link", { name: "US Letter PDF" })).toHaveAttribute("href", "/characters/colouring/files/hen-berry-letter.pdf");
+  await expect(page.getByRole("link", { name: "Full pack · A4" })).toHaveAttribute("href", "/characters/colouring/files/crew-a4.pdf");
 });
 
 test("the board fits a 320px dark screen at 200 percent text", async ({ page }) => {

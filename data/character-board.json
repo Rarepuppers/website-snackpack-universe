@@ -13,6 +13,11 @@
       "alt": "A brown owl in round spectacles and a green waistcoat",
       "animal": "owls",
       "fact": "Professor Hooten wears round spectacles and a green waistcoat at the library.",
+      "aliases": [
+        "Wise Owl Librarian",
+        "Wise Owl"
+      ],
+      "colouring": true,
       "art": {
         "page": "p04",
         "caption": "Professor Hooten shows the twins a wall of five clocks."
@@ -35,6 +40,7 @@
       ],
       "animal": "chickens",
       "fact": "Hen-Berry brings the twins home along the lantern path.",
+      "colouring": true,
       "art": {
         "page": "p02",
         "caption": "Hen-Berry hands Coop a green paper hat."
@@ -53,6 +59,7 @@
       "alt": "An orange-and-white corgi with upright ears",
       "animal": "dogs",
       "fact": "Corgi carries his basket by its handle in his mouth.",
+      "colouring": true,
       "art": {
         "page": "p02",
         "caption": "Corgi counts the corn in his basket."
@@ -75,6 +82,7 @@
       ],
       "animal": "chickens",
       "fact": "Cluck’s watch has a fine gold chain.",
+      "colouring": true,
       "art": {
         "page": "p02",
         "caption": "Cluck wears his gold paper hat while Hen-Berry folds another."
@@ -97,6 +105,7 @@
       ],
       "animal": "chickens",
       "fact": "Coop wears a bandana with a coffee-bean pattern.",
+      "colouring": true,
       "art": {
         "page": "p02",
         "caption": "Coop reaches up for her paper hat."
@@ -115,6 +124,7 @@
       "alt": "A cream-and-dark panda with a pancake wrap",
       "animal": "giant-panda",
       "fact": "Panda-Cake wears green oven mitts at the barn stove.",
+      "colouring": true,
       "art": {
         "page": "p13",
         "caption": "Panda-Cake works at the barn stove while Ted brings the soup."
@@ -133,6 +143,7 @@
       "alt": "A brown bear with a patterned apron and a wooden spoon",
       "animal": "brown-bear",
       "fact": "Ted brings his notes to a New Year party at Professor Hooten’s library.",
+      "colouring": true,
       "art": {
         "page": "p03",
         "caption": "Ted ties a red ribbon around his jar while Corgi waits at the door."
@@ -151,6 +162,7 @@
       "alt": "An orange squirrel with cream cheeks and tufted ears",
       "animal": "tree-squirrels",
       "fact": "At the barn, Nutmeg wears a rust-coloured apron over her green jumper.",
+      "colouring": true,
       "art": {
         "page": "p12",
         "caption": "Nutmeg welcomes the friends into her red barn."
@@ -169,6 +181,7 @@
       "alt": "A small green turtle with a brown shell",
       "animal": "turtles",
       "fact": "She keeps her red-and-white lollipop tucked away until after the feast.",
+      "colouring": true,
       "art": {
         "page": "p05",
         "caption": "Shelly-Pop nudges two floating cobs back with her nose."
@@ -187,6 +200,7 @@
       "alt": "A cream-and-fawn rabbit with long ears",
       "animal": "rabbits-and-hares",
       "fact": "Hop-Tart wears a green-and-white striped jumper in the harvest story.",
+      "colouring": true,
       "art": {
         "page": "p10",
         "caption": "Hop-Tart lifts the missing cob above a pile of leaves."
@@ -205,6 +219,7 @@
       "alt": "A golden retriever in a white chef’s hat and apron",
       "animal": "dogs",
       "fact": "The table for his Friendsgiving meal stands beneath the apple tree in his garden.",
+      "colouring": true,
       "art": {
         "page": "p01",
         "caption": "Bark-B-Q wags his tail under the apple tree."
@@ -223,6 +238,7 @@
       "alt": "A black-and-white penguin wearing an explorer’s hat and jacket",
       "animal": "penguins",
       "fact": "In the snowball story, Sub-Zero’s team wears blue mittens.",
+      "colouring": true,
       "art": {
         "page": "p01",
         "caption": "Sub-Zero slides down the hill on his tummy."
@@ -241,6 +257,7 @@
       "alt": "A brown hen wearing a gold crown",
       "animal": "chickens",
       "fact": "She carries a wooden clipboard and a yellow pencil in the Friendsgiving story.",
+      "colouring": true,
       "art": {
         "page": "p02",
         "caption": "Eggs-Benedict makes the sign-up sheet and timing chart."
@@ -259,13 +276,666 @@
       "alt": "A mouse with round glasses and a paint-speckled apron",
       "animal": "mice",
       "fact": "Vincent gives his own house a crooked chimney in the painting.",
+      "colouring": true,
       "art": {
         "page": "p01",
         "caption": "Vincent paints a snowy street with a crooked chimney."
       }
+    },
+    {
+      "id": "french-toast",
+      "name": "French-Toast",
+      "kind": "Bulldog",
+      "greeting": "Welcome! Shall we see what came out of the bakery today?",
+      "moment": "Foods from the bakery",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "The SnackPack portrait of French-Toast, bulldog",
+      "animal": "dogs",
+      "fact": "I brought a basket of sweet potatoes to the meal.",
+      "art": {
+        "page": "p12",
+        "caption": "French-Toast shows his basket of sweet potatoes."
+      }
+    },
+    {
+      "id": "belgian-waffle",
+      "name": "Belgian-Waffle",
+      "kind": "Blue jay",
+      "greeting": "Hello from up here! Is there a message you’d like me to carry?",
+      "moment": "A flyer with a delivery to make",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "The SnackPack portrait of Belgian-Waffle, blue jay",
+      "animal": "blue-jays",
+      "fact": "I took the sign-up sheet over the duck pond.",
+      "art": {
+        "page": "p05",
+        "caption": "The wind catches the sign-up sheet over the duck pond."
+      }
+    },
+    {
+      "id": "cereal-swimmer",
+      "name": "Cereal-Swimmer",
+      "kind": "Shark",
+      "greeting": "Hi! Ready to swim along the counting line with me?",
+      "moment": "Number-line swimming",
+      "book": [
+        "cereal-swimmer-and-the-number-line-lagoon",
+        "Cereal-Swimmer and the Number-Line Lagoon"
+      ],
+      "alt": "The SnackPack portrait of Cereal-Swimmer, shark",
+      "animal": "sharks",
+      "fact": "I swim along the number line in the lagoon.",
+      "variant": {
+        "caption": "Cereal-Swimmer in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "baby-bulldogs",
+      "name": "Baby Bulldogs",
+      "kind": "Bulldog puppies",
+      "greeting": "Hi! There’s room for one more in our game.",
+      "moment": "Games together",
+      "book": [
+        "sub-zero-and-the-great-snowball-truce",
+        "Sub-Zero and the Great Snowball Truce"
+      ],
+      "alt": "The SnackPack portrait of Baby Bulldogs, bulldog puppies",
+      "animal": "dogs",
+      "fact": "We come out of the snow to join the game.",
+      "art": {
+        "page": "p02",
+        "caption": "The Baby Bulldogs join the friends on the snowy hill."
+      }
+    },
+    {
+      "id": "centi-peed",
+      "name": "Centi-Peed",
+      "kind": "Centipede",
+      "greeting": "Come and see what’s below zero. I’ll go first!",
+      "moment": "Numbers below zero",
+      "book": [
+        "centi-peeds-below-zero-burrow",
+        "Centi-Peed’s Below-Zero Burrow"
+      ],
+      "alt": "The SnackPack portrait of Centi-Peed, centipede",
+      "animal": "centipedes",
+      "fact": "I explore numbers below zero in a burrow.",
+      "variant": {
+        "caption": "Centi-Peed in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "honey-beats",
+      "name": "Honey-Beats",
+      "kind": "Bear",
+      "greeting": "Hello! Can you tap a beat while we count?",
+      "moment": "Rhythms and number neighbours",
+      "book": [
+        "honey-beats-and-the-number-neighbours",
+        "Honey-Beats and the Number Neighbours"
+      ],
+      "alt": "The SnackPack portrait of Honey-Beats, bear",
+      "fact": "I help find the numbers next to each other.",
+      "variant": {
+        "caption": "Honey-Beats in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "foxy-lox",
+      "name": "Foxy-Lox",
+      "kind": "Fox",
+      "greeting": "Hello, clue finder. Let’s see where the trail goes.",
+      "moment": "Following clues",
+      "book": [
+        "foxy-loxs-mystery-trail",
+        "Foxy-Lox’s Mystery Trail"
+      ],
+      "alt": "The SnackPack portrait of Foxy-Lox, fox",
+      "fact": "I follow clues on a mystery trail.",
+      "variant": {
+        "caption": "Foxy-Lox in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "quill-berry",
+      "name": "Quill-Berry",
+      "kind": "Hedgehog",
+      "greeting": "Welcome! Listen closely to the end of this word.",
+      "moment": "Word endings",
+      "book": [
+        "quill-berrys-ending-clues",
+        "Quill-Berry’s Ending Clues"
+      ],
+      "alt": "The SnackPack portrait of Quill-Berry, hedgehog",
+      "fact": "My story has clues in the ends of words.",
+      "variant": {
+        "caption": "Quill-Berry in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "pork-ulele",
+      "name": "Pork-ulele",
+      "kind": "Pig",
+      "greeting": "Hello! Ready to count us into the next song?",
+      "moment": "Music and keeping time",
+      "book": [
+        "pork-ulele-and-the-clockwork-concert",
+        "Pork-ulele and the Clockwork Concert"
+      ],
+      "alt": "The SnackPack portrait of Pork-ulele, pig",
+      "fact": "I help with the clockwork concert.",
+      "variant": {
+        "caption": "Pork-ulele in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "flutter-butter",
+      "name": "Flutter-Butter",
+      "kind": "Butterfly",
+      "greeting": "Hi! Let’s see who’s down by the stepping stones.",
+      "moment": "Music in the meadow",
+      "book": [
+        "honey-beats-and-the-number-neighbours",
+        "Honey-Beats and the Number Neighbours"
+      ],
+      "alt": "The SnackPack portrait of Flutter-Butter, butterfly",
+      "fact": "I appear with Honey-Beats by the stepping-stone numbers.",
+      "variant": {
+        "caption": "Flutter-Butter in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "biscuit-bouncer",
+      "name": "Biscuit-Bouncer",
+      "kind": "Puppy",
+      "greeting": "Hi! I have parcels to deliver. Will you help me find the way?",
+      "moment": "Finding a better route",
+      "book": [
+        "biscuit-bouncers-parcel-parade",
+        "Biscuit-Bouncer and the Parcel Parade"
+      ],
+      "alt": "The SnackPack portrait of Biscuit-Bouncer, puppy",
+      "animal": "dogs",
+      "fact": "I have parcels to deliver along a route.",
+      "variant": {
+        "caption": "Biscuit-Bouncer in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "booklava",
+      "name": "Booklava",
+      "kind": "Owl",
+      "greeting": "Hello, number explorer! A zero has slipped out of place.",
+      "moment": "Books and place value",
+      "book": [
+        "booklava-and-the-number-that-lost-its-place",
+        "Booklava and the Number That Lost Its Place"
+      ],
+      "alt": "The SnackPack portrait of Booklava, owl",
+      "animal": "owls",
+      "fact": "My number story has a zero that runs away.",
+      "variant": {
+        "caption": "Booklava in the teacher version of the shared character art."
+      }
+    },
+    {
+      "id": "bottle-nose",
+      "name": "Bottle-Nose",
+      "kind": "Dolphin",
+      "greeting": "Hello! What can you spot out in the water?",
+      "moment": "Ocean exploration",
+      "alt": "The SnackPack portrait of Bottle-Nose, dolphin",
+      "animal": "bottlenose-dolphins",
+      "fact": "My name points to the shape of a bottlenose dolphin’s snout.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Bottle-Nose in the teacher version of the shared character art."
+      }
+    },
+    {
+      "id": "captain-beakon",
+      "name": "Captain Beakon",
+      "kind": "Eagle",
+      "greeting": "Ahoy! Listen for the bell from across the bay.",
+      "moment": "Looking out at the harbour",
+      "book": [
+        "captain-beakon-and-the-bell-across-the-bay",
+        "Captain Beakon and the Bell Across the Bay"
+      ],
+      "alt": "The SnackPack portrait of Captain Beakon, eagle",
+      "fact": "My name is in the mystery about the bell across the bay.",
+      "variant": {
+        "caption": "Captain Beakon in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "tick-tusk",
+      "name": "Tick-Tusk",
+      "kind": "Elephant",
+      "greeting": "Hello! Shall we try a number trail together?",
+      "moment": "Numbers and exploring",
+      "alt": "The SnackPack portrait of Tick-Tusk, elephant",
+      "animal": "elephants",
+      "fact": "The second part of my name points to an elephant’s tusks.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Tick-Tusk in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "snack-spector",
+      "name": "Snack-Spector",
+      "kind": "Raccoon",
+      "greeting": "Welcome in! What would you put in the shop window?",
+      "moment": "Shopkeeper roles",
+      "alt": "The SnackPack portrait of Snack-Spector, raccoon",
+      "fact": "You can find a shopkeeper outfit in my portrait collection.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Snack-Spector in the shopkeeper version of the shared character art."
+      }
+    },
+    {
+      "id": "sail-affe",
+      "name": "Sail-Affe",
+      "kind": "Giraffe",
+      "greeting": "Hi! Look up. What can you spot from here?",
+      "moment": "Exploring together",
+      "alt": "The SnackPack portrait of Sail-Affe, giraffe",
+      "animal": "giraffes",
+      "fact": "The end of my name sounds like the end of “giraffe”.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Sail-Affe in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "plate-retriever",
+      "name": "Plate-Retriever",
+      "kind": "Puppy",
+      "greeting": "Hello! Would you give me a paw with this plate?",
+      "moment": "Helper roles",
+      "alt": "The SnackPack portrait of Plate-Retriever, puppy",
+      "animal": "dogs",
+      "fact": "My name puts “plate” together with “retriever”.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Plate-Retriever in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "horse-doeuvre",
+      "name": "Horse d’Oeuvre",
+      "kind": "Pony",
+      "greeting": "Hello! Shall we make room for an extra guest?",
+      "moment": "The pony in the crew",
+      "alt": "The SnackPack portrait of Horse d’Oeuvre, pony",
+      "fact": "My name sounds like “hors d’oeuvre”, a little bite served before a meal.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Horse d’Oeuvre in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "jimmy-apple-core",
+      "name": "Jimmy Apple-Core",
+      "kind": "Earthworm",
+      "greeting": "Hello from down below! What do you think is under your feet?",
+      "moment": "Life underground",
+      "alt": "The SnackPack portrait of Jimmy Apple-Core, earthworm",
+      "fact": "In the SnackPack stories I look after what happens underground.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Jimmy Apple-Core in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "leo-lemonade",
+      "name": "Leo-Lemonade",
+      "kind": "Leopard",
+      "greeting": "Welcome! Can you guess what’s in my wheelbarrow?",
+      "moment": "Showing up with a surprise",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "The SnackPack portrait of Leo-Lemonade, leopard",
+      "fact": "I brought one giant potato in a wheelbarrow.",
+      "art": {
+        "page": "p11",
+        "caption": "Leo-Lemonade pushes an enormous potato through the gate."
+      }
+    },
+    {
+      "id": "luckybug",
+      "name": "Luckybug",
+      "kind": "Ladybug",
+      "greeting": "Hi! Ready to find who goes with whom?",
+      "moment": "Finding partners",
+      "book": [
+        "luckybugs-pairing-parade",
+        "Luckybug’s Pairing Parade"
+      ],
+      "alt": "The SnackPack portrait of Luckybug, ladybug",
+      "fact": "I help marchers find partners in the pairing parade.",
+      "variant": {
+        "caption": "Luckybug in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "lionnaise",
+      "name": "Lionnaise",
+      "kind": "Lioness",
+      "greeting": "Hello! We can be brave together. Come and meet the dragon.",
+      "moment": "Finding courage",
+      "book": [
+        "lionnaise-and-the-dragon",
+        "Lionnaise and the Dragon"
+      ],
+      "alt": "The SnackPack portrait of Lionnaise, lioness",
+      "fact": "My story begins with a lioness and a dragon.",
+      "variant": {
+        "caption": "Lionnaise in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "octo-pop",
+      "name": "Octo-Pop",
+      "kind": "Octopus",
+      "greeting": "Hi! What would you like to look for in the reef?",
+      "moment": "Exploring a reef",
+      "book": [
+        "octo-pops-coral-reef",
+        "Octo-Pop’s Coral Reef"
+      ],
+      "alt": "The SnackPack portrait of Octo-Pop, octopus",
+      "animal": "octopuses",
+      "fact": "I explore the coral reef in my underwater story.",
+      "variant": {
+        "caption": "Octo-Pop in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "ginger-deer",
+      "name": "Ginger-Deer",
+      "kind": "Deer",
+      "greeting": "Welcome! Shall we set out and see what we find?",
+      "moment": "Explorer and teacher art",
+      "alt": "The SnackPack portrait of Ginger-Deer, deer",
+      "fact": "I have an explorer outfit and a teacher outfit in the character collection.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Ginger-Deer in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "spinnerella",
+      "name": "Spinnerella",
+      "kind": "Spider",
+      "greeting": "Hello! Can you find the little word hiding in my name?",
+      "moment": "A name about spinning",
+      "alt": "The SnackPack portrait of Spinnerella, spider",
+      "fact": "Listen to the word “spin” tucked inside my name.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Spinnerella in the helper version of the shared character art."
+      }
+    },
+    {
+      "id": "candy-nut",
+      "name": "Candy-Nut",
+      "kind": "Squirrel",
+      "greeting": "Hi! Have you ever found a nut under a tree?",
+      "moment": "Exploring with the crew",
+      "alt": "The SnackPack portrait of Candy-Nut, squirrel",
+      "animal": "tree-squirrels",
+      "fact": "My name has two snack words, “candy” and “nut”.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Candy-Nut in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "stripe-scout",
+      "name": "Stripe-Scout",
+      "kind": "Tiger",
+      "greeting": "Hello! Listen for the sounds that go together.",
+      "moment": "Sound and spelling clues",
+      "book": [
+        "stripe-scouts-blend-bridge",
+        "Stripe-Scout’s Blend Bridge"
+      ],
+      "alt": "The SnackPack portrait of Stripe-Scout, tiger",
+      "animal": "tigers",
+      "fact": "I look for blends in the bridge story.",
+      "variant": {
+        "caption": "Stripe-Scout in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "pita-pan",
+      "name": "Pita-Pan",
+      "kind": "Goat",
+      "greeting": "Hi! I’ll take this end of the basket. Let’s get it up the hill.",
+      "moment": "Helping on the hill",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "The SnackPack portrait of Pita-Pan, goat",
+      "fact": "I helped carry the basket up the hill.",
+      "art": {
+        "page": "p08",
+        "caption": "Pita-Pan carries the basket up the hill."
+      }
+    },
+    {
+      "id": "fe-line-mignon",
+      "name": "Fe-Line-Mignon",
+      "kind": "Cat",
+      "greeting": "Welcome to the café. Come and see what’s happening after dark.",
+      "moment": "The moonlit café",
+      "book": [
+        "fe-line-mignons-moonlit-cafe",
+        "Fe-Line-Mignon’s Moonlit Café"
+      ],
+      "alt": "The SnackPack portrait of Fe-Line-Mignon, cat",
+      "fact": "I have a café story that takes place by moonlight."
+    },
+    {
+      "id": "cynthia-book-smart",
+      "name": "Cynthia Book-Smart",
+      "kind": "Snake",
+      "greeting": "Hello, reader. Shall we choose a book together?",
+      "moment": "Library and word clues",
+      "alt": "The SnackPack portrait of Cynthia Book-Smart, snake",
+      "fact": "You may see my name shortened to Cynthia in the spelling app.",
+      "aliases": [
+        "Cynthia"
+      ],
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ],
+      "variant": {
+        "caption": "Cynthia Book-Smart in the student version of the shared character art."
+      }
+    },
+    {
+      "id": "ham-and-cheese",
+      "name": "Ham-and-Cheese",
+      "kind": "Hamster",
+      "greeting": "Hi! Can you help me spot a way through the maze?",
+      "moment": "Finding a way through the maze",
+      "book": [
+        "ham-and-cheeses-big-maze",
+        "Ham-and-Cheese’s Big Maze"
+      ],
+      "alt": "The SnackPack portrait of Ham-and-Cheese, hamster",
+      "fact": "I look for a route through a maze in my story.",
+      "variant": {
+        "caption": "Ham-and-Cheese in the explorer version of the shared character art."
+      }
+    },
+    {
+      "id": "meow-inara",
+      "name": "Meow-inara",
+      "kind": "Cat",
+      "greeting": "Hello! Can you give my potato sack a little push?",
+      "moment": "A plum door and a potluck",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "The SnackPack portrait of Meow-inara, cat",
+      "fact": "I pulled a sack of potatoes to the garden gate.",
+      "art": {
+        "page": "p10",
+        "caption": "Meow-inara arrives at the gate with a sack of potatoes."
+      }
+    },
+    {
+      "id": "polly-roger",
+      "name": "Polly Roger",
+      "kind": "Parrot",
+      "greeting": "Ahoy! Which shore did that sound come from?",
+      "moment": "A harbour mystery",
+      "book": [
+        "captain-beakon-and-the-bell-across-the-bay",
+        "Captain Beakon and the Bell Across the Bay"
+      ],
+      "alt": "The SnackPack portrait of Polly Roger, parrot",
+      "fact": "I follow the sound of a bell across the bay.",
+      "variant": {
+        "caption": "Polly Roger in the architect version of the shared character art."
+      }
+    },
+    {
+      "id": "dough-mino",
+      "name": "Dough Mino",
+      "kind": "Dinosaur",
+      "greeting": "Hello! Let’s put these tiles in a row and see what comes next.",
+      "moment": "Patterns and dominoes",
+      "alt": "The SnackPack portrait of Dough Mino, dinosaur",
+      "fact": "My name sounds like “domino”. Try hearing it in two parts.",
+      "app": [
+        "snackpack-1-abcs-alphabet",
+        "Explore SnackPack ABC"
+      ]
+    },
+    {
+      "id": "marmalade-whiskers",
+      "name": "Marmalade Whiskers",
+      "kind": "Cat",
+      "greeting": "Hello there. Would you help me think of a word for my story?",
+      "moment": "Stories and wordplay",
+      "alt": "The SnackPack portrait of Marmalade Whiskers, cat",
+      "fact": "My name combines a sweet spread and a cat’s whiskers.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ]
+    },
+    {
+      "id": "shepherds-pie-thon",
+      "name": "Shepherd’s Pie-thon",
+      "kind": "Python",
+      "greeting": "Hello! Ready for a word with layers?",
+      "moment": "A spelling-app character",
+      "alt": "The SnackPack portrait of Shepherd’s Pie-thon, python",
+      "fact": "My name combines “shepherd’s pie” and “python”.",
+      "app": [
+        "snackpack-3-spelling-sentences",
+        "Explore SnackPack Spelling"
+      ]
     }
   ],
   "animals": [
+    {
+      "id": "blue-jays",
+      "name": "Blue jays",
+      "fact": "Blue jays eat acorns and may store some to eat later.",
+      "sourceName": "Cornell Lab of Ornithology",
+      "source": "https://www.allaboutbirds.org/guide/Blue_Jay/lifehistory"
+    },
+    {
+      "id": "bottlenose-dolphins",
+      "name": "Bottlenose dolphins",
+      "fact": "A bottlenose dolphin breathes through a blowhole on top of its head.",
+      "sourceName": "Smithsonian Ocean",
+      "source": "https://ocean.si.edu/ocean-life/marine-mammals/common-bottlenose-dolphin"
+    },
+    {
+      "id": "brown-bear",
+      "name": "Brown bears",
+      "fact": "Brown bears use strong claws to dig up food such as roots.",
+      "sourceName": "Alaska Department of Fish and Game",
+      "source": "https://www.adfg.alaska.gov/index.cfm?adfg=brownbear.main"
+    },
+    {
+      "id": "centipedes",
+      "name": "Centipedes",
+      "fact": "A centipede has one pair of legs on each segment that carries legs.",
+      "sourceName": "University of California Statewide IPM Program",
+      "source": "https://ipm.ucanr.edu/home-and-landscape/centipedes-and-millipedes/"
+    },
+    {
+      "id": "chickens",
+      "name": "Chickens",
+      "fact": "Chickens take dust baths to help keep clean.",
+      "sourceName": "University of Delaware Cooperative Extension",
+      "source": "https://www.udel.edu/academics/colleges/canr/cooperative-extension/fact-sheets/steam-team-chicken-health-and-hygiene/"
+    },
+    {
+      "id": "dogs",
+      "name": "Dogs",
+      "fact": "Dogs have a well-developed sense of smell. Some working dogs learn to pick out a particular scent.",
+      "sourceName": "Cornell University College of Veterinary Medicine",
+      "source": "https://www.vet.cornell.edu/about-us/news/20230712/metropolitan-airport-news-working-dogs-dog-sense-airports"
+    },
+    {
+      "id": "elephants",
+      "name": "Elephants",
+      "fact": "An elephant’s trunk joins its nose and upper lip. The trunk has no bones.",
+      "sourceName": "Smithsonian’s National Zoo",
+      "source": "https://nationalzoo.si.edu/animals/asian-elephant"
+    },
     {
       "id": "giant-panda",
       "name": "Giant panda",
@@ -274,11 +944,60 @@
       "source": "https://nationalzoo.si.edu/animals/giant-panda"
     },
     {
-      "id": "brown-bear",
-      "name": "Brown bears",
-      "fact": "Brown bears use strong claws to dig up food such as roots.",
-      "sourceName": "Alaska Department of Fish and Game",
-      "source": "https://www.adfg.alaska.gov/index.cfm?adfg=brownbear.main"
+      "id": "giraffes",
+      "name": "Giraffes",
+      "fact": "Giraffes are the tallest animals that live on land.",
+      "sourceName": "San Diego Zoo Wildlife Explorers",
+      "source": "https://sdzwildlifeexplorers.org/animals/giraffe"
+    },
+    {
+      "id": "mice",
+      "name": "Mice",
+      "fact": "House mice use their whiskers to feel the surfaces they explore.",
+      "sourceName": "University of Michigan BioKIDS",
+      "source": "https://www.biokids.umich.edu/critters/Mus_musculus/"
+    },
+    {
+      "id": "octopuses",
+      "name": "Octopuses",
+      "fact": "An octopus has eight arms. The arms carry suckers that help it grip.",
+      "sourceName": "Smithsonian Ocean",
+      "source": "https://ocean.si.edu/ocean-life/invertebrates/octopuses-squids-and-relatives"
+    },
+    {
+      "id": "owls",
+      "name": "Owls",
+      "fact": "Special feather edges help many owls fly with very little sound.",
+      "sourceName": "Audubon",
+      "source": "https://www.audubon.org/magazine/silent-flight-of-owls-explained"
+    },
+    {
+      "id": "penguins",
+      "name": "Penguins",
+      "fact": "A penguin pushes through the water with its flippers and steers with its feet and tail.",
+      "sourceName": "Australian Antarctic Program",
+      "source": "https://www.antarctica.gov.au/about-antarctica/animals/penguins/"
+    },
+    {
+      "id": "rabbits-and-hares",
+      "name": "Rabbits and hares",
+      "fact": "Rabbits and hares can turn their long ears in different directions to listen.",
+      "sourceName": "University of Michigan BioKIDS",
+      "source": "https://www.biokids.umich.edu/critters/Leporidae/"
+    },
+    {
+      "id": "sharks",
+      "name": "Sharks",
+      "fact": "A shark’s skeleton is made of cartilage, the same kind of flexible material found in the tip of your nose.",
+      "sourceName": "Smithsonian Ocean",
+      "source": "https://ocean.si.edu/ocean-life/sharks-rays/sharks"
+    },
+    {
+      "id": "tigers",
+      "name": "Tigers",
+      "fact": "Each tiger has its own stripe pattern.",
+      "sourceName": "Smithsonian’s National Zoo",
+      "source": "https://www.nationalzoo.si.edu/animals/tiger"
     },
     {
       "id": "tree-squirrels",
@@ -293,48 +1012,6 @@
       "fact": "A turtle’s shell is part of its body. It is joined to its spine and ribs.",
       "sourceName": "San Diego Zoo Wildlife Explorers",
       "source": "https://sdzwildlifeexplorers.org/animals/turtles-and-tortoises"
-    },
-    {
-      "id": "rabbits-and-hares",
-      "name": "Rabbits and hares",
-      "fact": "Rabbits and hares can turn their long ears in different directions to listen.",
-      "sourceName": "University of Michigan BioKIDS",
-      "source": "https://www.biokids.umich.edu/critters/Leporidae/"
-    },
-    {
-      "id": "dogs",
-      "name": "Dogs",
-      "fact": "Dogs have a well-developed sense of smell. Some working dogs learn to pick out a particular scent.",
-      "sourceName": "Cornell University College of Veterinary Medicine",
-      "source": "https://www.vet.cornell.edu/about-us/news/20230712/metropolitan-airport-news-working-dogs-dog-sense-airports"
-    },
-    {
-      "id": "penguins",
-      "name": "Penguins",
-      "fact": "A penguin pushes through the water with its flippers and steers with its feet and tail.",
-      "sourceName": "Australian Antarctic Program",
-      "source": "https://www.antarctica.gov.au/about-antarctica/animals/penguins/"
-    },
-    {
-      "id": "chickens",
-      "name": "Chickens",
-      "fact": "Chickens take dust baths to help keep clean.",
-      "sourceName": "University of Delaware Cooperative Extension",
-      "source": "https://www.udel.edu/academics/colleges/canr/cooperative-extension/fact-sheets/steam-team-chicken-health-and-hygiene/"
-    },
-    {
-      "id": "mice",
-      "name": "Mice",
-      "fact": "House mice use their whiskers to feel the surfaces they explore.",
-      "sourceName": "University of Michigan BioKIDS",
-      "source": "https://www.biokids.umich.edu/critters/Mus_musculus/"
-    },
-    {
-      "id": "owls",
-      "name": "Owls",
-      "fact": "Special feather edges help many owls fly with very little sound.",
-      "sourceName": "Audubon",
-      "source": "https://www.audubon.org/magazine/silent-flight-of-owls-explained"
     }
   ],
   "rounds": [
@@ -518,6 +1195,1324 @@
         ]
       ],
       "explanation": "Vincent painted the crooked chimney on his own house."
+    },
+    {
+      "answer": "corgi-on-the-cob",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake",
+            "ted-e-bear",
+            "nutmeg"
+          ]
+        ],
+        [
+          "My card describes me as “dog”.",
+          [
+            "corgi-on-the-cob"
+          ]
+        ],
+        [
+          "I carry my basket by the handle in my mouth.",
+          [
+            "corgi-on-the-cob"
+          ]
+        ]
+      ],
+      "explanation": "Corgi sets off for Nutmeg’s harvest table with a basket of corn. Three friends help keep his feast on track."
+    },
+    {
+      "answer": "coop-accino",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "coop-accino",
+            "panda-cake",
+            "ted-e-bear",
+            "nutmeg",
+            "shelly-pop",
+            "hop-tart"
+          ]
+        ],
+        [
+          "My card describes me as “chicken”.",
+          [
+            "coop-accino"
+          ]
+        ],
+        [
+          "In the New Year story I wear the green paper hat.",
+          [
+            "coop-accino"
+          ]
+        ]
+      ],
+      "explanation": "Coop wears the green paper hat and helps finish a countdown at the library with her twin, Cluck."
+    },
+    {
+      "answer": "panda-cake",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "panda-cake",
+            "ted-e-bear",
+            "nutmeg",
+            "shelly-pop",
+            "hop-tart",
+            "bark-b-q"
+          ]
+        ],
+        [
+          "My card describes me as “panda”.",
+          [
+            "panda-cake"
+          ]
+        ],
+        [
+          "I wear green oven mitts at the barn stove.",
+          [
+            "panda-cake"
+          ]
+        ]
+      ],
+      "explanation": "At Nutmeg’s harvest feast, Panda-Cake brings rolls and helps cook the corn."
+    },
+    {
+      "answer": "ted-e-bear",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "ted-e-bear",
+            "honey-beats",
+            "nutmeg",
+            "shelly-pop",
+            "hop-tart",
+            "bark-b-q"
+          ]
+        ],
+        [
+          "My card describes me as “bear”.",
+          [
+            "ted-e-bear",
+            "honey-beats"
+          ]
+        ],
+        [
+          "I kept notes in a jar for the New Year party.",
+          [
+            "ted-e-bear"
+          ]
+        ]
+      ],
+      "explanation": "Ted keeps a year of happy memories in a jar and takes it to the library party."
+    },
+    {
+      "answer": "nutmeg",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "nutmeg",
+            "candy-nut",
+            "shelly-pop",
+            "hop-tart",
+            "bark-b-q",
+            "sub-zero"
+          ]
+        ],
+        [
+          "My card describes me as “squirrel”.",
+          [
+            "nutmeg",
+            "candy-nut"
+          ]
+        ],
+        [
+          "I wear a rust-coloured apron when I welcome guests into my harvest barn.",
+          [
+            "nutmeg"
+          ]
+        ]
+      ],
+      "explanation": "Nutmeg hosts the harvest meal and gives her guests a turn to say whom they want to thank."
+    },
+    {
+      "answer": "hop-tart",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "hop-tart",
+            "bark-b-q",
+            "sub-zero",
+            "eggs-benedict",
+            "vincent-van-mouse",
+            "french-toast"
+          ]
+        ],
+        [
+          "My card describes me as “rabbit”.",
+          [
+            "hop-tart"
+          ]
+        ],
+        [
+          "I pop out of a leaf pile holding the missing corn cob.",
+          [
+            "hop-tart"
+          ]
+        ]
+      ],
+      "explanation": "Hop-Tart pops out of a leaf pile holding the cob Corgi lost on the hill."
+    },
+    {
+      "answer": "bark-b-q",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "bark-b-q",
+            "sub-zero",
+            "eggs-benedict",
+            "vincent-van-mouse",
+            "french-toast",
+            "belgian-waffle"
+          ]
+        ],
+        [
+          "My card describes me as “golden retriever”.",
+          [
+            "bark-b-q"
+          ]
+        ],
+        [
+          "I set a table for Friendsgiving under my apple tree.",
+          [
+            "bark-b-q"
+          ]
+        ]
+      ],
+      "explanation": "Bark-B-Q hosts a meal for friends under his apple tree. A potato mix-up gives the feast a new plan."
+    },
+    {
+      "answer": "sub-zero",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "sub-zero",
+            "eggs-benedict",
+            "vincent-van-mouse",
+            "french-toast",
+            "belgian-waffle",
+            "cereal-swimmer"
+          ]
+        ],
+        [
+          "My card describes me as “penguin”.",
+          [
+            "sub-zero"
+          ]
+        ],
+        [
+          "On the morning after Christmas I slide down a snowy hill on my tummy.",
+          [
+            "sub-zero"
+          ]
+        ]
+      ],
+      "explanation": "On the morning after Christmas, Sub-Zero slides on his tummy and plays a snowball game with the other woodland friends."
+    },
+    {
+      "answer": "french-toast",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "french-toast",
+            "belgian-waffle",
+            "cereal-swimmer",
+            "baby-bulldogs",
+            "centi-peed",
+            "honey-beats"
+          ]
+        ],
+        [
+          "My card describes me as “bulldog”.",
+          [
+            "french-toast"
+          ]
+        ],
+        [
+          "I brought a basket of sweet potatoes to the meal.",
+          [
+            "french-toast"
+          ]
+        ]
+      ],
+      "explanation": "Foods from the bakery."
+    },
+    {
+      "answer": "belgian-waffle",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "belgian-waffle",
+            "cereal-swimmer",
+            "baby-bulldogs",
+            "centi-peed",
+            "honey-beats",
+            "foxy-lox"
+          ]
+        ],
+        [
+          "My card describes me as “blue jay”.",
+          [
+            "belgian-waffle"
+          ]
+        ],
+        [
+          "I took the sign-up sheet over the duck pond.",
+          [
+            "belgian-waffle"
+          ]
+        ]
+      ],
+      "explanation": "A flyer with a delivery to make."
+    },
+    {
+      "answer": "cereal-swimmer",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "cereal-swimmer",
+            "baby-bulldogs",
+            "centi-peed",
+            "honey-beats",
+            "foxy-lox",
+            "quill-berry"
+          ]
+        ],
+        [
+          "My card describes me as “shark”.",
+          [
+            "cereal-swimmer"
+          ]
+        ],
+        [
+          "I swim along the number line in the lagoon.",
+          [
+            "cereal-swimmer"
+          ]
+        ]
+      ],
+      "explanation": "Number-line swimming."
+    },
+    {
+      "answer": "baby-bulldogs",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "baby-bulldogs",
+            "centi-peed",
+            "honey-beats",
+            "foxy-lox",
+            "quill-berry",
+            "pork-ulele"
+          ]
+        ],
+        [
+          "My card describes me as “bulldog puppies”.",
+          [
+            "baby-bulldogs"
+          ]
+        ],
+        [
+          "We come out of the snow to join the game.",
+          [
+            "baby-bulldogs"
+          ]
+        ]
+      ],
+      "explanation": "Games together."
+    },
+    {
+      "answer": "centi-peed",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "centi-peed",
+            "honey-beats",
+            "foxy-lox",
+            "quill-berry",
+            "pork-ulele",
+            "flutter-butter"
+          ]
+        ],
+        [
+          "My card describes me as “centipede”.",
+          [
+            "centi-peed"
+          ]
+        ],
+        [
+          "I explore numbers below zero in a burrow.",
+          [
+            "centi-peed"
+          ]
+        ]
+      ],
+      "explanation": "Numbers below zero."
+    },
+    {
+      "answer": "honey-beats",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "honey-beats",
+            "ted-e-bear",
+            "foxy-lox",
+            "quill-berry",
+            "pork-ulele",
+            "flutter-butter"
+          ]
+        ],
+        [
+          "My card describes me as “bear”.",
+          [
+            "honey-beats",
+            "ted-e-bear"
+          ]
+        ],
+        [
+          "I help find the numbers next to each other.",
+          [
+            "honey-beats"
+          ]
+        ]
+      ],
+      "explanation": "Rhythms and number neighbours."
+    },
+    {
+      "answer": "foxy-lox",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "foxy-lox",
+            "quill-berry",
+            "pork-ulele",
+            "flutter-butter",
+            "biscuit-bouncer",
+            "booklava"
+          ]
+        ],
+        [
+          "My card describes me as “fox”.",
+          [
+            "foxy-lox"
+          ]
+        ],
+        [
+          "I follow clues on a mystery trail.",
+          [
+            "foxy-lox"
+          ]
+        ]
+      ],
+      "explanation": "Following clues."
+    },
+    {
+      "answer": "quill-berry",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "quill-berry",
+            "pork-ulele",
+            "flutter-butter",
+            "biscuit-bouncer",
+            "booklava",
+            "bottle-nose"
+          ]
+        ],
+        [
+          "My card describes me as “hedgehog”.",
+          [
+            "quill-berry"
+          ]
+        ],
+        [
+          "My story has clues in the ends of words.",
+          [
+            "quill-berry"
+          ]
+        ]
+      ],
+      "explanation": "Word endings."
+    },
+    {
+      "answer": "pork-ulele",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "pork-ulele",
+            "flutter-butter",
+            "biscuit-bouncer",
+            "booklava",
+            "bottle-nose",
+            "captain-beakon"
+          ]
+        ],
+        [
+          "My card describes me as “pig”.",
+          [
+            "pork-ulele"
+          ]
+        ],
+        [
+          "I help with the clockwork concert.",
+          [
+            "pork-ulele"
+          ]
+        ]
+      ],
+      "explanation": "Music and keeping time."
+    },
+    {
+      "answer": "flutter-butter",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "flutter-butter",
+            "biscuit-bouncer",
+            "booklava",
+            "bottle-nose",
+            "captain-beakon",
+            "tick-tusk"
+          ]
+        ],
+        [
+          "My card describes me as “butterfly”.",
+          [
+            "flutter-butter"
+          ]
+        ],
+        [
+          "I appear with Honey-Beats by the stepping-stone numbers.",
+          [
+            "flutter-butter"
+          ]
+        ]
+      ],
+      "explanation": "Music in the meadow."
+    },
+    {
+      "answer": "biscuit-bouncer",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "biscuit-bouncer",
+            "plate-retriever",
+            "booklava",
+            "bottle-nose",
+            "captain-beakon",
+            "tick-tusk"
+          ]
+        ],
+        [
+          "My card describes me as “puppy”.",
+          [
+            "biscuit-bouncer",
+            "plate-retriever"
+          ]
+        ],
+        [
+          "I have parcels to deliver along a route.",
+          [
+            "biscuit-bouncer"
+          ]
+        ]
+      ],
+      "explanation": "Finding a better route."
+    },
+    {
+      "answer": "booklava",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "booklava",
+            "professor-hooten",
+            "bottle-nose",
+            "captain-beakon",
+            "tick-tusk",
+            "snack-spector"
+          ]
+        ],
+        [
+          "My card describes me as “owl”.",
+          [
+            "booklava",
+            "professor-hooten"
+          ]
+        ],
+        [
+          "My number story has a zero that runs away.",
+          [
+            "booklava"
+          ]
+        ]
+      ],
+      "explanation": "Books and place value."
+    },
+    {
+      "answer": "bottle-nose",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "bottle-nose",
+            "captain-beakon",
+            "tick-tusk",
+            "snack-spector",
+            "sail-affe",
+            "plate-retriever"
+          ]
+        ],
+        [
+          "My card describes me as “dolphin”.",
+          [
+            "bottle-nose"
+          ]
+        ],
+        [
+          "My name points to the shape of a bottlenose dolphin’s snout.",
+          [
+            "bottle-nose"
+          ]
+        ]
+      ],
+      "explanation": "Ocean exploration."
+    },
+    {
+      "answer": "captain-beakon",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "captain-beakon",
+            "tick-tusk",
+            "snack-spector",
+            "sail-affe",
+            "plate-retriever",
+            "horse-doeuvre"
+          ]
+        ],
+        [
+          "My card describes me as “eagle”.",
+          [
+            "captain-beakon"
+          ]
+        ],
+        [
+          "My name is in the mystery about the bell across the bay.",
+          [
+            "captain-beakon"
+          ]
+        ]
+      ],
+      "explanation": "Looking out at the harbour."
+    },
+    {
+      "answer": "tick-tusk",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "tick-tusk",
+            "snack-spector",
+            "sail-affe",
+            "plate-retriever",
+            "horse-doeuvre",
+            "jimmy-apple-core"
+          ]
+        ],
+        [
+          "My card describes me as “elephant”.",
+          [
+            "tick-tusk"
+          ]
+        ],
+        [
+          "The second part of my name points to an elephant’s tusks.",
+          [
+            "tick-tusk"
+          ]
+        ]
+      ],
+      "explanation": "Numbers and exploring."
+    },
+    {
+      "answer": "snack-spector",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "snack-spector",
+            "sail-affe",
+            "plate-retriever",
+            "horse-doeuvre",
+            "jimmy-apple-core",
+            "leo-lemonade"
+          ]
+        ],
+        [
+          "My card describes me as “raccoon”.",
+          [
+            "snack-spector"
+          ]
+        ],
+        [
+          "You can find a shopkeeper outfit in my portrait collection.",
+          [
+            "snack-spector"
+          ]
+        ]
+      ],
+      "explanation": "Shopkeeper roles."
+    },
+    {
+      "answer": "sail-affe",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "sail-affe",
+            "plate-retriever",
+            "horse-doeuvre",
+            "jimmy-apple-core",
+            "leo-lemonade",
+            "luckybug"
+          ]
+        ],
+        [
+          "My card describes me as “giraffe”.",
+          [
+            "sail-affe"
+          ]
+        ],
+        [
+          "The end of my name sounds like the end of “giraffe”.",
+          [
+            "sail-affe"
+          ]
+        ]
+      ],
+      "explanation": "Exploring together."
+    },
+    {
+      "answer": "plate-retriever",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "plate-retriever",
+            "biscuit-bouncer",
+            "horse-doeuvre",
+            "jimmy-apple-core",
+            "leo-lemonade",
+            "luckybug"
+          ]
+        ],
+        [
+          "My card describes me as “puppy”.",
+          [
+            "plate-retriever",
+            "biscuit-bouncer"
+          ]
+        ],
+        [
+          "My name puts “plate” together with “retriever”.",
+          [
+            "plate-retriever"
+          ]
+        ]
+      ],
+      "explanation": "Helper roles."
+    },
+    {
+      "answer": "horse-doeuvre",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "horse-doeuvre",
+            "jimmy-apple-core",
+            "leo-lemonade",
+            "luckybug",
+            "lionnaise",
+            "octo-pop"
+          ]
+        ],
+        [
+          "My card describes me as “pony”.",
+          [
+            "horse-doeuvre"
+          ]
+        ],
+        [
+          "My name sounds like “hors d’oeuvre”, a little bite served before a meal.",
+          [
+            "horse-doeuvre"
+          ]
+        ]
+      ],
+      "explanation": "The pony in the crew."
+    },
+    {
+      "answer": "jimmy-apple-core",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "jimmy-apple-core",
+            "leo-lemonade",
+            "luckybug",
+            "lionnaise",
+            "octo-pop",
+            "ginger-deer"
+          ]
+        ],
+        [
+          "My card describes me as “earthworm”.",
+          [
+            "jimmy-apple-core"
+          ]
+        ],
+        [
+          "In the SnackPack stories I look after what happens underground.",
+          [
+            "jimmy-apple-core"
+          ]
+        ]
+      ],
+      "explanation": "Life underground."
+    },
+    {
+      "answer": "leo-lemonade",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "leo-lemonade",
+            "luckybug",
+            "lionnaise",
+            "octo-pop",
+            "ginger-deer",
+            "spinnerella"
+          ]
+        ],
+        [
+          "My card describes me as “leopard”.",
+          [
+            "leo-lemonade"
+          ]
+        ],
+        [
+          "I brought one giant potato in a wheelbarrow.",
+          [
+            "leo-lemonade"
+          ]
+        ]
+      ],
+      "explanation": "Showing up with a surprise."
+    },
+    {
+      "answer": "luckybug",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "luckybug",
+            "lionnaise",
+            "octo-pop",
+            "ginger-deer",
+            "spinnerella",
+            "candy-nut"
+          ]
+        ],
+        [
+          "My card describes me as “ladybug”.",
+          [
+            "luckybug"
+          ]
+        ],
+        [
+          "I help marchers find partners in the pairing parade.",
+          [
+            "luckybug"
+          ]
+        ]
+      ],
+      "explanation": "Finding partners."
+    },
+    {
+      "answer": "lionnaise",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "lionnaise",
+            "octo-pop",
+            "ginger-deer",
+            "spinnerella",
+            "candy-nut",
+            "stripe-scout"
+          ]
+        ],
+        [
+          "My card describes me as “lioness”.",
+          [
+            "lionnaise"
+          ]
+        ],
+        [
+          "My story begins with a lioness and a dragon.",
+          [
+            "lionnaise"
+          ]
+        ]
+      ],
+      "explanation": "Finding courage."
+    },
+    {
+      "answer": "octo-pop",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "octo-pop",
+            "ginger-deer",
+            "spinnerella",
+            "candy-nut",
+            "stripe-scout",
+            "pita-pan"
+          ]
+        ],
+        [
+          "My card describes me as “octopus”.",
+          [
+            "octo-pop"
+          ]
+        ],
+        [
+          "I explore the coral reef in my underwater story.",
+          [
+            "octo-pop"
+          ]
+        ]
+      ],
+      "explanation": "Exploring a reef."
+    },
+    {
+      "answer": "ginger-deer",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "ginger-deer",
+            "spinnerella",
+            "candy-nut",
+            "stripe-scout",
+            "pita-pan",
+            "fe-line-mignon"
+          ]
+        ],
+        [
+          "My card describes me as “deer”.",
+          [
+            "ginger-deer"
+          ]
+        ],
+        [
+          "I have an explorer outfit and a teacher outfit in the character collection.",
+          [
+            "ginger-deer"
+          ]
+        ]
+      ],
+      "explanation": "Explorer and teacher art."
+    },
+    {
+      "answer": "spinnerella",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "spinnerella",
+            "candy-nut",
+            "stripe-scout",
+            "pita-pan",
+            "fe-line-mignon",
+            "cynthia-book-smart"
+          ]
+        ],
+        [
+          "My card describes me as “spider”.",
+          [
+            "spinnerella"
+          ]
+        ],
+        [
+          "Listen to the word “spin” tucked inside my name.",
+          [
+            "spinnerella"
+          ]
+        ]
+      ],
+      "explanation": "A name about spinning."
+    },
+    {
+      "answer": "candy-nut",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "candy-nut",
+            "nutmeg",
+            "stripe-scout",
+            "pita-pan",
+            "fe-line-mignon",
+            "cynthia-book-smart"
+          ]
+        ],
+        [
+          "My card describes me as “squirrel”.",
+          [
+            "candy-nut",
+            "nutmeg"
+          ]
+        ],
+        [
+          "My name has two snack words, “candy” and “nut”.",
+          [
+            "candy-nut"
+          ]
+        ]
+      ],
+      "explanation": "Exploring with the crew."
+    },
+    {
+      "answer": "stripe-scout",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "stripe-scout",
+            "pita-pan",
+            "fe-line-mignon",
+            "cynthia-book-smart",
+            "ham-and-cheese",
+            "meow-inara"
+          ]
+        ],
+        [
+          "My card describes me as “tiger”.",
+          [
+            "stripe-scout"
+          ]
+        ],
+        [
+          "I look for blends in the bridge story.",
+          [
+            "stripe-scout"
+          ]
+        ]
+      ],
+      "explanation": "Sound and spelling clues."
+    },
+    {
+      "answer": "pita-pan",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "pita-pan",
+            "fe-line-mignon",
+            "cynthia-book-smart",
+            "ham-and-cheese",
+            "meow-inara",
+            "polly-roger"
+          ]
+        ],
+        [
+          "My card describes me as “goat”.",
+          [
+            "pita-pan"
+          ]
+        ],
+        [
+          "I helped carry the basket up the hill.",
+          [
+            "pita-pan"
+          ]
+        ]
+      ],
+      "explanation": "Helping on the hill."
+    },
+    {
+      "answer": "fe-line-mignon",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "fe-line-mignon",
+            "meow-inara",
+            "marmalade-whiskers",
+            "cynthia-book-smart",
+            "ham-and-cheese",
+            "polly-roger"
+          ]
+        ],
+        [
+          "My card describes me as “cat”.",
+          [
+            "fe-line-mignon",
+            "meow-inara",
+            "marmalade-whiskers"
+          ]
+        ],
+        [
+          "I have a café story that takes place by moonlight.",
+          [
+            "fe-line-mignon"
+          ]
+        ]
+      ],
+      "explanation": "The moonlit café."
+    },
+    {
+      "answer": "cynthia-book-smart",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "cynthia-book-smart",
+            "ham-and-cheese",
+            "meow-inara",
+            "polly-roger",
+            "dough-mino",
+            "marmalade-whiskers"
+          ]
+        ],
+        [
+          "My card describes me as “snake”.",
+          [
+            "cynthia-book-smart"
+          ]
+        ],
+        [
+          "You may see my name shortened to Cynthia in the spelling app.",
+          [
+            "cynthia-book-smart"
+          ]
+        ]
+      ],
+      "explanation": "Library and word clues."
+    },
+    {
+      "answer": "ham-and-cheese",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "ham-and-cheese",
+            "meow-inara",
+            "polly-roger",
+            "dough-mino",
+            "marmalade-whiskers",
+            "shepherds-pie-thon"
+          ]
+        ],
+        [
+          "My card describes me as “hamster”.",
+          [
+            "ham-and-cheese"
+          ]
+        ],
+        [
+          "I look for a route through a maze in my story.",
+          [
+            "ham-and-cheese"
+          ]
+        ]
+      ],
+      "explanation": "Finding a way through the maze."
+    },
+    {
+      "answer": "meow-inara",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "meow-inara",
+            "fe-line-mignon",
+            "marmalade-whiskers",
+            "polly-roger",
+            "dough-mino",
+            "shepherds-pie-thon"
+          ]
+        ],
+        [
+          "My card describes me as “cat”.",
+          [
+            "meow-inara",
+            "fe-line-mignon",
+            "marmalade-whiskers"
+          ]
+        ],
+        [
+          "I pulled a sack of potatoes to the garden gate.",
+          [
+            "meow-inara"
+          ]
+        ]
+      ],
+      "explanation": "A plum door and a potluck."
+    },
+    {
+      "answer": "polly-roger",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "polly-roger",
+            "dough-mino",
+            "marmalade-whiskers",
+            "shepherds-pie-thon",
+            "professor-hooten",
+            "hen-berry"
+          ]
+        ],
+        [
+          "My card describes me as “parrot”.",
+          [
+            "polly-roger"
+          ]
+        ],
+        [
+          "I follow the sound of a bell across the bay.",
+          [
+            "polly-roger"
+          ]
+        ]
+      ],
+      "explanation": "A harbour mystery."
+    },
+    {
+      "answer": "dough-mino",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "dough-mino",
+            "marmalade-whiskers",
+            "shepherds-pie-thon",
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob"
+          ]
+        ],
+        [
+          "My card describes me as “dinosaur”.",
+          [
+            "dough-mino"
+          ]
+        ],
+        [
+          "My name sounds like “domino”. Try hearing it in two parts.",
+          [
+            "dough-mino"
+          ]
+        ]
+      ],
+      "explanation": "Patterns and dominoes."
+    },
+    {
+      "answer": "marmalade-whiskers",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "marmalade-whiskers",
+            "fe-line-mignon",
+            "meow-inara",
+            "shepherds-pie-thon",
+            "professor-hooten",
+            "hen-berry"
+          ]
+        ],
+        [
+          "My card describes me as “cat”.",
+          [
+            "marmalade-whiskers",
+            "fe-line-mignon",
+            "meow-inara"
+          ]
+        ],
+        [
+          "My name combines a sweet spread and a cat’s whiskers.",
+          [
+            "marmalade-whiskers"
+          ]
+        ]
+      ],
+      "explanation": "Stories and wordplay."
+    },
+    {
+      "answer": "shepherds-pie-thon",
+      "clues": [
+        [
+          "I’m one of the faces on the SnackPack character board.",
+          [
+            "shepherds-pie-thon",
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino"
+          ]
+        ],
+        [
+          "My card describes me as “python”.",
+          [
+            "shepherds-pie-thon"
+          ]
+        ],
+        [
+          "My name combines “shepherd’s pie” and “python”.",
+          [
+            "shepherds-pie-thon"
+          ]
+        ]
+      ],
+      "explanation": "A spelling-app character."
     }
   ]
 }
