@@ -362,7 +362,12 @@ function tick(now) {
   if (state.mode === "paused") return;
   const g = state.game;
   state.acc += dt;
-  while (state.acc >= SH.STEP) { g.step(state.input); if (g.status === "driving") stepGhost(); state.acc -= SH.STEP; }
+  while (state.acc >= SH.STEP) {
+    // Recording builds only: the bots' driver works the pedals (see SnackHaulDebug below).
+    if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; }
+    g.step(state.input); if (g.status === "driving") stepGhost(); state.acc -= SH.STEP;
+  }
+  if (state.autopilot) syncPedals();
   drainEvents(g);
   if (now > state.toastUntil) $("toast").classList.remove("on");
   if (now > state.hintUntil) $("hint").classList.remove("on");
@@ -735,6 +740,9 @@ window.SnackHaulBack = () => {
   if (state.screen !== "home") return toMenu("home");
   tellApp({ type: "exit" });
 };
+// Debug and recording builds only: the app sets SNACKHAUL_DEBUG when built with
+// EXPO_PUBLIC_WEBVIEW_DEBUG=1. The website never does, so this does not exist there.
+if (window.SNACKHAUL_DEBUG) window.SnackHaulDebug = { autopilot: (speed) => { state.autopilot = speed || 0; if (!speed) state.input.gas = state.input.brake = false; } };
 window.SnackHaulPause = () => { pause(); if (audio.ctx && audio.ctx.state === "running") audio.ctx.suspend(); };
 window.SnackHaulResume = () => { if (audio.ctx && save.sound) audio.ctx.resume(); };
 
