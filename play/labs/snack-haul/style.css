@@ -159,3 +159,15 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
 .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 6px 0 8px; }
 .cal .day { font-style: normal; text-align: center; padding: 7px 0; border-radius: 9px; background: var(--panel-2); font-weight: 700; font-size: .78rem; color: var(--soft); }
 .cal .day.on { background: var(--sun); color: #2b1d14; } .cal .day.big { border: 1px dashed var(--sun); }
+/* Short landscape phones (about 450 CSS px tall): the logo follows the screen
+   height and the menu tightens, so Drive, the three modes and the dock all fit. */
+@media (max-height: 560px) {
+  .brand h1 .logo { width: auto; height: min(22vh, 120px); max-width: 32vw; }
+  .brand p { font-size: .82rem; margin-top: 2px; }
+  .menu { gap: 6px; }
+  .menu .btn { min-height: 0; padding: 6px 14px; }
+  .menu .btn.primary { font-size: 1rem; }
+  .menu small { font-size: .7rem; }
+  .menu { width: min(300px, 100%); }
+  .dock .btn { min-height: 38px; padding: 6px 4px; font-size: .78rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; }
+}
