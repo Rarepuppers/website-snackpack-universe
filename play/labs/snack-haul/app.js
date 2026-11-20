@@ -898,6 +898,8 @@ function goalsScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Goals")}<div class="stats">${stats}</div><h3 class="small">Goals</h3>${list}</section>`;
 }
 
+// Website only: Google Play does not allow an outside payment link inside the app.
+const TIP_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04?client_reference_id=snack-haul";
 function settingsScreen() {
   const opt = (group, value, label, on) => `<button class="tab" data-set="${group}" data-val="${value}" aria-pressed="${on}">${label}</button>`;
   ui.innerHTML = `<section class="panel">${panelHead("Settings")}
@@ -909,6 +911,7 @@ function settingsScreen() {
     <div class="set"><b>Camera shake</b><div class="opts">${opt("shake", 1, "On", save.shake)}${opt("shake", 0, "Off", !save.shake)}</div></div>
     <div class="set"><b>Progress</b><div class="opts"><button class="tab" data-reset>Reset game</button></div></div>
     <p class="note">Playtest build: your progress stays on this device. Turn your phone sideways for the best view. Arrow keys drive on a computer.</p>
+    ${nativeApp ? "" : `<p class="note">Enjoying Snack Haul? <a href="${TIP_URL}" target="_blank" rel="noopener" style="color:inherit;font-weight:700">Tip the studio</a></p>`}
     <p class="note"><a href="../../" style="color:inherit">Back to the arcade</a></p></section>`;
 }
 
