@@ -5,6 +5,24 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
+
+Homepage and book changes are in `5cc656d2` and `51b5abed`. The
+[Thanksgiving release](https://github.com/Rarepuppers/website-snackpack-universe/pull/9)
+and [New Year release](https://github.com/Rarepuppers/website-snackpack-universe/pull/11)
+add four picture books, 50 Thanksgiving story pages, 50 New Year story pages,
+four story PDFs, 16 colouring pages and two activity sheets.
+
+- On the visitor’s local calendar, Thanksgiving runs from seven days before
+  the fourth Thursday in November through December 1, Christmas runs December
+  2–25, and New Year runs December 26–January 7. The calendar repeats annually.
+- The [holiday bookshelf](../read/events/) is always linked from the homepage.
+  Count Together, Thank-you Leaves and the five midnight clocks are available
+  year-round with the event stories.
+- The combined publication checks cover all 68 books and 595 story pages.
+  All 63 homepage and Reads browser tests passed, including the midnight
+  switch, keyboard and enlarged-text layout, event navigation, and art files.
+
 ## 2026-10-20 - Complete offline books, two questions and practical printing
 
 Published in `3b542981`. Full CI and Pages pass; all 29 reader cases pass on

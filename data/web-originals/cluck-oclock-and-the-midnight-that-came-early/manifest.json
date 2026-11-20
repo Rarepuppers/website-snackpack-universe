@@ -1,0 +1,1013 @@
+{
+  "schemaVersion": 1,
+  "id": "cluck-oclock-and-the-midnight-that-came-early",
+  "title": "Cluck O’Clock and the Midnight That Came Early",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "new-year",
+  "ageRange": "5–7",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 886,
+  "blurb": "Cluck O’Clock is named after clocks, so this year he’s staying up for midnight. The real one. Then Professor Hooten shows the twins a wall of clocks, and midnight starts turning up all evening long.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On the last morning of the year, the twins built a snowman. Then Cluck O’Clock came in and wound his brass pocket watch. Click, click, click.\n\n“Tonight I’m staying up for midnight,” he said. “The real one.”\n\n“You fell asleep on Christmas Eve,” said Coop-Accino.\n\n“After the sleigh,” said Cluck. “That’s different.”",
+      "illustrationDirection": "Morning kitchen. Close on Cluck winding the brass watch at the table, beak set with resolve. Coop leans in from the right, one eyebrow-feather raised. Daylight from the window, with the twins’ lumpy new snowman visible outside.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8f7c4090f7ad76c1a2c144369ea660029f9ce66bcf1e4c6d307c5e4b8f442f76",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 200066,
+            "sha256": "799ecd2074afe0529a8583e6ed794654a1867e2d02704d6443b1348618b91aee"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 135236,
+            "sha256": "6f950b6bbaecb632ae27ad42bf6797c305e17aa4df8a5ef2c6a6f5faa8705322"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 66542,
+            "sha256": "a4f72ef8e70d6c5a7d4def4c7ee6129ea7da168ecb0b5499ff04216bb56bebe1"
+          }
+        ],
+        "review": "Watch uses separated tick marks.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck winds his brass pocket watch at the kitchen table. Coop looks at him, and their snowman stands outside."
+      },
+      "alt": "Cluck winds his brass pocket watch at the kitchen table. Coop looks at him, and their snowman stands outside."
+    },
+    {
+      "number": 2,
+      "text": "Hen-Berry folded two paper hats at the kitchen table. A gold one for Cluck. A green one for Coop.\n\n“Midnight is very late for a chicken,” she said.\n\n“Midnight is when the new year starts,” said Cluck. “I want to be there when it does.”",
+      "illustrationDirection": "Hen-Berry at the same table folding paper. The finished gold hat sits on Cluck’s head; she holds out the green one to Coop. A few paper scraps on the table.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "427fcc72d5c8b1eef5ffeb8931d8dbe307da5ea39ba45a128ac7900393cf08ec",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 236764,
+            "sha256": "5be4e24d43ab8d5b7398751c3b879273f27bfb91c56393c9f19977f22a213284"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 155968,
+            "sha256": "0c7b5241c4d130508f0def3a7e66caae9154f68cc6958fb1b8e6b8076039ef9f"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 77748,
+            "sha256": "98da6621fa55bbd4faf2e2dc614578dcb0f78cb8fd0854ddc0c16f3383557e7d"
+          }
+        ],
+        "review": "Restored the hand-off to Hen-Berry.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry offers Coop a green paper hat. Cluck holds his watch and wears his gold hat."
+      },
+      "alt": "Hen-Berry offers Coop a green paper hat. Cluck holds his watch and wears his gold hat."
+    },
+    {
+      "number": 3,
+      "text": "That evening, they walked to the library in their hats. Lanterns hung along the path, and the snow squeaked under their feet.\n\nProfessor Hooten’s party was for families. It started at six o’clock and finished at nine.\n\n“Nine isn’t midnight,” said Cluck.\n\n“No,” said Hen-Berry. “It isn’t.”",
+      "illustrationDirection": "Evening exterior. Hen-Berry and the twins in hats walk the lantern path towards the lit library, seen from behind and slightly above. Snow on the path, lanterns on short posts.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4bc28b09aa5324701ebf1fd7d056e15010dd37fca3d6e50bdba4a2078c9846ff",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 333358,
+            "sha256": "256fb06d0eefb122070dc51f4a3dfe4a977332ba9f9e24f8d0ce91c62be25733"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 218830,
+            "sha256": "760d53dd2196014b6d0464c9e198bb5e1d409e8c9a8e45f176a1729d4b1a3074"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104558,
+            "sha256": "616ac139b8a5a01a151e6087219e228cc9134ca42a872a4df4c03a1e286cbb08"
+          }
+        ],
+        "review": "Both folded paper hats and the red scarf are visible from behind.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry and the twins follow lanterns along a snowy path to the library."
+      },
+      "alt": "Hen-Berry and the twins follow lanterns along a snowy path to the library."
+    },
+    {
+      "number": 4,
+      "text": "Inside, Hooten had hung five round clocks in a row on the wall. Each clock had a little card underneath.\n\n“Every clock keeps the time somewhere else,” said Hooten. “Some places start their day before we do, so their midnight comes sooner.”",
+      "illustrationDirection": "Library hall wide. Hooten stands before the row of five round clocks with blank cards. Twins look up at the wall from below; Hen-Berry behind. Bookcases and warm lamps.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "67367b4f4c928fafbe5c147f60c37ebf93507d65e90595a4a3955947960843fc",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 306722,
+            "sha256": "d7e6154b32a5be886bdd335649c8cb82dee0ad8911f795a22264b5863071d6a8"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 195570,
+            "sha256": "75da31086e879b2f9b24e16b923770e2ff610fba16d7ba1ce701222d61ef1750"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 89948,
+            "sha256": "20366a5d583c929476b9775094e16c8974c811e59c6a2e58682748890c3d81e9"
+          }
+        ],
+        "review": "Five clock faces, blank cards and the twins’ paper hats verified.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten shows the five brass clocks to Hen-Berry and the twins in the library."
+      },
+      "alt": "Hooten shows the five brass clocks to Hen-Berry and the twins in the library."
+    },
+    {
+      "number": 5,
+      "text": "He tapped the first clock. Its card said **Here**. Its hands said six o’clock.\n\nThen he tapped the last clock. Its card said **Kiritimati**. Its hands said eight o’clock in the morning.\n\n“That island is far out in the Pacific Ocean,” said Hooten. “Its midnight came while you were building your snowman.”",
+      "illustrationDirection": "Low view up at the clock wall. Hooten’s wingtip touches the far-right clock (hands at 8:00). The far-left clock reads 6:00. Twins’ hat tips at the bottom of the frame.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4014c944c717e3a602465de2b2c550bb719ce965452c644fcb4f4bc0a119d124",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 273752,
+            "sha256": "6751b6d71d829abc88d3939cb66d3b3f1a198bba9a84f21ec98a39181363c887"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 176714,
+            "sha256": "ea409cec6fd6a2f17ba332673800cbc7364229c6ae06a63c4f9a99bea6c42268"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 81568,
+            "sha256": "bd7ae1e87175971e645b77eb3f291564d6ea0a92646caa22202c72dd7415c65c"
+          }
+        ],
+        "review": "Verified five minute hands up and hour hands at six, eight, nine, ten and eight.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten points to the last clock. All five clocks hang above blank cards, with two paper hat tips at the bottom of the picture."
+      },
+      "alt": "Hooten points to the last clock. All five clocks hang above blank cards, with two paper hat tips at the bottom of the picture."
+    },
+    {
+      "number": 6,
+      "text": "Coop stared. “It’s next year already? Somewhere?”\n\nCluck held his watch up next to the **Here** clock. Both said six.\n\n“So whose midnight comes next?” he asked.\n\nHooten pointed to a clock with a card that said **Dubai**. “In two hours.”",
+      "illustrationDirection": "Close two-shot. Cluck holds his watch up beside the left-hand clock; both at 6:00. Coop stares at the wall, beak open.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "badd88e3ea9a6c28cb624539c4f441a7f8fce29322635a1aaccdb67b5e0ff9e8",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 261796,
+            "sha256": "ad3fcb9b19200c72bc47f3f3ae622d1eb7f958c60571567dd83858ec3f27f2ed"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 165466,
+            "sha256": "f972e9763ebe322e8deff1495f67de08b6435e6b58c7c04c984d3b034a8eb463"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74132,
+            "sha256": "bb88186ca82c49ea0eace284faf45f2aa5a64818b9383bdc9b9c445b75bb20e9"
+          }
+        ],
+        "review": "Six on both dials.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck holds his pocket watch beside the first wall clock. Both show six, and Coop looks up in surprise."
+      },
+      "alt": "Cluck holds his pocket watch beside the first wall clock. Both show six, and Coop looks up in surprise."
+    },
+    {
+      "number": 7,
+      "text": "There was cocoa and a long table of little cakes. By the door stood a basket of old pot lids and wooden spoons.\n\n“For the countdowns,” said Hen-Berry, and gave one of each to the twins.",
+      "illustrationDirection": "Party vignette. Cocoa mugs and little cakes on the window table; Hen-Berry hands each twin a pot lid and a wooden spoon from the wicker basket by the door. Guests small and soft in the background.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "323ae5c71a4905710770c436f65659b351b50f6313e3455e02463c045b8d1677",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 264590,
+            "sha256": "dc70e16f3ce852651d34034cac5fb69dd7bc12bc93ae4a28edb59d52eaef11a7"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 169268,
+            "sha256": "28cdc542b09be9d66ae6b9159e57f8ff25f570c9c0e60aeb3b58ac96710b49b7"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82976,
+            "sha256": "850da66b4a9dcaf8a8e3fe06baccc24606741b23de82d40d2c51521ef8b9718e"
+          }
+        ],
+        "review": "Pot-lid basket, two correct paper hats and evening light.",
+        "generator": "built-in imagegen",
+        "alt": "At the library door, Hen-Berry hands out pot lids and wooden spoons. Cocoa and cakes wait by the window."
+      },
+      "alt": "At the library door, Hen-Berry hands out pot lids and wooden spoons. Cocoa and cakes wait by the window."
+    },
+    {
+      "number": 8,
+      "text": "“Here’s my plan,” said Cluck. “We count down every midnight, all the way round, until we get to ours.”\n\nCoop counted the clocks on her wingtips. “That’s a lot of midnights.”\n\n“That’s the good bit,” said Cluck.",
+      "illustrationDirection": "Twins side by side on a bench. Cluck explains, one wing raised like a conductor; Coop counts on her wingtips. The clock wall is behind them, out of focus.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c3b82df00b8c70b79fde4bc7b3132340c3949875afa1072a98a5702f790c97e8",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 188318,
+            "sha256": "67fb3250fbdb1c37db81b3e27d74f4378923921f0d87d632a22016a258595eea"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 119706,
+            "sha256": "b6140baf596b946d97b3660fca99dc3c2e89dd15bbf7287052f7413825961eef"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 57540,
+            "sha256": "0f977150c8726c4c2c4bb927ea144773e2ea48f1ff2f5e8f9b1e01cdd314738c"
+          }
+        ],
+        "review": "Five matching clocks are blurred behind the bench.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck talks with a wing raised. Coop counts on her wingtips beside him."
+      },
+      "alt": "Cluck talks with a wing raised. Coop counts on her wingtips beside him."
+    },
+    {
+      "number": 9,
+      "text": "At eight o’clock, the hands of the Dubai clock crept up towards twelve. Everybody gathered under the wall.\n\n“Ten, nine, eight…” counted Hooten.\n\n“Not yet,” whispered Cluck, watching his watch. “Not yet…”",
+      "illustrationDirection": "Everyone gathered under the clock wall, seen from behind the crowd. The fourth clock’s hands are just short of twelve. Cluck at the front with watch held up; Hooten conducting the count.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "90bb8473a7c990cd179353f3f14ec3b49f3917dd2590a88626cc5ce0b00e9e9b",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 181620,
+            "sha256": "10f2f7a90a9aa2de567b11face342373b416e05a6b6157067ad2b964a4c2cabb"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 120462,
+            "sha256": "c9b7e2d64e22d283b0ae5b435ee93573a1c2c76cb28e3b066a7e64b82986bd8a"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 58676,
+            "sha256": "b2f18492cb12394cf3c32194cd0fca448e55f37b92ea998a3075abdcaef72d5c"
+          }
+        ],
+        "review": "Fourth clock clear, other dials soft.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten leads the first countdown. Cluck watches his pocket watch as the fourth wall clock approaches midnight."
+      },
+      "alt": "Hooten leads the first countdown. Cluck watches his pocket watch as the fourth wall clock approaches midnight."
+    },
+    {
+      "number": 10,
+      "text": "“…three, two, one…”\n\n“NOW!”\n\nClang went the pot lids. Bang went the spoons. “Happy New Year, Dubai!” everyone shouted.\n\nCluck’s gold hat slid down over one eye. He didn’t mind at all.",
+      "illustrationDirection": "Burst of joy. Lids clanging, spoons raised, Hooten’s wings up. Cluck’s gold hat has slipped over one eye and he is grinning. Coop mid-clang beside him.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e5308345a4b671ed09b7688fb47d83b858ab2376266039dbd41919bcb93ef5fd",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 336300,
+            "sha256": "9d2109a192487a419cbd91a15c9916522be5bb07db556d9ad08d3971e74a02b5"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 210574,
+            "sha256": "baabd67312b0a193cd4e841fe22d9987d4664897907a5497f396f1cf330ed10b"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98164,
+            "sha256": "215b215fef7a631c21676f8e013109ff0b02d24146b11952d3fd57b8c1d5fff7"
+          }
+        ],
+        "review": "Both lids and spoons. Gold and green folded hats.",
+        "generator": "built-in imagegen",
+        "alt": "The twins strike their pot lids, and Hooten raises his wings. Cluck’s gold hat slips over an eye."
+      },
+      "alt": "The twins strike their pot lids, and Hooten raises his wings. Cluck’s gold hat slips over an eye."
+    },
+    {
+      "number": 11,
+      "text": "Cluck ate one more cake, then half of another. Then he yawned. He hid the yawn behind his hat.\n\nCoop saw. She didn’t say anything. She just moved the cake plate a little closer to him.",
+      "illustrationDirection": "Quieter moment at the cake table. Cluck half-hides a huge yawn behind his gold hat; Coop, beside him, slides the cake plate a little nearer.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d09b81f42b3035a05f763831d07f46193e03d725d460531cbb7ca96cda8fbbac",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 283630,
+            "sha256": "418d4f943d3cc4839482d66cc7d87a3bc9e2435986ea6b699572b637d3dbbbee"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183672,
+            "sha256": "2aa8af7dc43c986402c88857ec63a37ceb76feaa21d0523cb6bb1ac512bf0879"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86494,
+            "sha256": "e1aa820bbdb61772befaf119f8e7e7d717cdf3dc1c397ea5465d7e201c3f64ba"
+          }
+        ],
+        "review": "The folded hat stays in Cluck’s wingtips.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck hides his yawn behind his gold paper hat while Coop slides the cake toward him."
+      },
+      "alt": "Cluck hides his yawn behind his gold paper hat while Coop slides the cake toward him."
+    },
+    {
+      "number": 12,
+      "text": "At nine o’clock, it was midnight in Nairobi. Everyone counted again.\n\n“…three, two, one…”\n\n“NOW!” shouted Coop.\n\n“Now,” said Cluck, a moment later. He had been blinking at the wrong moment.",
+      "illustrationDirection": "Second countdown. Coop leaps with her lid raised high; Cluck a beat behind, eyes still blinking. The third clock at twelve.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bcb7d1e0392204349197a176063db74e7bd73e795fb8b8183476c4bdee7ef4b6",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 314372,
+            "sha256": "51611f11ec457c6be3f3855fecc28e21248232a2bc58f6b6f36b98bc63e382a3"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 198112,
+            "sha256": "7e9720fb837cff8f815438fd249e0f2e7b03850aa4360397026d4bb57b4fbded"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 90952,
+            "sha256": "80a8d1cbcd7911f3489f1164732487fb7cce34c651eac2483905dc897cdb3f13"
+          }
+        ],
+        "review": "Three visible clocks show nine, eleven and twelve.",
+        "generator": "built-in imagegen",
+        "alt": "Coop lifts her lid as Cluck blinks. The third clock reaches midnight."
+      },
+      "alt": "Coop lifts her lid as Cluck blinks. The third clock reaches midnight."
+    },
+    {
+      "number": 13,
+      "text": "“Home time,” said Hen-Berry.\n\n“But Cairo is next!” said Cluck. “It’s on the wall!”\n\nHooten bent down. “You have a clock of your own,” he said, nodding at the watch. “When it says ten o’clock, it will be midnight in Cairo.”",
+      "illustrationDirection": "Hooten bends low to Cluck by the door, nodding at the watch in Cluck’s wing. Hen-Berry has her red scarf on. Coop already holds Hen-Berry’s wing.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "28ada32c37e7fc9cef56eb69bf4cdaf403d4334a6e9db591b58daebfd6f7bbcc",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 301418,
+            "sha256": "f8f1127fd0548b524d6d3c803581f225e666092c01ebc14d0f318f654fa2772d"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 194874,
+            "sha256": "093fb9532fb80cf2541252e2df580675503c7eb18f786308d4b5d4cb21cc62f7"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94374,
+            "sha256": "613cb54d850230b6ace6f071732c3beddda1a8cb977236a4789ac7267aca412a"
+          }
+        ],
+        "review": "Folded paper hats and nighttime window restored.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten points to Cluck’s watch near the library door while Hen-Berry and Coop look on."
+      },
+      "alt": "Hooten points to Cluck’s watch near the library door while Hen-Berry and Coop look on."
+    },
+    {
+      "number": 14,
+      "text": "Hen-Berry pulled the twins’ little sled home along the lantern path. Coop walked beside it. Cluck rode, holding his watch up to the moon so he could see the hands.\n\n“Nine twenty,” he reported. “Still awake.”",
+      "illustrationDirection": "Night exterior on the lantern path. Hen-Berry pulls the little sled by its rope. Cluck rides, holding the watch up to a bright moon. Coop walks beside, hat askew.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3a1109f55f1027e2064d5ba114cf7c4589fd73bc91ac37cd65c8fab70e6dedf9",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 251302,
+            "sha256": "f2c8c7ec249472df9939b5ef4eeb12771f98fa33ce78b12d2ea8eff0543e1605"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 170228,
+            "sha256": "bea3746995c444dd5c5a5a2f5e73b39ce2517f4244638cc5c61c6c448640b9f8"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85030,
+            "sha256": "e1f828cb2c028a54f05e6253d20f29d5824fe1ec09013bbfe1f96d358a3d9f18"
+          }
+        ],
+        "review": "Watch points approximately to twenty past nine.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry pulls the little sled while Coop walks beside it. Cluck raises his watch toward the moon."
+      },
+      "alt": "Hen-Berry pulls the little sled while Coop walks beside it. Cluck raises his watch toward the moon."
+    },
+    {
+      "number": 15,
+      "text": "In bed, the twins kept their hats on. Cluck held the watch in his wing.\n\n“Two minutes to Cairo,” he whispered.\n\n“Wake me for it,” said Coop, and closed her eyes.",
+      "illustrationDirection": "Bedroom, reusing the Christmas layout. Both twins in bed with hats on. Cluck clutches the watch on his quilt; Coop’s eyes are closing. Warm night-light glow.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0f9fcd3f66f715d134e6c416361dcee92b670088946389b4333386bebff0147c",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 220590,
+            "sha256": "0b30fbda11c035d202856fd6556b3a5bbbeb135e3d3311a45038b9d9bef2ce16"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 148614,
+            "sha256": "5bbcb068307cdc21a22552d7b163aab1ed6a2b4d37c500c6ec2d3459e481e52c"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 69662,
+            "sha256": "47abc1ae78486d73ca241cfde340be3994304ffd148b6cf10c797a1c409db62a"
+          }
+        ],
+        "review": "Gold and green hats replace knitted ones.",
+        "generator": "built-in imagegen",
+        "alt": "Both twins wear their paper hats in bed. Coop closes her eyes while Cluck watches the time."
+      },
+      "alt": "Both twins wear their paper hats in bed. Coop closes her eyes while Cluck watches the time."
+    },
+    {
+      "number": 16,
+      "text": "Tick. Tick. Tick. The watch sounded much louder in the dark.\n\nNine fifty-nine. Cluck’s eyes closed. They opened again. They closed again, a little longer.",
+      "illustrationDirection": "Close on Cluck at pillow height, eyes heavy, watch in his wing. The hands at one minute to ten.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5901bc81689de6136b8a7626417731934b887a6f70b61907f39b5400939435de",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 201430,
+            "sha256": "471f6cf51c04036d91bad94ab4e0beb8f873cbf5707c2f39d976fec74bb4efa3"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 136086,
+            "sha256": "8255f9da1dd1c6d1dc092705d7662c2001f0f35d7b28eb2906638c3f4a02908b"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 65716,
+            "sha256": "4c602379adecbf7e42c8aae3c8f86678f525dc9bb1422fe3c89ba5fa2a58325d"
+          }
+        ],
+        "review": "Long hand rests close to the last minute before ten.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck watches the pocket watch through heavy eyelids. The hands are almost at ten."
+      },
+      "alt": "Cluck watches the pocket watch through heavy eyelids. The hands are almost at ten."
+    },
+    {
+      "number": 17,
+      "text": "The long hand reached twelve.\n\n“Ten,” whispered Cluck. “Nine… eight… seven…”\n\nEach number was slower than the one before.\n\n“Four… three…”\n\nThen nothing.",
+      "illustrationDirection": "Same framing, a little closer. Cluck’s beak mid-number; his eyes are shut. The long hand at twelve.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1739b317c6f1f2ebd1d7a43f3359cb46fd78cea46c47e0b4e5326454fb4aa043",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 255496,
+            "sha256": "2911328bd8764dc4b2e3bc743a58b56a148a17f055a7b38617438c89745667cb"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 164742,
+            "sha256": "0c85ca60facd83d77e459483003f4139716ac07a37027a83b9fbb47703bb5ee9"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78542,
+            "sha256": "6e33b0109b7be9d7e40ce75ac5b677f894d4cdfb122a7425d915fe846a7ba294"
+          }
+        ],
+        "review": "Correct watch time and feather shapes.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck whispers with closed eyes. His watch shows ten o’clock and Coop dozes behind him."
+      },
+      "alt": "Cluck whispers with closed eyes. His watch shows ten o’clock and Coop dozes behind him."
+    },
+    {
+      "number": 18,
+      "text": "Coop opened one eye. Cluck was fast asleep, with the watch still in his wing.\n\n“Two,” she whispered. “One. Now.”\n\nShe waved her wingtip like a very small flag. “Happy New Year, Cairo.”",
+      "illustrationDirection": "Coop from her side, one eye open, waving one wingtip like a tiny flag towards the sleeping Cluck.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "27670db95b4689a87167dceb3d16125a00035099766cf30542071083a40b5a08",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 222694,
+            "sha256": "ac29a2b9a10ca6fc5b9ac41d1679c7890a8a0ed3ceb42d8e39dd9228dc02f1e2"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 152344,
+            "sha256": "4f0bc88d23052b591682183701a9867eb23fc2140b5dcb259fa8c7d24574cc08"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 71298,
+            "sha256": "9d82fb4f7ecc7016918f933a0f0cb4b342d14cb30107c6a29d75d96950a0f0f0"
+          }
+        ],
+        "review": "Two paper hats and partly hidden watch.",
+        "generator": "built-in imagegen",
+        "alt": "Coop opens one eye and raises a wing beside sleeping Cluck."
+      },
+      "alt": "Coop opens one eye and raises a wing beside sleeping Cluck."
+    },
+    {
+      "number": 19,
+      "text": "Coop slipped the watch out of Cluck’s wing. She laid it on the table between their beds and tucked the chain under it so it couldn’t clink.\n\nThen she lay down, too.",
+      "illustrationDirection": "Overhead detail of the bedside table: the watch laid flat, chain tucked under it, Coop’s wingtip just leaving it.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "48fde5502ad02c49939b5c078744268d6f80a695887fcffbb588f030b1fa441f",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 225238,
+            "sha256": "2f0b8b2abb2e2ff371a3267dfffb575321f675413ba4880a5f644d6f39a3d089"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 135530,
+            "sha256": "602c17a068ed4b21828c08bed54648faebc5d79e7eb89effbbdaa57e5b179f9c"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 59710,
+            "sha256": "7924d40391cfebe4f95e6ac6e0de0cb15dd1a63daee5d32faa1145525ead9d6a"
+          }
+        ],
+        "review": "Hand positions show ten. The chain stays hidden.",
+        "generator": "built-in imagegen",
+        "alt": "The pocket watch lies on the table between the two quilts as Coop moves her wing away."
+      },
+      "alt": "The pocket watch lies on the table between the two quilts as Coop moves her wing away."
+    },
+    {
+      "number": 20,
+      "text": "Much later, something went pop, far away. Then fizz.\n\nCoop woke up. Over the trees, a little flower of gold light opened in the sky. Then a red one.\n\nIt was midnight here. The real one.",
+      "illustrationDirection": "View past Coop, now sitting up, to the window. Far above the black treeline, one small gold firework and the start of a red one.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a38b66192505abbba4cccc0653e778bcee9efe4c905f0c101d48a15fcf245070",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 186566,
+            "sha256": "bce605d06c17cf744c7508858958e61401a589d5ee3ee911e96d34a1226cf61b"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 123844,
+            "sha256": "bac7cf076df50001cf6af8c383a051a099e84cb3f589f23a27c0949366636af3"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 58180,
+            "sha256": "b4d4b22660c86db155482095ab31c979edbc6867e7843b6f862b6167402d1fab"
+          }
+        ],
+        "review": "Corrected wood bed and kept fireworks far away.",
+        "generator": "built-in imagegen",
+        "alt": "Coop sits up in her wooden bed. A tiny gold burst and a red spark are visible above the distant trees."
+      },
+      "alt": "Coop sits up in her wooden bed. A tiny gold burst and a red spark are visible above the distant trees."
+    },
+    {
+      "number": 21,
+      "text": "“Cluck,” whispered Coop. “Cluck! It’s ours!”\n\nCluck turned over. “Not yet,” he mumbled. “Not yet…”\n\nAnd he went on sleeping.",
+      "illustrationDirection": "Coop leans across the gap to nudge Cluck; he is curled away from her, mumbling, firmly asleep. Firework glow faint on the wall.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "45844d508f8d1a52f4168ad86a94f62d2f30d1cd92ba04b0b27ab0645381179a",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 209958,
+            "sha256": "d29e8a2f220c576b6e3b699bb075ca35069429531c5d1a83f6b20f5759949a3b"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 144962,
+            "sha256": "eb081cc8e182488d2d75041441f7045942e687412cb52774fe69ebb11f100d5d"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 68154,
+            "sha256": "8a2d1aff09f5e3583cafe02b01a236bc9a749cd4aa52ef690f9b730cf224205c"
+          }
+        ],
+        "review": "Green hat on Coop. Cluck’s gold hat out of frame.",
+        "generator": "built-in imagegen",
+        "alt": "Coop reaches across the gap to sleeping Cluck as a faint firework glow brushes the wall."
+      },
+      "alt": "Coop reaches across the gap to sleeping Cluck as a faint firework glow brushes the wall."
+    },
+    {
+      "number": 22,
+      "text": "His gold hat had fallen on the floor. Coop picked it up and set it gently back on his head.\n\n“Now,” she whispered.\n\nShe watched the last spark fade over the trees, and went back to sleep.",
+      "illustrationDirection": "Coop gently setting the gold hat back on Cluck’s head. The last spark fades in the window behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5f69ae13e742f4521a541f4e0fd3e5467eebe6b9930ac581531e8560dce6fa34",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 209524,
+            "sha256": "73689907ae05872dc624ff49fa44b54ed605bae68de239a2cc2b2814343ff771"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 141448,
+            "sha256": "c4ad2eccb6ba4352da420375a7e1e32b71382bb016dbaf3cf3baff3b1c8315ee"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 67528,
+            "sha256": "cd238c7435c1891aa2ef030d4a2e7afd17c63068ac3b31d1e7091559bb0918c4"
+          }
+        ],
+        "review": "Watch moved back to the table beneath the window.",
+        "generator": "built-in imagegen",
+        "alt": "Coop gently sets Cluck’s gold paper hat back on his head as the last spark fades."
+      },
+      "alt": "Coop gently sets Cluck’s gold paper hat back on his head as the last spark fades."
+    },
+    {
+      "number": 23,
+      "text": "In the morning, Cluck woke up with his hat on. It was crumpled on one side.\n\n“Did I miss it?” he asked. “Did I miss our midnight?”\n\n“You were there,” said Coop. “Hat and everything.”",
+      "illustrationDirection": "Morning. Cluck sits up, hat crumpled on one side, looking alarmed. Coop smiles from her pillow. Pale light.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "33e729acded699e1259f019dee459b261bc6ce83a22309da124afbf232ac4587",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 230954,
+            "sha256": "44ba6291701c904efde1f0dd10cddcd38fd4d34578f4326843582435aafc456e"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 154718,
+            "sha256": "2aa80c764e7a2791402d6948de067fc45ce8d277a9fc7d724c8eb6faf1c19104"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 74348,
+            "sha256": "4595dabe17be6d64a727bf9ae7432b4dfb400ae83bb5d187ae8246801d67281a"
+          }
+        ],
+        "review": "Same beds, crumpled hat and watch on the shared table.",
+        "generator": "built-in imagegen",
+        "alt": "At first light Cluck sits up in his crumpled gold hat while Coop smiles from bed."
+      },
+      "alt": "At first light Cluck sits up in his crumpled gold hat while Coop smiles from bed."
+    },
+    {
+      "number": 24,
+      "text": "Cluck picked up his watch. Seven o’clock on the first morning of the year.\n\n“Then I’m awake for the very first morning,” he said. “All of it.”\n\nHe climbed to the window.\n\n“Not yet,” he said. “Not yet…”\n\n“NOW!” said Coop. And Cluck pulled back the curtain on a whole new year of snow.",
+      "illustrationDirection": "Cluck at the window in the morning, one wing pulling back the curtain on fresh snow and low winter sun. Watch in his other wing; Coop sitting up behind, laughing.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7aee66a37a20435a0bac2894a689c475d4a697069f53df307d120881f30b0bf7",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 226466,
+            "sha256": "471e7532fae6299abdc942c7cb2b72ec021db9cff625690c17415efe3679e21d"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 153094,
+            "sha256": "35f09fe0caaad79e12c5525c5936777a7de1fc6a43638f0f1a3c5dc6477d7288"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 73402,
+            "sha256": "0b43f631eb98bed46a10b28c71dd4a0520cffe7c87797b8e510b8da9afa2a87a"
+          }
+        ],
+        "review": "Grounded pose, correct hats and visible morning watch.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck pulls back the curtain while standing on the floor. His watch shows seven, and Coop smiles behind him."
+      },
+      "alt": "Cluck pulls back the curtain while standing on the floor. His watch shows seven, and Coop smiles behind him."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "0fbc6084894f504c5f2a0f82ed7cab3154885d4bbf406459284538861ce26a12",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 244372,
+        "sha256": "0ba623c539ecc0286614a271bdedd36fa4610fc945018a9e41b7b44445d2c621"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 160570,
+        "sha256": "579cefb1ce278478fb04281977a193e5bd26728400b9b7c9398ba880cb082399"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 75342,
+        "sha256": "eefa66f831ac6dc6ef07b0d73328f508a4eae2cbaeed002b7b61a9e22722f114"
+      }
+    ],
+    "review": "Set the watch just before eight and preserved the matching quilts and hats.",
+    "generator": "built-in imagegen",
+    "alt": "Cluck holds his pocket watch in bed beneath his gold paper hat. Coop yawns in a green hat."
+  },
+  "sourceFolder": "new-year/cluck-oclock-and-the-midnight-that-came-early",
+  "webSlug": "cluck-oclock-and-the-midnight-that-came-early"
+}

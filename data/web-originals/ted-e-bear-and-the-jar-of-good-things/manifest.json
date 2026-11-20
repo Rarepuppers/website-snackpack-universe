@@ -1,0 +1,1093 @@
+{
+  "schemaVersion": 1,
+  "id": "ted-e-bear-and-the-jar-of-good-things",
+  "title": "Ted-E-Bear and the Jar of Good Things",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "new-year",
+  "ageRange": "7–9",
+  "readingLevel": "Newly independent",
+  "readingMode": "newly-independent",
+  "publicationStatus": "published",
+  "storyPageCount": 26,
+  "wordCount": 1260,
+  "blurb": "All year, Ted-E-Bear has dropped a folded note into a jar whenever something good happened. Tonight he plans to read the whole year out loud at the library party. Then the jar slips on the icy step, the notes scatter across the snow, and none of them has a date.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On the first day of the year, Ted-E-Bear found an empty honey jar at the back of his cupboard. He washed it, dried it and pushed a cork into the top.\n\nThen he wrote a note on a scrap of paper, folded it twice and dropped it in.\n\n“There,” he said. “One good thing.”",
+      "illustrationDirection": "Ted’s kitchen on a snowy January morning. He pushes a cork into a clean honey jar on the table; one folded yellow note sits beside it.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d9c242dc900e857b5f90f66d74a47c91404d61880c28b02ae29e963b25513f3b",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 288946,
+            "sha256": "4888632cefa6528b1c955e67ab1ad193826606ca921cdef1c99bd70afca39d4d"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 185800,
+            "sha256": "512b76cd83c9a90e94384869188e72fc68658a9e1d77901f84165ba79e461734"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88454,
+            "sha256": "dbd4857d3e9b88b338428836f791d99212b8a575693f0e849f5bb1b6ead78d4c"
+          }
+        ],
+        "review": "One clear jar, no ribbon in January.",
+        "generator": "built-in imagegen",
+        "alt": "Ted fits a cork to his clean honey jar. A folded yellow note waits on the table."
+      },
+      "alt": "Ted fits a cork to his clean honey jar. A folded yellow note waits on the table."
+    },
+    {
+      "number": 2,
+      "text": "After that, whenever something good happened, Ted wrote it down. Some notes were on yellow paper, some on blue and some on the backs of old shopping lists.\n\nHe never read them again. He just watched the jar fill up, a little at a time, like snow on a windowsill.",
+      "illustrationDirection": "Montage in one painting: the jar on the shelf by Ted’s door, filling up, with the window behind it showing blossom, then summer sun, then autumn leaves in three soft vertical bands. Ted in the foreground dropping in a note.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0a8a729b80a9da0db60b0155992e269a57b8bdb51e3cc9cb0dbd78c01298468e",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 335522,
+            "sha256": "1c7b5c45124f385602dc423818e27dba89cef6ecaa9a8af2ada7909d1eb5b18d"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 208854,
+            "sha256": "d71ba290442f68f981df811f5569d873a85dd896d0174c64bb096e67208a169c"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95624,
+            "sha256": "fd4bdcf15f6cb958e31eb28baeae14492684dbbec5ae49ba2a5096bb682cdd95"
+          }
+        ],
+        "review": "Removed the outdoor scarf and kept the seasons in one view.",
+        "generator": "built-in imagegen",
+        "alt": "Ted drops a note into his jar beside a window showing blossom, sunshine and autumn leaves."
+      },
+      "alt": "Ted drops a note into his jar beside a window showing blossom, sunshine and autumn leaves."
+    },
+    {
+      "number": 3,
+      "text": "Now it was the last day of the year. The jar was so full that the cork squeaked when Ted pushed it in.\n\nProfessor Hooten was having a New Year’s Eve party at the library, and Ted had a plan. He tied a red ribbon round the jar’s neck.\n\n“I’m going to read the whole year out loud,” he told Corgi-on-the-Cob. “From the very first note to the very last.”",
+      "illustrationDirection": "Last day of the year, dusk. Ted ties a red ribbon round the full jar at his door. Corgi in his teal scarf sits on the step outside, ears up.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ddf2ace9f1f0f56e25af4d3943559fcada4e424c7a84e7ae4b024cc3d62825fa",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 341164,
+            "sha256": "081a20cdbba61be90836269376899d10cefbf295ec416f02f1639e79a17e9b6f"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 208900,
+            "sha256": "0fb6ab476bda0f5d54f9c84e1d3e19c100e8d6a2ad16d9b2885346706130fa89"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95400,
+            "sha256": "5f637895c9f7a7ca9f8d760743e92a449f71ad7ecee70e0c0e3d3190a576336c"
+          }
+        ],
+        "review": "Red ribbon begins here.",
+        "generator": "built-in imagegen",
+        "alt": "Ted ties a red ribbon around the full jar by his door while Corgi waits on the step."
+      },
+      "alt": "Ted ties a red ribbon around the full jar by his door while Corgi waits on the step."
+    },
+    {
+      "number": 4,
+      "text": "Corgi trotted beside him all the way to the library, which was unusual. Corgi usually ran ahead.\n\n“What if it’s boring?” said Ted. “A whole year is a lot of things.”\n\n“It won’t be boring,” said Corgi. He sounded very sure about it.",
+      "illustrationDirection": "Night path with lanterns. Ted carries the jar in both arms; Corgi trots right beside him, not ahead, looking up at Ted. The library glows at the end of the path.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "06d5c33ab9acef5830dc64e2f5486bfceb834d351b24a1e75070a35a526fdb96",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 330108,
+            "sha256": "ec472061c4be77850e08b5ce1bed0f235111f6b5c4c244a40c1cb791ec41cb04"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 224998,
+            "sha256": "910a3797b4bdb7f9f329d92c84bae43af8d143c1a2aa049dedb880f073e7db6f"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111106,
+            "sha256": "dbb8c2f940751e12468aeb95f0e952fb2967789904b82cf072cf220db33587d3"
+          }
+        ],
+        "review": "Amber scarf, cork and red ribbon matched.",
+        "generator": "built-in imagegen",
+        "alt": "Ted carries the jar along the snowy library path with Corgi trotting alongside him."
+      },
+      "alt": "Ted carries the jar along the snowy library path with Corgi trotting alongside him."
+    },
+    {
+      "number": 5,
+      "text": "The library had a separate stone step in front of the door. Tonight it wore a thin, shiny coat of ice.\n\nTed’s paws were cold. The jar was heavy. He stepped up, and his boot slid one way while the jar slid the other.",
+      "illustrationDirection": "The library’s separate stone step, glazed with ice. Ted mid-slip: one boot sliding, the jar tipping out of his arms. Show the soft snowbank beside the step.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2ff29a9a411cb2147b99aa131ed7a36bbbabb1dd3cf3c01a725781e3e7b745e8",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 268532,
+            "sha256": "9618524785941c42c392becd9b18b0ee47d1dd22662eab31d3d58e0bb5e55d91"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 182618,
+            "sha256": "6c115668214fba38c764e2b3e8eea965bfbb5e1e660d8fb57230c6cfa9cdc4af"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87714,
+            "sha256": "0a6f8f15caf04ac48ad9f205c6ab31d95d2b5945a8dad50fa7f2447ff22a4dd8"
+          }
+        ],
+        "review": "Jar stays closed here and contains folded notes.",
+        "generator": "built-in imagegen",
+        "alt": "Ted slips on the icy step. The jar with folded paper inside tips toward the snow."
+      },
+      "alt": "Ted slips on the icy step. The jar with folded paper inside tips toward the snow."
+    },
+    {
+      "number": 6,
+      "text": "The jar landed in a soft bank of snow and didn’t break. But the cork popped out, and the notes flew everywhere, like a flock of small paper birds.\n\nSome landed on the step. Some landed in the snow. One blew all the way to the gate before Corgi caught it in his mouth.",
+      "illustrationDirection": "The jar lands in the snowbank, cork flying, notes bursting out like a flock of small paper birds. Corgi leaps towards the gate to catch one in his mouth.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9419897d8f7fd78da505d3fe7a458ca7fce78053a901f436bc50b3195bc8a513",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 335804,
+            "sha256": "a9308e8676d8791206e101897fe9c3cdb3aa29290a6926ee733ec359e218ccbc"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219978,
+            "sha256": "65122e4818f52ee8e45a4d550a85dfa711512aafb7ac338915f54b3c784b8edd"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105840,
+            "sha256": "135123459157ab16d085965e3c3eaf325489582dd68a653e1255eb807fb4d125"
+          }
+        ],
+        "review": "The glass stays intact and is visibly clear.",
+        "generator": "built-in imagegen",
+        "alt": "The jar lands in soft snow. Its cork and notes fly, and Corgi reaches for one near the gate."
+      },
+      "alt": "The jar lands in soft snow. Its cork and notes fly, and Corgi reaches for one near the gate."
+    },
+    {
+      "number": 7,
+      "text": "Nutmeg and Panda-Cake came running out to help. They gathered every note they could find and carried them inside in a mixing bowl.\n\nTed looked into the bowl. His whole year was in there, all jumbled up.\n\n“I never wrote the dates,” he said quietly. “Now I can’t read them in order.”",
+      "illustrationDirection": "Inside the hall. Nutmeg and Panda-Cake set down a big mixing bowl full of damp folded notes. Ted looks into it, shoulders low.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "be0c46e8063450dce17b819654b45932a33eb8d3a77003797b1e28c30be5a509",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 316830,
+            "sha256": "4a39b3cf46c5755c289303f1fff1ed8621d60bbe34a5da684e1879dbad3fd647"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 206480,
+            "sha256": "7826090fb67856a087420ed20e5c106385c2f6109836760fb8bc616c28291ea8"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 96474,
+            "sha256": "235df0cc251c9320b13f0bd722e66292dc5a2a428ab06dd18f6078eaaa0f875a"
+          }
+        ],
+        "review": "Four characters and the notes are in the warm nighttime library.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg and Panda-Cake set down the bowl of damp notes. Ted and Corgi look on under the library lamps."
+      },
+      "alt": "Nutmeg and Panda-Cake set down the bowl of damp notes. Ted and Corgi look on under the library lamps."
+    },
+    {
+      "number": 8,
+      "text": "“Then we’ll put them back in order,” said Professor Hooten. “We’ll be detectives. Every note will have a clue.”\n\nHe fetched a long piece of string and tied it between two bookcases. Then he gave Panda-Cake a box of wooden pegs.",
+      "illustrationDirection": "Hooten ties a long string between two bookcases; Panda-Cake holds the box of wooden pegs. Ted watches, beginning to look curious.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a9e9d8871f620aad1f07ada323fcdd334f8a742db3d2bba9f8fc939c40958823",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 303568,
+            "sha256": "a874265d1db7cd4e70a56597e56188adba18f056f4dbc3b65aaf718bc42ccb21"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 197866,
+            "sha256": "4e3c562fde848e9562f4ec8343b933e9cb93c1a0dda2e7b424bebddb09970b32"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91014,
+            "sha256": "6841ebe1016b75859cab2acc72f65de86d3dd4a026ef279e25b958b2766cd90a"
+          }
+        ],
+        "review": "Owl stands on the floor. The string is bare.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten reaches toward the string between two bookcases. Panda-Cake holds the peg box, and Ted watches."
+      },
+      "alt": "Hooten reaches toward the string between two bookcases. Panda-Cake holds the peg box, and Ted watches."
+    },
+    {
+      "number": 9,
+      "text": "Nutmeg cut out twelve paper squares and wrote a month on each one: January, February, March, all the way to December. Panda-Cake pegged them along the string, one month after another.\n\n“Now,” said Hooten. “Read us a note, Ted. Then tell us where it goes.”",
+      "illustrationDirection": "Nutmeg writes on paper squares (squiggles only) at a small table; Panda-Cake pegs them along the string in a row. Hooten gestures to Ted.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3d6567d348a26d9c1f2394dc7e158a0bd3fd0d2b971861c24d7843daa895fccd",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 307908,
+            "sha256": "afdda1f42ee751d29be20684fd035b7d3e02638eb53f3dfe6a3d360ed9494935"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 199250,
+            "sha256": "0274b6641fb0929fc03d91b637577d989cfc6cd3e64693bbfc82673269ea790f"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91116,
+            "sha256": "82cabca4dd63fb8379c05ebe9e2cc9e4ba6145e33033a01f589e8dce30af8a0e"
+          }
+        ],
+        "review": "Counted twelve cream squares at full size.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg writes while Panda-Cake clips pale squares along the string. Hooten and Ted watch."
+      },
+      "alt": "Nutmeg writes while Panda-Cake clips pale squares along the string. Hooten and Ted watch."
+    },
+    {
+      "number": 10,
+      "text": "Ted unfolded the first one. It was slightly damp.\n\n> *Corgi and I built a snow bear. It looked more like a loaf.*\n\n“Snow,” said Nutmeg. “So it’s winter. That could be January or February.”\n\n“Or December,” said Panda-Cake.\n\n“It was the very first note in the jar,” said Ted slowly. “I remember the loaf.” He pegged it under January.",
+      "illustrationDirection": "Ted unfolds a slightly damp yellow note and pegs it under the first square. Small inset or thought-bubble of a lumpy snow bear that looks like a loaf.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6c330fcb53e8c3f796ebeec1c7637eda8387e3b02f185798a262d8d87aa416f1",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 241864,
+            "sha256": "3b8dae92a026e30f51eb1e66cc15dd33947daef167315540edba96337b6b7b2e"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 153206,
+            "sha256": "59596c8426b41f0b963722f6e6bb3701568bc409e1062ba01d7a1ce6bcfa6a6c"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 71214,
+            "sha256": "fb5514481c686b44ea57198a1148e465242cb7d216589c5804807d8373e00dbe"
+          }
+        ],
+        "review": "First note goes up on a bare line of headings.",
+        "generator": "built-in imagegen",
+        "alt": "Ted clips a yellow note showing a lumpy snow bear under the first cream square."
+      },
+      "alt": "Ted clips a yellow note showing a lumpy snow bear under the first cream square."
+    },
+    {
+      "number": 11,
+      "text": "The next note was on blue paper.\n\n> *It rained on our picnic, so we had a puddle party instead. A duckling came.*\n\n“Ducklings hatch in spring,” said Nutmeg. “April, maybe. Or May.”\n\nTed pegged it under April. Then he moved it to May. Then he moved it back to April, because that was when the big puddles were.",
+      "illustrationDirection": "Ted with a blue note, hesitating between two squares; small cue of a duckling in a puddle. Nutmeg watches with her paws on her hips.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b341cfd906ba101641816bed55f5910ef805e19b6c68732f4bd3f07c2062ccfa",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 284246,
+            "sha256": "bb57840300a97db8f1602784423040c4e8406a7a91ee54188e9f8bec83ff4911"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 187888,
+            "sha256": "4d4c345d2c734f87989439b5df92fdbd9fb5ff4d753eb38168462054f45699d2"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88660,
+            "sha256": "8b533bd01e45b8ec53031ef46fb862060c381055b0fd81d3d9a49a7de56fabe2"
+          }
+        ],
+        "review": "Duckling is only a note drawing.",
+        "generator": "built-in imagegen",
+        "alt": "Ted hesitates with a blue note showing a duckling while Nutmeg watches."
+      },
+      "alt": "Ted hesitates with a blue note showing a duckling while Nutmeg watches."
+    },
+    {
+      "number": 12,
+      "text": "> *I read the whole welcome card out loud at the picnic. Corgi helped me with the first sounds.*\n\n“That was the summer picnic on the cliff,” said Panda-Cake. “The day it was so hot the jam melted.”\n\nTed pegged it under July. He was beginning to enjoy this.",
+      "illustrationDirection": "Panda-Cake remembers the picnic, paws spread wide; Ted, smiling now, pegs a lined note in the summer stretch of the string. Cue: the picnic welcome card.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c8e8f81caf764d661730708ac78ea679bbd09579170442dedf7014fc25556bd2",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 284570,
+            "sha256": "b37b9d5d2c929fd0e70e84bf935a8c74e842461f503f675aaa3f599ee3d17d23"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 186344,
+            "sha256": "68561a4c7d8215f5f860899b78e36fd8ac057b4c6e82e3a030318840effaf394"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87580,
+            "sha256": "bb8357e1c1d471798cc4ef3ce4b30c523e23365657117b8a309bbe3c64e9bc80"
+          }
+        ],
+        "review": "The notes appear in sequence, and the paw-print clue is still hidden.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake spreads his paws while Ted pegs a note farther along the string."
+      },
+      "alt": "Panda-Cake spreads his paws while Ted pegs a note farther along the string."
+    },
+    {
+      "number": 13,
+      "text": "> *Eight lanterns. Two dark paths. Everyone got home.*\n\n“The lantern walk,” said Hooten. “It gets dark early in autumn. That was October.”\n\n> *Found the missing button. It was under the bench all along.*\n\nNobody could remember when that one happened. Not even Ted. They pegged it in the middle of the year and decided that was good enough.",
+      "illustrationDirection": "Hooten points to the autumn part of the line as Ted pegs the lantern note; a button note dangles in the middle of the line.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b014b16200b47b30fff80d4baf7adec6f87fff781d073229f13b7d2ef2da3e50",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 288074,
+            "sha256": "bdf41b6820bec7a1e190710468722293bfb6ddd739ec44adcdb0692f9611d7c7"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 185884,
+            "sha256": "37b92863a64f950805ccbc69f8e311dab4ab2d0fcc8150870d6ef5a8cefd323c"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88736,
+            "sha256": "a273a4f3af6d481217543a0751f86c8f3828ac56d2f8825c68208bd7420a2ebf"
+          }
+        ],
+        "review": "Visible lantern and button clues.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten points to the string as Ted pegs the lantern note. A button is drawn on a note nearer the middle."
+      },
+      "alt": "Hooten points to the string as Ted pegs the lantern note. A button is drawn on a note nearer the middle."
+    },
+    {
+      "number": 14,
+      "text": "There were three December notes: a shadow show, a snowball truce and a parcel under the tree on Christmas morning.\n\n“December is getting crowded,” said Nutmeg.\n\n“December is always crowded,” said Hooten.",
+      "illustrationDirection": "Close on the December end of the string, crowded with three notes. Nutmeg and Hooten exchange an amused look.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "18795b18337a71eb217bd4349f9a693bfad1aff99cb40e8200534e5c8f1126b7",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 286392,
+            "sha256": "4c52394808af297a533e13bffb5b0e3ae5c162891da1b42cbfe808250ac65633"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 187442,
+            "sha256": "29461a9094bee635b6367fa28e3d3f56362305e4e9aced9a2d695ea57c7ad5c1"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88052,
+            "sha256": "abe4bb6ec01ad28743ec867c41c38ebe4e86e5bd6a108429aacd09528b75a1cc"
+          }
+        ],
+        "review": "Three distinct pictures show a star, snowball and parcel.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg and Hooten smile at three little December notes under the last square."
+      },
+      "alt": "Nutmeg and Hooten smile at three little December notes under the last square."
+    },
+    {
+      "number": 15,
+      "text": "Ted picked up the next note. The writing was big and wobbly, and at the bottom there was a sandy paw print.\n\n> *At the sledging hill, Ted pulled my sled back up every time. Even when his legs were tired.*\n\nTed frowned. “I didn’t write this one.”",
+      "illustrationDirection": "Close on Ted holding a note with big wobbly squiggles and a sandy paw print in its corner. His brow is furrowed.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1eb9f77878a513a953f90a7cf69d1e28dea22d031bcbd1f2668b08e2a6bff459",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 230644,
+            "sha256": "5985aa984ece53d1874b8865756ec2abd5bc44bc1e9b289d5c084c4c09e609ee"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 145134,
+            "sha256": "55bb2b8cf398a0eb81e70a239024eb6465524938e988c787f96bf4c42e9b07a0"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 67860,
+            "sha256": "32aa5f394e6ee8817deb227b44e572e9ad5120d28f129f18905c1e15d5a041fe"
+          }
+        ],
+        "review": "Paw print reads at phone size.",
+        "generator": "built-in imagegen",
+        "alt": "Ted frowns at a note with wobbly marks and a sandy paw print in its corner."
+      },
+      "alt": "Ted frowns at a note with wobbly marks and a sandy paw print in its corner."
+    },
+    {
+      "number": 16,
+      "text": "He unfolded another. Same wobbly writing. Same paw print.\n\n> *Ted carried the last parcel all the way across the hall to Moss, who had only just moved here.*\n\nAnd another.\n\n> *It rained all afternoon, so Ted made his blanket fort big enough for Panda-Cake too. Even though it was only a small blanket.*",
+      "illustrationDirection": "Ted unfolds two more notes, each with a paw print. Corgi in the background starts edging behind the paper tree.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3ed451e5c4c2d79c642c8f56f6db9bafbfbe3446eb6feb0eddf9b20d76038275",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 296160,
+            "sha256": "add555b1f35503ad00387a10d2bcf3d521ea19660ce40bad17c6b6b0d0300e8a"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 182624,
+            "sha256": "c006375136faea1f069f6510424045fa0586245bfd430dc2b6922670a0fda9de"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85368,
+            "sha256": "09f1e8e1780ad1aab93b36f300bc691d2fc26ad5f2160c762ae9020537998d93"
+          }
+        ],
+        "review": "Both paw prints are clear.",
+        "generator": "built-in imagegen",
+        "alt": "Ted holds two more paw-printed notes while Corgi peeks from behind the paper tree."
+      },
+      "alt": "Ted holds two more paw-printed notes while Corgi peeks from behind the paper tree."
+    },
+    {
+      "number": 17,
+      "text": "Ted sorted the bowl into two piles. His own neat notes went on one side. The wobbly notes went on the other.\n\nThe wobbly pile was nearly as big as his.\n\n“These aren’t things that happened to me,” said Ted. “They’re things I did.”",
+      "illustrationDirection": "Table top. Two piles of notes: neat on Ted’s left, wobbly with paw prints on his right, almost the same height. Ted looks from one to the other.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2324e851d2c0ff3fe400f59c22dda30f40fd8d9cc08259115197a187d897cf17",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 285420,
+            "sha256": "761b480db89c7255684b32e3eadffd3908f4f5383e1b959f4a1d065f835d5ebc"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 184470,
+            "sha256": "5e97a4ebcf98ca3c64d401a8af2bf751999f3346aa97c20a7481b566b8bce22a"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85968,
+            "sha256": "578a28b844a628b20759c562f045d856e0d0bd9b748e4819e6af901bbaae38e2"
+          }
+        ],
+        "review": "Two near-equal piles and a visible paw print.",
+        "generator": "built-in imagegen",
+        "alt": "Ted studies two piles of notes, one neat and the other wobbly, with a sandy paw print on top."
+      },
+      "alt": "Ted studies two piles of notes, one neat and the other wobbly, with a sandy paw print on top."
+    },
+    {
+      "number": 18,
+      "text": "Everyone turned to look at Corgi.\n\nCorgi looked at the ceiling. Then at the floor. Then at the ceiling again.\n\n“You left the jar on the shelf by your door,” he said at last. “And the cork isn’t very tight.”",
+      "illustrationDirection": "Everyone turns to Corgi, who peers up at the ceiling with his ears flat and tail tucked.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d4bd55d4f5c71c7c9006dd9b3644740cf4daedfea057a9bd9a0d9e4db09563f5",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 325322,
+            "sha256": "a6cf8192addbbb6c1b0fa50c4bf30bb87c74d494367f8df0eff4838a81bdf7dc"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 213898,
+            "sha256": "d2361ad74e5a3dfaee75b15bad8ca2bd9174fca029f73567ce72cc228fa4c913"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100308,
+            "sha256": "4cf5dbd8904f6b7fba44d740d7128eaa7c686aa822256284de1b8ee62ccb7898"
+          }
+        ],
+        "review": "Five characters in the gathering.",
+        "generator": "built-in imagegen",
+        "alt": "The four friends turn to Corgi, who looks up at the ceiling."
+      },
+      "alt": "The four friends turn to Corgi, who looks up at the ceiling."
+    },
+    {
+      "number": 19,
+      "text": "“You put these in?” asked Ted. “All year?”\n\n“Only when you weren’t looking,” said Corgi. “You only wrote the good things that happened to you. Nobody was writing down the good things you did.”\n\nTed didn’t say anything for a moment. He held the wobbly note about the sledging hill very carefully, as if it might fly away again.",
+      "illustrationDirection": "Two-shot: Ted holds the sledging-hill note very carefully in both paws; Corgi looks up at him, shy and hopeful.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b9e6752248317b2fad15be03a72b12775a6e274d525b3382ca017e47e99eaaa9",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 298322,
+            "sha256": "48111d6f4c790781b78eeb7a05a299231e5e455766ae926ea771ee0d6330f1e8"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 186082,
+            "sha256": "094fb40434576044002157bcdeca53e70af7b8c112d31c52a149b674d10e2db6"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87152,
+            "sha256": "ade43c0d2521ab5320694ca4d8054db0e8016a54b267bf6680776672b7f3b883"
+          }
+        ],
+        "review": "Visible paw print and letter-free badge.",
+        "generator": "built-in imagegen",
+        "alt": "Ted holds the note about the sledging hill carefully in both paws while Corgi looks up."
+      },
+      "alt": "Ted holds the note about the sledging hill carefully in both paws while Corgi looks up."
+    },
+    {
+      "number": 20,
+      "text": "“Where do Corgi’s notes go?” asked Panda-Cake.\n\nThat part was easy. Sledging meant snow, so that was winter. The last parcel was Christmas morning. The rainy blanket fort was spring.\n\nSoon the string was full, from January to December. Blue notes, yellow notes and wobbly notes with paw prints, all mixed together.",
+      "illustrationDirection": "Wide on the full string line from January to December, mixed neat and paw-print notes on every peg. Panda-Cake pegs the last one.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dba711b04515752f4765c1754456a8e07709b409a44cdbd5ee54f31bf4c8c598",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 267986,
+            "sha256": "6d4582f26b6ef4658a4064506a61d8eddd3f856f4619525b367dcb1e40eee250"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 173202,
+            "sha256": "25531b45f3b3c6d7aa7684ad5b21af1c68bf9154271daa29e79a80daa1a74103"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 79868,
+            "sha256": "cb1946049dea1c7d869540cce9f991d76d6c5110c1e4999d332ff6e2b24142e6"
+          }
+        ],
+        "review": "Added the twelfth square and checked the complete line visually.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake adds another note to a string with twelve pale squares and folded notes in several colours."
+      },
+      "alt": "Panda-Cake adds another note to a string with twelve pale squares and folded notes in several colours."
+    },
+    {
+      "number": 21,
+      "text": "Ted stepped back and looked at it.\n\nIt was a much longer year than he remembered. And there was much more of him in it.",
+      "illustrationDirection": "Ted steps back to look at the whole line, the warm lamp behind him. Quiet, wondering.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c78eb13487ec985c222e336a2354ed3e0b1948b53f027df67f1d678763a03479",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 268288,
+            "sha256": "447512c97ac6390f2d8d8bbe48ea5a3fa82eb37dbb5bfe2f7f80b4a0557a9238"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 168930,
+            "sha256": "823cfb493af358930ed4f7052a1071c273ae8f0709ae1ac9c6112a5397f76081"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78470,
+            "sha256": "0fb7526b93598d532bbe6144d2478ff06436180e1f9ed30a950c84b69287b4f9"
+          }
+        ],
+        "review": "Verified twelve squares and cleared Ted’s paws.",
+        "generator": "built-in imagegen",
+        "alt": "Ted steps back to look at the filled string of notes in the library."
+      },
+      "alt": "Ted steps back to look at the filled string of notes in the library."
+    },
+    {
+      "number": 22,
+      "text": "Across the room, Professor Hooten’s wall of clocks showed eight o’clock. In one far-away city, it was midnight already.\n\nCluck O’Clock and Coop-Accino banged their pot lids. “Not yet, not yet… NOW!” everybody shouted. “Happy New Year, Dubai!”\n\n“Now it’s your turn, Ted,” said Hooten.",
+      "illustrationDirection": "The clock wall in the background (left clock at 8:00). Cluck and Coop in gold and green hats bang pot lids; Hooten turns to Ted with an open wing.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7d8f25a8dc04c877ca928f30d5b97c5b8216966ccd541ef7ad9c22bb16f5f329",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 318102,
+            "sha256": "bc36ac6c8e72ab35d4d29e4fe6b0ec8af1177af2b06ca182d1350dc46abb1981"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 203116,
+            "sha256": "a45655ebf13bb050876219544ea99deae4d98b74d53190fba161011a96409895"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93076,
+            "sha256": "182c54d9dc3a3d14b727afbccf6c4949c9b6495ff13e20fab26f9f5e0f456cf5"
+          }
+        ],
+        "review": "Clocks show eight, ten, eleven, twelve and ten. Folded hats match Cluck’s book.",
+        "generator": "built-in imagegen",
+        "alt": "The twins bang pot lids under the clock wall as Hooten turns to Ted."
+      },
+      "alt": "The twins bang pot lids under the clock wall as Hooten turns to Ted."
+    },
+    {
+      "number": 23,
+      "text": "So Ted read the year out loud, one note at a time, from January all the way to December.\n\nWhen he read a neat note, everyone smiled. When he read a wobbly one, everyone looked at Corgi, and Corgi looked at the ceiling.\n\nIt wasn’t boring at all.",
+      "illustrationDirection": "Ted reads a note aloud before the string, friends seated on cushions; everyone glances at Corgi, who looks at the ceiling again.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0190bf108041ec7bf8f43d1ef8959a69d70c5623beacdb0f2c4b0f2b183563d5",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 273574,
+            "sha256": "ef862d39b0565546af63db6f34067617ee4a0c0bfe894aa2526cbe1c5dff05e1"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 178798,
+            "sha256": "6036aa6fdeeb954571b43abadb5112ae2ef7b1570783e499dbb40f8512aad858"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86380,
+            "sha256": "1f431da768be90f36500fe30a10129fd0f70b15d113be4ece2e32d8b30d85f2e"
+          }
+        ],
+        "review": "Kept exactly twelve headings and five characters.",
+        "generator": "built-in imagegen",
+        "alt": "Ted reads to his friends in front of the string. The friends look at Corgi, who looks up at the ceiling."
+      },
+      "alt": "Ted reads to his friends in front of the string. The friends look at Corgi, who looks up at the ceiling."
+    },
+    {
+      "number": 24,
+      "text": "At the end, Ted took the notes off the string and put every one of them back in the honey jar. This time he pushed the cork in tightly.\n\nThen he looked at the empty string.\n\n“Next year needs a jar too,” he said. “A jar each.”",
+      "illustrationDirection": "Ted pushes the cork tightly into the full jar; the string behind him is empty again.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "75c8b5e233d0e2571a3bb720e44f713189f5564b41c425640086523fec2358ac",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 273242,
+            "sha256": "ace9b0f24f38e715362903f900d652d9a1ebaaf23bb1a08a70385c070b74e19b"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 170150,
+            "sha256": "7153d7627335f5e8a59d8917913a57e9691950e9d859973b435e76d3eba0e578"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 79732,
+            "sha256": "bdbebdd13a6cc30dbab26f71d049c0c1ed1f98ea44bfc86104687f61ec0a4894"
+          }
+        ],
+        "review": "Clear jar with a red ribbon and no honey.",
+        "generator": "built-in imagegen",
+        "alt": "Ted presses the cork into the jar of folded notes. The string behind him is bare."
+      },
+      "alt": "Ted presses the cork into the jar of folded notes. The string behind him is bare."
+    },
+    {
+      "number": 25,
+      "text": "Hooten found four more jars in the library kitchen. One for Nutmeg. One for Panda-Cake. One for himself. And one for Corgi.\n\nNutmeg tied a ribbon round each one, and Panda-Cake wrote their names on the lids.",
+      "illustrationDirection": "Four new jars in a row on the cocoa table. Nutmeg ties ribbons; Panda-Cake writes squiggles on the lids; Hooten sets down the last jar.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aaa68591b83c080867338a502fdae5fa87c31f74e063f26077f67f6d1e39e2b8",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 313682,
+            "sha256": "c8cf3a89a3ea4d86b8301ecd59ad131f575a0c1798bf9c9eae2a72d027d8584f"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 204710,
+            "sha256": "8c87ddf1521e02b792fec8f1a617613db8e7d35cc2bb514080fe5ac7fb368463"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95538,
+            "sha256": "d848fba6cb49c194e002b5cc6b2763faf8f96bf9b19e3791129c6fbf646b9b96"
+          }
+        ],
+        "review": "Counted four empty jars and verified ribbon colours.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg, Panda-Cake and Hooten prepare four empty jars with green, cranberry, blue and teal ribbons."
+      },
+      "alt": "Nutmeg, Panda-Cake and Hooten prepare four empty jars with green, cranberry, blue and teal ribbons."
+    },
+    {
+      "number": 26,
+      "text": "Ted tore a scrap of paper from his yellow notebook. He wrote something on it, folded it twice and dropped it into Corgi’s empty jar.\n\n“What does it say?” asked Corgi.\n\n“You’ll find out next New Year’s Eve,” said Ted.\n\nIt was the first good thing of the year. And it wasn’t even nine o’clock.",
+      "illustrationDirection": "Ted drops a folded yellow note into the empty jar with the teal ribbon. Corgi watches with his tail wagging, nose almost touching the glass.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "44ae152d0b6dc93fcc8af32357e26ab50cbf3f1e6afb5da23b5bafac8d659c3a",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 291600,
+            "sha256": "1c785b71d2818a968e448f3873d70fcb9df693ae2d1103c215b6d0ddfdd0e01f"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183536,
+            "sha256": "84b14dbbb7eda47227f8828c461ee8922ccb364a6196df82a304de9d59d6262b"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 84320,
+            "sha256": "2a4577d58294da3750acabc820495f873334da237c3ab7fad681695bc9800ab2"
+          }
+        ],
+        "review": "One yellow note and one empty jar before it drops.",
+        "generator": "built-in imagegen",
+        "alt": "Ted drops a yellow note into a jar with a teal ribbon. Corgi watches with his nose close to the glass."
+      },
+      "alt": "Ted drops a yellow note into a jar with a teal ribbon. Corgi watches with his nose close to the glass."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "0e276ff6dcd84e95376245a38d5aa0bd73d44f0a98a4b67822521b03265030c4",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 317970,
+        "sha256": "cc6bb7980436b2737644c491cc549bdd3b1b3a43f7cc5a647757b76a83decf80"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 203082,
+        "sha256": "24534d66b88d0289ddc7756c715e7aa468ca797066868177a05b62c8a34fc1fd"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 93046,
+        "sha256": "4d956d45bdd4c9f166b3cb39c15a1cacb9ab0799176976caf59789826148cfc1"
+      }
+    ],
+    "review": "Reframed to portrait and restored evening light and clear jar.",
+    "generator": "built-in imagegen",
+    "alt": "Ted holds an empty glass jar with a red ribbon above a jumble of folded notes. Corgi lies beside him with one note."
+  },
+  "sourceFolder": "new-year/ted-e-bear-and-the-jar-of-good-things",
+  "webSlug": "ted-e-bear-and-the-jar-of-good-things"
+}

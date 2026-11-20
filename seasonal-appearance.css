@@ -71,13 +71,15 @@
 .home-event-feature, .winter-home-feature { display: none; }
 :root[data-season="winter"][data-home-event=""] .winter-home-feature { display: flex; }
 :root[data-home-event="thanksgiving"] [data-home-feature="thanksgiving"],
-:root[data-home-event="christmas"] [data-home-feature="christmas"] { display: block; }
+:root[data-home-event="christmas"] [data-home-feature="christmas"],
+:root[data-home-event="new-year"] [data-home-feature="new-year"] { display: block; }
 .home-event-feature {
   color: #fff7e7;
   background: #3d211b;
   text-decoration: none;
 }
 [data-home-feature="christmas"] { background: #143830; }
+[data-home-feature="new-year"] { background: #222745; }
 .home-event-art {
   display: block;
   aspect-ratio: 3 / 1;
@@ -85,6 +87,7 @@
 }
 [data-home-feature="thanksgiving"] .home-event-art { background-image: url("/read/events/thanksgiving/banner-720w.webp"); }
 [data-home-feature="christmas"] .home-event-art { background-image: var(--woods-art); }
+[data-home-feature="new-year"] .home-event-art { background-image: url("/read/events/new-year/banner-720w.webp"); }
 .home-event-copy {
   display: grid;
   gap: .55rem;

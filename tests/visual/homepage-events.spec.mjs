@@ -52,6 +52,27 @@ test("the active banner fits at 320px and 200% text on dark mode", async ({ page
     && document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
 
+test("the New Year banner takes over after Christmas and lasts through January 7", async ({ page }) => {
+  const dates = [
+    ["2026-12-26T04:59:00Z", "christmas"],
+    ["2026-12-26T05:01:00Z", "new-year"],
+    ["2027-01-08T04:59:00Z", "new-year"],
+    ["2027-01-08T05:01:00Z", null],
+  ];
+  for (const [date, event] of dates) {
+    await page.clock.setFixedTime(new Date(date));
+    await page.goto("/");
+    await expect(page.locator(".home-event-feature:visible")).toHaveCount(event ? 1 : 0);
+    if (event) await expect(page.locator(`[data-home-feature='${event}']`)).toBeVisible();
+  }
+  await expect(page.locator(".hero-card picture")).toBeVisible();
+  await page.clock.setFixedTime(new Date("2027-01-01T14:00:00Z"));
+  await page.goto("/");
+  await page.getByRole("link", { name: /New Year around the World/ }).click();
+  await expect(page).toHaveURL(/\/read\/events\/new-year\/$/);
+  await expect(page.getByRole("heading", { name: "Midnight around the world" })).toBeVisible();
+});
+
 test.describe("with JavaScript disabled", () => {
   test.use({ javaScriptEnabled: false });
 

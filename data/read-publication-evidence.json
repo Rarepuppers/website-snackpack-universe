@@ -1062,6 +1062,191 @@
       "pdf_sha256": "a7be04fe1c0fe336c4b4a6b5557bac58ab58942b413251ba845670e6dd4be2af"
     },
     {
+      "slug": "cluck-oclock-and-the-midnight-that-came-early",
+      "source_id": "web-new-year-cluck-oclock-and-the-midnight-that-came-early",
+      "source_art": {
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/cover.png": "0fbc6084894f504c5f2a0f82ed7cab3154885d4bbf406459284538861ce26a12",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p01.png": "8f7c4090f7ad76c1a2c144369ea660029f9ce66bcf1e4c6d307c5e4b8f442f76",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p02.png": "427fcc72d5c8b1eef5ffeb8931d8dbe307da5ea39ba45a128ac7900393cf08ec",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p03.png": "4bc28b09aa5324701ebf1fd7d056e15010dd37fca3d6e50bdba4a2078c9846ff",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p04.png": "67367b4f4c928fafbe5c147f60c37ebf93507d65e90595a4a3955947960843fc",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p05.png": "4014c944c717e3a602465de2b2c550bb719ce965452c644fcb4f4bc0a119d124",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p06.png": "badd88e3ea9a6c28cb624539c4f441a7f8fce29322635a1aaccdb67b5e0ff9e8",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p07.png": "323ae5c71a4905710770c436f65659b351b50f6313e3455e02463c045b8d1677",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p08.png": "c3b82df00b8c70b79fde4bc7b3132340c3949875afa1072a98a5702f790c97e8",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p09.png": "90bb8473a7c990cd179353f3f14ec3b49f3917dd2590a88626cc5ce0b00e9e9b",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p10.png": "e5308345a4b671ed09b7688fb47d83b858ab2376266039dbd41919bcb93ef5fd",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p11.png": "d09b81f42b3035a05f763831d07f46193e03d725d460531cbb7ca96cda8fbbac",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p12.png": "bcb7d1e0392204349197a176063db74e7bd73e795fb8b8183476c4bdee7ef4b6",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p13.png": "28ada32c37e7fc9cef56eb69bf4cdaf403d4334a6e9db591b58daebfd6f7bbcc",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p14.png": "3a1109f55f1027e2064d5ba114cf7c4589fd73bc91ac37cd65c8fab70e6dedf9",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p15.png": "0f9fcd3f66f715d134e6c416361dcee92b670088946389b4333386bebff0147c",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p16.png": "5901bc81689de6136b8a7626417731934b887a6f70b61907f39b5400939435de",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p17.png": "1739b317c6f1f2ebd1d7a43f3359cb46fd78cea46c47e0b4e5326454fb4aa043",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p18.png": "27670db95b4689a87167dceb3d16125a00035099766cf30542071083a40b5a08",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p19.png": "48fde5502ad02c49939b5c078744268d6f80a695887fcffbb588f030b1fa441f",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p20.png": "a38b66192505abbba4cccc0653e778bcee9efe4c905f0c101d48a15fcf245070",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p21.png": "45844d508f8d1a52f4168ad86a94f62d2f30d1cd92ba04b0b27ab0645381179a",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p22.png": "5f69ae13e742f4521a541f4e0fd3e5467eebe6b9930ac581531e8560dce6fa34",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p23.png": "33e729acded699e1259f019dee459b261bc6ce83a22309da124afbf232ac4587",
+        "../docs/reads-events-bookshelf/new-year/cluck-oclock-and-the-midnight-that-came-early/p24.png": "7aee66a37a20435a0bac2894a689c475d4a697069f53df307d120881f30b0bf7"
+      },
+      "text": [
+        "On the last morning of the year, the twins built a snowman. Then Cluck O'Clock came in and wound his brass pocket watch. Click, click, click. \"Tonight I'm staying up for midnight,\" he said. \"The real one.\" \"You fell asleep on Christmas Eve,\" said Coop-Accino. \"After the sleigh,\" said Cluck. \"That's different.\"",
+        "Hen-Berry folded two paper hats at the kitchen table. A gold one for Cluck. A green one for Coop. \"Midnight is very late for a chicken,\" she said. \"Midnight is when the new year starts,\" said Cluck. \"I want to be there when it does.\"",
+        "That evening, they walked to the library in their hats. Lanterns hung along the path, and the snow squeaked under their feet. Professor Hooten's party was for families. It started at six o'clock and finished at nine. \"Nine isn't midnight,\" said Cluck. \"No,\" said Hen-Berry. \"It isn't.\"",
+        "Inside, Hooten had hung five round clocks in a row on the wall. Each clock had a little card underneath. \"Every clock keeps the time somewhere else,\" said Hooten. \"Some places start their day before we do, so their midnight comes sooner.\"",
+        "He tapped the first clock. Its card said Here. Its hands said six o'clock. Then he tapped the last clock. Its card said Kiritimati. Its hands said eight o'clock in the morning. \"That island is far out in the Pacific Ocean,\" said Hooten. \"Its midnight came while you were building your snowman.\"",
+        "Coop stared. \"It's next year already? Somewhere?\" Cluck held his watch up next to the Here clock. Both said six. \"So whose midnight comes next?\" he asked. Hooten pointed to a clock with a card that said Dubai. \"In two hours.\"",
+        "There was cocoa and a long table of little cakes. By the door stood a basket of old pot lids and wooden spoons. \"For the countdowns,\" said Hen-Berry, and gave one of each to the twins.",
+        "\"Here's my plan,\" said Cluck. \"We count down every midnight, all the way round, until we get to ours.\" Coop counted the clocks on her wingtips. \"That's a lot of midnights.\" \"That's the good bit,\" said Cluck.",
+        "At eight o'clock, the hands of the Dubai clock crept up towards twelve. Everybody gathered under the wall. \"Ten, nine, eight…\" counted Hooten. \"Not yet,\" whispered Cluck, watching his watch. \"Not yet…\"",
+        "\"…three, two, one…\" \"NOW!\" Clang went the pot lids. Bang went the spoons. \"Happy New Year, Dubai!\" everyone shouted. Cluck's gold hat slid down over one eye. He didn't mind at all.",
+        "Cluck ate one more cake, then half of another. Then he yawned. He hid the yawn behind his hat. Coop saw. She didn't say anything. She just moved the cake plate a little closer to him.",
+        "At nine o'clock, it was midnight in Nairobi. Everyone counted again. \"…three, two, one…\" \"NOW!\" shouted Coop. \"Now,\" said Cluck, a moment later. He had been blinking at the wrong moment.",
+        "\"Home time,\" said Hen-Berry. \"But Cairo is next!\" said Cluck. \"It's on the wall!\" Hooten bent down. \"You have a clock of your own,\" he said, nodding at the watch. \"When it says ten o'clock, it will be midnight in Cairo.\"",
+        "Hen-Berry pulled the twins' little sled home along the lantern path. Coop walked beside it. Cluck rode, holding his watch up to the moon so he could see the hands. \"Nine twenty,\" he reported. \"Still awake.\"",
+        "In bed, the twins kept their hats on. Cluck held the watch in his wing. \"Two minutes to Cairo,\" he whispered. \"Wake me for it,\" said Coop, and closed her eyes.",
+        "Tick. Tick. Tick. The watch sounded much louder in the dark. Nine fifty-nine. Cluck's eyes closed. They opened again. They closed again, a little longer.",
+        "The long hand reached twelve. \"Ten,\" whispered Cluck. \"Nine… eight… seven…\" Each number was slower than the one before. \"Four… three…\" Then nothing.",
+        "Coop opened one eye. Cluck was fast asleep, with the watch still in his wing. \"Two,\" she whispered. \"One. Now.\" She waved her wingtip like a very small flag. \"Happy New Year, Cairo.\"",
+        "Coop slipped the watch out of Cluck's wing. She laid it on the table between their beds and tucked the chain under it so it couldn't clink. Then she lay down, too.",
+        "Much later, something went pop, far away. Then fizz. Coop woke up. Over the trees, a little flower of gold light opened in the sky. Then a red one. It was midnight here. The real one.",
+        "\"Cluck,\" whispered Coop. \"Cluck! It's ours!\" Cluck turned over. \"Not yet,\" he mumbled. \"Not yet…\" And he went on sleeping.",
+        "His gold hat had fallen on the floor. Coop picked it up and set it gently back on his head. \"Now,\" she whispered. She watched the last spark fade over the trees, and went back to sleep.",
+        "In the morning, Cluck woke up with his hat on. It was crumpled on one side. \"Did I miss it?\" he asked. \"Did I miss our midnight?\" \"You were there,\" said Coop. \"Hat and everything.\"",
+        "Cluck picked up his watch. Seven o'clock on the first morning of the year. \"Then I'm awake for the very first morning,\" he said. \"All of it.\" He climbed to the window. \"Not yet,\" he said. \"Not yet…\" \"NOW!\" said Coop. And Cluck pulled back the curtain on a whole new year of snow."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p01.jpg": "45361e9a54fa1dd4cc172063dea8c48cd352880da69a99ede6b09ebcefdd1a86",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p02.jpg": "463ead6b6d02690f07ea51748533dbe9879537905bd4e86d4e7dccb2d9ecff41",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p03.jpg": "03876ddd4e7151102d9818ec1d7b19383d16c0e7dca670a2c8adcbf2039001a1",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p04.jpg": "c2dd37dc0b6034cb0446296fbbfe2729dacf8997fca9cc7da67206c1df274311",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p05.jpg": "7e1126c1fbda661713c231b9c9e04d28e100186a74edaee2c81f52a8f5b465c2",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p06.jpg": "164a01a48ac335e48a7a1550a33c387cff35c1e3b5f6be627bce35f84946bf15",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p07.jpg": "b423d3a176ff99237742a33174c252277be6a61c0c92df583ddf65bf93f31a98",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p08.jpg": "0a0a3f0d0686c9160f3b017905077a6f8a4f08bc56699dc69c3003662fafccbb",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p09.jpg": "52c3d3aded57a136c35dcde8835b54864e4441b3660785f166d6459b20d94448",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p10.jpg": "ba0c9a46bdfa0dfdeddab1cd0844313992ca088dbb9b8a3ecff76c9db23e83c6",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p11.jpg": "7a28252bfa3d27e82be952f2a085de42d8abf071c170f4d034366bf03afb40ce",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p12.jpg": "6f50bf4b9ab76dad7a29945c74d7c92d37280186306f106991b23a8d95e7fc02",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p13.jpg": "5687aea1fdaf4aafe9d4e25f9a806c68c8f3218922449002a053312e85bd2494",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p14.jpg": "16066695a31e52e0532e55b5a65e5992f6d39f3f2b92bf80c3017fa0db8c149d",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p15.jpg": "fa808b7747f265b590c0cea128322f4ef33f831bd3a2fc6fdb823dae28c18618",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p16.jpg": "56f757f28209914e445d8e8bbd1176c23262bbcd0e97946b69e5cbd1e17ff4aa",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p17.jpg": "cfcc0e60a01255fa6c48d2b36d5129404e60e26165d9aef5245c2b5104857dd9",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p18.jpg": "a83d2cb8dda0e44c692f060051d1465516a59bdc8922e882027313d8a2523df4",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p19.jpg": "211a73f52e8684f4ecb2b964667f5f786773c291c75172307b4f9f86033ee8e4",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p20.jpg": "a7bd0cbf027189e246025c4038b19699247f2735eacf6febf8785e1f50f41148",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p21.jpg": "4d159ef31b0a3f3cfb974b6b7cb8295b8aefa9cbb832feb01648b00acf1b9d2a",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p22.jpg": "55bb725a8b441a0f26011e93b79adadaed7b79d3d40bbd55781c93578cc96e30",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p23.jpg": "bdccb9c04f66c3673e564c924aae0500a09bfcccc2e131fe30d5d259360dc909",
+        "read/cluck-oclock-and-the-midnight-that-came-early/pages/p24.jpg": "38d25cd6765cb6b769c471e00830fb3f716607ea2dae9fff851abbae529262ea"
+      },
+      "pdf": "read/cluck-oclock-and-the-midnight-that-came-early/cluck-oclock-and-the-midnight-that-came-early.pdf",
+      "pdf_sha256": "745065f9ffe034769989cd21cef49d5c4bc0cdd8075cb5d7a61ebba3e3849abf"
+    },
+    {
       "slug": "corgi-on-the-cob-and-the-harvest-table",
       "source_id": "web-thanksgiving-corgi-on-the-cob-and-the-harvest-table",
       "source_art": {
@@ -4957,6 +5142,205 @@
       },
       "pdf": "read/ted-e-bear-and-the-button-trail/ted-e-bear-and-the-button-trail.pdf",
       "pdf_sha256": "e13e6d5398683842e083a74f8547701e7c41c2d7ab3ecd0553c7c31c73a91580"
+    },
+    {
+      "slug": "ted-e-bear-and-the-jar-of-good-things",
+      "source_id": "web-new-year-ted-e-bear-and-the-jar-of-good-things",
+      "source_art": {
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/cover.png": "0e276ff6dcd84e95376245a38d5aa0bd73d44f0a98a4b67822521b03265030c4",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p01.png": "d9c242dc900e857b5f90f66d74a47c91404d61880c28b02ae29e963b25513f3b",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p02.png": "0a8a729b80a9da0db60b0155992e269a57b8bdb51e3cc9cb0dbd78c01298468e",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p03.png": "ddf2ace9f1f0f56e25af4d3943559fcada4e424c7a84e7ae4b024cc3d62825fa",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p04.png": "06d5c33ab9acef5830dc64e2f5486bfceb834d351b24a1e75070a35a526fdb96",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p05.png": "2ff29a9a411cb2147b99aa131ed7a36bbbabb1dd3cf3c01a725781e3e7b745e8",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p06.png": "9419897d8f7fd78da505d3fe7a458ca7fce78053a901f436bc50b3195bc8a513",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p07.png": "be0c46e8063450dce17b819654b45932a33eb8d3a77003797b1e28c30be5a509",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p08.png": "a9e9d8871f620aad1f07ada323fcdd334f8a742db3d2bba9f8fc939c40958823",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p09.png": "3d6567d348a26d9c1f2394dc7e158a0bd3fd0d2b971861c24d7843daa895fccd",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p10.png": "6c330fcb53e8c3f796ebeec1c7637eda8387e3b02f185798a262d8d87aa416f1",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p11.png": "b341cfd906ba101641816bed55f5910ef805e19b6c68732f4bd3f07c2062ccfa",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p12.png": "c8e8f81caf764d661730708ac78ea679bbd09579170442dedf7014fc25556bd2",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p13.png": "b014b16200b47b30fff80d4baf7adec6f87fff781d073229f13b7d2ef2da3e50",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p14.png": "18795b18337a71eb217bd4349f9a693bfad1aff99cb40e8200534e5c8f1126b7",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p15.png": "1eb9f77878a513a953f90a7cf69d1e28dea22d031bcbd1f2668b08e2a6bff459",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p16.png": "3ed451e5c4c2d79c642c8f56f6db9bafbfbe3446eb6feb0eddf9b20d76038275",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p17.png": "2324e851d2c0ff3fe400f59c22dda30f40fd8d9cc08259115197a187d897cf17",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p18.png": "d4bd55d4f5c71c7c9006dd9b3644740cf4daedfea057a9bd9a0d9e4db09563f5",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p19.png": "b9e6752248317b2fad15be03a72b12775a6e274d525b3382ca017e47e99eaaa9",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p20.png": "dba711b04515752f4765c1754456a8e07709b409a44cdbd5ee54f31bf4c8c598",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p21.png": "c78eb13487ec985c222e336a2354ed3e0b1948b53f027df67f1d678763a03479",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p22.png": "7d8f25a8dc04c877ca928f30d5b97c5b8216966ccd541ef7ad9c22bb16f5f329",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p23.png": "0190bf108041ec7bf8f43d1ef8959a69d70c5623beacdb0f2c4b0f2b183563d5",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p24.png": "75c8b5e233d0e2571a3bb720e44f713189f5564b41c425640086523fec2358ac",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p25.png": "aaa68591b83c080867338a502fdae5fa87c31f74e063f26077f67f6d1e39e2b8",
+        "../docs/reads-events-bookshelf/new-year/ted-e-bear-and-the-jar-of-good-things/p26.png": "44ae152d0b6dc93fcc8af32357e26ab50cbf3f1e6afb5da23b5bafac8d659c3a"
+      },
+      "text": [
+        "On the first day of the year, Ted-E-Bear found an empty honey jar at the back of his cupboard. He washed it, dried it and pushed a cork into the top. Then he wrote a note on a scrap of paper, folded it twice and dropped it in. \"There,\" he said. \"One good thing.\"",
+        "After that, whenever something good happened, Ted wrote it down. Some notes were on yellow paper, some on blue and some on the backs of old shopping lists. He never read them again. He just watched the jar fill up, a little at a time, like snow on a windowsill.",
+        "Now it was the last day of the year. The jar was so full that the cork squeaked when Ted pushed it in. Professor Hooten was having a New Year's Eve party at the library, and Ted had a plan. He tied a red ribbon round the jar's neck. \"I'm going to read the whole year out loud,\" he told Corgi-on-the-Cob. \"From the very first note to the very last.\"",
+        "Corgi trotted beside him all the way to the library, which was unusual. Corgi usually ran ahead. \"What if it's boring?\" said Ted. \"A whole year is a lot of things.\" \"It won't be boring,\" said Corgi. He sounded very sure about it.",
+        "The library had a separate stone step in front of the door. Tonight it wore a thin, shiny coat of ice. Ted's paws were cold. The jar was heavy. He stepped up, and his boot slid one way while the jar slid the other.",
+        "The jar landed in a soft bank of snow and didn't break. But the cork popped out, and the notes flew everywhere, like a flock of small paper birds. Some landed on the step. Some landed in the snow. One blew all the way to the gate before Corgi caught it in his mouth.",
+        "Nutmeg and Panda-Cake came running out to help. They gathered every note they could find and carried them inside in a mixing bowl. Ted looked into the bowl. His whole year was in there, all jumbled up. \"I never wrote the dates,\" he said quietly. \"Now I can't read them in order.\"",
+        "\"Then we'll put them back in order,\" said Professor Hooten. \"We'll be detectives. Every note will have a clue.\" He fetched a long piece of string and tied it between two bookcases. Then he gave Panda-Cake a box of wooden pegs.",
+        "Nutmeg cut out twelve paper squares and wrote a month on each one: January, February, March, all the way to December. Panda-Cake pegged them along the string, one month after another. \"Now,\" said Hooten. \"Read us a note, Ted. Then tell us where it goes.\"",
+        "Ted unfolded the first one. It was slightly damp. Corgi and I built a snow bear. It looked more like a loaf. \"Snow,\" said Nutmeg. \"So it's winter. That could be January or February.\" \"Or December,\" said Panda-Cake. \"It was the very first note in the jar,\" said Ted slowly. \"I remember the loaf.\" He pegged it under January.",
+        "The next note was on blue paper. It rained on our picnic, so we had a puddle party instead. A duckling came. \"Ducklings hatch in spring,\" said Nutmeg. \"April, maybe. Or May.\" Ted pegged it under April. Then he moved it to May. Then he moved it back to April, because that was when the big puddles were.",
+        "I read the whole welcome card out loud at the picnic. Corgi helped me with the first sounds. \"That was the summer picnic on the cliff,\" said Panda-Cake. \"The day it was so hot the jam melted.\" Ted pegged it under July. He was beginning to enjoy this.",
+        "Eight lanterns. Two dark paths. Everyone got home. \"The lantern walk,\" said Hooten. \"It gets dark early in autumn. That was October.\" Found the missing button. It was under the bench all along. Nobody could remember when that one happened. Not even Ted. They pegged it in the middle of the year and decided that was good enough.",
+        "There were three December notes: a shadow show, a snowball truce and a parcel under the tree on Christmas morning. \"December is getting crowded,\" said Nutmeg. \"December is always crowded,\" said Hooten.",
+        "Ted picked up the next note. The writing was big and wobbly, and at the bottom there was a sandy paw print. At the sledging hill, Ted pulled my sled back up every time. Even when his legs were tired. Ted frowned. \"I didn't write this one.\"",
+        "He unfolded another. Same wobbly writing. Same paw print. Ted carried the last parcel all the way across the hall to Moss, who had only just moved here. And another. It rained all afternoon, so Ted made his blanket fort big enough for Panda-Cake too. Even though it was only a small blanket.",
+        "Ted sorted the bowl into two piles. His own neat notes went on one side. The wobbly notes went on the other. The wobbly pile was nearly as big as his. \"These aren't things that happened to me,\" said Ted. \"They're things I did.\"",
+        "Everyone turned to look at Corgi. Corgi looked at the ceiling. Then at the floor. Then at the ceiling again. \"You left the jar on the shelf by your door,\" he said at last. \"And the cork isn't very tight.\"",
+        "\"You put these in?\" asked Ted. \"All year?\" \"Only when you weren't looking,\" said Corgi. \"You only wrote the good things that happened to you. Nobody was writing down the good things you did.\" Ted didn't say anything for a moment. He held the wobbly note about the sledging hill very carefully, as if it might fly away again.",
+        "\"Where do Corgi's notes go?\" asked Panda-Cake. That part was easy. Sledging meant snow, so that was winter. The last parcel was Christmas morning. The rainy blanket fort was spring. Soon the string was full, from January to December. Blue notes, yellow notes and wobbly notes with paw prints, all mixed together.",
+        "Ted stepped back and looked at it. It was a much longer year than he remembered. And there was much more of him in it.",
+        "Across the room, Professor Hooten's wall of clocks showed eight o'clock. In one far-away city, it was midnight already. Cluck O'Clock and Coop-Accino banged their pot lids. \"Not yet, not yet… NOW!\" everybody shouted. \"Happy New Year, Dubai!\" \"Now it's your turn, Ted,\" said Hooten.",
+        "So Ted read the year out loud, one note at a time, from January all the way to December. When he read a neat note, everyone smiled. When he read a wobbly one, everyone looked at Corgi, and Corgi looked at the ceiling. It wasn't boring at all.",
+        "At the end, Ted took the notes off the string and put every one of them back in the honey jar. This time he pushed the cork in tightly. Then he looked at the empty string. \"Next year needs a jar too,\" he said. \"A jar each.\"",
+        "Hooten found four more jars in the library kitchen. One for Nutmeg. One for Panda-Cake. One for himself. And one for Corgi. Nutmeg tied a ribbon round each one, and Panda-Cake wrote their names on the lids.",
+        "Ted tore a scrap of paper from his yellow notebook. He wrote something on it, folded it twice and dropped it into Corgi's empty jar. \"What does it say?\" asked Corgi. \"You'll find out next New Year's Eve,\" said Ted. It was the first good thing of the year. And it wasn't even nine o'clock."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p01.jpg": "2f6b31fa4154e729eeef4db0e19901ca0777b7a64d509e50cf186eb893e62ce7",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p02.jpg": "409376bb10577b28f4e2d251c45fcdd0c4d356b3e23fe0795cd4b2aab3350fc7",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p03.jpg": "145eaa8481255a2136c15555fe412cfa75301d4cc47b69ece5a1321b2b6f885f",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p04.jpg": "065269ab8f8faec970d82788fcbb10cc4c310567356d609126ba82f75f76c0a0",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p05.jpg": "f7474b607ab519209367ef9148ca740863d4b5422bf0eefdf4c40df002fbab2a",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p06.jpg": "ec17426997444539e595ab24779b91aedfa516887751495f51527d62ce5941c4",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p07.jpg": "df8e72dc90f047f09de37b2971d8b86809fc16de3462d80d27ff86729e1415b0",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p08.jpg": "d8f1dce62063b6a652a55b5150ad4fc15c184af41d5e583404fd623bd87695b7",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p09.jpg": "accb7cd776ce78d9c8692879bd8c55874835ad8998f4f8782644b02a5431bb58",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p10.jpg": "039b6187b9341024c94bab8f52145baa43bb868e0f0d8fef87ed30a0bd8a43eb",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p11.jpg": "6cfdae2efbeca239f3ca44167e8c7e4e2eea27c7f93161ca9ee1a2d57005a5cd",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p12.jpg": "566dfa290e0fae2a40e5997ba7fb982ec6ae5b4e21a2192def7395d5e246cb9e",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p13.jpg": "c066caf05431b5e2ea297794a3a2f3155595b0fdeb54dbb373d0812a2081fde4",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p14.jpg": "a37743d828d5a774cd9ad1515da16c83bf528cfcc1e45c1e25f642baf0a45717",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p15.jpg": "6c9ec8ae2cb4b68099d1366478fe2005a63ee8ca1cd3caacc2b3d63f029e2668",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p16.jpg": "b010cbc0ff3cf0817a6c3c944babd3a5d4f6fcbae614bf17aef41b2d16764092",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p17.jpg": "8d2518ec0fc92c0bb943afe02ff1a1dfd3b71ef5b4d242e625742542a6f84092",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p18.jpg": "f302ea774944c93365abdb4b5d955f2f7ad6105a388a7c1ad0d7d1d3b8a111ca",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p19.jpg": "be1050d18d3c76726827d37d9a81240a94715fa170ac938c9168b76747b2f3b4",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p20.jpg": "1e1147fd7658d86f7a42c6d0e645ff2c19b8c04742e24a2f59fc8c91b7a12617",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p21.jpg": "d62d13866e1fda46270e88590ba04be25ed4a6d984b1cd293b742af66861de33",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p22.jpg": "bc04887e3d20fc01f3534e90a5c7a80f73f6b24703b02c5e6bf8a0a40faeefec",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p23.jpg": "16637f5a80fe7c25d9a3176aacc4f1fc72453302bdfcca97a00765506132b2e0",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p24.jpg": "2e181a59ce3efb0dc64db33d8647d02dba643f8a77485c23acff7b4f0500c60a",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p25.jpg": "b226e2441ac6acc81b6a52a30990113d86544f011d99aae38220100e630ca65d",
+        "read/ted-e-bear-and-the-jar-of-good-things/pages/p26.jpg": "56a3c937fcb5cea9773aa70b977c7671c68c930af427b1b92de4f52e6cbb45ed"
+      },
+      "pdf": "read/ted-e-bear-and-the-jar-of-good-things/ted-e-bear-and-the-jar-of-good-things.pdf",
+      "pdf_sha256": "aef309cff3a7a689e5c8363360a7b8296292692f34fca16a28b0456fee46786b"
     },
     {
       "slug": "ted-e-bear-and-the-lantern-that-needed-a-half",

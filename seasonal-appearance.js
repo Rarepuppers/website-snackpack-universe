@@ -14,6 +14,7 @@
     const thanksgivingDay = 22 + (4 - novemberFirst.getUTCDay() + 7) % 7;
     if (date >= Date.UTC(year, 10, thanksgivingDay - 7) && date < seasonStart(year)) return "thanksgiving";
     if (date >= seasonStart(year) && date <= Date.UTC(year, 11, 25)) return "christmas";
+    if (date >= Date.UTC(year, 11, 26) || date <= Date.UTC(year, 0, 7)) return "new-year";
     return "";
   }
 
