@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("the portrait board links to the owl, hen and confirmed family", async ({ page }) => {
   await page.goto("/characters/");
-  await expect(page.locator("#crew .cast-card")).toHaveCount(6);
+  await expect(page.locator("#crew .cast-card")).toHaveCount(14);
   await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
   await expect(page.getByRole("heading", { name: "Professor Hooten" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Midnight That Came Early/ })).toBeVisible();
@@ -22,7 +22,7 @@ test("Panda-Cake links to a sourced animal fact and back", async ({ page }) => {
   await expect(page).toHaveURL(/characters\/panda-cake\/$/);
 });
 
-test("the clue game handles guesses, all three rounds and reset", async ({ page }) => {
+test("the clue game handles guesses, new six-face pools and reset", async ({ page }) => {
   await page.goto("/characters/clues/");
   const clue = page.getByRole("button", { name: "Read another clue" });
   const answer = page.getByRole("button", { name: "Show me the answer" });
@@ -37,12 +37,27 @@ test("the clue game handles guesses, all three rounds and reset", async ({ page 
   await page.getByRole("button", { name: "Cluck O’Clock Rooster" }).click();
   await expect(page.getByRole("status")).toContainText("Cluck O’Clock");
   await expect(page.getByRole("link", { name: "Meet this character" })).toBeFocused();
-  for (const name of ["Hen-Berry", "Professor Hooten", "Cluck O’Clock"]) {
+  for (const name of ["Hen-Berry", "Professor Hooten", "Shelly-Pop", "Eggs-Benedict", "Vincent Van Mouse", "Cluck O’Clock"]) {
     await another.click();
     await expect(page.getByRole("heading", { name: "Clue 1 of 3" })).toBeFocused();
+    await expect(page.locator("[data-guess]:visible")).toHaveCount(6);
+    await expect(page.getByRole("button", { name: new RegExp(name) })).toBeVisible();
     await answer.click();
     await expect(page.getByRole("status")).toContainText(name);
   }
+});
+
+test("Eggs-Benedict has her own story art and shares the chicken fact page with Hen-Berry", async ({ page }) => {
+  await page.goto("/characters/eggs-benedict/");
+  await expect(page.getByRole("heading", { name: "Eggs-Benedict" })).toBeVisible();
+  await expect(page.getByText(/wooden clipboard/)).toBeVisible();
+  await page.getByText("See a picture from the story").click();
+  const scene = page.locator(".cast-art img");
+  await expect(scene).toBeVisible();
+  await expect.poll(() => scene.evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
+  await page.getByRole("link", { name: "Chickens", exact: true }).click();
+  await expect(page.getByRole("link", { name: /Hen-Berry SnackPack character/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Eggs-Benedict SnackPack character/ })).toBeVisible();
 });
 
 test.describe("with JavaScript disabled", () => {

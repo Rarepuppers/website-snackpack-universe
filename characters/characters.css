@@ -79,6 +79,11 @@ button.cast-card { cursor: pointer; padding: 0; }
 .cast-detail { margin-block: 1.1rem; }
 .cast-detail h2, .cast-colouring h2 { font-size: clamp(1.2rem, 2vw, 1.65rem); }
 .cast-detail p { margin: .35rem 0; }
+.cast-art { padding: .8rem 1rem; background: var(--cast-wash); border-radius: .75rem; }
+.cast-art summary { cursor: pointer; font-weight: 750; }
+.cast-art figure { margin: .8rem 0 0; max-width: 28rem; }
+.cast-art img { display: block; width: 100%; height: auto; border-radius: .55rem; }
+.cast-art figcaption { margin-top: .45rem; color: var(--cast-muted); }
 .cast-colouring img { display: block; width: 100%; height: auto; background: white; }
 .cast-colouring article > div { padding: .85rem; }
 .cast-colouring .cast-actions { margin-top: .65rem; }
@@ -90,6 +95,9 @@ button.cast-card { cursor: pointer; padding: 0; }
 .cast-result p { min-height: 1.5em; margin: .9rem 0; font-weight: 700; }
 .cast-footer { border-top: 1px solid var(--cast-line); }
 .cast-site [hidden] { display: none; }
+@media (min-width: 1000px) {
+  #crew .cast-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 @media (max-width: 680px) {
   .cast-welcome, .cast-profile { grid-template-columns: minmax(0, 1fr); }
   .cast-welcome-art { aspect-ratio: 10 / 9; }

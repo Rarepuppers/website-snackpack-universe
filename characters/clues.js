@@ -40,8 +40,11 @@
       reveal.hidden = true;
       showAnswer.disabled = false;
       feedback.textContent = "";
+      const candidates = new Set(rounds[roundIndex].candidates);
       for (const button of guesses) {
-        button.disabled = false;
+        const offered = candidates.has(button.dataset.guess);
+        button.closest("li").hidden = !offered;
+        button.disabled = !offered;
         button.removeAttribute("data-correct");
       }
       addClue();
