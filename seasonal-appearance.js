@@ -5,8 +5,11 @@
   const key = "snackpack.seasonal-appearance.v1";
   const choices = { auto: "Automatic", winter: "Winter", classic: "Classic" };
   const day = 86400000;
-  const start = Date.UTC(2026, 10, 25);
-  const end = Date.UTC(2026, 11, 31);
+  // Every year from 25 November to 31 December, in the visitor's calendar.
+  // The Christmas bookshelf (scripts/lib/read-events.mjs) is featured over the
+  // same weeks; keep the two in step if either window changes.
+  const seasonStart = (year) => Date.UTC(year, 10, 25);
+  const seasonEnd = (year) => Date.UTC(year, 11, 31);
 
   function storedChoice() {
     try {
@@ -27,7 +30,8 @@
     const now = new Date();
     // Use the visitor's calendar day and UTC arithmetic to avoid DST drift.
     const date = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    const inSeason = date >= start && date < end;
+    const start = seasonStart(now.getFullYear());
+    const inSeason = date >= start && date <= seasonEnd(now.getFullYear());
     const active = choice === "winter" || (choice === "auto" && inSeason);
     const rotation = Math.floor((date - start) / day) + offset;
     root.dataset.season = active ? "winter" : "classic";

@@ -13,6 +13,7 @@ export function nextChoices(shelf, slug, collections = []) {
   const choices = [];
   if (next) {
     const label = phonics ? (next.group === 'trail' ? 'Next Reading Trail practice · read together' : next.group === book.group ? 'More practice at this stage' : 'Next phonics stage · when ready') :
+      book.group === 'christmas' ? `Next Christmas story · ${next.readingLevel?.toLowerCase() ?? 'read together'}` :
       next.readingLevel ? `Related book · ${next.readingLevel.toLowerCase()}` : 'Related read-together book';
     choices.push({book:next,label}); excluded.add(next.slug);
   }
