@@ -1,0 +1,523 @@
+{
+  "characters": [
+    {
+      "id": "professor-hooten",
+      "name": "Professor Hooten",
+      "kind": "Owl",
+      "greeting": "Hello, curious friend! Come and see my clock wall.",
+      "moment": "At the library party, Professor Hooten shows the twins five clocks and leads the countdowns.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A brown owl in round spectacles and a green waistcoat",
+      "animal": "owls",
+      "fact": "Professor Hooten wears round spectacles and a green waistcoat at the library.",
+      "art": {
+        "page": "p04",
+        "caption": "Professor Hooten shows the twins a wall of five clocks."
+      }
+    },
+    {
+      "id": "hen-berry",
+      "name": "Hen-Berry",
+      "kind": "Hen",
+      "greeting": "Hello, dear! Would you like to help me fold a paper hat?",
+      "moment": "Hen-Berry makes a gold paper hat for Cluck and a green one for Coop. After the party, she pulls Cluck home on the sled.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A red-feathered hen with a cream face and a cluster of berries and leaves",
+      "family": [
+        "cluck-oclock",
+        "coop-accino"
+      ],
+      "animal": "chickens",
+      "fact": "Hen-Berry brings the twins home along the lantern path.",
+      "art": {
+        "page": "p02",
+        "caption": "Hen-Berry hands Coop a green paper hat."
+      }
+    },
+    {
+      "id": "corgi-on-the-cob",
+      "name": "Corgi-on-the-Cob",
+      "kind": "Dog",
+      "greeting": "Hi! Count the cobs with me. This time, help me remember to count myself!",
+      "moment": "Corgi sets off for Nutmeg’s harvest table with a basket of corn. Three friends help keep his feast on track.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "An orange-and-white corgi with upright ears",
+      "animal": "dogs",
+      "fact": "Corgi carries his basket by its handle in his mouth.",
+      "art": {
+        "page": "p02",
+        "caption": "Corgi counts the corn in his basket."
+      }
+    },
+    {
+      "id": "cluck-oclock",
+      "name": "Cluck O’Clock",
+      "kind": "Rooster",
+      "greeting": "Hello! My watch is ready. Are you staying up for midnight?",
+      "moment": "Cluck brings his brass pocket watch to the library. At the party he discovers that midnight arrives at different times around the world.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A cream rooster with a red comb and a blue-green tail",
+      "family": [
+        "coop-accino",
+        "hen-berry"
+      ],
+      "animal": "chickens",
+      "fact": "Cluck’s watch has a fine gold chain.",
+      "art": {
+        "page": "p02",
+        "caption": "Cluck wears his gold paper hat while Hen-Berry folds another."
+      }
+    },
+    {
+      "id": "coop-accino",
+      "name": "Coop-Accino",
+      "kind": "Chicken",
+      "greeting": "Hi! Let’s count down together. I’ll start at three.",
+      "moment": "Coop wears the green paper hat and helps finish a countdown at the library with her twin, Cluck.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A golden-brown chicken with a dark crest and a coffee-bean bandana",
+      "family": [
+        "cluck-oclock",
+        "hen-berry"
+      ],
+      "animal": "chickens",
+      "fact": "Coop wears a bandana with a coffee-bean pattern.",
+      "art": {
+        "page": "p02",
+        "caption": "Coop reaches up for her paper hat."
+      }
+    },
+    {
+      "id": "panda-cake",
+      "name": "Panda-Cake",
+      "kind": "Panda",
+      "greeting": "Hello! Come help me count what’s in my market basket.",
+      "moment": "At Nutmeg’s harvest feast, Panda-Cake brings rolls and helps cook the corn.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "A cream-and-dark panda with a pancake wrap",
+      "animal": "giant-panda",
+      "fact": "Panda-Cake wears green oven mitts at the barn stove.",
+      "art": {
+        "page": "p13",
+        "caption": "Panda-Cake works at the barn stove while Ted brings the soup."
+      }
+    },
+    {
+      "id": "ted-e-bear",
+      "name": "Ted-E-Bear",
+      "kind": "Bear",
+      "greeting": "Hi! I’m keeping little reminders of good days. What would you put in your jar?",
+      "moment": "Ted keeps a year of happy memories in a jar and takes it to the library party.",
+      "book": [
+        "ted-e-bear-and-the-jar-of-good-things",
+        "Ted-E-Bear and the Jar of Good Things"
+      ],
+      "alt": "A brown bear with a patterned apron and a wooden spoon",
+      "animal": "brown-bear",
+      "fact": "Ted brings his notes to a New Year party at Professor Hooten’s library.",
+      "art": {
+        "page": "p03",
+        "caption": "Ted ties a red ribbon around his jar while Corgi waits at the door."
+      }
+    },
+    {
+      "id": "nutmeg",
+      "name": "Nutmeg",
+      "kind": "Squirrel",
+      "greeting": "Come into the barn! We’re just about ready to see everyone round the table.",
+      "moment": "Nutmeg hosts the harvest meal and gives her guests a turn to say whom they want to thank.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "An orange squirrel with cream cheeks and tufted ears",
+      "animal": "tree-squirrels",
+      "fact": "At the barn, Nutmeg wears a rust-coloured apron over her green jumper.",
+      "art": {
+        "page": "p12",
+        "caption": "Nutmeg welcomes the friends into her red barn."
+      }
+    },
+    {
+      "id": "shelly-pop",
+      "name": "Shelly-Pop",
+      "kind": "Turtle",
+      "greeting": "Hello! Come and look by the stream. I spotted something bobbing past.",
+      "moment": "When corn falls into the stream, Shelly-Pop pushes the floating cobs back towards the bank.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "A small green turtle with a brown shell",
+      "animal": "turtles",
+      "fact": "She keeps her red-and-white lollipop tucked away until after the feast.",
+      "art": {
+        "page": "p05",
+        "caption": "Shelly-Pop nudges two floating cobs back with her nose."
+      }
+    },
+    {
+      "id": "hop-tart",
+      "name": "Hop-Tart",
+      "kind": "Rabbit",
+      "greeting": "Hi! Hear that rustle? I think there’s something hiding in these leaves.",
+      "moment": "Hop-Tart pops out of a leaf pile holding the cob Corgi lost on the hill.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "A cream-and-fawn rabbit with long ears",
+      "animal": "rabbits-and-hares",
+      "fact": "Hop-Tart wears a green-and-white striped jumper in the harvest story.",
+      "art": {
+        "page": "p10",
+        "caption": "Hop-Tart lifts the missing cob above a pile of leaves."
+      }
+    },
+    {
+      "id": "bark-b-q",
+      "name": "Bark-B-Q",
+      "kind": "Golden retriever",
+      "greeting": "Welcome to my garden! There’s room for you at the table.",
+      "moment": "Bark-B-Q hosts a meal for friends under his apple tree. A potato mix-up gives the feast a new plan.",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "A golden retriever in a white chef’s hat and apron",
+      "animal": "dogs",
+      "fact": "The table for his Friendsgiving meal stands beneath the apple tree in his garden.",
+      "art": {
+        "page": "p01",
+        "caption": "Bark-B-Q wags his tail under the apple tree."
+      }
+    },
+    {
+      "id": "sub-zero",
+      "name": "Sub-Zero",
+      "kind": "Penguin",
+      "greeting": "Hi there! Come see the track I made on the snowy hill.",
+      "moment": "On the morning after Christmas, Sub-Zero slides on his tummy and plays a snowball game with the other woodland friends.",
+      "book": [
+        "sub-zero-and-the-great-snowball-truce",
+        "Sub-Zero and the Great Snowball Truce"
+      ],
+      "alt": "A black-and-white penguin wearing an explorer’s hat and jacket",
+      "animal": "penguins",
+      "fact": "In the snowball story, Sub-Zero’s team wears blue mittens.",
+      "art": {
+        "page": "p01",
+        "caption": "Sub-Zero slides down the hill on his tummy."
+      }
+    },
+    {
+      "id": "eggs-benedict",
+      "name": "Eggs-Benedict",
+      "kind": "Hen",
+      "greeting": "Hello! I’ve got my pencil. Let’s make a list for the picnic.",
+      "moment": "Eggs-Benedict makes two charts to organise a meal. When everyone brings potatoes, she turns the timing chart over to draw a new plan.",
+      "book": [
+        "everybody-brought-potatoes",
+        "Everybody Brought Potatoes"
+      ],
+      "alt": "A brown hen wearing a gold crown",
+      "animal": "chickens",
+      "fact": "She carries a wooden clipboard and a yellow pencil in the Friendsgiving story.",
+      "art": {
+        "page": "p02",
+        "caption": "Eggs-Benedict makes the sign-up sheet and timing chart."
+      }
+    },
+    {
+      "id": "vincent-van-mouse",
+      "name": "Vincent Van Mouse",
+      "kind": "Mouse",
+      "greeting": "Hello! Look closely at my painting. Can you find the crooked chimney?",
+      "moment": "Vincent paints the snowy village for the library’s Christmas window. A gust of wind sends his plans in a new direction.",
+      "book": [
+        "vincent-van-mouse-and-the-christmas-shadow-show",
+        "Vincent Van Mouse and the Christmas Shadow Show"
+      ],
+      "alt": "A mouse with round glasses and a paint-speckled apron",
+      "animal": "mice",
+      "fact": "Vincent gives his own house a crooked chimney in the painting.",
+      "art": {
+        "page": "p01",
+        "caption": "Vincent paints a snowy street with a crooked chimney."
+      }
+    }
+  ],
+  "animals": [
+    {
+      "id": "giant-panda",
+      "name": "Giant panda",
+      "fact": "A special wrist bone helps a giant panda grip bamboo as it eats.",
+      "sourceName": "Smithsonian’s National Zoo",
+      "source": "https://nationalzoo.si.edu/animals/giant-panda"
+    },
+    {
+      "id": "brown-bear",
+      "name": "Brown bears",
+      "fact": "Brown bears use strong claws to dig up food such as roots.",
+      "sourceName": "Alaska Department of Fish and Game",
+      "source": "https://www.adfg.alaska.gov/index.cfm?adfg=brownbear.main"
+    },
+    {
+      "id": "tree-squirrels",
+      "name": "Tree squirrels",
+      "fact": "Eastern gray squirrels bury food in little stores to eat through winter.",
+      "sourceName": "U.S. National Park Service",
+      "source": "https://www.nps.gov/bith/learn/nature/eastern-gray-squirrel.htm"
+    },
+    {
+      "id": "turtles",
+      "name": "Turtles",
+      "fact": "A turtle’s shell is part of its body. It is joined to its spine and ribs.",
+      "sourceName": "San Diego Zoo Wildlife Explorers",
+      "source": "https://sdzwildlifeexplorers.org/animals/turtles-and-tortoises"
+    },
+    {
+      "id": "rabbits-and-hares",
+      "name": "Rabbits and hares",
+      "fact": "Rabbits and hares can turn their long ears in different directions to listen.",
+      "sourceName": "University of Michigan BioKIDS",
+      "source": "https://www.biokids.umich.edu/critters/Leporidae/"
+    },
+    {
+      "id": "dogs",
+      "name": "Dogs",
+      "fact": "Dogs have a well-developed sense of smell. Some working dogs learn to pick out a particular scent.",
+      "sourceName": "Cornell University College of Veterinary Medicine",
+      "source": "https://www.vet.cornell.edu/about-us/news/20230712/metropolitan-airport-news-working-dogs-dog-sense-airports"
+    },
+    {
+      "id": "penguins",
+      "name": "Penguins",
+      "fact": "A penguin pushes through the water with its flippers and steers with its feet and tail.",
+      "sourceName": "Australian Antarctic Program",
+      "source": "https://www.antarctica.gov.au/about-antarctica/animals/penguins/"
+    },
+    {
+      "id": "chickens",
+      "name": "Chickens",
+      "fact": "Chickens take dust baths to help keep clean.",
+      "sourceName": "University of Delaware Cooperative Extension",
+      "source": "https://www.udel.edu/academics/colleges/canr/cooperative-extension/fact-sheets/steam-team-chicken-health-and-hygiene/"
+    },
+    {
+      "id": "mice",
+      "name": "Mice",
+      "fact": "House mice use their whiskers to feel the surfaces they explore.",
+      "sourceName": "University of Michigan BioKIDS",
+      "source": "https://www.biokids.umich.edu/critters/Mus_musculus/"
+    },
+    {
+      "id": "owls",
+      "name": "Owls",
+      "fact": "Special feather edges help many owls fly with very little sound.",
+      "sourceName": "Audubon",
+      "source": "https://www.audubon.org/magazine/silent-flight-of-owls-explained"
+    }
+  ],
+  "rounds": [
+    {
+      "answer": "cluck-oclock",
+      "clues": [
+        [
+          "I went to the New Year party at the library.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "I’m one of a pair of twins.",
+          [
+            "cluck-oclock",
+            "coop-accino"
+          ]
+        ],
+        [
+          "I brought my brass pocket watch.",
+          [
+            "cluck-oclock"
+          ]
+        ]
+      ],
+      "explanation": "Cluck brought his brass pocket watch to the library party."
+    },
+    {
+      "answer": "hen-berry",
+      "clues": [
+        [
+          "I was at the library’s New Year party.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "You’ll find me in the twins’ kitchen.",
+          [
+            "hen-berry",
+            "cluck-oclock",
+            "coop-accino"
+          ]
+        ],
+        [
+          "I folded a paper hat for each twin.",
+          [
+            "hen-berry"
+          ]
+        ]
+      ],
+      "explanation": "Hen-Berry folded gold and green paper hats for the twins."
+    },
+    {
+      "answer": "professor-hooten",
+      "clues": [
+        [
+          "You’ll find me at the library’s New Year party.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "I helped get the party ready for the countdown.",
+          [
+            "professor-hooten",
+            "hen-berry"
+          ]
+        ],
+        [
+          "I’m the owl who showed everyone the five clocks on the wall.",
+          [
+            "professor-hooten"
+          ]
+        ]
+      ],
+      "explanation": "Professor Hooten shows the twins how the five clocks work."
+    },
+    {
+      "answer": "shelly-pop",
+      "clues": [
+        [
+          "I went to the harvest feast.",
+          [
+            "corgi-on-the-cob",
+            "nutmeg",
+            "shelly-pop",
+            "hop-tart",
+            "ted-e-bear",
+            "panda-cake"
+          ]
+        ],
+        [
+          "I found corn that had fallen out of Corgi’s basket.",
+          [
+            "shelly-pop",
+            "hop-tart"
+          ]
+        ],
+        [
+          "I nudged two cobs out of the stream.",
+          [
+            "shelly-pop"
+          ]
+        ]
+      ],
+      "explanation": "Shelly-Pop brought the two floating cobs back to the bank."
+    },
+    {
+      "answer": "eggs-benedict",
+      "clues": [
+        [
+          "You can find me in a SnackPack picture book.",
+          [
+            "bark-b-q",
+            "eggs-benedict",
+            "professor-hooten",
+            "hen-berry",
+            "vincent-van-mouse",
+            "sub-zero"
+          ]
+        ],
+        [
+          "I helped get ready for the Friendsgiving meal.",
+          [
+            "bark-b-q",
+            "eggs-benedict"
+          ]
+        ],
+        [
+          "I used my yellow pencil to make a timing chart.",
+          [
+            "eggs-benedict"
+          ]
+        ]
+      ],
+      "explanation": "Eggs-Benedict draws and revises the timing chart for the meal."
+    },
+    {
+      "answer": "vincent-van-mouse",
+      "clues": [
+        [
+          "You can find me in a woodland story.",
+          [
+            "bark-b-q",
+            "eggs-benedict",
+            "professor-hooten",
+            "hen-berry",
+            "vincent-van-mouse",
+            "sub-zero"
+          ]
+        ],
+        [
+          "I was at the library when the big gust came through.",
+          [
+            "vincent-van-mouse",
+            "professor-hooten"
+          ]
+        ],
+        [
+          "I painted a crooked chimney.",
+          [
+            "vincent-van-mouse"
+          ]
+        ]
+      ],
+      "explanation": "Vincent painted the crooked chimney on his own house."
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "answer": "cluck-oclock",
+    "candidates": [
+      "professor-hooten",
+      "hen-berry",
+      "corgi-on-the-cob",
+      "cluck-oclock",
+      "coop-accino",
+      "panda-cake"
+    ],
+    "clues": [
+      "I went to the New Year party at the library.",
+      "I’m one of a pair of twins.",
+      "I brought my brass pocket watch."
+    ],
+    "explanation": "Cluck brought his brass pocket watch to the library party.",
+    "name": "Cluck O’Clock"
+  },
+  {
+    "answer": "hen-berry",
+    "candidates": [
+      "professor-hooten",
+      "hen-berry",
+      "corgi-on-the-cob",
+      "cluck-oclock",
+      "coop-accino",
+      "panda-cake"
+    ],
+    "clues": [
+      "I was at the library’s New Year party.",
+      "You’ll find me in the twins’ kitchen.",
+      "I folded a paper hat for each twin."
+    ],
+    "explanation": "Hen-Berry folded gold and green paper hats for the twins.",
+    "name": "Hen-Berry"
+  },
+  {
+    "answer": "professor-hooten",
+    "candidates": [
+      "professor-hooten",
+      "hen-berry",
+      "corgi-on-the-cob",
+      "cluck-oclock",
+      "coop-accino",
+      "panda-cake"
+    ],
+    "clues": [
+      "You’ll find me at the library’s New Year party.",
+      "I helped get the party ready for the countdown.",
+      "I’m the owl who showed everyone the five clocks on the wall."
+    ],
+    "explanation": "Professor Hooten shows the twins how the five clocks work.",
+    "name": "Professor Hooten"
+  },
+  {
+    "answer": "shelly-pop",
+    "candidates": [
+      "corgi-on-the-cob",
+      "nutmeg",
+      "shelly-pop",
+      "hop-tart",
+      "ted-e-bear",
+      "panda-cake"
+    ],
+    "clues": [
+      "I went to the harvest feast.",
+      "I found corn that had fallen out of Corgi’s basket.",
+      "I nudged two cobs out of the stream."
+    ],
+    "explanation": "Shelly-Pop brought the two floating cobs back to the bank.",
+    "name": "Shelly-Pop"
+  },
+  {
+    "answer": "eggs-benedict",
+    "candidates": [
+      "bark-b-q",
+      "eggs-benedict",
+      "professor-hooten",
+      "hen-berry",
+      "vincent-van-mouse",
+      "sub-zero"
+    ],
+    "clues": [
+      "You can find me in a SnackPack picture book.",
+      "I helped get ready for the Friendsgiving meal.",
+      "I used my yellow pencil to make a timing chart."
+    ],
+    "explanation": "Eggs-Benedict draws and revises the timing chart for the meal.",
+    "name": "Eggs-Benedict"
+  },
+  {
+    "answer": "vincent-van-mouse",
+    "candidates": [
+      "bark-b-q",
+      "eggs-benedict",
+      "professor-hooten",
+      "hen-berry",
+      "vincent-van-mouse",
+      "sub-zero"
+    ],
+    "clues": [
+      "You can find me in a woodland story.",
+      "I was at the library when the big gust came through.",
+      "I painted a crooked chimney."
+    ],
+    "explanation": "Vincent painted the crooked chimney on his own house.",
+    "name": "Vincent Van Mouse"
+  }
+]
