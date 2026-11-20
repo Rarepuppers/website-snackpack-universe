@@ -15,7 +15,9 @@
 <link rel="apple-touch-icon" href="/assets/snackpack-mark-180.png">
 <meta property="og:title" content="Snack Haul | Physics Truck Driving Game for Android">
 <meta property="og:description" content="Load up, take the hills, and get the load there in one piece. Six regions, 48 routes, six trucks, and a ghost of your best run to beat.">
-<meta property="og:image" content="https://www.snackpackuniverse.com/apps/snack-haul/assets/feature-graphic-1024-500.png">
+<meta property="og:image" content="https://www.snackpackuniverse.com/apps/snack-haul/assets/og-share-1200x630.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://www.snackpackuniverse.com/apps/snack-haul/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -25,9 +27,24 @@
 <link rel="stylesheet" href="../../site.css">
 <link rel="stylesheet" href="../../play/play.css">
 <style>
-  .sh-hero { position: relative; overflow: hidden; }
-  .sh-hero .app-hero-card { position: relative; z-index: 1; }
-  .sh-hero-art { display: block; width: 100%; height: auto; border-radius: 18px; margin-top: 18px; box-shadow: 0 10px 30px #0002; }
+  /* Hero: Codex's six-region panorama; text sits over its calm left side on wide screens. */
+  .sh-banner { position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 14px 40px #0003; background: #3d6fb8; width: 100%; min-height: clamp(500px, 44vw, 600px); }
+  .sh-banner::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, #12233fcc 0%, #12233f8c 34%, #12233f00 58%); pointer-events: none; }
+  .sh-banner-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: right bottom; display: block; }
+  .sh-copy { position: relative; z-index: 2; max-width: min(600px, 47%); padding: 44px 44px 40px; color: #fff6e8; text-shadow: 0 2px 12px #0007; }
+  .sh-copy h1 { color: #fff6e8; margin: 10px 0 12px; }
+  .sh-copy .lead { color: #fff6e8; }
+  .sh-copy .ios-note { color: #fff6e8; opacity: .95; }
+  .sh-copy .btn { text-shadow: none; }
+  .sh-copy .btn-secondary { background: #fff8ebeb; color: #2c1f17; border-color: transparent; }
+  @media (max-width: 860px) {
+    .sh-banner { aspect-ratio: auto; min-height: 0; background: var(--card, #fff8eb); box-shadow: 0 8px 24px #0002; }
+    .sh-banner-art img { position: static; aspect-ratio: 2400 / 1000; height: auto; }
+    .sh-banner::before { display: none; }
+    .sh-copy { max-width: none; padding: 22px 20px 24px; color: inherit; text-shadow: none; }
+    .sh-copy .btn-secondary { background: none; color: inherit; border-color: currentColor; }
+    .sh-copy h1, .sh-copy .lead, .sh-copy .ios-note { color: inherit; }
+  }
   .sh-videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
   .sh-video { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #2c1f17; box-shadow: 0 8px 24px #0002; }
   .sh-video button { all: unset; cursor: pointer; position: absolute; inset: 0; display: block; }
@@ -48,7 +65,6 @@
   .sh-shots img { width: 100%; height: auto; border-radius: 12px; display: block; box-shadow: 0 6px 16px #0002; }
   .game-tile .game-icon.sh-truck { width: 100%; max-width: 200px; height: auto; aspect-ratio: auto; }
   .sh-tile { cursor: default; }
-  .sh-hero-art { aspect-ratio: 21 / 9; object-fit: cover; object-position: center 65%; }
   .sh-showcase .showcase-shots { grid-template-columns: 1fr; }
   .sh-showcase .showcase-shots img { aspect-ratio: 1280 / 575; object-position: center; border-radius: 12px; }
 </style>
@@ -146,19 +162,21 @@
 </header>
 
 <main>
-  <section class="app-hero sh-hero">
+  <section class="app-hero">
     <div class="shell">
-      <div class="app-hero-card">
-        <span class="eyebrow">Coming soon to Google Play</span>
-        <h1>Snack Haul</h1>
-        <p class="lead">Load up the truck, take the hills, and get the load there in one piece. Snack Haul is a physics driving game where every egg tray, wobbling jelly and stacked cake rides loose in the back. Drive six trucks across six regions and 48 routes, race the rival, and beat the ghost of your own best run.</p>
-        <div class="stack-inline">
-          <!-- launch: Google Play badge linking to /go/app-page/snack-haul/snackhaul/ goes here -->
-          <a class="btn btn-primary" href="#trailers">Watch the trailers</a>
-          <a class="btn btn-secondary" href="#signup">Hear when it launches</a>
+      <div class="sh-banner">
+        <picture class="sh-banner-art"><source srcset="./assets/hero-panorama-1600.webp 1600w, ./assets/hero-panorama-2400.webp 2400w" sizes="(max-width: 1240px) 100vw, 1200px" type="image/webp"><img src="./assets/hero-panorama-1600.jpg" width="1600" height="667" alt="The six Snack Haul regions in one panorama, from Bakery Hills by day to the Midnight Market at night, with trucks on the road." decoding="async" fetchpriority="high"></picture>
+        <div class="sh-copy">
+          <span class="eyebrow">Coming soon to Google Play</span>
+          <h1>Snack Haul</h1>
+          <p class="lead">Load up the truck, take the hills, and get the load there in one piece. Snack Haul is a physics driving game where every egg tray, wobbling jelly and stacked cake rides loose in the back. Drive six trucks across six regions and 48 routes, race the rival, and beat the ghost of your own best run.</p>
+          <div class="stack-inline">
+            <!-- launch: Google Play badge linking to /go/app-page/snack-haul/snackhaul/ goes here -->
+            <a class="btn btn-primary" href="#trailers">Watch the trailers</a>
+            <a class="btn btn-secondary" href="#signup">Hear when it launches</a>
+          </div>
+          <p class="ios-note" style="margin-top:14px;">🤖 Android first. Bakery Hills is free to play; one purchase unlocks the full game. No ads, no subscriptions, no account.</p>
         </div>
-        <p class="ios-note" style="margin-top:14px;">🤖 Android first. Bakery Hills is free to play; one purchase unlocks the full game. No ads, no subscriptions, no account.</p>
-        <picture><source srcset="./assets/hero-bakery-hills.webp" type="image/webp"><img class="sh-hero-art" src="./assets/hero-bakery-hills.jpg" width="1600" height="900" alt="The red Rusty Pickup driving through Bakery Hills past a farmhouse and a windmill, with its pale ghost truck behind." decoding="async"></picture>
       </div>
     </div>
   </section>
@@ -174,7 +192,7 @@
       </div>
       <div class="sh-videos">
         <figure style="margin:0;">
-          <div class="sh-video" data-yt="ChauY0DWa-A">
+          <div class="sh-video" data-yt="pnMNulaCF6c">
             <button type="button" aria-label="Play the Snack Haul tour trailer: six regions and six trucks">
               <picture><source srcset="./assets/video-tour.webp" type="image/webp"><img src="./assets/video-tour.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"></picture>
               <span class="sh-play" aria-hidden="true"></span>
