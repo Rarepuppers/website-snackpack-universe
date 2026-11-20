@@ -5,7 +5,11 @@
 (function () {
   "use strict";
 
-  var STRIPE_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04";
+  // The tip link carries the game it came from as Stripe's client_reference_id,
+  // for example play-chess-modal (see scripts/tag-stripe-links.mjs for static links).
+  var GAME_SLUG = (location.pathname.match(/\/play\/([a-z0-9-]+)/i) || [])[1];
+  var STRIPE_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04?client_reference_id=" +
+    (GAME_SLUG ? "play-" + GAME_SLUG.toLowerCase() : "play") + "-modal";
   // Default to Brain Games (Vol 1). A page can point the funnel at a different
   // app by setting window.SP_PLAY_URL before this script loads (e.g. Vol 2).
   //

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 
 /*
  * Builder for the World Cup 2026 group pages.
@@ -1301,6 +1302,8 @@ async function main() {
     await fs.writeFile(path.join(dir, "index.html"), teamPage(team), "utf8");
   }
   console.log(`Wrote ${allTeams.length} team pages (world-cup/team/<team>/).`);
+  // Donation links carry their page as Stripe's client_reference_id (see tag-stripe-links.mjs).
+  execFileSync(process.execPath, [path.join(root, "scripts", "tag-stripe-links.mjs")], { stdio: "inherit" });
 }
 
 main().catch((error) => { console.error(error); process.exit(1); });

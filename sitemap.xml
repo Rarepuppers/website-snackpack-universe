@@ -626,6 +626,16 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://www.snackpackuniverse.com/privacy/snack-haul/</loc>
+    <lastmod>2026-11-20</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.snackpackuniverse.com/privacy/snack-haul/data-deletion/</loc>
+    <lastmod>2026-11-20</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://www.snackpackuniverse.com/privacy/snackpack-brain-games/</loc>
     <lastmod>2026-11-03</lastmod>
     <priority>0.4</priority>
