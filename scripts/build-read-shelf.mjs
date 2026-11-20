@@ -42,6 +42,7 @@ const GROUPS = [
   { id: "trail", title: "Reading Trail · next steps", intro: "Eight read-together stories for focused phonics practice, rather than controlled independent decodables: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams, word endings, ar/or/er/ir/ur, and y and -le endings." },
   { id: "places", title: "Real places · Copán, Honduras", intro: "Two books about one real place: the Maya city of Copán in Honduras and its scarlet macaws. A read-together story for younger readers and a class report for ages 9 to 12, with the facts checked against named sources." },
   { id: "christmas", title: "Christmas picture books", intro: "Six woodland Christmas stories, in the order they happen. Share one aloud or follow a mystery on your own; they stay on the shelf all year." },
+  { id: "summer-christmas", title: "Summer Christmas", intro: "Find Christmas stories set on the coast in summer, with shady picnics and bright market days." },
   { id: "thanksgiving", title: "Thanksgiving stories", intro: "Share a woodland feast, count the corn cobs and see what happens when all six friends bring potatoes." },
   { id: "new-year", title: "New Year stories", intro: "Sort a year of memories and count down to midnight with the woodland friends." },
   { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
@@ -186,7 +187,7 @@ function shelfBlock() {
     const books = SHELF.filter((b) => b.group === g.id);
     if (!books.length) continue;
     const event = READ_EVENTS.find((e) => e.id === g.id);
-    const more = event ? ` <a class="text-link" href="./events/${event.id}/">${event.heading} in reading order</a> · <a class="text-link" href="./events/">Holiday and event stories</a>` : "";
+    const more = g.id === "summer-christmas" ? ' <a class="text-link" href="./events/christmas/#summer-christmas">Browse Summer Christmas</a>' : event ? ` <a class="text-link" href="./events/${event.id}/">${event.heading} in reading order</a> · <a class="text-link" href="./events/">Holiday and event stories</a>` : "";
     out.push(`<div class="read-shelf-group" id="${g.id}"><h2 class="read-shelf-heading">${g.title}</h2><p class="read-shelf-intro">${g.intro}${more}</p><div class="read-library-grid">`);
     for (const b of books) out.push(card(b, shown++));
     out.push(`</div></div>`);
@@ -235,7 +236,8 @@ function nextBlock(i) {
   const choices = nextChoices(SHELF, book.slug, READ_COLLECTIONS);
   const share = `<p class="story-share">Know a family or class who would enjoy it? ${SHARE_BUTTON("btn btn-secondary read-share-btn")}</p>\n<script defer src="../share.js"></script>\n<script defer src="../reading-position.js"></script>\n<script defer src="../reader.js"></script>`;
   const ev = eventForBook(book.slug);
-  const partOf = ev ? `\n<p class="story-event-link">Part of <a href="/read/events/${ev.id}/">${ev.heading}</a>: ${ev.timeline.length} books in the order they happen.</p>` : "";
+  const isSummer = book.group === "summer-christmas";
+  const partOf = isSummer ? '\n<p class="story-event-link">Part of <a href="/read/events/christmas/#summer-christmas">Summer Christmas</a>.</p>' : ev ? `\n<p class="story-event-link">Part of <a href="/read/events/${ev.id}/">${ev.heading}</a>: ${ev.timeline.length} books in the order they happen.</p>` : "";
   return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + `\n${share}`;
 }
 
@@ -355,7 +357,7 @@ SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
   let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
   const ev = eventForBook(b.slug);
-  const chip = ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${eventIcon(ev)}${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
+  const chip = b.group === "summer-christmas" ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/christmas/#summer-christmas">${eventIcon(ev)}Summer Christmas</a></p>` : ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${eventIcon(ev)}${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
   html = splice(html, "read-share-top:generated", chip + shareTopBlock() + printInfo(b) + `\n<div class="read-offline" data-offline-book="${b.slug}" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save this book for offline</button><button class="text-link" type="button" data-read-remove hidden>Remove saved book</button><button class="text-link" type="button" data-read-cancel hidden>Cancel saving</button><p class="read-offline-status" data-read-offline-status role="status"></p></div><script defer src="/read/offline.js"></script>`, rel);
   html = bookSchema(html, b, rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));

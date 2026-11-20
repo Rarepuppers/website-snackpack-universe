@@ -62,12 +62,13 @@ for(const [slug,manifest] of selected){
  for(let i=0;i<book.storyPageCount;i++) assert.equal(norm(cards[i].match(/alt="([^"]+)"/)[1]),norm(book.pages[i].art.alt));
  const art=Object.fromEntries(cards.map(c=>{const rel=`read/${slug}/`+c.match(/<img src="\.\/([^"]+)"/)[1];return [rel,hash(path.join(root,rel))];}));
  const pdf=`read/${slug}/${slug}.pdf`;
- if(book.event && book.event !== 'christmas') assert(fs.statSync(path.join(root,pdf)).size < 10_000_000,`${slug}: PDF exceeds 10 MB`);
+ if(book.reviewedPrintableSha256 || (book.event && book.event !== 'christmas')) assert(fs.statSync(path.join(root,pdf)).size < 10_000_000,`${slug}: PDF exceeds 10 MB`);
  const record={slug,source_id:owner.id,source_art:Object.fromEntries(owner.art.map((rel,i)=>['../'+rel,assets[i].sha256])),text,teaching:owner.pages.map(()=>({sequence:null,observation:null})),expected:[],quizzes:questions,art,pdf,pdf_sha256:hash(path.join(root,pdf))};
+ if(book.reviewedPrintableSha256) assert.equal(record.pdf_sha256,book.reviewedPrintableSha256,`${slug}: reviewed PDF differs`);
  const old=evidence.books.find(b=>b.slug===slug);
  if(write){
   const localPdf=path.join(source,book.sourceFolder ?? book.id,`${slug}.pdf`);
-  if(book.event && book.event !== 'christmas') assert.equal(record.pdf_sha256,hash(localPdf),`${slug}: reviewed PDF differs`);
+  if(book.reviewedPrintableSha256 || (book.event && book.event !== 'christmas')) assert.equal(record.pdf_sha256,hash(localPdf),`${slug}: reviewed PDF differs`);
   if(old)evidence.books[evidence.books.indexOf(old)]=record;else evidence.books.push(record);}
  else assert.deepEqual(old,record,`${slug}: publication differs from reviewed evidence`);
 }
