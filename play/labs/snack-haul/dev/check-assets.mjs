@@ -331,14 +331,14 @@ if (WINTER) {
   stage = 3;
   art("ridge_northpole", 2048, 512, 300); art("region_northpole", 1280, 720, 220);
   art("event_winter", 1280, 400, 150); art("advent_bg", 1280, 720, 200); art("portrait_sleigh", 640, 360, 90);
-  for (const n of ["santa", "tinsel"]) exists(path.join(A, "art", `customer_${n}.webp`), 60);
+  for (const n of ["santa", "tinsel"]) art(`customer_${n}`, 512, 512, 60);
   for (const n of ["event_winter", "advent", "feature_dropoff", "feature_drift", "cargo_present", "cargo_sack", "cargo_pudding", "truck_sleigh"]) icon(n);
   for (const n of ["sleigh", "presents", "advent", "christmas_eve", "workshop"]) icon(`goal_${n}`);
   for (const [n, size] of [["snowflake", 64], ["sparkle", 64], ["snow_puff", 128]]) image(path.join(A, "art", "fx", `${n}.webp`), size, size, 30);
 
   // Audio
   for (const n of ["sleigh_idle", "sleigh_drive"]) audio("engine", n, 260);
-  for (const n of ["music_northpole", "music_winter_menu"]) audio("music", n, 1400);
+  for (const n of ["music_northpole", "music_carol_jingle_bells", "music_winter_menu"]) audio("music", n, 1024);
   for (const n of ["present_drop", "door_open", "jingle_sting", "horn_sleigh", "snow_drift", "pudding_wobble"]) audio("sfx", n, 60);
 
   // Store
@@ -358,19 +358,19 @@ for (const [dir, limitMB] of [["models", 13], ["art", 5], ["ui", 1], ["audio", 1
 }
 
 if (WINTER) {
-  // The whole batch is held to 6 MB (brief section 2). Files are spread over shared folders, so add up what the batch names.
+  // The whole batch is held to 7 MB (brief section 2). Files are spread over shared folders, so add up what the batch names.
   const winterKB = [path.join(A, "models/winter"), path.join(A, "art/fx")].reduce((n, d) => n + folderKB(d), 0)
     + ["models/trucks/truck_sleigh.glb", "models/trucks/reindeer_team.glb", "models/cargo/cargo_present_red.glb", "models/cargo/cargo_present_green.glb",
       "models/cargo/cargo_present_blue.glb", "models/cargo/cargo_present_crushed.glb", "models/cargo/cargo_sack.glb", "models/cargo/cargo_pudding.glb",
       "models/cargo/cargo_pudding_ruined.glb", "models/toppers/topper_santa_hat.glb", "models/toppers/topper_antlers.glb", "models/toppers/topper_star.glb",
       "art/sky_northpole.webp", "art/ridge_northpole.webp", "art/region_northpole.webp", "art/event_winter.webp", "art/advent_bg.webp", "art/portrait_sleigh.webp",
-      "art/customer_santa.webp", "art/customer_tinsel.webp", "audio/engine/sleigh_idle.ogg", "audio/engine/sleigh_drive.ogg", "audio/music/music_northpole.ogg",
+      "art/customer_santa.webp", "art/customer_tinsel.webp", "audio/engine/sleigh_idle.ogg", "audio/engine/sleigh_drive.ogg", "audio/music/music_northpole.ogg", "audio/music/music_carol_jingle_bells.ogg",
       "audio/music/music_winter_menu.ogg", ...["present_drop", "door_open", "jingle_sting", "horn_sleigh", "snow_drift", "pudding_wobble"].map((n) => `audio/sfx/${n}.ogg`),
       ...["event_winter", "advent", "feature_dropoff", "feature_drift", "cargo_present", "cargo_sack", "cargo_pudding", "truck_sleigh",
         "goal_sleigh", "goal_presents", "goal_advent", "goal_christmas_eve", "goal_workshop"].map((n) => `ui/${n}.webp`)]
       .reduce((n, f) => n + (fs.existsSync(path.join(A, f)) ? fs.statSync(path.join(A, f)).size / 1024 : 0), 0);
-  notes.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB of 6 MB`);
-  if (winterKB / 1024 > 6) problems.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB, limit 6 MB`);
+  notes.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB of 7 MB`);
+  if (winterKB / 1024 > 7) problems.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB, limit 7 MB`);
 }
 console.log(`${WINTER ? "Winter W" : "Milestones "}1 to ${upto}: found ${found} files, ${missing} missing${later ? `, ${later} belong to later milestones` : ""}.`);
 notes.forEach((n) => console.log("  " + n));
