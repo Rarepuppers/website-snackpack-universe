@@ -278,4 +278,7 @@ else if (mode === "trace") trace();
 else if (mode === "challenges") challenges();
 else if (mode === "rivals") rivals();
 else if (mode === "orders") orders();
+else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
+  import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
+}
 else table("Base truck, no upgrades", base, [4.5, 6, 8]);

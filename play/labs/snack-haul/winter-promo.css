@@ -1,0 +1,11 @@
+.sh-winter-promo[hidden] { display: none; }
+.sh-winter-promo {
+  box-sizing: border-box;
+  margin: 16px 0;
+  padding: clamp(16px, 3vw, 30px);
+  border-radius: 18px;
+  color: #eef4fb;
+  background: linear-gradient(90deg, #111d39e8, #191f3c69), #162549 url("assets/art/sky_northpole.webp") center / cover;
+}
+.sh-winter-promo h2 { color: inherit; margin: 0 0 5px; }
+.sh-winter-promo p { margin: 0 0 12px; }

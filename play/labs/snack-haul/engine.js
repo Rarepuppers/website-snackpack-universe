@@ -64,6 +64,22 @@
     { id: "chilli", name: "Chilli Ridge", blurb: "Rough rock, sharp crests and big ramps.", friction: 0.85, amp: 1.75, wave: 0.9, rough: 0.22, maxSlope: 0.62, pay: 3.3, kinds: ["popcorn", "jelly"], features: ["ramp"], ramp: [0.5, 0.8] },
     { id: "market", name: "Midnight Market", blurb: "Night roads, speed bumps and wet cobbles.", friction: 0.95, amp: 1.8, wave: 1.0, rough: 0.14, maxSlope: 0.6, pay: 4, kinds: null, features: ["bump", "slick"] }
   ];
+  // Seasonal regions stay outside the permanent region, route and goal totals.
+  var NORTH_POLE = { id: "northpole", name: "North Pole", friction: 0.60, amp: 0.85, wave: 1.4,
+    rough: 0.06, maxSlope: 0.37, pay: 2, features: ["drift", "slick"], kinds: ["present", "sack", "pudding"] };
+  var EVENTS = [{ id: "winter", name: "Winter Haul", start: "12-01", end: "01-06", region: REGIONS.length,
+    vehicle: "sleigh", cargo: NORTH_POLE.kinds, music: "music_northpole", advent: true }];
+  function activeEvent(date) {
+    if (!date || !Number.isFinite(date.getTime())) return null;
+    var month = date.getMonth() + 1, day = date.getDate();
+    var key = String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+    var event = EVENTS.find(function (e) { return e.start <= e.end ? key >= e.start && key <= e.end : key >= e.start || key <= e.end; });
+    if (!event) return null;
+    var year = date.getFullYear() - (event.start > event.end && key <= event.end ? 1 : 0);
+    return Object.assign({}, event, { key: event.id + year, openDoors: month === 12 ? Math.min(day,24) : 24 });
+  }
+  function regionFor(index) { return index === EVENTS[0].region ? NORTH_POLE : REGIONS[index]; }
+
   var CARGO_TYPES = ["crate", "eggs", "milk", "jelly", "melon", "cake", "popcorn", "icecream"];
 
   // c is a crate; a and b are the region's own cargo. The first four letters form
@@ -107,6 +123,40 @@
     });
   });
 
+  var SEASONAL_CARGO = { present: 6, sack: 7, pudding: 9 };
+  var WINTER_ROUTES = [
+    ["Workshop Yard", 118, 3, .34], ["Candy Cane Lane", 137, 4, .43],
+    ["Reindeer Ridge", 166, 5, .53], ["Snowdrift Hollow", 182, 5, .55],
+    ["Gingerbread Village", 206, 6, .60, 2], ["Aurora Climb", 232, 7, .76],
+    ["The Long Way Round", 282, 8, .68], ["Christmas Eve Run", 392, 12, .69]
+  ].map(function (r,i) {
+    var load = Array.from({length:r[2]},function (_,j) { return i===7 && (j===3 || j===8) ? "pudding" : i===4 && j===1 ? "sack" : "present"; });
+    return { id: "northpole-" + (i+1), name:r[0], region:EVENTS[0].region, index:i,
+      len:r[1], heat:r[3], load:load, pickup:r[4]||0, dropoffs:r[2], winter:true, orderKind:"route" };
+  });
+  var WINTER_ORDERS = [
+    ["Toys for Every Town","Santa",0,145,4,0,"rush"], ["Lost Sack","Tinsel",0,155,4,1,"sack"],
+    ["Pudding Panic","Tinsel",3,180,5,0,"pudding"], ["Blizzard Run","Santa",6,200,6,0,"blizzard"],
+    ["Reindeer Required","Tinsel",9,226,7,0,"sleigh"], ["The Big Night","Santa",12,340,10,0,"rush"]
+  ].map(function (o,i) {
+    var load=Array.from({length:o[4]},function (_,j) { return o[6]==="pudding"?"pudding":o[6]==="sack"&&j===o[4]-1?"sack":"present"; });
+    return { id:"workshop-"+(i+1), name:o[0], customer:o[1], requiredStars:o[2], region:EVENTS[0].region,
+      index:i, len:o[3], heat:.45+i*.055, load:load, pickup:o[5], dropoffs:o[4], winter:true, orderKind:"workshop",
+      twist:o[6], grip:o[6]==="blizzard" ? .94 : 1, truck:o[6]==="sleigh"?"sleigh":null };
+  });
+  var WINTER_DOORS = Array.from({length:24},function (_,i) {
+    var day=i+1, end=day===24;
+    var r=WINTER_ROUTES[i % 6];
+    if(end) return Object.assign({},WINTER_ROUTES[7],{id:"winter-door-24", seed:"northpole-8", orderKind:"advent",door:day});
+    var stops=2+Math.floor(i/8);
+    return {id:"winter-door-"+day, name:"Advent door "+day, region:[4,11,18].includes(i)?0:EVENTS[0].region,
+      index:r.index, len:96+stops*13, heat:.30+i*.013, load:Array(stops).fill("present"),
+      dropoffs:stops, winter:true, orderKind:"advent", door:day};
+  });
+  function winterDelivery(id) {
+    return WINTER_ROUTES.concat(WINTER_DOORS,WINTER_ORDERS).find(function (d) { return d.id===id; }) || null;
+  }
+
   var UPGRADES = [
     { id: "engine", name: "Engine", icon: "🔧", desc: "More pull on the climbs, and more top speed." },
     { id: "suspension", name: "Suspension", icon: "🛞", desc: "Softer landings, and fewer cracked eggs." },
@@ -128,9 +178,8 @@
   ];
 
   // Seasonal vehicles (Winter Haul plan, apps/snackpack-snack-haul/docs/WINTER_EVENT_PLAN.md).
-  // Kept out of TRUCKS so the garage, the bots and the 1.0 checks are unchanged until the event code lands.
-  // `runners`: the wheels are hidden and runners drawn; their bottom sits at axleY - wheelR.
-  // `snowGrip` applies on `snowRegions`, `dryGrip` everywhere else (both still to be wired into the physics).
+  // The event garage controls ownership and season access; physics still uses two hidden wheels.
+  // Runner bottoms correspond to axleY - wheelR and the region changes the sleigh's grip.
   var EVENT_TRUCKS = [
     { id: "sleigh", event: "winter", name: "Jingle Sleigh", cost: 0, desc: "Glides fast on snow and ice. Slow and twitchy on dry roads.", bedHalf: 1.6, perRow: 4, wheelR: 0.32, rearX: -1.0, frontX: 1.1, torque: 1.1, top: 1.0, weight: 0.9, rail: 0.2, soft: 0.3, pay: 1, runners: true, snowGrip: 1.35, dryGrip: 0.8, snowRegions: ["frost", "northpole"], hitchX: 2.25, hitchY: 0.1, stats: { speed: 3, grip: 3, load: 2 } }
   ];
@@ -175,14 +224,41 @@
 
   // Where the road features sit. Positions come from the route's own seed.
   function planFeatures(d) {
-    var region = REGIONS[d.region], r = rng(hash(d.id + "feat")), list = [];
+    var region = regionFor(d.region), r = rng(hash((d.seed || d.id) + "feat")), list = [];
+    if (d.dropoffs) {
+      // Level approaches, ordered stops, and room to brake from normal speed.
+      var first = 39, last = START_FLAT + d.len - 20;
+      for (var stop=0;stop<d.dropoffs;stop++) {
+        var mark=Math.round((first+(last-first)*stop/Math.max(1,d.dropoffs-1))/SAMPLE)*SAMPLE;
+        list.push({type:"dropoff",x0:mark-5.25,x1:mark+5.25,x:mark});
+      }
+    }
     var lo = START_FLAT + 34, hi = START_FLAT + d.len - 30;
     function free(x0, x1) { return list.every(function (f) { return x1 + 16 < f.x0 || x0 - 16 > f.x1; }); }
     if (d.pickup) {
       var px = Math.round((START_FLAT + d.len * (0.45 + r() * 0.1)) / SAMPLE) * SAMPLE;
-      list.push({ type: "pickup", x0: px - 7.5, x1: px + 7.5 });
+      if (d.winter) {
+        // Put every pickup before the last delivery, using the widest suitable gap.
+        var gaps = list.slice(1).map(function (stop, index) { return [list[index].x1,stop.x0]; })
+          .filter(function (gap) { return gap[1]-gap[0] >= 17; });
+        var gap=gaps[Math.floor(gaps.length/2)];
+        if (gap) px=(gap[0]+gap[1])/2;
+      }
+      list.push({ type: "pickup", x0: px - (d.winter ? 5.25 : 7.5), x1: px + (d.winter ? 5.25 : 7.5) });
     }
-    var kinds = region.features, i = d.index;
+    var kinds = d.winter ? (d.twist === "blizzard" ? ["slick","drift"] : ["drift","slick"]) : region.features, i = d.index;
+    if (d.winter) {
+      // Road features fit between stops rather than displacing a doormat.
+      var ordered=list.slice().sort(function (a,b) { return a.x0-b.x0; });
+      var placed=0;
+      for (var gapIndex=1;gapIndex<ordered.length && placed<2;gapIndex++) {
+        var end=ordered[gapIndex].x0, start=ordered[gapIndex-1].x1;
+        if (end-start < 15) continue;
+        var center=(start+end)/2;
+        list.push({type:kinds[placed++],x0:center-3.5,x1:center+3.5});
+      }
+      return list.sort(function (a,b) { return a.x0-b.x0; });
+    }
     if (kinds.length && (d.long || d.region > 0 || i >= 3)) {
       var count = d.long ? Math.floor(d.len / 85) : 1 + Math.floor(i / 2);
       for (var n = 0; n < count; n++) {
@@ -203,7 +279,7 @@
   }
 
   function buildTerrain(d) {
-    var region = REGIONS[d.region], r = rng(hash(d.id));
+    var region = regionFor(d.region), r = rng(hash(d.seed || d.id));
     var layers = [
       { len: 62 * region.wave, amp: 3.4, ph: r() * 7 },
       { len: 31 * region.wave, amp: 1.7, ph: r() * 7 },
@@ -231,7 +307,7 @@
     function at(px) { return pts[Math.max(0, Math.min(pts.length - 1, Math.round(px / SAMPLE)))]; }
     // Pickup stops are level, and bridges and fords sag in the middle.
     features.forEach(function (f) {
-      if (f.type === "pickup") {
+      if (f.type === "pickup" || f.type === "dropoff") {
         var level = at(f.x0).y;
         pts.forEach(function (p) {
           if (p.x >= f.x0 && p.x <= f.x1) p.y = level;
@@ -300,7 +376,7 @@
   }
 
   function buildPickups(d, terrain) {
-    var r = rng(hash(d.id + "coins")), coins = [], cans = [], rocks = [], ridges = [];
+    var r = rng(hash((d.seed || d.id) + "coins")), coins = [], cans = [], rocks = [], ridges = [];
     var clear = function (x) { return !terrain.features.some(function (f) { return x > f.x0 - 4 && x < f.x1 + 4 && f.type !== "wind"; }); };
     for (var x = START_FLAT + 22; x < terrain.total - END_FLAT - 12; x += 26 + r() * 16) {
       var count = 3 + Math.floor(r() * 3);
@@ -311,7 +387,7 @@
         coins.push({ x: cx, y: heightAt(terrain, cx) + (ramp ? 3.1 : 2.1), taken: false });
       }
     }
-    var gap = BALANCE.canEvery;
+    var gap = d.winter ? 72 : BALANCE.canEvery;
     for (var f = gap; f < terrain.total - END_FLAT - 10 - START_FLAT; f += gap) {
       var fx = START_FLAT + f;
       cans.push({ x: fx, y: heightAt(terrain, fx) + 1.5, taken: false });
@@ -422,9 +498,10 @@
     var spec = truckSpec(opts.truck);
     var D = dimsFor(spec);
     var up = Object.assign({ engine: 0, suspension: 0, tyres: 0, straps: 0, tank: 0 }, opts.upgrades || {});
-    var region = REGIONS[d.region], terrain = buildTerrain(d), pick = buildPickups(d, terrain);
+    var region = regionFor(d.region), terrain = buildTerrain(d), pick = buildPickups(d, terrain);
     // A Special Order in the rain has less grip everywhere.
-    var roadGrip = region.friction * (d.grip || 1);
+    var sleighGrip = spec.runners ? (spec.snowRegions.includes(region.id) || d.winter ? spec.snowGrip : spec.dryGrip) : 1;
+    var roadGrip = region.friction * (d.grip || 1) * sleighGrip;
     var world = new planck.World({ gravity: { x: 0, y: -BALANCE.gravity }, allowSleep: false });
 
     var ground = world.createBody();
@@ -444,7 +521,7 @@
     // A tall truck on big wheels somersaults if its brakes bite as hard as its engine pulls.
     var brakeBite = spec.brake || 1;
     var rail = 0.2 + 0.14 * up.straps + spec.rail;
-    var strapHold = BALANCE.strapHold * up.straps + (spec.hold || 0);
+    var strapHold = BALANCE.strapHold * up.straps + (spec.hold || 0) + (d.winter ? .45 : 0);
     var eggBreak = BALANCE.eggBreak * (1 + 0.16 * up.suspension + 0.16 * up.straps);
     var GROUP = { filterGroupIndex: -1 };
     var spawnX = 8;
@@ -480,8 +557,8 @@
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "milk" ? 2.6 : type === "popcorn" ? 0.28 : type === "icecream" ? 1.2 : 0.9,
-        friction: (type === "melon" ? 0.7 : 0.5) + 0.1 * up.straps,
+        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "popcorn" ? 0.28 : type === "icecream" ? 1.2 : 0.9,
+        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
       });
@@ -498,22 +575,24 @@
       columns[col] = base + size.h + 0.012;
     });
 
-    var pickupZone = terrain.features.filter(function (f) { return f.type === "pickup"; })[0] || null;
+    var pickupZone = terrain.features.find(function (f) { return f.type === "pickup"; }) || null;
+    var deliveries = terrain.features.filter(function (f) { return f.type === "dropoff"; });
     var g = {
       delivery: d, region: region, regionIndex: d.region, terrain: terrain, world: world, truck: truck, wheels: wheels,
       cargo: cargo, coins: pick.coins, cans: pick.cans, rocks: pick.rocks, rail: rail, upgrades: up, spec: spec, dim: D,
       status: "driving", reason: null, time: 0, coinsTaken: 0, par: parTime(d), medals: medalTimes(d),
       fuel: BALANCE.tankSeconds + 9 * up.tank, maxFuel: BALANCE.tankSeconds + 9 * up.tank,
+      dropoffs: deliveries, homes: 0, given: {},
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
       total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
       brakeUsed: false, featMax: {}
     };
-    var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) / D.wheelR;
+    var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
     var thirst = spec.thirst || 1;
     var flipTimer = 0, stallTimer = 0, stopTimer = 0, loadTimer = 0, splash = 0;
     var need = d.long ? 1 : Math.ceil(g.total * BALANCE.passShare);
-    var wasGrounded = true;
+    var wasGrounded = true, dropTimer = 0;
 
     function tagged(contact, kind) {
       var a = contact.getFixtureA().getBody().getUserData();
@@ -558,7 +637,7 @@
       }
     });
 
-    function liveCargo() { return cargo.filter(function (c) { return !c.lost && !c.broken; }).length; }
+    function liveCargo() { return cargo.filter(function (c) { return !c.lost && !c.broken && !c.delivered; }).length; }
     function grounded() { return wheels.some(function (w) { return w.getUserData().touching > 0; }); }
     function onBed(c) {
       var local = truck.getLocalPoint(c.body.getPosition());
@@ -568,7 +647,7 @@
     // The waiting loads drop onto the bed, above whatever is already there.
     function loadPickup() {
       var top = D.bedHeight;
-      cargo.forEach(function (c) { var l = !c.lost && !c.broken && onBed(c); if (l) top = Math.max(top, l.y + c.h / 2); });
+      cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l) top = Math.max(top, l.y + c.h / 2); });
       var added = pending.map(function (type, i) {
         var col = i % spec.perRow, row = Math.floor(i / spec.perRow), size = cargoSize(type);
         var local = { x: D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: top + 0.25 + size.h / 2 + row * 0.8 };
@@ -584,10 +663,10 @@
       if (status === "done") {
         // A cake only counts if it arrives the right way up.
         cargo.forEach(function (c) {
-          if (c.type !== "cake" || c.lost || c.broken) return;
+          if ((c.type !== "cake" && c.type !== "pudding") || c.lost || c.broken || c.delivered) return;
           if (Math.abs(normalAngle(c.body.getAngle() - truck.getAngle())) > BALANCE.cakeTilt) {
             c.broken = true;
-            g.events.push({ type: "ruined", cargo: "cake", x: c.body.getPosition().x, y: c.body.getPosition().y });
+            g.events.push({ type: "ruined", cargo: c.type, x: c.body.getPosition().x, y: c.body.getPosition().y });
           }
         });
       }
@@ -597,6 +676,25 @@
       g.events.push({ type: status, reason: reason });
     }
 
+    function nextDrop() { return deliveries.find(function (f) { return !f.done && !f.missed; }); }
+    function readyCargo() {
+      return cargo.filter(function (c) { return !c.lost && !c.broken && !c.delivered && onBed(c) &&
+        (c.type !== "pudding" || Math.abs(normalAngle(c.body.getAngle()-truck.getAngle()))<=BALANCE.cakeTilt); });
+    }
+    function drop(zone) {
+      var eligible=readyCargo();
+      eligible.sort(function (a,b) { return onBed(a).x-onBed(b).x; });
+      var item=eligible[0];
+      if (!item) return;
+      item.delivered=true;
+      item.body.setActive(false);
+      zone.done=true;
+      g.homes++;
+      g.given[item.type]=(g.given[item.type]||0)+1;
+      g.events.push({type:"dropoff",x:zone.x,y:heightAt(terrain,zone.x),cargo:item.type});
+    }
+    g.nextDrop = nextDrop;
+    g.canDrop = function () { return readyCargo().length > 0; };
     g.live = liveCargo;
     g.need = need;
     g.grounded = grounded;
@@ -655,13 +753,15 @@
         truck.applyForceToCenter({ x: -v.x * mass * BALANCE.fordDrag, y: 0 }, true);
         splash -= STEP * Math.abs(v.x);
         if (splash <= 0) { splash = 0.9; g.events.push({ type: "splash", x: pos.x, y: heightAt(terrain, pos.x) }); }
+      } else if (zone && zone.type === "drift" && isGrounded) {
+        truck.applyForceToCenter({x:-vx*truck.getMass()*(Math.abs(vx)>3 ? .24 : .52),y:0},true);
       } else if (zone && zone.type === "wind") {
         // Gusts push on the load, not the truck, so light cargo goes first.
         g.wind = zone.power * (0.5 + 0.5 * Math.sin(g.time * 1.7 + zone.phase));
       }
 
       cargo.forEach(function (c) {
-        if (c.lost || c.broken) return;
+        if (c.lost || c.broken || c.delivered) return;
         var onTruck = onBed(c);
         // Straps press anything still on the bed down towards the truck.
         if (strapHold > 0 && onTruck && onTruck.y < 1.7) {
@@ -703,7 +803,7 @@
 
       // A crate that falls through a gap in the physics still counts as lost.
       cargo.forEach(function (c) {
-        if (!c.lost && c.body.getPosition().y < heightAt(terrain, c.body.getPosition().x) - 2) c.lost = true;
+        if (!c.lost && !c.delivered && c.body.getPosition().y < heightAt(terrain, c.body.getPosition().x) - 2) c.lost = true;
       });
 
       var speedNow = truck.getLinearVelocity().length();
@@ -726,7 +826,14 @@
           g.events.push({ type: "missed", x: pos.x, y: pos.y });
         }
       }
-      if (liveCargo() + pending.length < need) { finish("failed", "load"); return; }
+      var porch=nextDrop();
+      dropTimer=porch && zone===porch && speedNow<BALANCE.stopSpeed && angle<.5 ? dropTimer+STEP : 0;
+      if (porch && dropTimer>BALANCE.stopSeconds) { drop(porch); dropTimer=0; }
+      if (porch && !porch.done && pos.x>porch.x1+4) {
+        porch.missed=true;
+        g.events.push({type:"missedDrop",x:pos.x,y:pos.y});
+      }
+      if (!d.dropoffs && liveCargo() + pending.length < need) { finish("failed", "load"); return; }
 
       flipTimer = angle > 2 && speedNow < 3 ? flipTimer + STEP : 0;
       if (flipTimer > BALANCE.flipSeconds) { finish("failed", "flip"); return; }
@@ -736,10 +843,14 @@
 
       var inZone = pos.x > terrain.zoneStart && pos.x < terrain.zoneEnd;
       stopTimer = inZone && speedNow < BALANCE.stopSpeed && angle < 0.7 ? stopTimer + STEP : 0;
-      if (stopTimer > BALANCE.stopSeconds) finish("done", "delivered");
+      if (stopTimer > BALANCE.stopSeconds) {
+        if (d.dropoffs && !g.homes) finish("failed","porches");
+        else finish("done","delivered");
+      }
     };
-    g.stopProgress = function () { return Math.min(1, Math.max(stopTimer, loadTimer) / BALANCE.stopSeconds); };
+    g.stopProgress = function () { return Math.min(1, Math.max(stopTimer, loadTimer, dropTimer) / BALANCE.stopSeconds); };
     g.inZone = function () { var x = truck.getPosition().x; return x > terrain.zoneStart && x < terrain.zoneEnd; };
+    g.inDropoff = function () { var f=nextDrop(), x=truck.getPosition().x; return !!f && x>f.x0 && x<f.x1; };
     g.inPickup = function () { var x = truck.getPosition().x; return g.pickupState === "ahead" && x > pickupZone.x0 && x < pickupZone.x1; };
     return g;
   }
@@ -753,13 +864,16 @@
 
   // ════ After a delivery ═══════════════════════════════════════════
   function report(g) {
-    var total = g.total, kept = g.live();
+    var total = g.delivery.dropoffs || g.total, kept = g.delivery.dropoffs ? g.homes : g.live();
     var region = g.region, pay = 0, kinds = {}, d = g.delivery;
     CARGO_TYPES.forEach(function (t) { kinds[t] = 0; });
     // Ice cream melts: full pay inside the gold time, a third by 1.5 times it.
     var melt = g.time <= g.par ? 1 : Math.max(BALANCE.meltFloor, 1 - ((g.time / g.par - 1) / 0.5) * (1 - BALANCE.meltFloor));
     g.cargo.forEach(function (c) {
-      if (!c.lost && !c.broken) { pay += BALANCE.cargoPay[c.type] * (c.type === "icecream" ? melt : 1); kinds[c.type] += 1; }
+      if (d.dropoffs ? c.delivered : !c.lost && !c.broken) {
+        pay += (BALANCE.cargoPay[c.type] || SEASONAL_CARGO[c.type]) * (c.type === "icecream" ? melt : 1);
+        kinds[c.type] = (kinds[c.type] || 0) + 1;
+      }
     });
     pay = Math.round(pay * region.pay * g.spec.pay);
     var share = kept / total, done = g.status === "done";
@@ -773,9 +887,9 @@
       score = Math.round(metres * (0.5 + 0.5 * share));
       lines.push({ label: metres + " m with " + kept + " of " + total + " loads", coins: Math.round(score / 12 * region.pay) });
     } else if (done) {
-      lines.push({ label: kept + " of " + total + " delivered", coins: pay });
+      lines.push({ label: kept + " of " + total + (d.dropoffs ? " homes visited" : " delivered"), coins: pay });
       if (kinds.icecream && melt < 1) lines.push({ label: "Ice cream melted a little", coins: 0 });
-      if (stars === 3) lines.push({ label: "Whole load intact", coins: Math.round(10 * region.pay) });
+      if (stars === 3) lines.push({ label: d.dropoffs ? "Every porch delivered" : "Whole load intact", coins: Math.round(10 * region.pay) });
       if (medal) lines.push({ label: ["", "Bronze", "Silver", "Gold"][medal] + " time", coins: Math.round(BALANCE.expressPay * region.pay * medal / 3) });
       if (d.daily && !d.paid) lines.push({ label: "Daily delivery", coins: BALANCE.dailyPay });
     }
@@ -803,6 +917,8 @@
     var toStop = (t.zoneStart + t.zoneEnd) / 2 - pos.x;
     // A pickup stop is a second place to pull up, part-way along.
     if (g.pickupState === "ahead") toStop = (g.pickup.x0 + g.pickup.x1) / 2 - pos.x;
+    var porch=g.nextDrop();
+    if (porch && (porch.x-pos.x > 9 || g.canDrop())) toStop=Math.min(toStop,porch.x-pos.x);
     if (toStop < 40) want = Math.min(want, Math.max(0.1, toStop * 0.28));
     var input = { gas: false, brake: false };
     if (!g.grounded()) {
@@ -1066,6 +1182,7 @@
 
   return {
     STEP: STEP, BALANCE: BALANCE, REGIONS: REGIONS, ROUTES: ROUTES, DELIVERIES: DELIVERIES, UPGRADES: UPGRADES, MAX_LEVEL: MAX_LEVEL,
+    EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
     TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,

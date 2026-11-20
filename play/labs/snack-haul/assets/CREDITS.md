@@ -279,3 +279,12 @@ Paths below are relative to this assets directory, except app/ paths which refer
 | app/store/play-icon-512.png | Generated master / actual model render composite; export_full.py |
 | app/store/feature-graphic.png | Generated master / actual model render composite; export_full.py |
 | app/store/unlock-product-icon-512.png | Generated master / actual model render composite; export_full.py |
+
+## Winter Haul W1, 21 November 2026
+
+| File | Source / method |
+|---|---|
+| art/sky_northpole.webp | Original OpenAI ImageGen sky for Snack Haul. Full PNG and prompt in shared-assets/art-source/snack-haul/masters/winter. |
+| models/trucks/truck_sleigh.glb, models/trucks/reindeer_team.glb | Original procedural geometry and vertex colors for Snack Haul. Editable build scripts in shared-assets/art-source/snack-haul/blender/winter. |
+| models/cargo/cargo_present_red.glb, models/cargo/cargo_present_green.glb, models/cargo/cargo_present_blue.glb | Original procedural geometry and vertex colors. Same source folder. |
+| models/winter/house_a.glb, models/winter/workshop.glb | Original procedural geometry and vertex colors. Same source folder. |

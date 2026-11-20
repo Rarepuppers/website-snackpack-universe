@@ -1,3 +1,4 @@
+import { WINTER_PAINTS, WINTER_TOPPERS, migrateWinterSave, seasonProgress, seasonStars, canStartWinter, winterGoals, finishWinter } from "./winter.mjs";
 // Snack Haul app shell: saves, menus, audio, the driving loop and progression.
 import { World3D } from "./render3d.js";
 import { Assets, loadAssets, soundData, has, url, hasModel } from "./assets.js";
@@ -25,6 +26,7 @@ function load() {
 }
 const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
+migrateWinterSave(save);
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
 function persist() {
   save.savedAt = Date.now();
@@ -41,6 +43,20 @@ function localDate(d = new Date()) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 // The Monday that starts this week, as a local date.
+const params = new URLSearchParams(location.search);
+const previewDate = params.get("date");
+function eventDate() {
+  if ((!nativeApp || window.SNACKHAUL_DEBUG) && /^\d{4}-\d{2}-\d{2}$/.test(previewDate || "")) {
+    const value = new Date(previewDate + "T12:00:00");
+    if (localDate(value) === previewDate) return value;
+  }
+  return new Date();
+}
+const currentEvent = () => SH.activeEvent(eventDate());
+const decemberDressing = () => eventDate().getMonth() === 11;
+const sleighOwned = () => save.trucks.includes("sleigh");
+const drivingTruck = () => save.truck === "sleigh" && (!sleighOwned() || !currentEvent()) ? "pickup" : save.truck;
+const menuMusic = () => decemberDressing() ? "music_winter_menu" : "music_menu";
 function weekKey() { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return localDate(d); }
 const level = (id) => save.upgrades[id] || 0;
 const totalStars = () => Object.values(save.stars).reduce((n, v) => n + v, 0);
@@ -50,7 +66,7 @@ const totalStars = () => Object.values(save.stars).reduce((n, v) => n + v, 0);
 const FREE_TRUCKS = ["pickup", "tuktuk"];
 const paywalled = () => !!nativeApp && !save.pro;
 const regionPaid = (r) => r > 0 && paywalled();
-const truckPaid = (id) => paywalled() && !FREE_TRUCKS.includes(id);
+const truckPaid = (id) => paywalled() && id!=="sleigh" && !FREE_TRUCKS.includes(id);
 const billing = { ready: false, price: "", busy: false, note: "" };
 const regionReached = (r) => SH.isOpen(SH.DELIVERIES.find((d) => d.region === r).id, save.stars);
 const regionOpen = (r) => !regionPaid(r) && regionReached(r);
@@ -110,8 +126,8 @@ const ico = (name, fallback = "", cls = "ico") => (has("ui/" + name + ".webp") ?
 const artUrl = (name) => (has("art/" + name + ".webp") ? url("art/" + name + ".webp") : "");
 const DRIVERS = [["corgi", "Corgi-on-the-Cob"], ["barkbq", "Bark-B-Q"], ["waffle", "Belgian Waffle"], ["booklava", "Booklava"]];
 const TOPPERS = [["", "None"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
-function look(truckId = save.truck) {
-  const p = PAINTS.find((x) => x.id === save.paint[truckId]);
+function look(truckId = drivingTruck()) {
+  const p = PAINTS.concat(WINTER_PAINTS).find((x) => x.id === save.paint[truckId]);
   return { driver: save.driver, topper: save.topper, upgrades: save.upgrades, paint: p && paintOwned(p) ? p.colors : null };
 }
 
@@ -144,10 +160,12 @@ const depotStage = () => DEPOT_PARTS.filter((n) => save.parts >= n).length;
 const EXTRAS = [["flowers", "Flower boxes", 150], ["bench", "Bench", 200], ["bunting", "Bunting", 300], ["barrels", "Barrels", 350], ["hay", "Hay bales", 400],
   ["picnic", "Picnic table", 600], ["windsock", "Windsock", 800], ["lamp", "Lamp posts", 1100], ["lights", "String lights", 1500], ["fountain", "Fountain", 2000],
   ["tower", "Water tower", 2600], ["statue", "Golden croissant statue", 3500]];
-const depotLook = () => ({ stage: depotStage(), extras: save.extras.slice().sort() });
+const depotLook = () => ({ stage: depotStage(), extras: save.extras.slice().sort(), winter: decemberDressing(),
+  decor: ["tree","lights","wreath","snowman"].filter((id)=>save.winterRewards[id]) });
 
 function paintOwned(p) {
   const h = p.how;
+  if (!h) return !!save.winterRewards[p.id];
   if (h.truck) return masteryLevel(h.truck) >= h.level;
   if (h.region != null) return regionStars(h.region) >= 24;
   return SH.ORDERS.filter((o) => o.region === h.customer).every((o) => save.orders[o.id]);
@@ -240,6 +258,11 @@ function decodeSounds() {
       audio.ctx.decodeAudioData(soundData(name).slice(0), (buffer) => {
         audio.buffers[name] = buffer;
         if (audio.wantMusic && !audio.music) setMusic(audio.wantMusic);
+        else if ((name==="music/music_northpole" || name.startsWith("music/music_carol_")) && audio.musicName==="music_northpole" && audio.music?.src.loop) {
+          const loop=audio.music;
+          loop.src.loop=false;
+          loop.src.onended=()=> { if (audio.music===loop) setMusic("music_northpole",1); };
+        }
         if (audio.wantEngine && !audio.loops) engineLoops(audio.wantEngine);
         if (audio.wantRoad && name.startsWith("road/") && !(audio.road || {})[name.slice(5)]) roadLoops(audio.wantRoad);
       }, () => {});
@@ -274,20 +297,32 @@ function engineLoops(truckId) {
   audio.loops = { idle: source("engine/" + truckId + "_idle", true, 0), drive: source("engine/" + truckId + "_drive", true, 0) };
   audio.loops.idle.src.start(); audio.loops.drive.src.start();
 }
-function setMusic(name) {
+function setMusic(name, trackIndex = 0) {
   audio.wantMusic = name;
-  if (!audio.ctx || audio.musicName === name) return;
+  if (!audio.ctx || (audio.musicName === name && !trackIndex && audio.music)) return;
   stopLoop(audio.music); audio.music = null; audio.musicName = "";
-  if (!name || !save.sound || save.music === false || !audio.buffers["music/" + name]) return;
-  audio.music = source("music/" + name, true, 0);
-  audio.music.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, 0.6);
-  audio.music.src.start();
-  audio.musicName = name;
+  if (!name || !save.sound || save.music === false) return;
+  const winter = name === "music_northpole";
+  const tracks = winter ? [name,...Object.keys(Assets.sounds).filter((key)=>key.startsWith("music/music_carol_")).sort()
+    .map((key)=>key.slice(6))].filter((key)=>audio.buffers["music/"+key]) : [name];
+  if (!tracks.length) tracks.push("music_frost");
+  if (name==="music_winter_menu" && !audio.buffers["music/"+name]) tracks[0]="music_menu";
+  const track=tracks[trackIndex % tracks.length];
+  if (!audio.buffers["music/"+track]) return;
+  const loop=source("music/"+track,tracks.length===1,0);
+  audio.music=loop;
+  // The set can grow as carols decode. Change tracks only at a natural end.
+  if (winter && tracks.length>1) loop.src.onended=()=> {
+    if (audio.music===loop) setMusic(name,trackIndex+1);
+  };
+  loop.gain.gain.setTargetAtTime(MUSIC_LEVEL,audio.ctx.currentTime,.6);
+  loop.src.start();
+  audio.musicName=name;
 }
 const MUSIC_LEVEL = 0.32;
 // Tyre noise by region, swapped on bridges and ice, plus a quiet backdrop.
-const SURFACE = { bakery: "road_gravel", dunes: "road_sand", harbour: "road_sand", frost: "road_snow", chilli: "road_gravel", market: "road_cobble" };
-const AMBIENT = { dunes: "wind", harbour: "waves", frost: "wind", market: "night" };
+const SURFACE = { northpole: "road_snow", bakery: "road_gravel", dunes: "road_sand", harbour: "road_sand", frost: "road_snow", chilli: "road_gravel", market: "road_cobble" };
+const AMBIENT = { northpole: "night", dunes: "wind", harbour: "waves", frost: "wind", market: "night" };
 function roadLoops(regionId) {
   audio.wantRoad = regionId;
   if (!audio.ctx) return;
@@ -334,7 +369,13 @@ function engineSound(game, on) {
   audio.o1.frequency.setTargetAtTime(rev, t, 0.08);
   audio.o2.frequency.setTargetAtTime(rev / 2, t, 0.08);
   audio.filter.frequency.setTargetAtTime(gas ? 900 : 420, t, 0.1);
-  audio.engineGain.gain.setTargetAtTime(!live || audio.loops ? 0 : gas ? 0.085 : 0.035, t, 0.06);
+  const sleigh=game && game.spec.runners;
+  audio.engineGain.gain.setTargetAtTime(!live || audio.loops || sleigh ? 0 : gas ? 0.085 : 0.035, t, 0.06);
+  if (live && sleigh && !audio.loops && speed>.5 && game.grounded() && t >= (audio.bellAt || 0)) {
+    audio.bellAt=t+Math.max(.20,.78-speed*.056);
+    beep(829,.10,"sine",.035);
+    beep(1130,.19,"triangle",.026,.06);
+  }
   audio.noise.gain.setTargetAtTime(!on || !save.sound || !game || tyres ? 0 : Math.min(0.05, game.slipRear * 0.006 + speed * 0.002), t, 0.08);
 }
 
@@ -347,13 +388,17 @@ function sizeWorld() { world && world.resize(window.innerWidth, window.innerHeig
 window.addEventListener("resize", sizeWorld);
 sizeWorld();
 
-function showcaseRegion() { return state.screen === "routes" ? state.regionTab : nextRoute().region; }
+function showcaseRegion() {
+  const event=currentEvent();
+  return state.screen==="winter" && event ? event.region : state.screen==="routes" ? state.regionTab : nextRoute().region;
+}
 function refreshShowcase() {
   if (!world) return;
   world.showView = state.screen === "home" ? "home" : "panel";
-  world.look = look();
   world.depot = depotLook();
-  world.showcase(save.truck, showcaseRegion(), railFor(save.truck));
+  const truck=state.screen==="garage" && save.truck==="sleigh" && sleighOwned() ? "sleigh" : drivingTruck();
+  world.look=look(truck);
+  world.showcase(truck, showcaseRegion(), railFor(truck));
 }
 
 let frameId = 0;
@@ -409,14 +454,16 @@ function drainEvents(g) {
     else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
     else if (ev.type === "land") { thud(Math.min(1, ev.air)); if (ev.air > 0.35 && g.live()) play("crate_thud", Math.min(0.7, ev.air * 0.6)); }
     else if (ev.type === "pickup") { play("pickup_load", 0.8) || (beep(660, 0.12, "triangle", 0.08), beep(880, 0.16, "triangle", 0.08, 0.1)); toast("Loaded " + ev.items.length + " more!", 1100); }
+    else if (ev.type === "dropoff") { play("present_drop",.75) || (beep(680,.14,"sine",.08),beep(910,.18,"triangle",.06,.05)); toast("Porch delivered!",1000); }
+    else if (ev.type === "missedDrop") { beep(247,.22,"triangle",.06); toast("Passed a porch",950); }
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
-    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast("Cake toppled!", 900); }
+    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
-      const say = { wind: "Gusty! Mind the load", slick: g.regionIndex === 3 ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
+      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
       if (say) hint(say, 2600);
-      const sound = { bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
+      const sound = { drift:"snow_drift", bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
       if (sound) play(sound, 0.6);
     }
   });
@@ -452,24 +499,34 @@ function stepGhost() {
 
 // ════ Delivery flow ═══════════════════════════════════════════════
 function startDelivery(delivery) {
+  if (!delivery) return;
+  const event=currentEvent();
+  if (delivery.winter) {
+    const canonical=SH.winterDelivery(delivery.id);
+    if (!event || !canStartWinter(event,seasonProgress(save,event.key),canonical,sleighOwned())) return toMenu(event ? "winter" : "home");
+    delivery={...canonical,eventKey:event.key};
+  } else if (decemberDressing() && delivery.region===0) {
+    delivery={...delivery,snowy:true};
+  }
   // Paid content never starts without the unlock (Next delivery can point past Bakery Hills).
-  if (delivery && regionPaid(delivery.region) && !delivery.daily) return showUnlock("route");
+  if (!delivery.winter && regionPaid(delivery.region) && !delivery.daily) return showUnlock("route");
   if (delivery && delivery.truck && truckPaid(delivery.truck) && !save.trucks.includes(delivery.truck)) return showUnlock("truck");
   ensureAudio();
   state.delivery = delivery;
   // A Special Order can name its truck; it must be owned to start.
-  const truckId = delivery.truck || save.truck;
+  const truckId = delivery.truck || drivingTruck();
   const game = SH.createGame({ delivery, upgrades: save.upgrades, truck: truckId });
   state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0;
   state.input.gas = state.input.brake = false;
   syncPedals();
   engineLoops(truckId);
-  setMusic("music_" + SH.REGIONS[delivery.region].id);
-  roadLoops(SH.REGIONS[delivery.region].id);
+  const region=SH.regionFor(delivery.region);
+  setMusic("music_" + region.id);
+  roadLoops(region.id);
   state.hudLoad = state.hudCoins = null;
   world.look = look(truckId);
   world.reduceMotion = !save.shake;
-  state.ghost = makeGhost(delivery);
+  state.ghost = delivery.winter ? null : makeGhost(delivery);
   world.ghostGame = state.ghost ? state.ghost.game : null;
   world.ghostKind = state.ghost ? state.ghost.kind : null;
   world.ghostLabel = !state.ghost ? "" : state.ghost.kind === "rival" ? RIVAL : "Your best " + state.ghost.time.toFixed(1) + "s";
@@ -480,14 +537,15 @@ function startDelivery(delivery) {
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
   const label = delivery.long ? "Long Haul" : delivery.daily ? "Daily delivery" : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
-  toast(label + ": " + game.total + " loads", 1700);
+  toast(label + ": " + (delivery.winter ? delivery.dropoffs + " porches" : game.total + " loads"), 1700);
   const ch = !delivery.long && !delivery.daily && save.stars[delivery.id] && !save.challenge[delivery.id] ? SH.challengeFor(delivery.id) : null;
-  if (delivery.order) hint(SH.orderText(delivery), 4500);
+  if (delivery.winter) hint("Stop on each doormat, then return to the depot",4500);
+  else if (delivery.order) hint(SH.orderText(delivery), 4500);
   else if (state.ghost && state.ghost.kind === "rival") hint(RIVAL + " is racing you: " + state.ghost.rival.t + "s to beat", 4500);
   else if (ch) hint("Challenge: " + SH.challengeText(ch), 4500);
   else if (state.ghost) hint("Race your ghost: " + state.ghost.time.toFixed(1) + "s to beat", 4000);
   const d = localDate();
-  if (!save.days.includes(d)) save.days = save.days.concat(d).slice(-60);
+  if (!delivery.winter && !save.days.includes(d)) save.days = save.days.concat(d).slice(-60);
   persist();
   state.mode = "drive";
   hud(game);
@@ -512,9 +570,10 @@ function coach(g) {
 
 function hud(g) {
   const live = g.live();
-  const loadText = live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
+  const loadText = g.delivery.winter ? g.homes + "/" + g.delivery.dropoffs + " porches" :
+    live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
   if (state.hudLoad !== loadText) { state.hudLoad = loadText; $("load").innerHTML = ico("load", "📦") + " " + loadText; }
-  $("load").className = live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
+  $("load").className = !g.delivery.winter && live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
   if (state.hudCoins !== g.coinsTaken) { state.hudCoins = g.coinsTaken; $("coins").innerHTML = ico("coin", "🪙") + " " + g.coinsTaken; }
   if (g.delivery.long) {
     const metres = Math.max(0, Math.round(g.truck.getPosition().x - 8)), mile = Math.floor(metres / 250);
@@ -537,9 +596,10 @@ function hud(g) {
   $("fuel").className = f < 0.25 ? "low" : "";
   $("prog").style.width = Math.min(100, (g.truck.getPosition().x / g.terrain.zoneStart) * 100).toFixed(1) + "%";
   const loading = g.status === "driving" && g.inPickup();
-  const showStop = loading || (g.status === "driving" && g.inZone());
+  const dropping = g.status === "driving" && g.inDropoff();
+  const showStop = dropping || loading || (g.status === "driving" && g.inZone());
   $("stop").hidden = !showStop;
-  $("stop").firstElementChild.textContent = loading ? "Stop to load" : "Stop to unload";
+  $("stop").firstElementChild.textContent = dropping ? "Stop on the doormat" : loading ? "Stop to load" : g.delivery.winter ? "Stop at the depot" : "Stop to unload";
   if (showStop) {
     const progress = g.stopProgress();
     $("stopbar").style.width = (progress * 100).toFixed(0) + "%";
@@ -550,6 +610,7 @@ function hud(g) {
 function finishDelivery(g) {
   engineSound(null, false);
   const r = SH.report(g), d = state.delivery, today = localDate();
+  if (d.winter) return finishWinterRun(r,d);
   const s = save.stats;
   s.metres += Math.round(Math.max(0, g.truck.getPosition().x - 8));
   s.bestAir = Math.max(s.bestAir, r.bestAir);
@@ -718,6 +779,32 @@ function finishDelivery(g) {
   else play("failed", 0.8) || [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
   $("drive").hidden = true;
 }
+function finishWinterRun(report, delivery) {
+  const { rewards, coins } = finishWinter(save,delivery.eventKey,delivery,report,masteryLevel);
+  persist();
+  const done=report.status==="done";
+  const reason={porches:"No porches received a load. Brake before the doormat and stop until the meter fills.",
+    flip:"The truck ended up on its roof.",fuel:"You ran out of fuel."}[report.reason] || "";
+  const next=delivery.orderKind==="route" && SH.WINTER_ROUTES[delivery.index+1];
+  const event=currentEvent();
+  const canAdvance=done && next && event && canStartWinter(event,seasonProgress(save,event.key),next,sleighOwned());
+  sheet.innerHTML = `<h2>${done ? "Present round complete" : "Delivery failed"}</h2>
+    <div class="stars" aria-label="${report.stars} stars">${"★".repeat(report.stars)}${"☆".repeat(3-report.stars)}</div>
+    <p>${report.kept} of ${report.total} homes visited · ${coins} coins</p>
+    ${reason ? `<p>${esc(reason)}</p>` : ""}
+    ${rewards.map((reward)=>`<div class="unlocked">${esc(reward)}</div>`).join("")}
+    ${delivery.orderKind==="workshop" && report.stars<2 ? "<p>Earn two stars to complete this order.</p>" : ""}
+    <div class="row">
+      ${canAdvance ? '<button class="btn primary" data-act="winter-next">Next route</button>' : ""}
+      <button class="btn" data-act="retry">Try again</button>
+      <button class="btn" data-act="winter">Back to Winter Haul</button>
+    </div>`;
+  veil.classList.add("on"); driveEl.hidden=true;
+  engineLoops(null); roadLoops(null);
+  if (done) play("jingle_sting",.7) || [523,659,784].forEach((f,i)=>beep(f,.16,"triangle",.07,i*.09));
+  else play("failed",.6);
+}
+
 function cheapestUpgrade() {
   return SH.UPGRADES.map((u) => ({ name: u.name, level: level(u.id) + 1, cost: SH.upgradeCost(level(u.id)) })).filter((u) => u.cost != null).sort((a, b) => a.cost - b.cost)[0] || null;
 }
@@ -742,14 +829,14 @@ function failTip(r) {
   return level("straps") < 2 ? "Cargo Straps in the garage hold your load down." : "Slow down before crests and let the truck settle.";
 }
 function following(d) {
-  const i = SH.DELIVERIES.indexOf(d), n = SH.DELIVERIES[i + 1];
+  const i = SH.DELIVERIES.findIndex((item)=>item.id===d.id), n = SH.DELIVERIES[i + 1];
   return n && SH.isOpen(n.id, save.stars) ? n : null;
 }
 function toMenu(screen) {
   veil.classList.remove("on");
   driveEl.hidden = true;
   state.mode = "menu"; state.game = null; state.screen = screen || "home";
-  engineLoops(null); roadLoops(null); setMusic("music_menu");
+  engineLoops(null); roadLoops(null); setMusic(menuMusic());
   engineSound(null, false);
   renderScreen();
   kick();
@@ -836,6 +923,8 @@ sheet.addEventListener("click", (e) => {
   const a = b.dataset.act;
   ensureAudio();
   if (a === "unlock-close") return closeUnlock();
+  if (a === "winter") return toMenu(currentEvent() ? "winter" : "home");
+  if (a === "winter-next") return startDelivery(SH.WINTER_ROUTES[state.delivery.index+1]);
   if (a === "garage") { state.unlockOpen = false; toMenu("garage"); }
   if (a === "retry") startDelivery(state.delivery.long ? SH.longHaul(state.delivery.region, Date.now().toString(36)) : state.delivery);
   if (a === "next") startDelivery(following(state.delivery));
@@ -845,14 +934,17 @@ sheet.addEventListener("click", (e) => {
   if (a === "close") veil.classList.remove("on");
 });
 $("pause").addEventListener("click", pause);
-document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) pause();
+  else if (state.mode==="menu" && world) renderScreen();
+});
 
 // The app calls these for the Android back button and when it goes to the background.
 window.SnackHaulBack = () => {
   if (state.mode === "drive") return pause();
   if (state.mode === "paused") { veil.classList.remove("on"); state.mode = "drive"; return kick(); }
   if (state.unlockOpen) return closeUnlock();
-  if (state.mode === "result") return toMenu("home");
+  if (state.mode === "result") return toMenu(state.delivery?.winter && currentEvent() ? "winter" : "home");
   if (veil.classList.contains("on")) return veil.classList.remove("on");
   if (state.screen !== "home") return toMenu("home");
   tellApp({ type: "exit" });
@@ -885,7 +977,11 @@ function bindPedal(button, name) {
 bindPedal($("gas"), "gas"); bindPedal($("brake"), "brake");
 const KEYS = { ArrowRight: "gas", KeyD: "gas", ArrowLeft: "brake", KeyA: "brake" };
 const HORNS = { pickup: "horn_pickup", van: "horn_pickup", hauler: "horn_monster", monster: "horn_monster", tuktuk: "horn_tuktuk", buggy: "horn_tuktuk" };
-function horn() { if (state.mode === "drive") play(HORNS[state.game.spec.id] || "horn_pickup", 0.7); }
+function horn() {
+  if (state.mode !== "drive") return;
+  if (state.game.spec.runners) play("horn_sleigh",.65) || [682,886,1082].forEach((f,i)=>beep(f,.20,"triangle",.05,i*.07));
+  else play(HORNS[state.game.spec.id] || "horn_pickup",.7);
+}
 window.addEventListener("keydown", (e) => {
   if (e.code === "KeyH" && !e.repeat) horn();
   if (KEYS[e.code] && state.mode === "drive") { state.input[KEYS[e.code]] = true; syncPedals(); e.preventDefault(); }
@@ -895,7 +991,7 @@ window.addEventListener("keyup", (e) => { if (KEYS[e.code]) { state.input[KEYS[e
 
 // ════ Screens ═════════════════════════════════════════════════════
 function renderScreen() {
-  ({ home: homeScreen, routes: routesScreen, orders: ordersScreen, long: longScreen, events: eventsScreen, garage: garageScreen, goals: goalsScreen, settings: settingsScreen })[state.screen]();
+  ({ home: homeScreen, routes: routesScreen, orders: ordersScreen, long: longScreen, events: eventsScreen, winter: winterScreen, garage: garageScreen, goals: goalsScreen, settings: settingsScreen })[state.screen]();
   refreshShowcase();
 }
 const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
@@ -910,6 +1006,7 @@ function homeScreen() {
       <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "Daily delivery +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
       <button class="btn" data-nav="long">${ico("long_haul")} Long Haul<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
+      ${currentEvent() ? `<button class="btn winter-entry" data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
       <div class="dock">
         <button class="btn" data-nav="routes">${ico("routes")} Routes</button>
         <button class="btn" data-nav="garage">${ico("garage")} Garage</button>
@@ -992,9 +1089,40 @@ function routesScreen() {
     ${nativeApp ? "" : '<p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills is free and the rest is a one-time unlock.</p>'}</section>`;
 }
 
+function winterScreen() {
+  const event=currentEvent();
+  if (!event) { state.screen="home"; return homeScreen(); }
+  const progress=seasonProgress(save,event.key);
+  const tile=(d, label, detail, rating) => {
+    const open=canStartWinter(event,progress,d,sleighOwned());
+    return `<button class="route winter-tile" data-winter="${d.id}" ${open ? "" : "disabled"} aria-label="${esc(label)}${open ? "" : ", locked"}"><b>${esc(label)}</b><small>${esc(rating ? "★".repeat(rating) : detail)}</small></button>`;
+  };
+  const routes=SH.WINTER_ROUTES.map((d)=>tile(d,d.name,d.index===7 && event.openDoors<24?"Opens 24 December":d.dropoffs+" porches",progress.routes[d.id])).join("");
+  const doors=SH.WINTER_DOORS.map((d)=>tile(d,d.door===24?"24 · Christmas Eve":String(d.door),
+    d.door>event.openDoors?"Locked":d.door===3?"Jingle Sleigh":"Open",progress.doors[d.door])).join("");
+  const orders=["Santa","Tinsel"].map((customer)=>{
+    const image=artUrl("customer_"+customer.toLowerCase());
+    const cards=SH.WINTER_ORDERS.filter((d)=>d.customer===customer).map((d)=>tile(d,d.name,
+      d.truck&&!sleighOwned()?"Requires the Jingle Sleigh":
+      seasonStars(progress)<d.requiredStars?d.requiredStars+" North Pole stars":d.dropoffs+" porches",progress.orders[d.id])).join("");
+    return `<div class="customer"><h4>${image?`<img class="ico" src="${image}" alt="">`:""}${customer}</h4><div class="orders">${cards}</div></div>`;
+  }).join("");
+  const goals=winterGoals(progress).map(([id,name,desc,done])=>`<div class="goal${done?" done":""}"><span class="ic">${ico("goal_"+id,"❄")}</span><b>${esc(name)}${done?" ✓":""}</b><small>${esc(desc)}</small></div>`).join("");
+  ui.innerHTML=`<section class="panel winter-panel">${panelHead("Winter Haul")}
+    <div class="winter-heading"><h3>North Pole</h3><p>Stop on each doormat to deliver a load, then return to the depot.</p><small>${seasonStars(progress)} of 24 North Pole stars</small></div>
+    <div class="routes">${routes}</div>
+    <h3 class="small">Advent calendar</h3><p class="sub">Missed days stay open through 6 January.</p>
+    <div class="winter-doors">${doors}</div>
+    <h3 class="small">Workshop Orders</h3>${orders}
+    <h3 class="small">Winter goals</h3>${goals}</section>`;
+}
+
 function garageScreen() {
-  const trucks = SH.TRUCKS.map((t) => {
+  const event=currentEvent();
+  const fleet = event || sleighOwned() ? SH.TRUCKS.concat(SH.EVENT_TRUCKS) : SH.TRUCKS;
+  const trucks = fleet.map((t) => {
     const owned = save.trucks.includes(t.id), selected = save.truck === t.id;
+    if (t.id==="sleigh" && (!owned || !event)) return `<button class="truck" disabled><b>Jingle Sleigh</b><small>${owned?"Back next winter":"Earn it at Advent door 3"}</small></button>`;
     if (truckPaid(t.id) && !owned) return `<button class="truck" data-unlock="truck">${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small><span class="price">${ico("lock", "🔒")} Full game</span></button>`;
     return `<button class="truck" data-truck="${t.id}" aria-pressed="${selected}"${!owned && save.coins < t.cost ? " disabled" : ""}>
       ${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small>${owned ? `<small class="mastery">Mastery ${masteryLevel(t.id)}${masteryLevel(t.id) < 10 ? " · " + (MASTERY_KM[masteryLevel(t.id)] - (save.mastery[t.id] || 0) / 1000).toFixed(1) + " km to " + (masteryLevel(t.id) + 1) : ""}</small>` : ""}<span class="price">${selected ? "Driving" : owned ? "Owned" : ico("coin", "🪙") + " " + t.cost}</span></button>`;
@@ -1006,15 +1134,15 @@ function garageScreen() {
   }).join("");
   // Drivers and roof toppers appear once their models are delivered.
   const pick = (kind, list, folder, suffix) => {
-    const have = list.filter(([id]) => id === "" || hasModel(folder + id + suffix));
+    const have = list.filter(([id]) => id === "" || save.winterRewards[id] || hasModel(folder + id + suffix));
     if (have.length < 2) return "";
     return `<div class="set"><b>${ico(kind)} ${kind === "driver" ? "Driver" : "Roof topper"}</b><div class="opts">${have.map(([id, name]) => `<button class="tab" data-look="${kind}" data-val="${id}" aria-pressed="${save[kind] === id}">${esc(name)}</button>`).join("")}</div></div>`;
   };
   const paintRow = `<div class="set paintset"><b>${ico("paint", "🎨")} Paint for the ${esc(SH.truckSpec(save.truck).name)}</b><div class="swatches">
     <button class="swatch" data-paint="" aria-pressed="${!save.paint[save.truck]}" title="Factory"><i style="background:#888"></i>Factory</button>
-    ${PAINTS.map((p) => { const own = paintOwned(p); return `<button class="swatch" data-paint="${p.id}" aria-pressed="${save.paint[save.truck] === p.id}"${own ? "" : " disabled"} title="${esc(own ? p.name : paintHow(p))}"><i style="background:linear-gradient(135deg, ${p.colors[0]} 60%, ${p.colors[1]} 60%)"></i>${own ? esc(p.name) : ico("lock", "🔒")}</button>`; }).join("")}
+    ${PAINTS.concat(WINTER_PAINTS.filter((p)=>save.winterRewards[p.id])).map((p) => { const own = save.winterRewards[p.id] || paintOwned(p); return `<button class="swatch" data-paint="${p.id}" aria-pressed="${save.paint[save.truck] === p.id}"${own ? "" : " disabled"} title="${esc(own ? p.name : paintHow(p))}"><i style="background:linear-gradient(135deg, ${p.colors[0]} 60%, ${p.colors[1]} 60%)"></i>${own ? esc(p.name) : ico("lock", "🔒")}</button>`; }).join("")}
     </div><small class="sub">${PAINTS.filter(paintOwned).length} of ${PAINTS.length} paints earned. Locked ones say how on hover.</small></div>`;
-  const style = paintRow + pick("driver", DRIVERS, "driver/", "_driver") + pick("topper", TOPPERS, "toppers/topper_", "");
+  const style = paintRow + pick("driver", DRIVERS, "driver/", "_driver") + pick("topper", TOPPERS.concat(WINTER_TOPPERS.filter(([id])=>save.winterRewards[id])), "toppers/topper_", "");
   const stage = depotStage(), nextParts = DEPOT_PARTS[stage];
   const depot = `<h3 class="small">Depot</h3><p class="sub">Stage ${stage} of 5: ${esc(DEPOT_STAGES[stage - 1])}. ${nextParts != null ? (nextParts - save.parts) + " more depot part" + (nextParts - save.parts === 1 ? "" : "s") + " from Special Orders for the next stage." : "Fully built."}</p>
     <div class="swatches extras">${EXTRAS.map(([id, name, cost]) => { const own = save.extras.includes(id); return `<button class="swatch" data-extra="${id}"${own || save.coins < cost ? " disabled" : ""} aria-pressed="${own}">${esc(name)}<small>${own ? "Built ✓" : ico("coin", "🪙") + " " + cost}</small></button>`; }).join("")}</div>`;
@@ -1067,6 +1195,7 @@ ui.addEventListener("click", (e) => {
     state.screen = nav;
     return renderScreen();
   }
+  if ((b = t("[data-winter]")) && !b.disabled) return startDelivery(SH.winterDelivery(b.dataset.winter));
   if ((b = t("[data-go]")) && !b.disabled) return startDelivery(SH.findDelivery(b.dataset.go));
   if ((b = t("[data-extra]")) && !b.disabled) {
     const e = EXTRAS.find((x) => x[0] === b.dataset.extra);
@@ -1080,6 +1209,7 @@ ui.addEventListener("click", (e) => {
   if ((b = t("[data-region]")) && !b.disabled) { state.regionTab = Number(b.dataset.region); return renderScreen(); }
   if ((b = t("[data-truck]")) && !b.disabled) {
     const id = b.dataset.truck, spec = SH.truckSpec(id);
+    if (id==="sleigh" && (!sleighOwned() || !currentEvent())) return;
     if (!save.trucks.includes(id)) {
       if (save.coins < spec.cost) return;
       save.coins -= spec.cost; save.trucks.push(id);
@@ -1100,9 +1230,9 @@ ui.addEventListener("click", (e) => {
   }
   if ((b = t("[data-set]"))) {
     const group = b.dataset.set, v = b.dataset.val;
-    if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || "music_menu"); } else { setMusic(""); audio.wantMusic = keep; } }
+    if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || menuMusic()); } else { setMusic(""); audio.wantMusic = keep; } }
     if (group === "haptics") { save.haptics = v === "1"; if (save.haptics) buzz("light"); }
-    if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || "music_menu"); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
+    if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || menuMusic()); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
     if (group === "shake") save.shake = v === "1";
     if (group === "ghost") save.ghostOn = v === "1";
     if (group === "quality") { save.quality = v; world && world.setQuality(v); }
@@ -1119,6 +1249,7 @@ ui.addEventListener("click", (e) => {
 if (!world) {
   ui.innerHTML = '<div class="veil on"><div class="sheet"><h2>3D is not available</h2><p>Snack Haul needs WebGL, which this browser has turned off.</p></div></div>';
 } else {
+  if (params.get("winter")==="1" && currentEvent()) state.screen="winter";
   renderScreen();
   kick();
   // Authored models and sounds arrive in the background. The menu truck is
