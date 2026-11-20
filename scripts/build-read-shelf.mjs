@@ -26,7 +26,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { isVariant, sourceTag } from "./lib/read-srcset.mjs";
 import { READ_COLLECTIONS } from "./lib/read-collections.mjs";
-import { READ_EVENTS, eventForBook } from "./lib/read-events.mjs";
+import { READ_EVENTS, eventForBook, eventIcon, eventIconPath, releasedEventBooks } from "./lib/read-events.mjs";
 import {printable,printableLabel} from './lib/read-printables.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -42,6 +42,8 @@ const GROUPS = [
   { id: "trail", title: "Reading Trail · next steps", intro: "Eight read-together stories for focused phonics practice, rather than controlled independent decodables: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams, word endings, ar/or/er/ir/ur, and y and -le endings." },
   { id: "places", title: "Real places · Copán, Honduras", intro: "Two books about one real place: the Maya city of Copán in Honduras and its scarlet macaws. A read-together story for younger readers and a class report for ages 9 to 12, with the facts checked against named sources." },
   { id: "christmas", title: "Christmas picture books", intro: "Six woodland Christmas stories, in the order they happen. Share one aloud or follow a mystery on your own; they stay on the shelf all year." },
+  { id: "thanksgiving", title: "Thanksgiving stories", intro: "Share a woodland feast, count the corn cobs and see what happens when all six friends bring potatoes." },
+  { id: "new-year", title: "New Year stories", intro: "Sort a year of memories and count down to midnight with the woodland friends." },
   { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
   { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to factors and primes. Tap an answer to check it, or print the book and work on paper." },
   { id: "animals", title: "Animal fact books · real science, original art", intro: "Read-together animal books from SnackPack Zoo World, every fact checked against zoo and science sources, every picture made for the book." },
@@ -125,6 +127,7 @@ const SHELF = [
   // Read-aloud picture books (group "more"): SnackPack ABC featured stories via
   // scripts/import-abc-story.py. Ages follow the app's preschool-to-Year-1 audience.
   { slug: "ted-e-bear-and-the-pocketful-of-sounds", group: "more", age: [4, 6], added: "2026-10-17", title: "Ted‑E‑Bear and the Pocketful of Sounds", eyebrow: "Read-aloud · first sounds · 8 pages", blurb: "Ted must read the picnic welcome, and every word looks enormous. Corgi helps him listen for the first sound.", cover: "pages/cover", ext: "jpg", alt: "Ted-E-Bear and Corgi-on-the-Cob on a sunny path with the welcome card.", w: 768, h: 1152 },
+  ...releasedEventBooks(),
 ];
 
 const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
@@ -145,7 +148,7 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { christmas: "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KIND = { christmas: "stories", thanksgiving: "stories", "new-year": "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
 const KINDS = [["alphabet", "ABCs"], ["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 if (SHELF.some(book => book.age[1] >= 13)) AGES.push(["11-12", "11–12"], ["13-14", "13–14"]);
@@ -260,7 +263,7 @@ function homeBlock() {
           <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
           <p class="section-copy">Explore alphabet pictures, staged phonics with adult preparation, Reading Trail practice, shared stories, number adventures and animal facts from SnackPack apps, alongside original web picture books. Read them in your browser or print the PDF. No account, no ads, no download.</p>
         </div>
-        <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
+        <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/events/">Browse holidays and events</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
       </div>
       <div class="storybook-grid">
 ${cards}
@@ -352,7 +355,7 @@ SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
   let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
   const ev = eventForBook(b.slug);
-  const chip = ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
+  const chip = ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${eventIcon(ev)}${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
   html = splice(html, "read-share-top:generated", chip + shareTopBlock() + printInfo(b) + `\n<div class="read-offline" data-offline-book="${b.slug}" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save this book for offline</button><button class="text-link" type="button" data-read-remove hidden>Remove saved book</button><button class="text-link" type="button" data-read-cancel hidden>Cancel saving</button><p class="read-offline-status" data-read-offline-status role="status"></p></div><script defer src="/read/offline.js"></script>`, rel);
   html = bookSchema(html, b, rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
@@ -380,6 +383,7 @@ function offlineManifest() {
   }
   urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js", "/read/events.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
+  urls.push(...READ_EVENTS.map(eventIconPath));
   for (const f of fs.readdirSync(path.join(ROOT, "assets/fonts")).filter((f) => f.endsWith(".woff2")).sort()) urls.push(`/assets/fonts/${f}`);
   // The size shown to readers counts only the book art (~95% of the download).
   // Counting HTML/CSS too would make this file stale, and CI red, on every

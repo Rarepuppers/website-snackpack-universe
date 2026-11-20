@@ -20,13 +20,22 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { READ_EVENTS, eventDates, eventBooks, publishedEvents } from "./lib/read-events.mjs";
+import { READ_EVENTS, eventDates, eventBooks, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
+
+import { renderReadEventActivity } from "./lib/read-event-activities.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
 const CHECK = process.argv.includes("--check");
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf8").replace(/\r\n/g, "\n");
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+const bannerPaths = (e) => {
+  const base = `/read/events/${e.id}/banner`;
+  const primary = `${base}.webp`;
+  return fs.existsSync(path.join(ROOT, primary)) ? {
+    primary, medium: `${base}-1200w.webp`, small: `${base}-720w.webp`,
+  } : null;
+};
 const DAY_LABEL = { christmas: "Christmas Day", "new-year": "New Year’s Day", "lunar-new-year": "Lunar New Year", easter: "Easter Sunday", thanksgiving: "Thanksgiving" };
 
 // ---------------------------------------------------------------- the shelf
@@ -44,6 +53,11 @@ const seen = new Map();
 const todayIso = new Date().toISOString().slice(0, 10);
 const horizon = new Date(Date.now() + 730 * 86400000).toISOString().slice(0, 10);
 for (const e of READ_EVENTS) {
+  const required = [eventIconPath(e)];
+  required.push(...Object.values(bannerPaths(e) ?? {}));
+  if (e.activity) required.push("/read/activities/events.css", `/read/activities/${e.activity}.js`);
+  if (e.timeline.length) for (const printable of e.printables ?? []) required.push(printable.href);
+  for (const asset of required) if (!fs.existsSync(path.join(ROOT, asset))) problems.push(`${e.id}: missing ${asset}`);
   for (const slug of [...eventBooks(e), ...(e.alsoGood ?? []), ...(e.tonight ?? [])]) if (!CARDS.has(slug)) problems.push(`${e.id}: ${slug} is not on the shelf`);
   for (const slug of eventBooks(e)) {
     if (seen.has(slug)) problems.push(`${slug} belongs to both ${seen.get(slug)} and ${e.id}; a book has one event`);
@@ -97,7 +111,7 @@ function hubBand() {
       const c = CARDS.get(t.slug);
       return `<li><a class="read-season-book" href="./${c.slug}/">${relPicture(c, "./", "(max-width: 760px) 34vw, 150px")}<span class="read-season-when">${esc(t.when)}</span><strong>${c.title}</strong><span class="read-season-age">${ages(c)} · ${pagesLabel(c)}</span></a></li>`;
     }).join("");
-    return `<div class="read-season-event" ${dataAttrs(e)} hidden><div class="read-season-head"><span class="eyebrow">In season · <span data-event-countdown>${esc(e.title)}</span></span><h2>${esc(e.heading)}</h2><p>${esc(e.tagline)}</p><a class="text-link" href="./events/${e.id}/">See all ${e.timeline.length} ${esc(e.title)} stories, in reading order →</a></div><ol class="read-season-books">${books}</ol></div>`;
+    return `<div class="read-season-event" ${dataAttrs(e)} hidden><div class="read-season-head"><span class="eyebrow">${eventIcon(e)}In season · <span data-event-countdown>${esc(e.title)}</span></span><h2>${esc(e.heading)}</h2><p>${esc(e.tagline)}</p><a class="text-link" href="./events/${e.id}/">See all ${e.timeline.length} ${esc(e.title)} stories, in reading order →</a></div><ol class="read-season-books">${books}</ol></div>`;
   }).join("\n");
   return `<section class="read-season" data-read-season aria-label="Stories for this time of year" hidden><div class="shell">\n${events}\n<p class="read-season-all"><a class="text-link" href="./events/">Holiday and event stories all year →</a></p></div></section>\n<script src="./events.js"></script>`;
 }
@@ -108,11 +122,11 @@ const template = read("read/ted-e-bears-blanket-fort/index.html");
 const sharedHead = template.slice(template.indexOf("<!-- pwa:generated -->"), template.indexOf("</head>"));
 const header = template.slice(template.indexOf('<header class="topbar">'), template.indexOf("<main>"));
 const BEACON = `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"0e57cfb3eb86422ca40e5fac02b1cf94","spa":false}'></script>`;
-function page({ title, desc, url, image, body, jsonld }) {
+function page({ title, desc, url, image, body, jsonld, activity }) {
   return `<!DOCTYPE html>
-<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | SnackPack Reads</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${SITE}${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}${image}"><meta property="og:url" content="${SITE}${url}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}${image}"><link rel="icon" href="/assets/favicon-32.png"><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="/site.css"><script type="application/ld+json">${JSON.stringify(jsonld)}</script><!-- breadcrumbs:generated -->
+<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | SnackPack Reads</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${SITE}${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}${image}"><meta property="og:url" content="${SITE}${url}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}${image}"><link rel="icon" href="/assets/favicon-32.png"><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="/site.css">${activity ? '<link rel="stylesheet" href="/read/activities/events.css">' : ""}<script type="application/ld+json">${JSON.stringify(jsonld)}</script><!-- breadcrumbs:generated -->
 <!-- /breadcrumbs:generated -->
-${sharedHead}</head><body>${header}<main>${body}</main><footer class="foot"><div class="shell"><p>Free to read and print. No account, sign-up or ads.</p><a href="/privacy/">Privacy</a></div></footer>${BEACON}</body></html>
+${sharedHead}</head><body>${header}<main>${body}</main><footer class="foot"><div class="shell"><p>Free to read and print. No account, sign-up or ads.</p><a href="/privacy/">Privacy</a></div></footer>${activity ? "" : BEACON}</body></html>
 `;
 }
 
@@ -133,12 +147,22 @@ function eventPage(e) {
   const desc = `${e.timeline.length} free illustrated ${e.title} stories for children, in the order they happen: read online, read aloud or print. ${e.tagline}`;
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: e.heading, description: desc, url: `${SITE}/read/events/${e.id}/`, inLanguage: "en-GB", isAccessibleForFree: true,
     mainEntity: { "@type": "ItemList", itemListOrder: "https://schema.org/ItemListOrderAscending", numberOfItems: e.timeline.length, itemListElement: e.timeline.map((t, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}/read/${t.slug}/`, name: CARDS.get(t.slug).title })) } };
-  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p><span class="eyebrow" data-event-countdown>Free ${esc(e.title)} picture books</span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>
+  const printables = (e.printables ?? []).map(({ href, label }) => {
+    const kb = Math.ceil(fs.statSync(path.join(ROOT, href)).size / 1024);
+    const size = kb < 1024 ? `${kb} KB` : `${(kb / 1024).toFixed(1)} MB`;
+    return `<li><a href="${esc(href)}" download>${esc(label)}</a> <span>· ${size}</span></li>`;
+  }).join("");
+  const sources = bannerPaths(e);
+  const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
+  const activity = e.activity ? renderReadEventActivity(e.activity) : "";
+  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
 ${books}
 </ol>${also || extras ? `<h2 class="read-shelf-heading read-event-sub">Also good this season</h2><ul class="read-event-also">${also}${extras}</ul>` : ""}<p class="read-event-note">Every book is free to read online, read aloud with your device’s voice, save for offline or print as a PDF. They stay on the shelf all year.</p><p><a class="text-link" href="/read/events/">All holiday and event stories</a> · <a class="text-link" href="/read/">The whole bookshelf</a></p></div></section>
+${activity}
+${printables ? `<section><div class="shell"><h2 class="read-shelf-heading">Printables</h2><ul class="read-event-also">${printables}</ul></div></section>` : ""}
 <script src="../../events.js"></script>`;
-  return page({ title: `${e.heading}: free illustrated picture books`, desc, url: `/read/events/${e.id}/`, image: socialImage(e), body, jsonld });
+  return page({ title: `${e.heading}: free illustrated picture books`, desc, url: `/read/events/${e.id}/`, image: socialImage(e), body, jsonld, activity: e.activity });
 }
 
 function socialImage(e) {
@@ -149,7 +173,7 @@ function indexPage() {
   const cards = READ_EVENTS.map((e) => {
     const has = e.timeline.length;
     const covers = has ? `<div class="read-event-stack">${e.timeline.slice(0, 3).map((t) => relPicture(CARDS.get(t.slug), "../", "120px")).join("")}</div>` : "";
-    const inner = `${covers}<span class="eyebrow" data-event-countdown>Every year</span><h2>${esc(e.title)}</h2><p>${esc(e.tagline)}</p><p class="read-event-count">${has ? `${has} stories` : "Stories coming soon"}</p>`;
+    const inner = `${covers}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Every year</span></span><h2>${esc(e.title)}</h2><p>${esc(e.tagline)}</p><p class="read-event-count">${has ? `${has} stories` : "Stories coming soon"}</p>`;
     return has ? `<a class="read-event-card" href="./${e.id}/" ${dataAttrs(e)}>${inner}</a>` : `<div class="read-event-card is-coming" ${dataAttrs(e)}>${inner}</div>`;
   }).join("\n");
   const desc = "Free illustrated stories for Christmas, New Year, Lunar New Year, Easter and Thanksgiving. The current season comes first; every book stays readable all year.";
@@ -189,7 +213,8 @@ write("read/index.html", hubNext);
 write("read/events/index.html", indexPage());
 for (const e of publishedEvents()) write(`read/events/${e.id}/index.html`, eventPage(e));
 for (const dir of fs.existsSync(path.join(ROOT, "read/events")) ? fs.readdirSync(path.join(ROOT, "read/events"), { withFileTypes: true }) : []) {
-  if (dir.isDirectory() && !publishedEvents().some((e) => e.id === dir.name)) problems.push(`read/events/${dir.name}/ has no published event — remove it`);
+  if (dir.isDirectory() && fs.existsSync(path.join(ROOT, "read/events", dir.name, "index.html")) &&
+      !publishedEvents().some((e) => e.id === dir.name)) problems.push(`read/events/${dir.name}/ has no published event — remove the old index page`);
 }
 if (problems.length) { console.error(problems.join("\n")); process.exit(1); }
 

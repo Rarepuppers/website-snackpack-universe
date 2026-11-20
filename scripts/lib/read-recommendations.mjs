@@ -1,3 +1,5 @@
+import { READ_EVENTS } from './read-events.mjs';
+
 // Choices use the published shelf order and explicit groups; no reading history.
 export function nextChoices(shelf, slug, collections = []) {
   const index = shelf.findIndex(b => b.slug === slug), book = shelf[index];
@@ -7,17 +9,19 @@ export function nextChoices(shelf, slug, collections = []) {
   const ordered = shelf.slice(index + 1).concat(shelf.slice(0, index));
   const phonics = /^stage-/.test(book.group) || book.group === 'trail';
   const appropriate = b => !book.age || !b.age || (b.age[0] <= book.age[1] && b.age[1] >= book.age[0]);
+  const seriesOrder = book.seasonalRelease ? shelf.slice(index + 1) : ordered;
   const next = phonics ? shelf.slice(index + 1).find(b => /^stage-/.test(b.group) || b.group === 'trail') :
     ordered.find(b => peers?.books.includes(b.slug)) ||
-    ordered.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
+    seriesOrder.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
   const choices = [];
+  const event = READ_EVENTS.find(e => e.id === book.group);
   if (next) {
     const label = phonics ? (next.group === 'trail' ? 'Next Reading Trail practice · read together' : next.group === book.group ? 'More practice at this stage' : 'Next phonics stage · when ready') :
-      book.group === 'christmas' ? `Next Christmas story · ${next.readingLevel?.toLowerCase() ?? 'read together'}` :
+      event ? `Next ${event.title} story · ${next.readingLevel?.toLowerCase() ?? 'read together'}` :
       next.readingLevel ? `Related book · ${next.readingLevel.toLowerCase()}` : 'Related read-together book';
     choices.push({book:next,label}); excluded.add(next.slug);
   }
-  const eligible = ordered.filter(b => !excluded.has(b.slug) && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
+  const eligible = ordered.filter(b => !excluded.has(b.slug) && !b.seasonalRelease && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
   // Stable variety uses the source shelf position, without random or personal
   // history. A single first-match fallback sent most stories to the same book.
   const wider = eligible.length ? eligible[index % eligible.length] : ordered.find(b => !excluded.has(b.slug) && appropriate(b));

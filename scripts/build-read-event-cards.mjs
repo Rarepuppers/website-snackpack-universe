@@ -19,9 +19,13 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 // fonts.css uses site-absolute URLs; point them at the files for a file page.
 const fontFaces = fs.readFileSync(path.join(ROOT, "assets/fonts/fonts.css"), "utf8").replace(/url\(\/assets\//g, `url(${pathToFileURL(ROOT).href}/assets/`);
 
+const only = new Set(process.argv.filter(arg => arg.startsWith("--event=")).map(arg => arg.slice(8)));
+const events = publishedEvents().filter(event => !only.size || only.has(event.id));
+if (only.size && events.length !== only.size) throw new Error("Every requested event must have published books.");
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
-for (const e of publishedEvents()) {
+for (const e of events) {
   const covers = e.timeline.map((t) => {
     const base = path.join(ROOT, "read", t.slug, "pages", "cover");
     const file = [`${base}-480w.webp`, `${base}.webp`, `${base}.jpg`].find((f) => fs.existsSync(f));

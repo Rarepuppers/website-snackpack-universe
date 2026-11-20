@@ -178,7 +178,9 @@ for (const file of htmlFiles) {
   // one is correct, not a defect -- same reasoning as the canonical check below.
   if (!isNoindex && !/name="description"/.test(html)) warnings.push(`${name}: no meta description`);
   if (!isNoindex && !/rel="canonical"/.test(html)) warnings.push(`${name}: no canonical`);
-  if (!/cloudflareinsights/.test(html)) warnings.push(`${name}: no analytics beacon`);
+  const privateReadActivity = /^read[\/]events[\/](thanksgiving|new-year)[\/]index\.html$/.test(name);
+  if (privateReadActivity && /cloudflareinsights/.test(html)) errors.push(`${name}: private activity must omit analytics`);
+  if (!privateReadActivity && !/cloudflareinsights/.test(html)) warnings.push(`${name}: no analytics beacon`);
   // Reader page turns and shelf filters change the URL. With SPA tracking on,
   // Cloudflare logs each change as a page view and /read/ numbers mean nothing.
   if (/^read[\/]/.test(name) && /data-cf-beacon/.test(html) && !/"spa":\s*false/.test(html)) errors.push(`${name}: /read/ beacon must set "spa": false`);

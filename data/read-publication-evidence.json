@@ -1062,6 +1062,247 @@
       "pdf_sha256": "a7be04fe1c0fe336c4b4a6b5557bac58ab58942b413251ba845670e6dd4be2af"
     },
     {
+      "slug": "corgi-on-the-cob-and-the-harvest-table",
+      "source_id": "web-thanksgiving-corgi-on-the-cob-and-the-harvest-table",
+      "source_art": {
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/cover.png": "32f0c6e93c02c8293ffae986ad92c44c672ee24f3c20da52f76dff15954d0516",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p01.png": "112d67227144dfab45c42754384366e6cd0369e654e67b58103f9720a43be490",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p02.png": "361e2ae23bf83826e31eea81e034305230fac8f04c6e446613e39afe283fc35b",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p03.png": "5b380e9cbcccbffe4323dd9b1cb9137598221ce77f79bc8ac5650f759f3d1bb8",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p04.png": "6112a57777d912364b7f804173b07d2975e804a26d1cd1297b6595f449334b57",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p05.png": "3df2802ee5b0b0ad7322cf92b3813d05f68f2ce3695a4331e0c036dc8345ec42",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p06.png": "c1668cde281f58005bef2a8f4fbb08278c71ebabc0483466e7dff4ff14968b67",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p07.png": "8fe7b7ba5285fbc751aebdf0a716889c841ecc381d04a1b5e9008c8daa1f4695",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p08.png": "b892f7498de45e743ace6eb894929b9cf5b5c07a17bafe28a695866ab2b24615",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p09.png": "f99b1ec0807eb41404bca05056aab40ae6c29880b65bc620fb4cbac63a7383d8",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p10.png": "f55b69e0879d5d2093a9bdae83de0db70099c291656d9b24d4c354274cabbd8e",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p11.png": "7915dc59272b35913c39208ff8d095b03c09a18817e7964dca16d93e2cdbd29c",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p12.png": "2b734711a3bddc399320c68e09011e48860491a59eb782f7b3928f4b202e0932",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p13.png": "eeb271215b9b907132163c54565ca70efd6c90c6bfc0ec01af4934f6abbc013d",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p14.png": "56a880dcca0d41bc1af9f0f98b38609a10584546c020f511263821d7935c453d",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p15.png": "705a1c3f8a1c5de5e2684f4908dbd9bf37be5a7131dd68fa676bfdc9820d4a18",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p16.png": "10b94c97f01e25cba9a887c0f0e6187bfcd32551570b89dd3aa3294b2befefed",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p17.png": "8758814cc9ab58cccca4091c6d3ef7ec19657aa3c16577c504721ee27ae3ff6f",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p18.png": "3aa22b11592bb3785f5439934526982eacefea66c6c95f4f427854c8d388ad6a",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p19.png": "049305360a7f4350a2b6ab52f2e59ae290a5126f62a186a7aeb6906ab75f6067",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p20.png": "68ffce66728c85b2a054ae3ad85503ebed4cdd0aeec9dcfdd3c8314a5b7cf9f4",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p21.png": "2aacd5f27da60572533b41864734e2b2a1b3f204584a2b48878e286cba3cbb0b",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p22.png": "c767814ab2a0469fb81ca71341b54938ec65cf5f174f5af9804110638cf067ec",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p23.png": "15ae59e9906a8898f1f24c4b6fc7f305281550a8c0071c3ea579d0086307fffb",
+        "../docs/reads-events-bookshelf/thanksgiving/corgi-on-the-cob-and-the-harvest-table/p24.png": "a15f2baf0d56eab1f38cc09fce089d381e344c43136445091530b3c7bc5e9ef3"
+      },
+      "text": [
+        "On Thanksgiving morning, there was frost on Corgi-on-the-Cob's corn patch. The leaves had nearly all come down, and the stalks rustled in the cold. Nutmeg's invitation was pinned to his door. Come to the harvest table in my barn. Bring one thing. \"I'll bring the corn,\" said Corgi. \"Obviously.\"",
+        "He picked the fattest cobs he could find and laid them in his basket. \"One cob, two cobs, three cobs, four. Five cobs, six cobs.\" He wagged. \"Six cobs for six friends.\"",
+        "Corgi took the basket handle in his mouth and set off. The basket was heavy. It swung left and right with every step. The path went down to the stream. Five flat stones crossed it, one after another.",
+        "On the middle stone, the basket swung too far. Two cobs tipped out. Plop. Plop. They bobbed away down the stream. \"Four cobs for six friends!\" said Corgi. \"That's not right at all.\"",
+        "Something round and green paddled out from under the bank. It was Shelly-Pop. She nudged one cob back with her nose, then the other. \"Corn floats,\" she said. \"Lucky for you.\"",
+        "\"Six cobs for six friends,\" said Corgi, putting them back. \"Thank you, Shelly-Pop!\" \"I'm going to the barn too,\" said Shelly-Pop. \"I'll walk with you. Slowly.\"",
+        "After the stream came the hill. It was steep, and the fallen leaves made it slippery. Corgi has very short legs. The basket bumped on every step. Shelly-Pop was slower still.",
+        "Clip, clop. Pita-Pan came trotting up behind them. \"Goats are good at hills,\" he said. He took the basket handle in his teeth and climbed. Corgi pushed the basket from below to keep it level.",
+        "At the top of the hill, Corgi counted again. \"One, two, three, four, five.\" He counted again, slower. \"Five.\" One cob was missing.",
+        "They looked back down the hill. At the bottom, a huge pile of leaves was jumping all by itself. Out popped Hop-Tart, with a cob in his paws. \"Is this anybody's?\" he called. \"It was in my jumping pile.\"",
+        "\"Six cobs for six friends!\" said Corgi. \"Thank you, Hop-Tart.\" Now there were four of them walking along the lane to the barn: Corgi, Shelly-Pop, Pita-Pan and Hop-Tart. Corgi carried the basket the whole way, and he didn't drop a single cob.",
+        "Nutmeg's red barn was full of warm light. A long table stood in the middle, made of planks laid across hay bales. There were gourds down the middle and a jug of autumn leaves. \"The corn's here!\" called Nutmeg.",
+        "Ted-E-Bear had brought soup. Panda-Cake had brought rolls, still warm. Nutmeg had made an apple pie with a leaf cut in the top. Panda-Cake cooked the corn in a big pot on the barn stove, then rolled each cob in butter.",
+        "Everyone sat down. Before anyone ate, Nutmeg stood up. \"This is a thank-you table,\" she said. \"Before we eat, everybody says one friend they're thankful for.\"",
+        "\"Panda-Cake,\" said Ted. \"For the blanket fort.\" \"Nutmeg,\" said Panda-Cake. \"For the barn.\" \"Ted,\" said Nutmeg. \"For carrying the table with me, plank by plank.\"",
+        "Then it was Corgi's turn. He thought very hard. \"Shelly-Pop,\" he said. \"And Pita-Pan. And Hop-Tart.\" He looked worried. \"Is three allowed?\" \"Thank-yous don't run out,\" said Nutmeg.",
+        "Panda-Cake set the steaming corn on the table, and Corgi handed it round. \"One for Nutmeg. One for Ted. One for Panda-Cake. One for Shelly-Pop. One for Pita-Pan. One for Hop-Tart.\" Six cobs for six friends.",
+        "Then Corgi looked down at his own plate. It was empty. He counted the chairs. There were seven. He had counted six friends, and he had forgotten to count himself.",
+        "\"That's all right,\" said Corgi. He made his ears stand up straight. \"I had lots of corn this summer.\" Nobody said anything for a moment.",
+        "Then Hop-Tart snapped a piece off the end of his cob. Snap. He put it on Corgi's plate. Shelly-Pop did the same. Snap.",
+        "Then Pita-Pan. Then Ted. Then Panda-Cake. Then Nutmeg. Snap, snap, snap, snap.",
+        "Corgi looked at his plate. \"Six pieces,\" he said. \"That's more corn than anybody!\" \"Six pieces from six friends,\" said Nutmeg.",
+        "They ate the soup and the rolls and the buttery corn and nearly all the pie. Outside, the frost came back. Inside, the barn stayed warm right up to the rafters.",
+        "When the stars came out, Corgi walked home with Shelly-Pop, Pita-Pan and Hop-Tart. He carried the empty basket. \"One friend, two friends, three friends,\" he counted. \"And you,\" said Hop-Tart. \"And me,\" said Corgi. \"I'm counting me this time.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [
+        {
+          "page": 2,
+          "prompt": "How many cobs are in Corgi's basket?",
+          "answer": "6",
+          "choices": [
+            "5",
+            "6",
+            "7"
+          ],
+          "explanation": "One for each friend at the table."
+        },
+        {
+          "page": 4,
+          "prompt": "Six cobs, and two float away. How many are left in the basket?",
+          "answer": "4",
+          "choices": [
+            "3",
+            "4",
+            "5"
+          ],
+          "explanation": "Six take away two leaves four."
+        },
+        {
+          "page": 9,
+          "prompt": "Corgi had six cobs. Now he has five. How many are missing?",
+          "answer": "1",
+          "choices": [
+            "1",
+            "2",
+            "3"
+          ],
+          "explanation": "Five and one more makes six."
+        },
+        {
+          "page": 18,
+          "prompt": "Seven friends are at the table, and there are six cobs. How many more cobs would they need for everyone to have one?",
+          "answer": "1",
+          "choices": [
+            "1",
+            "2",
+            "6"
+          ],
+          "explanation": "Six cobs and one more makes seven, one for each friend."
+        },
+        {
+          "page": 21,
+          "prompt": "Every friend gave Corgi one piece. How many pieces are on Corgi's plate?",
+          "answer": "6",
+          "choices": [
+            "4",
+            "5",
+            "6"
+          ],
+          "explanation": "Six friends gave one piece each."
+        }
+      ],
+      "art": {
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p01.jpg": "4f9e87adc1ae931e3b633c0e725a6fad87cfc8f44e231da619c46748645953fd",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p02.jpg": "c8c0f7c1d4b7c454d9ad4cae798e67eeeaa4c962ec8cbcfded3fd22c64dadcb4",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p03.jpg": "2f72d675f122126b611774e3ac2dab99cb9f16c492d923d412c0bda25526603f",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p04.jpg": "4e9845dae7491b2ed8cf1d8df57ada4013554ce731d240a4696c86f415eb9e05",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p05.jpg": "5437b39b53a71f7b4a657209b3d2751974398a714bad7e2432d5429a063c6f8d",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p06.jpg": "20459f1602bfb87e35401e6480d6cc125abfef4095223ab34f40701b396a7f47",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p07.jpg": "9baa007f63663f421505910448bcc517f7a104bfdbc2f676603d27a543d6d375",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p08.jpg": "dce2274a9da8434ec9bee4317fd2978c9a06600e8b84d9a0135bbd3f3ad972bd",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p09.jpg": "0a8e31e8fe3a766b9bef89d31900c8aaaa899ce3d04579706db77db9d9717105",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p10.jpg": "33622eeeda377d8f8adbb1ad3f410dbd05a93b89643a41adfb781c1a2ce7b4f4",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p11.jpg": "fb989f4e6fdd37aff636da3be000ae55eb912efff3806c78bfd360433cb14158",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p12.jpg": "b023c3a032a4f9ac4f26624c66f99e356141a7b570855d0808cbb485875a1480",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p13.jpg": "de033fcc2c1f6df2f6c590aeea442ce225d7f7abae5383e5ba3ceeeac778244f",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p14.jpg": "e9f5d750daa29f1b8513e67b962457aeb241d56e21610d738924643128f40218",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p15.jpg": "f8bc65c11141389735d55fb3b7b6629516662fd69281c09774b997c2474d90b6",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p16.jpg": "f34996dec2571e7cd757c22659767a24a0b7c60c51a88b98e9a23a21300c2127",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p17.jpg": "7de45e45973025ab31670c9c94015d4d8451e55e46df4605565837513cdd589e",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p18.jpg": "c6b5557c029f58bb97671a4a3ef9ad8d47d91fd673f906dcf06463a0e9e6aa4a",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p19.jpg": "b82fb919504df049c6a67e4d5b49ab68180bbac0eceb261a964d09ad2951218a",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p20.jpg": "bbc04c1f719457dd41e36cbb58d0204c3abbb63f252490b3248e3bd969c8c20f",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p21.jpg": "5eaad2ff4290074c1f51bb8409cc0c5f69b5c4789a19666d7bb1cf907de0d09d",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p22.jpg": "50092124f0d525d05b5c6811a3fe71c1c22ed45f9c70a36248989e57f7bb96c8",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p23.jpg": "e243da9b397955c111defbcfe9343b1513fd055c67bcaa80da55bb61d6e6e13a",
+        "read/corgi-on-the-cob-and-the-harvest-table/pages/p24.jpg": "baae8edf8d6ee040e6ff7936e44e74a9cbf042d7286223367ed2563a9d8e07da"
+      },
+      "pdf": "read/corgi-on-the-cob-and-the-harvest-table/corgi-on-the-cob-and-the-harvest-table.pdf",
+      "pdf_sha256": "076adf8406367020a7625da0f086a7c7a7c571b202a19e4c98c6204faa9c1ae0"
+    },
+    {
       "slug": "corgi-on-the-cobs-countryside-run",
       "source_id": "corgi-on-the-cob-countryside",
       "source_art": {
@@ -1284,6 +1525,205 @@
       },
       "pdf": "read/dog-in-the-fog/dog-in-the-fog.pdf",
       "pdf_sha256": "d598a684bce78a8b91f554b3c50ad0dbee0cae08bf9910373da83381a80677a6"
+    },
+    {
+      "slug": "everybody-brought-potatoes",
+      "source_id": "web-thanksgiving-everybody-brought-potatoes",
+      "source_art": {
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/cover.png": "9e9560a4241099ae999cbe50a06d570906551cab802fce68cdabca89238715d2",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p01.png": "75fdd726b5efc925cfe34e02aec53e83542d4d2810168c792409afc36b37f6c9",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p02.png": "b1c1eb943bf851379a5a5b87cb38f7602ac25c4f95fbdecd8a777ef2a16c0d5b",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p03.png": "ea93f708db2d33812f690e033fb8094eb60f63a50c881266306d90ed8ec18119",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p04.png": "bdf934f772c20ccdcb1d4869e1003943a319d78e5372da68defa5946a3ef6fb1",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p05.png": "ffc95030d8474807cb8f76004d064716ec50a591c5caa3c854a7e2883f58a727",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p06.png": "a53908925284579b7389915971821eb226a8dd514942dd6be6d96cd893b27d10",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p07.png": "e3fdf4514856059a9103e89451bc19b8ba759ce4b55965b5e5089a03e09426d6",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p08.png": "f2ee9c30c72d66818ae017ba79b5e41af02ea8a0c6c7bb26c8c171cb5101f13d",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p09.png": "42036f019135c28fbd3e6cdd790a5ba3f22f964b1b80874f8e891bbfd426185d",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p10.png": "33b8e01f561500fbc9b52dcc2693d9bab6a611c0854c17efde0038078a79fcba",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p11.png": "5947422f7f5254d4bb232168bd0d266e0b132203100ce2ce3ef91352af601489",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p12.png": "17a0387a582189efdcba0304fc6fa62f50e4eaf50fd4667a1d89162a2ecf8309",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p13.png": "a59ce83a01cd6c0e7804d2ead39725d90c9bd944bd6c1f254301c138467ef20c",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p14.png": "4be2ad98057b538dca8256109ca44f220c0b0c0e4d74d224403ad1b1da4e1f58",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p15.png": "619fe070806b9cd3f232b0a4ae9cbf215f5d7895e411a07206c49dfbb0af4ee1",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p16.png": "5b2940e1a698d311126194749b1d2342c9b3b2a4eb06221ed6273b6b4702cc03",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p17.png": "e7d1477d1d701e00c1f3d3a14f4acd5b25b53f3dfdaa427a196b596abaa14464",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p18.png": "8db9fb5c630cfd1576689d30307bd7fce8cddc8689302afb29706e3963d18241",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p19.png": "62055fbdae162e134161ffed25b8a1e4addddb428691efb7d9cfee7d42840b3c",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p20.png": "219167218b5e3810c457d071fbf984e5426c2f9c6be7c0f3431aada606806823",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p21.png": "a547a7c60d00d64bfd0e2835fc200ed43ca0b33f7ffa61c2a78c879edf09f087",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p22.png": "c10510597a7880bb9718dbe9ee32aabbfeb4df7d01ef122806d5567ee5638a33",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p23.png": "f904f9d68df9a31e96e132737ae3131bbc785976b4f1f4e9b50581fc29916f31",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p24.png": "c0a11705644c6585ba379e7521df5db75947f5f2163eea655ecaa291df5e538e",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p25.png": "00fd01d5f502a14c52c96fa7ca958e934195f065407a7f45b1fa4417fd295aa5",
+        "../docs/reads-events-bookshelf/thanksgiving/everybody-brought-potatoes/p26.png": "66ced7a15e9a8da8adb7d78e8560d347a43981ded85b797601f8373029ad40a5"
+      },
+      "text": [
+        "The leaves in Bark-B-Q's garden had turned the colour of toast. \"This year,\" said Bark-B-Q, \"I'm having Friendsgiving. A Thanksgiving feast with all my friends, here, under the apple tree. Everyone brings one dish.\" He wagged so hard that three leaves fell off the tree.",
+        "Eggs-Benedict arrived the next morning with a clipboard and a sharp pencil. \"One dish each is a lovely idea,\" she said. \"But what if everybody brings soup?\" She drew a sign-up sheet with two columns, Name and Dish. Then she drew a timing chart, so every dish would be hot at exactly the right moment.",
+        "\"Write yours first,\" she said, \"to show everyone how.\" Bark-B-Q took the pencil and wrote in big letters on the top line: Bark-B-Q - potatoes, roasted. \"Perfect,\" said Eggs-Benedict. \"Now we need someone fast to take it round.\"",
+        "Belgian-Waffle was the fastest messenger in the woods. He tucked the sign-up sheet under one wing and took off. \"Every door before lunch!\" he called.",
+        "Over the duck pond, a gust of wind came out of nowhere. It snatched the sheet from under his wing. The paper flipped twice, sailed over the reeds and landed in the water. By the time Belgian-Waffle fished it out, the ink had run into one long blue puddle.",
+        "Belgian-Waffle looked at the soggy paper. He thought about flying back to tell Eggs-Benedict. Then he thought about her sharp pencil. \"I read the top line,\" he told himself. \"I know what it said. I'll just tell everybody.\"",
+        "Meow-inara opened her door. \"Is it the sign-up sheet? What should I bring?\" \"Potatoes,\" said Belgian-Waffle. \"I think.\" \"Potatoes,\" said Meow-inara. \"All right.\"",
+        "\"Potatoes?\" said Leo-Lemonade. \"I always bring lemonade.\" \"This year it's potatoes,\" said Belgian-Waffle. \"I'm fairly sure.\" \"Potatoes? Not bread?\" said French-Toast. \"Definitely potatoes,\" said Belgian-Waffle. He was getting better at saying it.",
+        "On Friendsgiving afternoon, the long table stood under the apple tree. Bark-B-Q had his potatoes ready for roasting. Eggs-Benedict pinned her timing chart to the tree trunk. \"Four o'clock, soup,\" she read. \"Quarter past, bread. Half past, lemonade. Quarter to five…\"",
+        "The gate creaked. Meow-inara came in, pulling a sack. It was full of potatoes. \"Lovely,\" said Bark-B-Q, a little puzzled. \"Two lots of potatoes. That's fine.\"",
+        "The gate creaked again. Leo-Lemonade came in, pushing a wheelbarrow. In the wheelbarrow was one potato. It was the biggest potato anyone had ever seen. \"I wanted to bring a good one,\" he said.",
+        "Then French-Toast arrived with a basket of long orange potatoes. \"Sweet potatoes,\" he said proudly. Everybody looked at Eggs-Benedict. \"A sweet potato isn't a potato at all,\" said Eggs-Benedict. \"It grows on a completely different plant. It's a cousin of the morning glory flower.\"",
+        "\"So I'm the only one who didn't bring potatoes?\" said French-Toast. \"You're the only one who did it by accident,\" said Leo-Lemonade. Then the gate creaked one last time. Belgian-Waffle came in with a small bag of potatoes and a very small voice.",
+        "Everybody looked at Belgian-Waffle. Belgian-Waffle looked at his feet. \"The sheet fell in the duck pond,\" he said. \"The only thing I could read was the top line. So I told everybody potatoes.\"",
+        "For a moment, nobody said anything. Bark-B-Q looked at the timing chart. Four o'clock, soup. There was no soup. Quarter past, bread. There was no bread. Half past, lemonade. There was one enormous potato in a wheelbarrow. His tail stopped wagging. \"Friendsgiving is ruined,\" he said.",
+        "Eggs-Benedict took the timing chart down from the tree. She turned it over to the clean side. \"Then we need a new chart,\" she said. She wrote POTATOES in the middle of the paper and drew a circle round it. Then she drew lines coming out of the circle, like the spokes of a wheel.",
+        "\"Who can make something out of potatoes?\" she asked. \"Potato soup,\" said Meow-inara. \"Potato bread,\" said French-Toast. \"And a sweet potato pie.\" \"Potato waffles,\" said Belgian-Waffle. \"I make very good waffles.\" \"Roast potatoes,\" said Bark-B-Q, and his tail started to wag again, just a little.",
+        "Leo-Lemonade looked at his enormous potato. \"I only know how to make lemonade.\" \"Then you can help me,\" said Eggs-Benedict, \"and we'll make the biggest pile of mashed potato in the woods.\" She cooked. He mashed. Leo-Lemonade turned out to be extremely good at mashing.",
+        "Soon every pot and pan in Bark-B-Q's kitchen was busy. Meow-inara stirred the soup. French-Toast kneaded the dough. Belgian-Waffle heated the waffle iron. Outside, Bark-B-Q turned the potatoes on the grill, slowly, the way a good roast likes.",
+        "Eggs-Benedict checked her new chart. There were no times on it at all. Just one line at the bottom: Everything at five o'clock. At five o'clock exactly, everything was ready.",
+        "They carried it out to the table under the apple tree. Potato soup. Potato bread. Potato waffles. Roast potatoes. A mountain of mash. And a sweet potato pie. \"Six dishes,\" said Eggs-Benedict, counting them with her pencil. \"Six different ways.\"",
+        "Bark-B-Q looked at the table for a long time. \"It isn't what I planned,\" he said. \"It's better,\" said Meow-inara. \"Nobody in the whole woods has ever had a potato feast.\"",
+        "Before they ate, everybody said one thing they were thankful for. \"Eggs-Benedict,\" said Bark-B-Q, \"for the second chart.\" \"Leo-Lemonade,\" said Eggs-Benedict, \"for the mashing.\" \"The duck pond,\" said Leo-Lemonade, and everyone laughed, even Belgian-Waffle.",
+        "When it was Bark-B-Q's turn again, he turned to Belgian-Waffle. \"And I'm thankful for you.\" \"Me?\" said Belgian-Waffle. \"I ruined everything.\" \"You made it the best Friendsgiving we've ever had,\" said Bark-B-Q. \"You just did it by accident.\"",
+        "They ate until the lanterns came on in the apple tree. The sweet potato pie went last. \"The only thing on the table that wasn't a potato,\" said French-Toast, \"and it was the first thing to go.\"",
+        "As everybody was leaving, Eggs-Benedict took out a fresh sheet of paper. She wrote next year's sign-up sheet there and then. On the top line, in big letters, she wrote: Everybody - potatoes. Underneath, in smaller letters, she wrote: Belgian-Waffle - please carry this very carefully."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/everybody-brought-potatoes/pages/p01.jpg": "ca15e7bb2afa5d4f40c9135834fbdd8f5d608fd43f94359cbd4959a5a4a247b6",
+        "read/everybody-brought-potatoes/pages/p02.jpg": "31c015a46b9b9c6322f288adcdc1b63a8c3059a0f3b534a488d95e30dfde58a4",
+        "read/everybody-brought-potatoes/pages/p03.jpg": "a56580b0cab00722d461b175812608eebc0968fc4e18d09a92a026e2c1f88526",
+        "read/everybody-brought-potatoes/pages/p04.jpg": "12acb08f4f6a352cc32712e6ade6421f3d4ce488ed686b2a518001d936446b1b",
+        "read/everybody-brought-potatoes/pages/p05.jpg": "6ab170e116ef334251c7c1ee65165a7402ba5944aac97d57edb983e51d077edb",
+        "read/everybody-brought-potatoes/pages/p06.jpg": "35d832cfff4ab45eae11233a38121d15489b1c0f7d78ec69c782bb108bf9364a",
+        "read/everybody-brought-potatoes/pages/p07.jpg": "1bafbe4be085e100a5f845ccaa207135dccf865615433e850952d301dafdaab7",
+        "read/everybody-brought-potatoes/pages/p08.jpg": "5d0110442539b6782926342cdf578ab62ca3c41eb3d3dfc42372cc051cedfdfc",
+        "read/everybody-brought-potatoes/pages/p09.jpg": "3e218cfb909030cd308cf3d97bb4365d880e10ffdfb2f96c25d12b7de1566d96",
+        "read/everybody-brought-potatoes/pages/p10.jpg": "94482b4d07a3acc7cb822f4bdcd21fff587c089fbd5088ad93f93d9033c0a85c",
+        "read/everybody-brought-potatoes/pages/p11.jpg": "2a06a45c45317bbcf75c197b41a1a33b74f5781d1f8a44169a476701d546e1aa",
+        "read/everybody-brought-potatoes/pages/p12.jpg": "f4f99f0562b38f667fb3c509f77f4415f6b704e71d2d3b4ed03fd2c1c3b131ad",
+        "read/everybody-brought-potatoes/pages/p13.jpg": "2f335bf4b5d91c6087c0b7100a77f9309cb05443054c05def9191c432d016d81",
+        "read/everybody-brought-potatoes/pages/p14.jpg": "f00e19c79c8f29685e58e037b1ffa50fceaf529b365beec712fef87c51516a65",
+        "read/everybody-brought-potatoes/pages/p15.jpg": "57a5c09d1e925a633939c8260d058a137717e2d4992034190b8e2fb52df67e0f",
+        "read/everybody-brought-potatoes/pages/p16.jpg": "1949399274336ce17f580ea0e9cd3a00c03e5fee352e7fe1387b1dd1bc356f7d",
+        "read/everybody-brought-potatoes/pages/p17.jpg": "e8f2bb501bf8e6a7a798e60b10290ad7874a78cd9df110e887e92455684889a4",
+        "read/everybody-brought-potatoes/pages/p18.jpg": "ac7d24081e972bef0fbaa1a682cd5f00d699d91ea5afbc101147f16c7a412afd",
+        "read/everybody-brought-potatoes/pages/p19.jpg": "699c224d1fee5e6146c4e37dd916bee0484434e4728524521c032adffa7e269b",
+        "read/everybody-brought-potatoes/pages/p20.jpg": "3d2c5782e91fbfd580816abb1914646541cbe8a8ab5a8e6db41c5fe5848f1210",
+        "read/everybody-brought-potatoes/pages/p21.jpg": "c7cef0d390946af765f039cacff846701f7446c53b379bf90955b169b7e760c9",
+        "read/everybody-brought-potatoes/pages/p22.jpg": "b6bffd6be1d9be3ef70f2b4acbb6903eb79910de2ebf4959773830a7d160c2ba",
+        "read/everybody-brought-potatoes/pages/p23.jpg": "367a34c9c4191db053d03b1c8ddda28a49243da85deed4b19121e090c5bef87d",
+        "read/everybody-brought-potatoes/pages/p24.jpg": "f9ae5036da30d171ce8f9deb534299885cdf882eae77eafc2b5a746a6c06ad43",
+        "read/everybody-brought-potatoes/pages/p25.jpg": "0ad047b40009c0b8b287efa1d61d1dc1f4730a591933f595201814e3e15f2c63",
+        "read/everybody-brought-potatoes/pages/p26.jpg": "0a41604da8febe6c5d05a9dee94e23207c3ac7023d9c6a702fd3c34895afa993"
+      },
+      "pdf": "read/everybody-brought-potatoes/everybody-brought-potatoes.pdf",
+      "pdf_sha256": "a59ac9261dd636724a8b87d1947a3bef63e6c15f0b5b4424c34706df9b45ebc7"
     },
     {
       "slug": "fe-line-mignons-moonlit-cafe",

@@ -2676,3 +2676,25 @@ button:focus-visible {
 a.read-event-card:hover h2,a.read-event-card:focus-visible h2{text-decoration:underline}
 @media(max-width:760px){.read-season-event{grid-template-columns:1fr;padding:18px;border-radius:22px}.read-season-books{grid-auto-columns:120px}.read-event-book{grid-template-columns:110px 1fr;gap:14px;padding:14px}.read-event-card.is-featured{grid-column:auto}.read-event-hero{padding:32px 0 24px}}
 .read-season-head .eyebrow,.read-event-card .eyebrow{padding:0;background:none;color:#fffdf8;opacity:.92}
+
+.read-event-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: .35em;
+  vertical-align: middle;
+}
+
+:root[data-theme="dark"] .read-event-icon { filter: invert(1); }
+
+.read-event-banner {
+  display: block;
+  margin-block-end: 1.25rem;
+}
+
+.read-event-banner img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 1;
+  border-radius: var(--radius-sm);
+}
