@@ -127,7 +127,15 @@
     { id: "monster", name: "Big Muncher", cost: 2600, desc: "Huge soft wheels roll over anything. Drinks fuel.", bedHalf: 1.9, perRow: 4, wheelR: 0.85, rearX: -1.25, frontX: 1.4, torque: 1.9, top: 0.4, weight: 1.45, rail: 0.3, soft: 1.1, lift: 0.3, thirst: 1.35, hold: 0.2, brake: 0.4, pay: 1, stats: { speed: 3, grip: 4, load: 3 } }
   ];
 
-  function truckSpec(id) { return TRUCKS.filter(function (t) { return t.id === id; })[0] || TRUCKS[0]; }
+  // Seasonal vehicles (Winter Haul plan, apps/snackpack-snack-haul/docs/WINTER_EVENT_PLAN.md).
+  // Kept out of TRUCKS so the garage, the bots and the 1.0 checks are unchanged until the event code lands.
+  // `runners`: the wheels are hidden and runners drawn; their bottom sits at axleY - wheelR.
+  // `snowGrip` applies on `snowRegions`, `dryGrip` everywhere else (both still to be wired into the physics).
+  var EVENT_TRUCKS = [
+    { id: "sleigh", event: "winter", name: "Jingle Sleigh", cost: 0, desc: "Glides fast on snow and ice. Slow and twitchy on dry roads.", bedHalf: 1.6, perRow: 4, wheelR: 0.32, rearX: -1.0, frontX: 1.1, torque: 1.1, top: 1.0, weight: 0.9, rail: 0.2, soft: 0.3, pay: 1, runners: true, snowGrip: 1.35, dryGrip: 0.8, snowRegions: ["frost", "northpole"], hitchX: 2.25, hitchY: 0.1, stats: { speed: 3, grip: 3, load: 2 } }
+  ];
+
+  function truckSpec(id) { return TRUCKS.concat(EVENT_TRUCKS).filter(function (t) { return t.id === id; })[0] || TRUCKS[0]; }
 
   function dimsFor(t) {
     var cabX = t.bedHalf - 0.6;
@@ -140,6 +148,8 @@
   var DIM = dimsFor(TRUCKS[0]);
   // Width and height of one unit of each cargo type. Melons are round.
   function cargoSize(type) {
+    if (type === "sack") return { w: 0.56, h: 0.5 };      // winter cargo, not yet in CARGO_TYPES
+    if (type === "pudding") return { w: 0.5, h: 0.6 };
     return type === "melon" ? { w: 0.5, h: 0.5, round: true } : type === "cake" ? { w: 0.5, h: 0.72 } : { w: 0.52, h: 0.52 };
   }
 
@@ -1056,7 +1066,7 @@
 
   return {
     STEP: STEP, BALANCE: BALANCE, REGIONS: REGIONS, ROUTES: ROUTES, DELIVERIES: DELIVERIES, UPGRADES: UPGRADES, MAX_LEVEL: MAX_LEVEL,
-    TRUCKS: TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
+    TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,

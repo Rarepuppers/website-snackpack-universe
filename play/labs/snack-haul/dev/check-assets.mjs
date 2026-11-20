@@ -2,7 +2,10 @@
 // docs/audit-briefs/2026-11-12-snack-haul-codex-asset-plan.md
 // Run from website-snackpack-universe:
 //   node play/labs/snack-haul/dev/check-assets.mjs [--upto N] [--all]
+//   node play/labs/snack-haul/dev/check-assets.mjs --winter [--upto N] [--all]
 // --upto N checks milestones 1 to N only (default 6, everything).
+// --winter checks only the Winter Haul batch instead (milestones W1 to W3, so --upto 1 to 3):
+// docs/audit-briefs/2026-11-21-snack-haul-codex-winter-assets.md
 // Sizes come from engine.js, so a physics change cannot silently drift from the art.
 import fs from "node:fs";
 import path from "node:path";
@@ -15,12 +18,13 @@ const repo = path.resolve(game, "../../../..");
 const SH = createRequire(import.meta.url)("../engine.js");
 const A = path.join(game, "assets");
 const APP = path.join(repo, "apps", "snackpack-snack-haul");
+const WINTER = process.argv.includes("--winter");
 const upto = Number((process.argv[process.argv.indexOf("--upto") + 1]) || 6) || 6;
 const problems = [], notes = [];
 let found = 0, missing = 0, later = 0, stage = 1;
 
 const rel = (file) => path.relative(repo, file).replace(/\\/g, "/");
-const fail = (file, msg) => problems.push(`[M${stage}] ${rel(file)}: ${msg}`);
+const fail = (file, msg) => problems.push(`[${WINTER ? "W" : "M"}${stage}] ${rel(file)}: ${msg}`);
 function exists(file, maxKB) {
   if (stage > upto) { later += 1; return false; }
   if (!fs.existsSync(file)) { missing += 1; fail(file, "missing"); return false; }
@@ -97,6 +101,7 @@ const art = (name, w, h, kb) => image(path.join(A, "art", `${name}.webp`), w, h,
 const icon = (name) => image(path.join(A, "ui", `${name}.webp`), 128, 128, 16);
 const audio = (folder, name, kb) => exists(path.join(A, "audio", folder, `${name}.ogg`), kb);
 
+if (!WINTER) {
 // ── Trucks and wheels: limits come straight from the physics ──────
 const WIDTH = { pickup: 1.8, tuktuk: 1.6, van: 1.8, buggy: 1.8, hauler: 1.95, monster: 2.0 };
 const TYRE = { tuktuk: 0.26, buggy: 0.44, monster: 0.6 };
@@ -238,6 +243,108 @@ for (const n of ["croissant", "corn", "chilli", "cone", "pretzel", "donut", "hon
 
 stage = 1;
 exists(path.join(A, "CREDITS.md"));
+}
+
+// ── Winter Haul batch (--winter) ──────────────────────────────────
+if (WINTER) {
+  const W = (sub, name) => path.join(A, "models", sub, `${name}.glb`);
+  const groundedW = (m, bad) => { if (!near(m.min[1], 0, 0.12)) bad(`base sits at y ${m.min[1].toFixed(2)}, expected 0`); };
+  const centredX = (m, bad) => { if (!near(m.min[0] + m.max[0], 0, 0.2)) bad("not centred on x"); };
+  const facesCamera = (m, bad) => { if (!near(m.min[2] + m.max[2], 0, 0.6)) bad("not centred on z"); };
+
+  // Jingle Sleigh: sizes from engine.js EVENT_TRUCKS, like the trucks
+  const s = SH.truckSpec("sleigh"), D = SH.dimsFor(s), runnerY = D.axleY - D.wheelR;
+  stage = 1;
+  glb(W("trucks", "truck_sleigh"), {
+    maxTris: 7000, maxKB: 450, maxMaterials: 6, materials: ["paint", "trim"],
+    nodes: ["body", "lights_front", "lights_brake", "seat", "exhaust", "topper", "headlight"],
+    check(m, bad) {
+      if (m.min[0] < -D.bedHalf - 0.3) bad(`rear reaches x ${m.min[0].toFixed(2)}, limit ${(-D.bedHalf - 0.3).toFixed(2)}`);
+      if (m.max[0] > s.hitchX + 0.05) bad(`front reaches x ${m.max[0].toFixed(2)}, limit ${s.hitchX} (the reindeer hitch)`);
+      if (m.max[2] - m.min[2] > 1.8 + 0.3) bad(`width ${(m.max[2] - m.min[2]).toFixed(2)}, limit 2.10`);
+      if (!near(m.min[2] + m.max[2], 0, 0.05)) bad("not centred on z");
+      if (!near(m.min[1], runnerY, 0.05)) bad(`runner bottom at y ${m.min[1].toFixed(3)}, expected ${runnerY.toFixed(3)}`);
+      if (m.max[1] < 1.2) bad(`seat back or front scroll tops out at y ${m.max[1].toFixed(2)}, expected 1.2 or more`);
+    }
+  });
+  glb(W("trucks", "reindeer_team"), {
+    maxTris: 3500, maxKB: 300, nodes: ["deer_a", "deer_b"],
+    check(m, bad) {
+      if (m.min[0] < -0.15) bad(`reaches back to x ${m.min[0].toFixed(2)}: the team starts at the hitch (x 0)`);
+      if (m.max[0] > 1.45) bad(`reaches forward to x ${m.max[0].toFixed(2)}, limit 1.4`);
+      const hoof = runnerY - s.hitchY;
+      if (!near(m.min[1], hoof, 0.08)) bad(`hooves at y ${m.min[1].toFixed(2)}, expected ${hoof.toFixed(2)} (ground, relative to the hitch)`);
+      if (!near(m.min[2] + m.max[2], 0, 0.05)) bad("not centred on z");
+    }
+  });
+
+  // Cargo
+  const cargoW = (name, type, damaged) => {
+    const size = SH.cargoSize(type);
+    glb(W("cargo", name), {
+      maxTris: 320, maxKB: 90,
+      check(m, bad) {
+        const w = m.max[0] - m.min[0], d = m.max[2] - m.min[2], h = m.max[1] - m.min[1];
+        if (w > size.w + 0.005 || d > size.w + 0.005) bad(`footprint ${w.toFixed(2)} x ${d.toFixed(2)}, limit ${size.w}`);
+        if (!damaged && !near(h, size.h, 0.06)) bad(`height ${h.toFixed(2)}, expected ${size.h}`);
+        if (damaged && h > size.h + 0.02) bad(`height ${h.toFixed(2)}, limit ${size.h}`);
+        if (!damaged && !near(m.min[1] + m.max[1], 0, 0.06)) bad("not centred on its origin");
+        if (damaged && !near(m.min[1], -size.h / 2, 0.04)) bad(`base at y ${m.min[1].toFixed(2)}, expected ${(-size.h / 2).toFixed(2)}`);
+      }
+    });
+  };
+  stage = 1;
+  for (const c of ["red", "green", "blue"]) cargoW(`cargo_present_${c}`, "present");
+  stage = 2;
+  cargoW("cargo_present_crushed", "present", true);
+  cargoW("cargo_sack", "sack"); cargoW("cargo_pudding", "pudding"); cargoW("cargo_pudding_ruined", "pudding", true);
+
+  // Scenery, landmarks and depot decorations
+  const winterProp = (name, tris, kb, ...checks) => glb(W("winter", name), { maxTris: tris, maxKB: kb, check: (m, bad) => checks.forEach((c) => c(m, bad)) });
+  stage = 1;
+  winterProp("house_a", 2500, 250, groundedW, centredX, facesCamera);
+  winterProp("workshop", 8000, 250, groundedW, centredX);
+  stage = 2;
+  winterProp("house_b", 2500, 250, groundedW, centredX, facesCamera);
+  winterProp("house_c", 2500, 250, groundedW, centredX, facesCamera);
+  winterProp("big_tree", 6000, 250, groundedW);
+  winterProp("cane_arch", 1200, 80, groundedW, (m, bad) => { if (m.max[1] < 4.5) bad(`only ${m.max[1].toFixed(2)} m tall; the opening needs 4.5 m`); });
+  for (const [name, tris] of [["pine_snow", 600], ["snowman", 400], ["igloo", 700], ["lamp_garland", 500], ["present_pile", 600], ["ice_rock", 200], ["fence_candy", 250]]) winterProp(name, tris, 80, groundedW);
+  winterProp("drift", 300, 80, groundedW, (m, bad) => {
+    if (!near(m.max[0] - m.min[0], 8, 0.3)) bad(`length along x ${(m.max[0] - m.min[0]).toFixed(2)}, expected 8`);
+    if (!near(m.max[1], 0.6, 0.1)) bad(`height ${m.max[1].toFixed(2)}, expected 0.6`);
+  });
+  for (const name of ["depot_tree", "depot_lights", "depot_wreath", "depot_snowman"]) winterProp(name, 1500, 120);
+  for (const n of ["santa_hat", "antlers", "star"]) {
+    glb(W("toppers", `topper_${n}`), {
+      maxTris: 300, maxKB: 40,
+      check(m, bad) {
+        if (m.max[0] - m.min[0] > 0.7 || m.max[2] - m.min[2] > 0.7) bad("wider than 0.7");
+        if (m.max[1] > 0.6) bad("taller than 0.6");
+        if (!near(m.min[1], 0, 0.03)) bad("base is not at y 0");
+      }
+    });
+  }
+
+  // Art, interface, effects
+  stage = 1; art("sky_northpole", 2048, 1024, 350);
+  stage = 3;
+  art("ridge_northpole", 2048, 512, 300); art("region_northpole", 1280, 720, 220);
+  art("event_winter", 1280, 400, 150); art("advent_bg", 1280, 720, 200); art("portrait_sleigh", 640, 360, 90);
+  for (const n of ["santa", "tinsel"]) exists(path.join(A, "art", `customer_${n}.webp`), 60);
+  for (const n of ["event_winter", "advent", "feature_dropoff", "feature_drift", "cargo_present", "cargo_sack", "cargo_pudding", "truck_sleigh"]) icon(n);
+  for (const n of ["sleigh", "presents", "advent", "christmas_eve", "workshop"]) icon(`goal_${n}`);
+  for (const [n, size] of [["snowflake", 64], ["sparkle", 64], ["snow_puff", 128]]) image(path.join(A, "art", "fx", `${n}.webp`), size, size, 30);
+
+  // Audio
+  for (const n of ["sleigh_idle", "sleigh_drive"]) audio("engine", n, 260);
+  for (const n of ["music_northpole", "music_winter_menu"]) audio("music", n, 1400);
+  for (const n of ["present_drop", "door_open", "jingle_sting", "horn_sleigh", "snow_drift", "pudding_wobble"]) audio("sfx", n, 60);
+
+  // Store
+  image(path.join(APP, "store/winter/feature-graphic-winter.png"), 1024, 500, 1024);
+  image(path.join(APP, "store/winter/promo-event-card.png"), 1920, 1080, 2048);
+}
 
 // ── Totals ────────────────────────────────────────────────────────
 function folderKB(dir) {
@@ -250,7 +357,22 @@ for (const [dir, limitMB] of [["models", 13], ["art", 5], ["ui", 1], ["audio", 1
   if (mb > limitMB) problems.push(`assets/${dir}: ${mb.toFixed(1)} MB, limit ${limitMB} MB`);
 }
 
-console.log(`Milestones 1 to ${upto}: found ${found} files, ${missing} missing${later ? `, ${later} belong to later milestones` : ""}.`);
+if (WINTER) {
+  // The whole batch is held to 6 MB (brief section 2). Files are spread over shared folders, so add up what the batch names.
+  const winterKB = [path.join(A, "models/winter"), path.join(A, "art/fx")].reduce((n, d) => n + folderKB(d), 0)
+    + ["models/trucks/truck_sleigh.glb", "models/trucks/reindeer_team.glb", "models/cargo/cargo_present_red.glb", "models/cargo/cargo_present_green.glb",
+      "models/cargo/cargo_present_blue.glb", "models/cargo/cargo_present_crushed.glb", "models/cargo/cargo_sack.glb", "models/cargo/cargo_pudding.glb",
+      "models/cargo/cargo_pudding_ruined.glb", "models/toppers/topper_santa_hat.glb", "models/toppers/topper_antlers.glb", "models/toppers/topper_star.glb",
+      "art/sky_northpole.webp", "art/ridge_northpole.webp", "art/region_northpole.webp", "art/event_winter.webp", "art/advent_bg.webp", "art/portrait_sleigh.webp",
+      "art/customer_santa.webp", "art/customer_tinsel.webp", "audio/engine/sleigh_idle.ogg", "audio/engine/sleigh_drive.ogg", "audio/music/music_northpole.ogg",
+      "audio/music/music_winter_menu.ogg", ...["present_drop", "door_open", "jingle_sting", "horn_sleigh", "snow_drift", "pudding_wobble"].map((n) => `audio/sfx/${n}.ogg`),
+      ...["event_winter", "advent", "feature_dropoff", "feature_drift", "cargo_present", "cargo_sack", "cargo_pudding", "truck_sleigh",
+        "goal_sleigh", "goal_presents", "goal_advent", "goal_christmas_eve", "goal_workshop"].map((n) => `ui/${n}.webp`)]
+      .reduce((n, f) => n + (fs.existsSync(path.join(A, f)) ? fs.statSync(path.join(A, f)).size / 1024 : 0), 0);
+  notes.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB of 6 MB`);
+  if (winterKB / 1024 > 6) problems.push(`winter batch: ${(winterKB / 1024).toFixed(1)} MB, limit 6 MB`);
+}
+console.log(`${WINTER ? "Winter W" : "Milestones "}1 to ${upto}: found ${found} files, ${missing} missing${later ? `, ${later} belong to later milestones` : ""}.`);
 notes.forEach((n) => console.log("  " + n));
 if (problems.length) {
   const shown = process.argv.includes("--all") ? problems : problems.slice(0, 40);
