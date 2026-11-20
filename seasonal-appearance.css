@@ -66,10 +66,34 @@
   --bg-bottom: #e2e2f1;
   --panel-b: #ece8f6;
 }
-:root[data-season="winter"] .home-page .hero-card { padding: 0; overflow: hidden; }
-:root[data-season="winter"] .home-page .hero-card picture { display: none; }
-.winter-home-feature { display: none; }
-:root[data-season="winter"] .winter-home-feature { display: flex; }
+:root:is([data-season="winter"], [data-home-event]:not([data-home-event=""])) .home-page .hero-card { padding: 0; overflow: hidden; }
+:root:is([data-season="winter"], [data-home-event]:not([data-home-event=""])) .home-page .hero-card picture { display: none; }
+.home-event-feature, .winter-home-feature { display: none; }
+:root[data-season="winter"][data-home-event=""] .winter-home-feature { display: flex; }
+:root[data-home-event="thanksgiving"] [data-home-feature="thanksgiving"],
+:root[data-home-event="christmas"] [data-home-feature="christmas"] { display: block; }
+.home-event-feature {
+  color: #fff7e7;
+  background: #3d211b;
+  text-decoration: none;
+}
+[data-home-feature="christmas"] { background: #143830; }
+.home-event-art {
+  display: block;
+  aspect-ratio: 3 / 1;
+  background: center / cover no-repeat;
+}
+[data-home-feature="thanksgiving"] .home-event-art { background-image: url("/read/events/thanksgiving/banner-720w.webp"); }
+[data-home-feature="christmas"] .home-event-art { background-image: var(--woods-art); }
+.home-event-copy {
+  display: grid;
+  gap: .55rem;
+  padding: clamp(.9rem, 2.5vw, 1.4rem);
+}
+.home-event-copy strong { font: 650 clamp(1.45rem, 2.8vw, 2.4rem)/1.1 var(--serif); }
+.home-event-cta { color: #ffd28a; font-weight: 800; text-decoration: underline; text-underline-offset: .18em; }
+.home-event-feature:hover .home-event-cta { color: #fff7e7; }
+.home-event-feature:focus-visible { outline: 3px solid #ffd28a; outline-offset: -5px; }
 .winter-home-feature {
   flex-direction: column;
   justify-content: end;

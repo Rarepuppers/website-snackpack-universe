@@ -9,9 +9,10 @@ export function nextChoices(shelf, slug, collections = []) {
   const ordered = shelf.slice(index + 1).concat(shelf.slice(0, index));
   const phonics = /^stage-/.test(book.group) || book.group === 'trail';
   const appropriate = b => !book.age || !b.age || (b.age[0] <= book.age[1] && b.age[1] >= book.age[0]);
+  const seriesOrder = book.seasonalRelease ? shelf.slice(index + 1) : ordered;
   const next = phonics ? shelf.slice(index + 1).find(b => /^stage-/.test(b.group) || b.group === 'trail') :
     ordered.find(b => peers?.books.includes(b.slug)) ||
-    ordered.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
+    seriesOrder.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
   const choices = [];
   const event = READ_EVENTS.find(e => e.id === book.group);
   if (next) {

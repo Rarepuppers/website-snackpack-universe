@@ -263,7 +263,7 @@ function homeBlock() {
           <h2 class="section-title">${words(SHELF.length).replace(/^./, (c) => c.toUpperCase())} illustrated readers, free to read or print</h2>
           <p class="section-copy">Explore alphabet pictures, staged phonics with adult preparation, Reading Trail practice, shared stories, number adventures and animal facts from SnackPack apps, alongside original web picture books. Read them in your browser or print the PDF. No account, no ads, no download.</p>
         </div>
-        <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
+        <div class="stack-inline"><a class="btn btn-primary" href="/read/">Open the bookshelf</a><a class="text-link" href="/read/events/">Browse holidays and events</a><a class="text-link" href="/read/sound-cards/">Print phonics sound cards</a></div>
       </div>
       <div class="storybook-grid">
 ${cards}
