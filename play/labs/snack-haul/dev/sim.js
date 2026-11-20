@@ -8,34 +8,20 @@ const SH = require("../engine.js");
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
 
 // target = cruising speed. A careful driver slows for crests and dips ahead.
-function drive(id, upgrades, target, maxSeconds, truck, delivery, watch) {
+function drive(id, upgrades, target, maxSeconds, truck, delivery, watch, opts = {}) {
   const g = SH.createGame({ id, delivery, upgrades, truck });
   const log = [];
   const t = g.terrain;
   let frames = 0;
   while (g.status === "driving" && frames < maxSeconds * 60) {
     frames++;
-    const pos = g.truck.getPosition();
-    const vx = g.truck.getLinearVelocity().x;
-    const angle = SH.normalAngle(g.truck.getAngle());
-    const toZone = (t.zoneStart + t.zoneEnd) / 2 - pos.x;
-    const ahead = 5 + vx;
-    const s1 = (SH.heightAt(t, pos.x + 2) - SH.heightAt(t, pos.x)) / 2;
-    const s2 = (SH.heightAt(t, pos.x + ahead + 2) - SH.heightAt(t, pos.x + ahead)) / 2;
-    let want = target - Math.min(target * 0.55, Math.abs(s2 - s1) * 9);
-    let toZone2 = toZone;
-    // A pickup stop is a second place to pull up, part-way along.
-    if (g.pickupState === "ahead") toZone2 = (g.pickup.x0 + g.pickup.x1) / 2 - pos.x;
-    if (toZone2 < 40) want = Math.min(want, Math.max(0.1, toZone2 * 0.28));
-    const toStop = toZone2;
-    const input = { gas: false, brake: false };
-    if (!g.grounded()) {
-      if (angle > 0.14) input.brake = true;
-      else if (angle < -0.14) input.gas = true;
-    } else if (toStop < 1 && vx > 0.2) input.brake = true;
-    else if (toStop < 0.5) input.brake = false;
-    else if (vx < want) input.gas = true;
-    else if (vx > want + 1.6) input.brake = true;
+    const pos = g.truck.getPosition(), vx = g.truck.getLinearVelocity().x;
+    const input = SH.botInput(g, target);
+    if (opts.noBrake) {
+      input.brake = false;
+      // No brakes: lift off early and coast into the depot.
+      if (opts.coastFrom && (t.zoneStart + t.zoneEnd) / 2 - pos.x < opts.coastFrom && g.grounded()) input.gas = vx < 0.6;
+    }
     g.step(input);
     if (watch) for (const ev of g.events) if (ev.type === "lost" || ev.type === "broken" || ev.type === "ruined" || ev.type === "missed") log.push(ev.type + " " + ev.cargo + " @" + Math.round(pos.x) + " v" + vx.toFixed(1) + " " + (SH.featureAt(t, pos.x) ? SH.featureAt(t, pos.x).type : "") + (g.grounded() ? "" : " air"));
     if (watch) g.events.length = 0;
@@ -138,6 +124,126 @@ function trace() {
   }
 }
 
+// Writes the route challenge table into engine.js. Each region has a planned
+// mix of challenge kinds; the target comes from the bot's runs at upgrade level 4,
+// a little easier than its best. A kind the bot cannot do falls back to the next.
+// No-brake only works where the road climbs into the depot: coasting barely slows
+// the truck on the flat, so it stays on Frosty Pass 3 alone.
+const CHALLENGE_PLAN = {
+  bakery: ["coins", "speed", "fuel", "air", "truck:tuktuk", "flat", "fuel", "coins"],
+  dunes: ["speed", "coins", "flat", "truck:buggy", "flat", "air", "fuel", "coins"],
+  harbour: ["coins", "calm:bridge", "speed", "calm:ford", "truck:van", "flat", "fuel", "calm:bridge"],
+  frost: ["coins", "calm:slick", "nobrake", "fuel", "truck:hauler", "calm:slick", "flat", "coins"],
+  chilli: ["air", "coins", "flat", "air", "truck:monster", "speed", "fuel", "air"],
+  market: ["coins", "calm:bump", "air", "calm:slick", "truck:tuktuk", "flat", "fuel", "speed"]
+};
+const COASTS = [8, 12, 16, 20, 25, 30, 40, 55];
+const FALLBACK = ["coins", "fuel", "flat", "speed", "air", "truck:van", "truck:hauler", "truck:monster", "truck:buggy", "truck:tuktuk"];
+function challenges() {
+  const ups = { 4: { engine: 4, suspension: 4, tyres: 4, straps: 4, tank: 4 }, 5: { engine: 5, suspension: 5, tyres: 5, straps: 5, tank: 5 } };
+  const speeds = [3, 4, 5, 6.5, 8, 10, 12];
+  const levelFor = {};
+  const ok = (r) => r.status === "done" && r.stars >= 2;
+  const floorTo = (v, step) => Math.floor(v / step + 1e-9) * step;
+  const ceilTo = (v, step) => Math.ceil(v / step - 1e-9) * step;
+  const round = (v) => Math.round(v * 100) / 100;
+  const table = {};
+  for (const d of SH.DELIVERIES) {
+    const region = SH.REGIONS[d.region].id, wanted = CHALLENGE_PLAN[region][d.index];
+    let up = ups[4], runs = speeds.map((v) => drive(d.id, up, v, 200)).filter(ok);
+    // A route the bot cannot finish well at level 4 sets its target at level 5.
+    if (!runs.length) { up = ups[5]; runs = speeds.map((v) => drive(d.id, up, v, 200)).filter(ok); }
+    levelFor[d.id] = up;
+    const tryKind = (spec) => {
+      const [kind, arg] = spec.split(":");
+      if (kind === "truck") return speeds.some((v) => ok(drive(d.id, up, v, 200, arg))) ? { kind, truck: arg } : null;
+      if (kind === "nobrake") return COASTS.some((coastFrom) => speeds.some((v) => { const r = drive(d.id, up, v, 200, "pickup", null, false, { noBrake: true, coastFrom }); return SH.challengeMet({ kind }, r); })) ? { kind } : null;
+      if (!runs.length) return null;
+      if (kind === "coins") { const best = Math.max(...runs.map((r) => r.coinsTaken)); const n = Math.min(best, Math.max(1, floorTo(best * 0.9, 1))); return n >= 5 ? { kind, n } : null; }
+      if (kind === "fuel") { const n = round(floorTo(Math.max(...runs.map((r) => r.fuelShare)) * 0.85, 0.05)); return n >= 0.1 ? { kind, n } : null; }
+      if (kind === "flat") { const n = round(Math.max(0.3, ceilTo(Math.min(...runs.map((r) => r.bestAir)) + 0.15, 0.1))); return n <= 1 ? { kind, n } : null; }
+      if (kind === "air") { const n = round(floorTo(Math.max(...runs.map((r) => r.bestAir)) * 0.85, 0.1)); return n >= 0.5 ? { kind, n } : null; }
+      if (kind === "speed") { const n = Math.floor(Math.max(...runs.map((r) => r.topSpeed)) * 0.95); return n >= 8 ? { kind, n } : null; }
+      if (kind === "calm") {
+        const seen = runs.filter((r) => r.featMax[arg] != null);
+        if (!seen.length) return null;
+        const c = { kind, feature: arg, n: round(ceilTo(Math.min(...seen.map((r) => r.featMax[arg])) + 0.5, 0.5)) };
+        if (arg === "slick" && region === "market") c.wet = true;
+        return c;
+      }
+      return null;
+    };
+    let pick = null;
+    for (const spec of [wanted].concat(FALLBACK)) { pick = tryKind(spec); if (pick) break; }
+    table[d.id] = pick;
+    console.log(d.id.padEnd(12), wanted.padEnd(14), pick ? SH.challengeText(pick) : "NONE");
+  }
+  // Check: every challenge is met by at least one bot run.
+  Object.assign(SH.CHALLENGES, table);
+  let bad = 0;
+  for (const d of SH.DELIVERIES) {
+    const c = table[d.id]; if (!c) { bad++; continue; }
+    const truck = c.kind === "truck" ? c.truck : "pickup", noBrake = c.kind === "nobrake";
+    if (!(noBrake ? COASTS : [0]).some((coastFrom) => speeds.some((v) => SH.challengeMet(c, drive(d.id, levelFor[d.id], v, 200, truck, null, false, { noBrake, coastFrom }))))) { bad++; console.log("NOT MET", d.id, SH.challengeText(c)); }
+  }
+  console.log("challenges", Object.values(table).filter(Boolean).length, "of", SH.DELIVERIES.length, "unmet", bad);
+  if (process.argv.includes("--write") && !bad) {
+    const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
+    const body = "  var CHALLENGES = {\n" + Object.entries(table).map(([id, c]) => "    " + JSON.stringify(id) + ": " + JSON.stringify(c)).join(",\n") + "\n  };";
+    const src = fs.readFileSync(file, "utf8").replace(/(\/\/ CHALLENGES-BEGIN\n)[\s\S]*?(\n  \/\/ CHALLENGES-END)/, "$1" + body + "$2");
+    fs.writeFileSync(file, src);
+    console.log("written to engine.js");
+  }
+  process.exitCode = bad ? 1 : 0;
+}
+
+// Writes Dash Dalloway's runs: for each route, the clean bot run (two stars or
+// more, no wall hit) closest to halfway between gold and silver, at an upgrade level
+// a player would have by that region.
+function rivals() {
+  const table = {};
+  let bad = 0;
+  for (const d of SH.DELIVERIES) {
+    let pick = null;
+    for (let L = [1, 2, 3, 4, 5, 5][d.region]; L <= 5 && !pick; L++) {
+      const up = SH.rivalUpgrades(L);
+      for (const v of [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 9, 10]) {
+        const r = drive(d.id, up, v, 200);
+        if (r.status !== "done" || r.stars < 2 || r.dockHit || r.time < r.medals.gold) continue;
+        const aim = (r.medals.gold + r.medals.silver) / 2;
+        if (!pick || Math.abs(r.time - aim) < Math.abs(pick.t - aim)) pick = { v, L, t: Math.round(r.time * 10) / 10, gold: r.medals.gold, silver: r.medals.silver };
+      }
+    }
+    if (!pick) bad++;
+    else table[d.id] = { v: pick.v, L: pick.L, t: pick.t };
+    console.log(d.id.padEnd(12), pick ? `speed ${pick.v} level ${pick.L} time ${pick.t}s (gold ${pick.gold}, silver ${pick.silver})` : "NONE");
+  }
+  console.log("rivals", Object.keys(table).length, "of", SH.DELIVERIES.length);
+  if (process.argv.includes("--write")) {
+    const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
+    const body = "  var RIVALS = {\n" + Object.entries(table).map(([id, c]) => "    " + JSON.stringify(id) + ": " + JSON.stringify(c)).join(",\n") + "\n  };";
+    fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(/(\/\/ RIVALS-BEGIN\n)[\s\S]*?(\n  \/\/ RIVALS-END)/, "$1" + body + "$2"));
+    console.log("written to engine.js");
+  }
+  process.exitCode = bad ? 1 : 0;
+}
+
+// Every Special Order must be deliverable with two stars by the bot, at the
+// upgrade level a player would have when the order opens.
+function orders() {
+  let bad = 0;
+  for (const o of SH.ORDERS) {
+    const L = Math.min(5, 1 + o.region + (o.slot >= 3 ? 1 : 0) + (o.slot === 4 ? 1 : 0)), up = SH.rivalUpgrades(L), truck = o.truck || "pickup";
+    const runs = [3, 4, 5, 6.5, 8].map((v) => drive(null, up, v, 240, truck, o));
+    const best = runs.filter((r) => r.status === "done").sort((a, b) => b.stars - a.stars || a.time - b.time)[0];
+    const pass = best && best.stars >= 2;
+    if (!pass) bad++;
+    console.log(o.id.padEnd(18), o.twist.padEnd(8), ("L" + L).padEnd(4), runs.map((r) => cell(r, 12)).join(""), pass ? "" : "FAIL");
+  }
+  console.log("orders failing", bad);
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -145,4 +251,7 @@ else if (mode === "trucks") trucks();
 else if (mode === "long") long();
 else if (mode === "ghost") ghost();
 else if (mode === "trace") trace();
+else if (mode === "challenges") challenges();
+else if (mode === "rivals") rivals();
+else if (mode === "orders") orders();
 else table("Base truck, no upgrades", base, [4.5, 6, 8]);

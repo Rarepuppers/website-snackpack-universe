@@ -54,6 +54,7 @@ h1, h2, h3 { font-family: var(--serif); margin: 0; }
 .routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .route { background: var(--panel-2); border: 1px solid var(--line); border-radius: 13px; padding: 8px 4px; min-height: 74px; text-align: center; }
 .route b { display: block; font-size: 1.1rem; } .route small { color: var(--sun); letter-spacing: 1px; display: block; }
+.route .rname { display: block; font-style: normal; font-size: .74rem; font-weight: 700; line-height: 1.15; margin: 1px 0 2px; }
 .route em { font-style: normal; color: var(--soft); font-size: .72rem; display: block; }
 .route:disabled { opacity: .4; }
 .route.express em { color: var(--go); }
@@ -133,3 +134,28 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
 .banner .ico { width: 26px; height: 26px; vertical-align: middle; }
 .pause .ico { width: 22px; height: 22px; vertical-align: middle; }
 .set .opts { flex-wrap: wrap; }
+.nextbest { color: var(--sun); font-weight: 700; margin: 6px 0 0; }
+.route .ch { display: inline-block; font-size: .7rem; opacity: .45; } .route .ch.on { opacity: 1; color: var(--sun); } .route .ch .ico { width: 14px; height: 14px; vertical-align: -2px; }
+.challenge { color: var(--soft); margin: 6px 0 0; }
+.customer { background: rgba(255,255,255,.06); border-radius: 14px; padding: 10px; margin: 10px 0; }
+.customer.locked { opacity: .55; } .customer.locked b, .customer.locked small { display: block; }
+.customer .who { display: flex; align-items: center; gap: 10px; }
+.customer .face { font-size: 1.9rem; width: 44px; height: 44px; display: grid; place-items: center; background: rgba(255,255,255,.1); border-radius: 50%; }
+.customer .who small { display: block; color: var(--soft); font-size: .78rem; }
+.customer .rep { margin-left: auto; text-align: right; color: var(--sun); letter-spacing: 1px; }
+.customer .rep small { letter-spacing: 0; }
+.customer .orders { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 8px; }
+.order { text-align: left; background: rgba(0,0,0,.18); color: inherit; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 7px 9px; font: inherit; cursor: pointer; }
+.order b { display: block; font-size: .86rem; } .order small { display: block; color: var(--soft); font-size: .72rem; line-height: 1.2; }
+.order.done { border-color: var(--sun); } .order:disabled { opacity: .45; cursor: default; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--sun); vertical-align: 2px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; margin: 6px 0; }
+.swatch { background: var(--panel-2); border: 2px solid transparent; border-radius: 10px; padding: 5px; font-size: .68rem; font-weight: 700; line-height: 1.15; display: grid; justify-items: center; gap: 3px; min-height: 58px; }
+.swatch i { display: block; width: 30px; height: 22px; border-radius: 6px; border: 1px solid #0004; }
+.swatch[aria-pressed="true"] { border-color: var(--sun); } .swatch:disabled { opacity: .45; }
+.swatch .ico { width: 14px; height: 14px; }
+.truck .mastery { color: var(--sun); }
+.set.paintset { display: block; } .set.paintset .swatches { width: 100%; } .set.paintset small.sub { display: block; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 6px 0 8px; }
+.cal .day { font-style: normal; text-align: center; padding: 7px 0; border-radius: 9px; background: var(--panel-2); font-weight: 700; font-size: .78rem; color: var(--soft); }
+.cal .day.on { background: var(--sun); color: #2b1d14; } .cal .day.big { border: 1px dashed var(--sun); }

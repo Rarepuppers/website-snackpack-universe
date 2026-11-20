@@ -122,10 +122,12 @@ function doorDecal(text, color) {
   });
 }
 
+const GHOST_Z = -2.2;
 function buildTruck(spec, rail, quality, look = {}) {
   const authored = model("trucks/truck_" + spec.id);
   const D = SH.dimsFor(spec), width = authored ? AUTHORED_WIDTH[spec.id] || 1.8 : spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
-  const [paint, trim] = PAINT[spec.id];
+  // look.paint is an earned paint job: [body colour, trim colour].
+  const [paint, trim] = look.paint || PAINT[spec.id];
   const body = new Kit(), metal = new Kit(), dark = new Kit(), glass = new Kit(), rails = new Kit(), brakes = [];
   const half = width / 2, bedTop = D.bedHeight;
 
@@ -629,7 +631,7 @@ export class World3D {
       if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((mat) => { if (mat.map && !Object.values(texCache).includes(mat.map)) mat.map.dispose(); if (mat !== texCache.crateMat) mat.dispose(); });
     });
     this.scene.clear();
-    this.cargo = []; this.truckModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
+    this.cargo = []; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
   }
 
   // ─── Sky, light, ground and scenery for one region ──────────────
@@ -870,6 +872,7 @@ export class World3D {
     const model = buildTruck(game.spec, game.rail, q, this.look);
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
+    this.buildGhost(q);
     this.cargo = game.cargo.map((c) => { const g = buildCargo(c.type, q); scene.add(g); return { info: c, group: g, age: 0, wob: 0 }; });
 
     // Coins
@@ -1036,7 +1039,7 @@ export class World3D {
   showcase(truckId, regionIndex, rail) {
     this.lastBuild = { truck: truckId, region: regionIndex, rail };
     const id = "show-" + regionIndex;
-    const key = id + truckId + rail + this.quality.name + JSON.stringify(this.look) + (this.assetStamp || "");
+    const key = id + truckId + rail + this.quality.name + JSON.stringify(this.look) + JSON.stringify(this.depot || null) + (this.assetStamp || "");
     if (this.showKey === key && this.showcasing) return;
     this.showKey = key;
     const d = { id, region: regionIndex, index: 0, len: 60, heat: 0.2, load: [] };
@@ -1048,6 +1051,7 @@ export class World3D {
     const y = ground + spec.wheelR - D.axleY;
     model.root.position.set(50, y, 0);
     this.scene.add(model.root);
+    if (this.depot) this.buildYard(this.depot, (x) => SH.heightAt({ pts }, x));
     model.wheels.forEach((w, i) => { w.position.set(50 + (i ? D.frontX : D.rearX), y + D.axleY, 0); this.scene.add(w); });
     const kinds = SH.REGIONS[regionIndex].kinds || ["cake", "popcorn"];
     const load = ["crate", kinds[0], "crate", kinds[1]];
@@ -1062,6 +1066,63 @@ export class World3D {
     this.showPos = new THREE.Vector3(50, y, 0);
     d.load = null;
   }
+  // ─── The player's depot, behind the parked truck on the home screen ─
+  // Stage 1 to 5 grows with depot parts from Special Orders; extras are bought
+  // with coins. All code-built for now; Codex models can replace them later.
+  buildYard(depot, groundAt) {
+    const kit = new Kit(), glow = new Kit(), stage = depot.stage || 1, has = new Set(depot.extras || []);
+    const at = (x, z, fn) => fn(x, groundAt(x), z);
+    // 1: a shed
+    at(43, -9, (x, y, z) => {
+      kit.add(box(5, 3, 4), "#c9a77a", m(x, y + 1.5, z)).add(box(5.6, 0.3, 4.6), "#7a4a2e", m(x, y + 3.15, z, 0.18));
+      kit.add(box(1.4, 2.2, 0.1), "#5a3a26", m(x + 0.8, y + 1.1, z + 2.02));
+    });
+    if (stage >= 2) {
+      at(55.5, -5.5, (x, y, z) => {
+        kit.add(box(0.9, 1.8, 0.7), "#d8452e", m(x, y + 0.9, z)).add(box(0.7, 0.5, 0.1), "#f2ead8", m(x, y + 1.35, z + 0.36));
+        kit.add(cyl(0.05, 0.05, 1.2, 6), "#222", m(x + 0.5, y + 0.9, z, 0, 0, 0.5));
+      });
+      at(47.5, -5, (x, y, z) => {
+        kit.add(box(0.16, 3.2, 0.16), "#5a3a26", m(x - 1.3, y + 1.6, z)).add(box(0.16, 3.2, 0.16), "#5a3a26", m(x + 1.3, y + 1.6, z));
+        kit.add(box(3.2, 0.9, 0.12), "#f4c21f", m(x, y + 2.9, z)).add(box(2.8, 0.25, 0.14), "#d8452e", m(x, y + 2.9, z));
+      });
+    }
+    if (stage >= 3) at(36, -11, (x, y, z) => {
+      kit.add(box(7, 4.2, 5), "#e9dcc0", m(x, y + 2.1, z)).add(box(7.4, 0.4, 5.4), "#3c5a7a", m(x, y + 4.4, z));
+      kit.add(box(3.4, 3, 0.1), "#4a4a52", m(x, y + 1.5, z + 2.52));
+    });
+    if (stage >= 4) at(62, -9, (x, y, z) => {
+      kit.add(box(0.4, 7, 0.4), "#f2b42c", m(x, y + 3.5, z)).add(box(6, 0.4, 0.4), "#f2b42c", m(x - 2.2, y + 7, z));
+      kit.add(box(0.8, 0.8, 0.8), "#2a2a2e", m(x + 0.4, y + 7.3, z)).add(cyl(0.03, 0.03, 3, 4), "#333", m(x - 4.6, y + 5.5, z));
+      kit.add(box(1, 1, 1), "#c8955a", m(x - 4.6, y + 3.6, z));
+    });
+    if (stage >= 5) {
+      at(43, -9, (x, y, z) => { glow.add(box(4.2, 0.7, 0.12), "#ff4fa3", m(x, y + 3.9, z + 2.1)); glow.add(box(4.6, 0.12, 0.14), "#ffd23f", m(x, y + 4.35, z + 2.1)); });
+      [[57.5, -2.8], [60, -3.4]].forEach(([tx, tz]) => at(tx, tz, (x, y, z) => {
+        kit.add(cyl(0.5, 0.5, 0.08, 12), "#fff6e6", m(x, y + 0.75, z)).add(cyl(0.05, 0.05, 0.75, 6), "#444", m(x, y + 0.37, z));
+        kit.add(cyl(0.03, 0.03, 2, 4), "#ddd", m(x, y + 1.2, z)).add(cyl(0.02, 1.1, 0.5, 8), "#d8452e", m(x, y + 2.2, z));
+      }));
+    }
+    // Extras bought with coins.
+    const extra = {
+      bunting: () => { for (let i = 0; i < 9; i++) at(40.5 + i * 0.6, -6.9, (x, y, z) => kit.add(box(0.35, 0.4, 0.03), ["#d8452e", "#f4c21f", "#5fa8d3"][i % 3], m(x, y + 3.2 - Math.sin(i / 8 * Math.PI) * 0.4, z, 0, 0, Math.PI / 4))); },
+      lights: () => { for (let i = 0; i < 10; i++) at(39 + i * 0.9, -6.8, (x, y, z) => glow.add(blob(0.09, 0), "#ffe08a", m(x, y + 3.6 - Math.sin(i / 9 * Math.PI) * 0.5, z))); },
+      flowers: () => at(41, -6.9, (x, y, z) => { kit.add(box(2.4, 0.4, 0.5), "#7a4a2e", m(x, y + 0.2, z)); for (let i = 0; i < 6; i++) kit.add(blob(0.18, 0), ["#f07a5a", "#f4c21f", "#d14a6f"][i % 3], m(x - 1 + i * 0.4, y + 0.5, z)); }),
+      bench: () => at(52, -6.5, (x, y, z) => kit.add(box(1.8, 0.1, 0.5), "#8a5a36", m(x, y + 0.5, z)).add(box(1.8, 0.5, 0.08), "#8a5a36", m(x, y + 0.8, z - 0.24)).add(box(0.1, 0.5, 0.4), "#333", m(x - 0.8, y + 0.25, z)).add(box(0.1, 0.5, 0.4), "#333", m(x + 0.8, y + 0.25, z))),
+      barrels: () => [0, 0.75, 0.38].forEach((dx, i) => at(59 + dx, -6.5 - (i === 2 ? 0.6 : 0), (x, y, z) => kit.add(cyl(0.35, 0.35, 0.9, 10), "#9a5a2e", m(x, y + 0.45, z)))),
+      hay: () => [0, 1.3].forEach((dx) => at(33 + dx, -6, (x, y, z) => kit.add(cyl(0.6, 0.6, 1.1, 12), "#e2c46a", m(x, y + 0.6, z, Math.PI / 2)))),
+      lamp: () => [45.5, 53.5].forEach((lx) => at(lx, -4.6, (x, y, z) => { kit.add(cyl(0.06, 0.08, 3.2, 6), "#2a2a2e", m(x, y + 1.6, z)); glow.add(blob(0.22, 1), "#ffe8a8", m(x, y + 3.3, z)); })),
+      windsock: () => at(66, -6, (x, y, z) => { kit.add(cyl(0.05, 0.05, 4, 6), "#ddd", m(x, y + 2, z)); kit.add(cyl(0.25, 0.12, 1.2, 8), "#f07a2a", m(x - 0.6, y + 3.8, z, 0, 0, Math.PI / 2)); }),
+      tower: () => at(30, -13, (x, y, z) => { [-1, 1].forEach((sx) => [-1, 1].forEach((sz) => kit.add(box(0.2, 6, 0.2), "#7a5a3e", m(x + sx, y + 3, z + sz)))); kit.add(cyl(1.5, 1.5, 2.2, 14), "#9ab8c8", m(x, y + 7.1, z)).add(cyl(0.1, 1.7, 0.8, 14), "#6a4a3a", m(x, y + 8.6, z)); }),
+      picnic: () => at(64, -3.6, (x, y, z) => kit.add(box(2, 0.1, 0.9), "#b07a4a", m(x, y + 0.75, z)).add(box(2, 0.08, 0.3), "#b07a4a", m(x, y + 0.45, z - 0.7)).add(box(2, 0.08, 0.3), "#b07a4a", m(x, y + 0.45, z + 0.7)).add(box(0.1, 0.75, 1.6), "#7a4a2e", m(x - 0.8, y + 0.37, z)).add(box(0.1, 0.75, 1.6), "#7a4a2e", m(x + 0.8, y + 0.37, z))),
+      fountain: () => at(50, -12, (x, y, z) => { kit.add(cyl(1.6, 1.8, 0.6, 16), "#cfc6b6", m(x, y + 0.3, z)).add(cyl(1.35, 1.35, 0.1, 16), "#5fb8e0", m(x, y + 0.58, z)).add(cyl(0.2, 0.3, 1.4, 8), "#cfc6b6", m(x, y + 1.1, z)); }),
+      statue: () => at(50, -8.5, (x, y, z) => { kit.add(box(1.4, 1, 1.4), "#cfc6b6", m(x, y + 0.5, z)); kit.add(blob(0.9, 1), "#e0a43a", m(x, y + 1.9, z, 0, 0, 0, 1.4, 0.8, 0.8)); })
+    };
+    Object.keys(extra).forEach((k) => { if (has.has(k)) extra[k](); });
+    if (kit.pos.length) { const mesh = new THREE.Mesh(kit.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 })); mesh.castShadow = this.quality.shadows; mesh.receiveShadow = true; this.scene.add(mesh); }
+    if (glow.pos.length) this.scene.add(new THREE.Mesh(glow.build(), new THREE.MeshBasicMaterial({ vertexColors: true })));
+  }
+
   frameShowcase(dt) {
     this.time += dt;
     // The truck sits clear of whatever the menu covers.
@@ -1078,7 +1139,38 @@ export class World3D {
   }
 
   // ─── Per-frame ──────────────────────────────────────────────────
+  // The ghost is a see-through copy of the truck, a little further from the
+  // camera, driven by a second physics run that app.js steps alongside.
+  buildGhost(q) {
+    this.ghostModel = null;
+    const gg = this.ghostGame;
+    if (!gg) return;
+    // Dash Dalloway, the rival, drives an orange-tinted pickup with no driver styling of yours.
+    const rival = this.ghostKind === "rival";
+    const gm = buildTruck(gg.spec, gg.rail, q, rival ? {} : this.look);
+    const ghostify = (o) => o.traverse((c) => {
+      if (c.isLight) c.visible = false;
+      if (!c.isMesh) return;
+      c.castShadow = false; c.receiveShadow = false;
+      const list = (Array.isArray(c.material) ? c.material : [c.material]).map((mat) => {
+        const k = mat.clone(); k.transparent = true; k.opacity = rival ? 0.38 : 0.3; k.depthWrite = false;
+        if (rival) { k.color = new THREE.Color("#ff8a2a"); if (k.emissive) k.emissive = new THREE.Color("#5a2200"); }
+        return k;
+      });
+      c.material = Array.isArray(c.material) ? list : list[0];
+    });
+    [gm.root, ...gm.wheels].forEach((o) => { ghostify(o); this.scene.add(o); });
+    this.ghostModel = gm;
+  }
+
   syncActors(game, dt) {
+    const gm = this.ghostModel, gg = this.ghostGame;
+    if (gm && gg) {
+      const gp = gg.truck.getPosition();
+      gm.root.position.set(gp.x, gp.y, GHOST_Z);
+      gm.root.rotation.z = gg.truck.getAngle();
+      gg.wheels.forEach((w, i) => { const wp = w.getPosition(); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = w.getAngle(); });
+    }
     const model = this.truckModel, truck = game.truck, p = truck.getPosition();
     model.root.position.set(p.x, p.y, 0);
     model.root.rotation.z = truck.getAngle();

@@ -35,6 +35,7 @@
     stallSeconds: 2.5,
     stopSeconds: 0.7,
     stopSpeed: 0.7,
+    dockSpeed: 2,                  // hitting the depot wall faster than this costs the medal
     parSpeed: 5.5,                 // metres a second for the gold medal
     silver: 1.25,                  // medal times, as multiples of the gold time
     bronze: 1.6,
@@ -48,7 +49,7 @@
     popLift: 0.35,
     cakeTilt: 0.6,                 // radians off upright before a cake is ruined
     meltFloor: 1 / 3,              // ice cream pay at 1.5 times the gold time
-    longLen: 1200,
+    longLen: 2500,                 // long enough that nobody reaches the end; heat keeps climbing
     longClimb: 1.6,                // extra heat per kilometre of a Long Haul
     longSteep: 1.5,                // a Long Haul may grow this much steeper than the region's routes
     longCanGrow: 0.035
@@ -77,6 +78,15 @@
     { len: 420, heat: 0.9, load: "cbcacac" },
     { len: 340, heat: 1.05, load: "cacbcaca", pickup: 3 }
   ];
+  // One name per route, in region order. Route 7 is the long one, 8 the Big Order.
+  var ROUTE_NAMES = [
+    ["Windmill Lane", "Sourdough Rise", "Egg Farm Drop", "Crumb Corner", "Rolling Pin Ridge", "Muffin Top", "Long Loaf Road", "The Big Bake"],
+    ["Creamery Track", "Buttermilk Bowl", "Melon Mile", "Gusty Gap", "Whey Out West", "Churn Ridge", "The Long Dairy", "The Big Churn"],
+    ["Jetty Jaunt", "Honeycomb Hop", "Lighthouse Lane", "Tidal Ford", "Wobbly Pier", "Beeswax Bay", "Harbour Loop", "The Big Hive"],
+    ["Sleet Street", "Sundae Slope", "Frozen Lake", "Brain Freeze Bend", "Avalanche Gully", "Ski-Jump Crest", "Glacier Run", "The Big Freeze"],
+    ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
+    ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
+  ];
   var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14 };
 
   // Early regions rise more gently, so the free region never turns into a wall.
@@ -91,7 +101,7 @@
   REGIONS.forEach(function (region, r) {
     ROUTES.forEach(function (route, i) {
       DELIVERIES.push({
-        id: region.id + "-" + (i + 1), region: r, index: i, len: route.len, heat: regionHeat(route.heat, r),
+        id: region.id + "-" + (i + 1), name: ROUTE_NAMES[r][i], region: r, index: i, len: route.len, heat: regionHeat(route.heat, r),
         load: loadFor(region, r, i, route.load), pickup: r > 0 ? route.pickup || 0 : 0
       });
     });
@@ -321,6 +331,61 @@
   function findDelivery(id) {
     return DELIVERIES.filter(function (x) { return x.id === id; })[0] || null;
   }
+  // ════ Customers and Special Orders ══════════════════════════════
+  // Each region has one customer. Stars in a region raise their reputation, and
+  // each reputation level opens one Special Order: a fresh road (its own seed)
+  // shaped like one of the career routes, with a twist.
+  var CUSTOMERS = [
+    { id: "mabel", name: "Mabel Crumb", role: "the baker", icon: "\ud83e\udd50" },
+    { id: "dot", name: "Farmer Dot", role: "the dairy farmer", icon: "\ud83e\udd5b" },
+    { id: "comb", name: "Captain Comb", role: "the harbour master", icon: "\u2693" },
+    { id: "yolanda", name: "Yolanda Frost", role: "the ice-cream maker", icon: "\ud83c\udf66" },
+    { id: "pepper", name: "Pepper Pete", role: "the popcorn seller", icon: "\ud83c\udf36\ufe0f" },
+    { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" }
+  ];
+  var REP_STARS = [3, 8, 13, 18, 22];      // region stars for reputation levels 1 to 5
+  // Twist per order slot. `fragile` is the region's delicate cargo; `truck` the truck it suits.
+  var FRAGILE = [["eggs", "eggs", "crate"], ["melon", "milk", "melon"], ["cake", "jelly", "cake"], ["icecream", "eggs", "icecream"], ["popcorn", "jelly", "popcorn"], ["cake", "eggs", "melon"]];
+  var ORDER_TRUCK = ["tuktuk", "buggy", "van", "hauler", "buggy", "van"];
+  var ORDER_NAMES = [
+    ["Breakfast Rush", "Soggy Sourdough", "Egg Express", "Little Tuk Delivery", "The Wedding Bake"],
+    ["Cold Milk Dash", "Rain on the Dunes", "Melon Medley", "Buggy Run", "The Cheese Fair"],
+    ["Tide Is Turning", "Harbour Squall", "Cake for the Captain", "Van Over the Water", "The Honey Festival"],
+    ["Before It Melts", "Sleet Storm", "Sundae Best", "Hauler Over the Pass", "The Winter Carnival"],
+    ["Hot Delivery", "Monsoon Ridge", "Popcorn Pyramid", "Buggy on the Ridge", "The Chilli Cook-Off"],
+    ["Last Orders", "Midnight Drizzle", "Fragile Night Shift", "Van After Dark", "The Night Market Feast"]
+  ];
+  var ORDERS = [];
+  REGIONS.forEach(function (region, r) {
+    var frag = FRAGILE[r];
+    [
+      { route: 1, twist: "rush" },
+      { route: 3, twist: "rain", grip: 0.75 },
+      { route: 2, twist: "fragile", load: [frag[0], frag[1], frag[2], frag[0], frag[1]] },
+      { route: 4, twist: "truck", truck: ORDER_TRUCK[r] },
+      { route: 5, twist: "big", extra: 2 }
+    ].forEach(function (o, n) {
+      var route = ROUTES[o.route], base = loadFor(region, r, o.route, route.load);
+      var load = o.load || (o.extra ? base.concat(["crate", "crate"]) : base);
+      ORDERS.push({
+        id: region.id + "-order-" + (n + 1), order: true, slot: n, name: ORDER_NAMES[r][n], customer: r, twist: o.twist,
+        region: r, index: o.route, len: route.len + (o.extra ? 40 : 0), heat: regionHeat(route.heat, r) * 1.05,
+        load: load, pickup: r > 0 && o.twist === "big" ? 2 : 0, grip: o.grip || 1, truck: o.truck || null
+      });
+    });
+  });
+  function findOrder(id) { return ORDERS.filter(function (o) { return o.id === id; })[0] || null; }
+  function repLevel(r, stars) { var n = regionStars(r, stars); return REP_STARS.filter(function (x) { return n >= x; }).length; }
+  function orderText(o) {
+    return ({
+      rush: "Rush order: beat the gold time for a big tip.",
+      rain: "It is pouring. Less grip everywhere.",
+      fragile: "Nothing but delicate cargo.",
+      truck: "Must go in the " + truckSpec(o.truck).name + ".",
+      big: "The biggest load yet" + (o.pickup ? ", with a pickup on the way." : ".")
+    })[o.twist] || "";
+  }
+
   // One shared route a day. maxRegion keeps it inside what a player has reached.
   function dailyDelivery(date, maxRegion) {
     var h = hash("daily" + date), region = h % (Math.max(0, maxRegion) + 1), index = 1 + (h >>> 8) % 6;
@@ -348,13 +413,15 @@
     var D = dimsFor(spec);
     var up = Object.assign({ engine: 0, suspension: 0, tyres: 0, straps: 0, tank: 0 }, opts.upgrades || {});
     var region = REGIONS[d.region], terrain = buildTerrain(d), pick = buildPickups(d, terrain);
+    // A Special Order in the rain has less grip everywhere.
+    var roadGrip = region.friction * (d.grip || 1);
     var world = new planck.World({ gravity: { x: 0, y: -BALANCE.gravity }, allowSleep: false });
 
     var ground = world.createBody();
     ground.setUserData({ kind: "ground" });
     ground.createFixture({
       shape: new planck.Chain(terrain.pts.map(function (p) { return { x: p.x, y: p.y }; }), false),
-      friction: region.friction
+      friction: roadGrip
     });
     // End wall: pull up too hard and the load keeps going.
     var endY = terrain.pts[terrain.pts.length - 1].y;
@@ -428,7 +495,8 @@
       status: "driving", reason: null, time: 0, coinsTaken: 0, par: parTime(d), medals: medalTimes(d),
       fuel: BALANCE.tankSeconds + 9 * up.tank, maxFuel: BALANCE.tankSeconds + 9 * up.tank,
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
-      total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: []
+      total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
+      brakeUsed: false, featMax: {}
     };
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
@@ -461,7 +529,7 @@
       if (w && w.other && w.other.kind === "ground") w.self.touching = Math.max(0, w.self.touching - 1);
     });
     // Ice, wet cobbles and plank bridges change how a tyre meets the road.
-    var mixedGrip = Math.sqrt(wheelGrip * region.friction);
+    var mixedGrip = Math.sqrt(wheelGrip * roadGrip);
     world.on("pre-solve", function (c) {
       var w = tagged(c, "wheel");
       if (!w || !w.other || w.other.kind !== "ground") return;
@@ -534,6 +602,7 @@
       var bits = (input.gas ? 1 : 0) | (brake ? 2 : 0), rec = g.rec;
       if (rec.length && rec[rec.length - 2] === bits) rec[rec.length - 1] += 1; else rec.push(bits, 1);
       g.gasOn = gas && !brake; g.brakeOn = brake;
+      if (brake) g.brakeUsed = true;
       var vx = truck.getLinearVelocity().x;
       if (gas && !brake) {
         rearJoint.setMotorSpeed(-topSpeed); rearJoint.setMaxMotorTorque(torque);
@@ -560,6 +629,7 @@
         if (!wasGrounded && g.airTime > 0.22) {
           var wp = wheels[0].getPosition();
           g.events.push({ type: "land", air: g.airTime, x: wp.x, y: wp.y });
+          g.landings = (g.landings || 0) + 1;
         }
         g.airTime = 0;
       }
@@ -630,6 +700,11 @@
       var angle = Math.abs(normalAngle(truck.getAngle()));
       g.topSpeed = Math.max(g.topSpeed, speedNow);
       g.stuckTime = gas && speedNow < 0.25 ? (g.stuckTime || 0) + STEP : 0;
+      if (zone) g.featMax[zone.type] = Math.max(g.featMax[zone.type] || 0, speedNow);
+      // Driving into the depot wall is not a stop: it costs the medal.
+      if (!g.dockHit && pos.x + spec.bedHalf + 0.3 > terrain.total && speedNow > BALANCE.dockSpeed) {
+        g.dockHit = true; g.events.push({ type: "dock", x: pos.x, y: pos.y, speed: speedNow });
+      }
 
       // Pickup stop: pull up inside it, or drive on and leave those loads behind.
       if (g.pickupState === "ahead") {
@@ -680,7 +755,7 @@
     var share = kept / total, done = g.status === "done";
     var metres = Math.max(0, Math.round(g.truck.getPosition().x - 8));
     var stars = !done || d.long ? 0 : share >= 1 ? 3 : share >= 0.75 ? 2 : 1;
-    var medal = !done || stars < 2 || d.long ? 0 : g.time <= g.medals.gold ? 3 : g.time <= g.medals.silver ? 2 : g.time <= g.medals.bronze ? 1 : 0;
+    var medal = !done || stars < 2 || d.long || g.dockHit ? 0 : g.time <= g.medals.gold ? 3 : g.time <= g.medals.silver ? 2 : g.time <= g.medals.bronze ? 1 : 0;
     var lines = [];
     var coins = Math.round(g.coinsTaken * BALANCE.coinValue);
     var score = 0;
@@ -698,10 +773,94 @@
     return {
       status: g.status, reason: g.reason, kept: kept, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
-      long: !!d.long, metres: metres, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
+      long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
+      coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
       lines: lines, earned: lines.reduce(function (n, l) { return n + l.coins; }, 0)
     };
   }
+
+  // ════ Bot driver ═════════════════════════════════════════════════
+  // A careful driver that cruises at `target` metres a second, slows for crests
+  // and dips ahead, and pulls up at stops. dev/sim.js tests the game with it, and
+  // the rival in the game is this same driver, so its runs are exact.
+  function botInput(g, target) {
+    var t = g.terrain, pos = g.truck.getPosition(), vx = g.truck.getLinearVelocity().x;
+    var angle = normalAngle(g.truck.getAngle());
+    var ahead = 5 + vx;
+    var s1 = (heightAt(t, pos.x + 2) - heightAt(t, pos.x)) / 2;
+    var s2 = (heightAt(t, pos.x + ahead + 2) - heightAt(t, pos.x + ahead)) / 2;
+    var want = target - Math.min(target * 0.55, Math.abs(s2 - s1) * 9);
+    var toStop = (t.zoneStart + t.zoneEnd) / 2 - pos.x;
+    // A pickup stop is a second place to pull up, part-way along.
+    if (g.pickupState === "ahead") toStop = (g.pickup.x0 + g.pickup.x1) / 2 - pos.x;
+    if (toStop < 40) want = Math.min(want, Math.max(0.1, toStop * 0.28));
+    var input = { gas: false, brake: false };
+    if (!g.grounded()) {
+      if (angle > 0.14) input.brake = true;
+      else if (angle < -0.14) input.gas = true;
+    } else if (toStop < 1 && vx > 0.2) input.brake = true;
+    else if (toStop < 0.5) input.brake = false;
+    else if (vx < want) input.gas = true;
+    else if (vx > want + 1.6) input.brake = true;
+    return input;
+  }
+
+  // ════ The rival: Dash Dalloway ═══════════════════════════════════
+  // The bot driver at a set cruising speed (v) and upgrade level (L) for each
+  // route, written by `node dev/sim.js rivals --write`. t is Dash's time.
+  // RIVALS-BEGIN
+  var RIVALS = {
+    "bakery-1": {"v":5.5,"L":1,"t":36},
+    "bakery-2": {"v":6,"L":1,"t":44.1},
+    "bakery-3": {"v":6,"L":1,"t":52.4},
+    "bakery-4": {"v":6.5,"L":1,"t":60},
+    "bakery-5": {"v":6.5,"L":1,"t":67.7},
+    "bakery-6": {"v":7,"L":1,"t":71.7},
+    "bakery-7": {"v":7,"L":1,"t":95.3},
+    "bakery-8": {"v":7.5,"L":1,"t":74.5},
+    "dunes-1": {"v":6,"L":2,"t":34.5},
+    "dunes-2": {"v":6,"L":2,"t":43.8},
+    "dunes-3": {"v":6.5,"L":2,"t":49},
+    "dunes-4": {"v":7,"L":2,"t":57.3},
+    "dunes-5": {"v":7,"L":3,"t":68.2},
+    "dunes-6": {"v":6.5,"L":3,"t":81.7},
+    "dunes-7": {"v":7,"L":4,"t":95.9},
+    "dunes-8": {"v":7,"L":3,"t":84.5},
+    "harbour-1": {"v":6.5,"L":3,"t":36.6},
+    "harbour-2": {"v":6.5,"L":3,"t":44.9},
+    "harbour-3": {"v":8,"L":3,"t":48.4},
+    "harbour-4": {"v":6.5,"L":3,"t":62.8},
+    "harbour-5": {"v":4,"L":3,"t":110.8},
+    "harbour-6": {"v":7.5,"L":3,"t":72.9},
+    "harbour-7": {"v":4,"L":3,"t":162.1},
+    "harbour-8": {"v":4,"L":5,"t":137.9},
+    "frost-1": {"v":7,"L":4,"t":35.6},
+    "frost-2": {"v":7,"L":4,"t":45.2},
+    "frost-3": {"v":7.5,"L":4,"t":49.1},
+    "frost-4": {"v":6.5,"L":4,"t":64.8},
+    "frost-5": {"v":7,"L":4,"t":70.9},
+    "frost-6": {"v":7.5,"L":5,"t":72},
+    "frost-7": {"v":7,"L":4,"t":100.3},
+    "frost-8": {"v":8,"L":4,"t":80},
+    "chilli-1": {"v":7,"L":5,"t":36.3},
+    "chilli-2": {"v":7,"L":5,"t":45.8},
+    "chilli-3": {"v":6.5,"L":5,"t":57.2},
+    "chilli-4": {"v":8,"L":5,"t":57.3},
+    "chilli-5": {"v":7,"L":5,"t":70.7},
+    "chilli-6": {"v":5.5,"L":5,"t":92.5},
+    "chilli-7": {"v":6,"L":5,"t":119},
+    "chilli-8": {"v":5,"L":5,"t":113.5},
+    "market-1": {"v":7,"L":5,"t":35.9},
+    "market-2": {"v":7,"L":5,"t":44.4},
+    "market-3": {"v":7.5,"L":5,"t":49.2},
+    "market-4": {"v":6.5,"L":5,"t":64.5},
+    "market-6": {"v":7.5,"L":5,"t":72},
+    "market-7": {"v":7.5,"L":5,"t":95.3},
+    "market-8": {"v":8,"L":5,"t":85.3}
+  };
+  // RIVALS-END
+  function rivalFor(id) { return RIVALS[id] || null; }
+  function rivalUpgrades(L) { var u = {}; UPGRADES.forEach(function (x) { u[x.id] = L; }); return u; }
 
   // ════ Ghosts ═════════════════════════════════════════════════════
   // Replays recorded pedals and returns x, y, angle for every `every` steps.
@@ -718,6 +877,89 @@
     return { path: path, every: every, report: report(g) };
   }
 
+  // ════ Route challenges: one extra objective per career route ═════
+  // The table is written by `node dev/sim.js challenges --write`, which sets each
+  // target from what a bot driver manages, so every challenge is proven possible.
+  var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps" };
+  // CHALLENGES-BEGIN
+  var CHALLENGES = {
+    "bakery-1": {"kind":"coins","n":12},
+    "bakery-2": {"kind":"speed","n":11},
+    "bakery-3": {"kind":"fuel","n":0.8},
+    "bakery-4": {"kind":"air","n":0.6},
+    "bakery-5": {"kind":"truck","truck":"tuktuk"},
+    "bakery-6": {"kind":"flat","n":0.4},
+    "bakery-7": {"kind":"fuel","n":0.75},
+    "bakery-8": {"kind":"coins","n":37},
+    "dunes-1": {"kind":"speed","n":11},
+    "dunes-2": {"kind":"coins","n":14},
+    "dunes-3": {"kind":"flat","n":0.4},
+    "dunes-4": {"kind":"truck","truck":"buggy"},
+    "dunes-5": {"kind":"flat","n":0.4},
+    "dunes-6": {"kind":"air","n":0.6},
+    "dunes-7": {"kind":"fuel","n":0.75},
+    "dunes-8": {"kind":"coins","n":42},
+    "harbour-1": {"kind":"coins","n":13},
+    "harbour-2": {"kind":"calm","feature":"bridge","n":4},
+    "harbour-3": {"kind":"speed","n":11},
+    "harbour-4": {"kind":"calm","feature":"ford","n":4},
+    "harbour-5": {"kind":"truck","truck":"van"},
+    "harbour-6": {"kind":"flat","n":0.4},
+    "harbour-7": {"kind":"fuel","n":0.75},
+    "harbour-8": {"kind":"calm","feature":"bridge","n":4.5},
+    "frost-1": {"kind":"coins","n":9},
+    "frost-2": {"kind":"calm","feature":"slick","n":5.5},
+    "frost-3": {"kind":"nobrake"},
+    "frost-4": {"kind":"fuel","n":0.8},
+    "frost-5": {"kind":"truck","truck":"hauler"},
+    "frost-6": {"kind":"calm","feature":"slick","n":7.5},
+    "frost-7": {"kind":"flat","n":0.4},
+    "frost-8": {"kind":"coins","n":34},
+    "chilli-1": {"kind":"air","n":0.7},
+    "chilli-2": {"kind":"coins","n":17},
+    "chilli-3": {"kind":"flat","n":0.4},
+    "chilli-4": {"kind":"coins","n":24},
+    "chilli-5": {"kind":"truck","truck":"monster"},
+    "chilli-6": {"kind":"coins","n":35},
+    "chilli-7": {"kind":"fuel","n":0.75},
+    "chilli-8": {"kind":"coins","n":38},
+    "market-1": {"kind":"coins","n":11},
+    "market-2": {"kind":"calm","feature":"bump","n":5},
+    "market-3": {"kind":"air","n":0.5},
+    "market-4": {"kind":"calm","feature":"slick","n":7.5,"wet":true},
+    "market-5": {"kind":"truck","truck":"hauler"},
+    "market-6": {"kind":"flat","n":0.5},
+    "market-7": {"kind":"fuel","n":0.75},
+    "market-8": {"kind":"coins","n":37}
+  };
+  // CHALLENGES-END
+  function challengeFor(id) { return CHALLENGES[id] || null; }
+  function challengeText(c) {
+    if (!c) return "";
+    if (c.kind === "coins") return "Pick up " + c.n + " road coins";
+    if (c.kind === "nobrake") return "Stop at the depot without touching BRAKE or the wall";
+    if (c.kind === "fuel") return "Finish with " + Math.round(c.n * 100) + "% of the tank left";
+    if (c.kind === "flat") return "No jump longer than " + c.n + "s";
+    if (c.kind === "air") return "Get " + c.n + "s of air in one jump";
+    if (c.kind === "speed") return "Reach " + c.n + " m/s";
+    if (c.kind === "truck") return "Deliver in the " + truckSpec(c.truck).name;
+    if (c.kind === "calm") return "Cross " + (c.wet ? "the wet cobbles" : FEATURE_NAMES[c.feature] || c.feature) + " below " + c.n + " m/s";
+    return "";
+  }
+  // Every challenge also needs the delivery made with at least two stars.
+  function challengeMet(c, r) {
+    if (!c || r.status !== "done" || r.stars < 2 || r.long) return false;
+    if (c.kind === "coins") return r.coinsTaken >= c.n;
+    if (c.kind === "nobrake") return !r.brakeUsed && !r.dockHit;
+    if (c.kind === "fuel") return r.fuelShare >= c.n;
+    if (c.kind === "flat") return r.bestAir <= c.n;
+    if (c.kind === "air") return r.bestAir >= c.n;
+    if (c.kind === "speed") return r.topSpeed >= c.n;
+    if (c.kind === "truck") return r.truck === c.truck;
+    if (c.kind === "calm") return r.featMax[c.feature] != null && r.featMax[c.feature] <= c.n;
+    return false;
+  }
+
   // ════ Contracts: three small jobs a day ══════════════════════════
   var CONTRACTS = [
     { id: "eggs", text: "Deliver 6 trays of eggs", goal: 6, pay: 40, count: function (r) { return r.status === "done" ? r.kinds.eggs : 0; } },
@@ -729,10 +971,43 @@
     { id: "air", text: "Spend 5 seconds in the air", goal: 5, pay: 35, count: function (r) { return r.airTotal; } },
     { id: "metres", text: "Drive 2 kilometres", goal: 2000, pay: 40, count: function (r) { return r.metres; } },
     { id: "runs", text: "Finish 4 deliveries", goal: 4, pay: 35, count: function (r) { return r.status === "done" ? 1 : 0; } },
-    { id: "long", text: "Drive 400 metres in one Long Haul", goal: 1, pay: 50, count: function (r) { return r.long && r.metres >= 400 ? 1 : 0; } }
+    { id: "long", text: "Drive 400 metres in one Long Haul", goal: 1, pay: 50, count: function (r) { return r.long && r.metres >= 400 ? 1 : 0; } },
+    // app.js adds beatRival, challengeDone and orderDone to the report before counting.
+    { id: "rival", text: "Beat Dash Dalloway on any route", goal: 1, pay: 50, count: function (r) { return r.beatRival ? 1 : 0; } },
+    { id: "challenge", text: "Complete a route challenge", goal: 1, pay: 50, count: function (r) { return r.challengeDone ? 1 : 0; } },
+    { id: "order", text: "Deliver a Special Order", goal: 1, pay: 60, count: function (r) { return r.orderDone ? 1 : 0; } },
+    { id: "landings", text: "Land 10 jumps", goal: 10, pay: 35, count: function (r) { return r.landings || 0; } },
+    { id: "silver", text: "Win 2 silver or gold medals", goal: 2, pay: 45, count: function (r) { return r.medal >= 2 ? 1 : 0; } },
+    { id: "speed", text: "Reach 10 m/s", goal: 1, pay: 30, count: function (r) { return r.topSpeed >= 10 ? 1 : 0; } },
+    { id: "milk", region: 1, text: "Deliver 6 bottles of milk", goal: 6, pay: 45, count: function (r) { return r.status === "done" ? r.kinds.milk : 0; } },
+    { id: "melon", region: 1, text: "Deliver 4 melons", goal: 4, pay: 45, count: function (r) { return r.status === "done" ? r.kinds.melon : 0; } },
+    { id: "cake", region: 2, text: "Deliver 4 cakes", goal: 4, pay: 50, count: function (r) { return r.status === "done" ? r.kinds.cake : 0; } },
+    { id: "icecream", region: 3, text: "Deliver 4 ice creams", goal: 4, pay: 55, count: function (r) { return r.status === "done" ? r.kinds.icecream : 0; } },
+    { id: "popcorn", region: 4, text: "Deliver 6 bags of popcorn", goal: 6, pay: 55, count: function (r) { return r.status === "done" ? r.kinds.popcorn : 0; } }
   ];
-  function contractsFor(date) {
-    var r = rng(hash("contracts" + date)), pool = CONTRACTS.slice(), out = [];
+  // One bigger job a week.
+  var WEEKLY = [
+    { id: "w-loads", text: "Deliver 60 loads this week", goal: 60, pay: 220, count: function (r) { return r.status === "done" ? r.kept : 0; } },
+    { id: "w-stars", text: "Earn 30 stars in deliveries this week", goal: 30, pay: 220, count: function (r) { return r.status === "done" ? r.stars : 0; } },
+    { id: "w-medals", text: "Win 8 medals this week", goal: 8, pay: 240, count: function (r) { return r.medal ? 1 : 0; } },
+    { id: "w-metres", text: "Drive 10 kilometres this week", goal: 10000, pay: 220, count: function (r) { return r.metres; } },
+    { id: "w-orders", text: "Deliver 3 Special Orders this week", goal: 3, pay: 260, count: function (r) { return r.orderDone ? 1 : 0; } }
+  ];
+  function weeklyFor(week) { return WEEKLY[hash("weekly" + week) % WEEKLY.length]; }
+
+  // ════ Weekly Cup: five career routes a week, best times added up ═══
+  // The legs come from the week and the regions a player has reached, so
+  // everyone at the same point gets the same cup.
+  function cupFor(week, maxRegion) {
+    var r = rng(hash("cup" + week + ":" + maxRegion)), pool = DELIVERIES.filter(function (d) { return d.region <= maxRegion && d.index !== 6; }), legs = [];
+    while (legs.length < 5 && pool.length) legs.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
+    legs.sort(function (a, b) { return a.region - b.region || a.index - b.index; });
+    var sum = function (k) { return legs.reduce(function (n, d) { return n + medalTimes(d)[k]; }, 0); };
+    return { week: week, legs: legs, gold: sum("gold"), silver: sum("silver"), bronze: sum("bronze") };
+  }
+  function contractsFor(date, maxRegion) {
+    var top = maxRegion == null ? REGIONS.length : maxRegion;
+    var r = rng(hash("contracts" + date)), pool = CONTRACTS.filter(function (c) { return (c.region || 0) <= top; }), out = [];
     while (out.length < 3) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
     return out;
   }
@@ -756,7 +1031,9 @@
     TRUCKS: TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
-    contractsFor: contractsFor, ghostPath: ghostPath, featureAt: featureAt,
+    contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, featureAt: featureAt,
+    CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
+    botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
     heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng
   };
 });
