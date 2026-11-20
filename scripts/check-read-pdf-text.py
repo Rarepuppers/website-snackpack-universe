@@ -15,6 +15,7 @@ for b in books:
  assert f'{len(reader.pages)} printed pages' in doc,(b['slug'],'incorrect printed page count')
  assert f'{(ROOT/b["pdf"]).stat().st_size/1048576:.1f} MB' in doc,(b['slug'],'incorrect PDF download size')
  assert len(texts)>=len(b['text']),(b['slug'],'missing printable pages')
+ count_together={q["page"]:q for q in b.get("quizzes",[]) if "page" in q and "choices" in q}
  cursor=0
  for i,sentence in enumerate(b['text']):
   matches=[j for j in range(cursor,len(texts)) if norm(sentence) in norm(texts[j])]
@@ -27,6 +28,12 @@ for b in books:
     assert norm(model) in norm(' '.join(texts[len(b['text']):])),(b['slug'],i+1,'printable questions omit sequence')
    if teaching.get('observation'):
     assert norm(teaching['observation']) in norm(texts[matches[0]]),(b['slug'],i+1,'actual PDF omits observation alternative')
+  if i+1 in count_together:
+   q=count_together[i+1]
+   printed=norm(texts[matches[0]])
+   assert norm(q['prompt']) in printed,(b['slug'],i+1,'counting prompt missing')
+   assert norm(' · '.join(q['choices'])) in printed,(b['slug'],i+1,'counting choices missing')
+   assert norm(q['answer']+'. '+q['explanation']) in printed,(b['slug'],i+1,'counting answer missing')
   cursor=matches[0]+1 # Some printables have a separate cover before page 1.
  doc=(ROOT/'read'/b['slug']/'index.html').read_text(encoding='utf-8')
  finish=doc.split('class="shell story-finish-card"')[-1]

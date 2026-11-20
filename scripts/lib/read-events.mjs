@@ -184,7 +184,7 @@ export function releasedEventBooks() {
     const label = slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
     const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
     return {
-      slug, group: event.id, age: book.ageRange.split("–").map(Number),
+      slug, group: event.id, seasonalRelease: true, age: book.ageRange.split("–").map(Number),
       readingLevel: book.readingLevel, added: releaseDates[event.id], title: book.title,
       eyebrow: `${label} · ${format} · ${book.storyPageCount} pages`, blurb: book.blurb,
       cover: "pages/cover", ext: "jpg", alt: book.cover.alt, w: book.cover.width, h: book.cover.height,

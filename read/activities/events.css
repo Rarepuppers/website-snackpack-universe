@@ -72,8 +72,9 @@
 }
 
 .read-leaf-branch ul {
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 7.25rem), 1fr));
   margin: 0;
+  padding-inline: .35rem;
 }
 
 .read-leaf-branch li,
@@ -81,10 +82,11 @@
   display: grid;
   align-content: center;
   min-height: 3.6rem;
+  min-width: 0;
   padding: .6rem 1rem;
   color: #fffdf8;
   background: #75402a;
-  border-radius: 10% 55% 12% 55%;
+  border-radius: 9% 66% 12% 68% / 22% 76% 24% 74%;
   text-align: center;
   overflow-wrap: anywhere;
   transform: rotate(var(--leaf-tilt, 0deg));

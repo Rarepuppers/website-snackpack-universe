@@ -3,8 +3,10 @@ from pathlib import Path
 import argparse, json, html, re, shutil, subprocess
 ROOT=Path(__file__).resolve().parent.parent
 EVENTS = {
-    'thanksgiving': ('Thanksgiving', 'docs/reads-events-bookshelf'),
-    'new-year': ('New Year', 'docs/reads-events-bookshelf'),
+    'thanksgiving': 'Thanksgiving',
+    'new-year': 'New Year',
+    'lunar-new-year': 'Lunar New Year',
+    'easter': 'Easter',
 }
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source_root', type=Path)
@@ -57,7 +59,7 @@ for source,slug in selected:
     event = data.get('event', 'christmas')
     if event not in {*EVENTS, 'christmas'}:
         parser.error(f'Unknown book event: {event}')
-    event_label = EVENTS[event][0] if event != 'christmas' else 'Christmas'
+    event_label = EVENTS.get(event, 'Christmas')
     if event != 'christmas':
         if not source_folder.startswith(event + '/'):
             parser.error('Use docs/reads-events-bookshelf as the source root for event books')
@@ -132,7 +134,7 @@ for _, slug in selected:
     loc = registry[slug]
     d=json.loads((ROOT/loc).read_text(encoding='utf-8'))
     event = d.get('event', 'christmas')
-    source_base = EVENTS[event][1] if event != 'christmas' else 'docs/christmas-picture-books-2026'
+    source_base = 'docs/reads-events-bookshelf' if event != 'christmas' else 'docs/christmas-picture-books-2026'
     entry={'id':f'web-{event}-'+d['id'],'title':d['title'],'art':[source_base+'/'+d.get('sourceFolder', d['id'])+'/'+a['master'] for a in [d['cover']]+[p['art'] for p in d['pages']]],'pages':[{'text':p['text']} for p in d['pages']]}
     for index, previous in enumerate(web['books']):
         if previous['id'] == entry['id']:

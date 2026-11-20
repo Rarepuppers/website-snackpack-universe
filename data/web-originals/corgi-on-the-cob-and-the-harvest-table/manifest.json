@@ -1,0 +1,1063 @@
+{
+  "schemaVersion": 1,
+  "id": "corgi-on-the-cob-and-the-harvest-table",
+  "title": "Corgi-on-the-Cob and the Harvest Table",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "thanksgiving",
+  "ageRange": "5–7",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 755,
+  "blurb": "Nutmeg has asked each friend to bring one thing to the Thanksgiving table. Corgi-on-the-Cob brings the corn, of course: six cobs for six friends. But the path to the barn has a stream, a hill and a very big pile of leaves.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On Thanksgiving morning, there was frost on Corgi-on-the-Cob’s corn patch. The leaves had nearly all come down, and the stalks rustled in the cold.\n\nNutmeg’s invitation was pinned to his door. *Come to the harvest table in my barn. Bring one thing.*\n\n“I’ll bring the corn,” said Corgi. “Obviously.”",
+      "illustrationDirection": "Frosty morning at Corgi’s round door at the edge of the corn patch. A blank invitation card is pinned to the door. Corgi reads it, tail up.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "112d67227144dfab45c42754384366e6cd0369e654e67b58103f9720a43be490",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 281668,
+            "sha256": "4e1aeb8dba38ba1aea046d1a4eb2106e3ae8a9dfbf76b1619bb44f85601c2454"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 189170,
+            "sha256": "628dae96c052ca80e40878a5475a266c4e1003165695d5304ddb565c3c6dbe1b"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91530,
+            "sha256": "c29459c3abde651cbc1532ba93080c8bdd9036d04148b14098a4eb4fd4d00a53"
+          }
+        ],
+        "review": "Removed the background bird and replaced the letter-like badge with a single gold kernel.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi looks at a blank invitation pinned to his round wooden door beside frost-covered corn stalks."
+      },
+      "alt": "Corgi looks at a blank invitation pinned to his round wooden door beside frost-covered corn stalks."
+    },
+    {
+      "number": 2,
+      "text": "He picked the fattest cobs he could find and laid them in his basket.\n\n“One cob, two cobs, three cobs, four. Five cobs, six cobs.” He wagged. “Six cobs for six friends.”",
+      "illustrationDirection": "Corgi among the stalks, placing the sixth cob in the basket. Six cobs, clearly countable.",
+      "question": {
+        "prompt": "How many cobs are in Corgi’s basket?",
+        "choices": [
+          "5",
+          "6",
+          "7"
+        ],
+        "answer": "6",
+        "explanation": "One for each friend at the table."
+      },
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "361e2ae23bf83826e31eea81e034305230fac8f04c6e446613e39afe283fc35b",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 310910,
+            "sha256": "480db9104c5883bada020eb07a38a9c9a08b277256ab0c04cc8466c13178013f"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 201152,
+            "sha256": "1ccc55cabf43d459ba451b03881fbaa9844d5396eca95b29b56e3a658be6ae2a"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99144,
+            "sha256": "f9d43219e3a2bce649ed361d121eab74e0782b129b581e6193da52a301c1d760"
+          }
+        ],
+        "review": "Six ears are fully inside the basket and visibly separate, and the badge carries no lettering.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi leans over his wicker basket. Six husked ears of corn rest inside."
+      },
+      "alt": "Corgi leans over his wicker basket. Six husked ears of corn rest inside."
+    },
+    {
+      "number": 3,
+      "text": "Corgi took the basket handle in his mouth and set off. The basket was heavy. It swung left and right with every step.\n\nThe path went down to the stream. Five flat stones crossed it, one after another.",
+      "illustrationDirection": "Corgi carries the basket by its handle down towards the stream. Five flat stepping stones are in view. The basket swings.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5b380e9cbcccbffe4323dd9b1cb9137598221ce77f79bc8ac5650f759f3d1bb8",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 308136,
+            "sha256": "61f218b0784f66ebb7bcffb6cf3a1b1e31c7c456c44934459198b2424a6ad301"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 218234,
+            "sha256": "8e5e0fec44bc9ca59b91d686ba099c032a3b4c47377fbfe82ecd26458de0e3ea"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108066,
+            "sha256": "998cf9373ff7bdc9e37afe1615f8c897d8e1e7096b8fa9b3c835687e7f6d4525"
+          }
+        ],
+        "review": "Checked all six cob tips and all five stepping stones.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi carries a basket of six cobs down the path toward five stones crossing a stream."
+      },
+      "alt": "Corgi carries a basket of six cobs down the path toward five stones crossing a stream."
+    },
+    {
+      "number": 4,
+      "text": "On the middle stone, the basket swung too far. Two cobs tipped out. Plop. Plop.\n\nThey bobbed away down the stream.\n\n“Four cobs for six friends!” said Corgi. “That’s not right at all.”",
+      "illustrationDirection": "On the middle stone, the basket tipped. Two cobs bob away downstream. Four left in the basket. Corgi’s eyes are wide.",
+      "question": {
+        "prompt": "Six cobs, and two float away. How many are left in the basket?",
+        "choices": [
+          "3",
+          "4",
+          "5"
+        ],
+        "answer": "4",
+        "explanation": "Six take away two leaves four."
+      },
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6112a57777d912364b7f804173b07d2975e804a26d1cd1297b6595f449334b57",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 269360,
+            "sha256": "859a75df4eec2d37504c38dfe831ea8ff7799da33a6893b47a47c093f341b782"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183340,
+            "sha256": "38b3af2cead0af51cd92bc4bafebad3c5e71c1d71c5c557e9a82c2a4fafee09b"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92276,
+            "sha256": "ec6d5ca342ebdd23580835a2ed5cd44d1e5bd5231e04e518d33eabd2077bd34f"
+          }
+        ],
+        "review": "First proof showed three in the basket, second showed five. Final proof shows four plus two.",
+        "generator": "built-in imagegen",
+        "alt": "At the middle of five stepping stones, Corgi wobbles with four cobs in his basket while two float downstream."
+      },
+      "alt": "At the middle of five stepping stones, Corgi wobbles with four cobs in his basket while two float downstream."
+    },
+    {
+      "number": 5,
+      "text": "Something round and green paddled out from under the bank. It was Shelly-Pop.\n\nShe nudged one cob back with her nose, then the other. “Corn floats,” she said. “Lucky for you.”",
+      "illustrationDirection": "Shelly-Pop paddles out from under the bank, nudging a cob towards shore with her nose, the second cob just ahead of her.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3df2802ee5b0b0ad7322cf92b3813d05f68f2ce3695a4331e0c036dc8345ec42",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 304770,
+            "sha256": "d9643132c07cf1bbec3d34614b8e261a3533fed05f2f575494faa2f88b950dd7"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 204642,
+            "sha256": "1cef26de1b2e89100157c8d55bb90fd361d10ea176ca3102f40c83a52b17a911"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99714,
+            "sha256": "f716f0dd971a908235533176e7e15aa0735b02da09c3f5e26b8389aebe55c68e"
+          }
+        ],
+        "review": "Two distinct ears, five stones, on-model turtle and no lollipop.",
+        "generator": "built-in imagegen",
+        "alt": "Shelly-Pop nose-nudges a floating ear of corn toward the bank. A second ear floats farther away."
+      },
+      "alt": "Shelly-Pop nose-nudges a floating ear of corn toward the bank. A second ear floats farther away."
+    },
+    {
+      "number": 6,
+      "text": "“Six cobs for six friends,” said Corgi, putting them back. “Thank you, Shelly-Pop!”\n\n“I’m going to the barn too,” said Shelly-Pop. “I’ll walk with you. Slowly.”",
+      "illustrationDirection": "On the bank, Corgi drops the two wet cobs back in (six again). Shelly-Pop climbs out, smiling.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c1668cde281f58005bef2a8f4fbb08278c71ebabc0483466e7dff4ff14968b67",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 286646,
+            "sha256": "6c2935e269810217be3f25b0f4068423f7dc14f3201840d13c4c109ebd640db3"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 194012,
+            "sha256": "83dcd95272e29b6f715e5425c482fa4e38223d49106c7fdd536dfbff7424a68d"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97306,
+            "sha256": "abb0f92ec42a7249fea576b2ad383c877c9358a5ca9fe11806f6ab3881e90dd6"
+          }
+        ],
+        "review": "Show the moment after both cobs are recovered. Repaint restored the single wicker handle and preserved the six visible cobs.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi and Shelly-Pop look at six wet cobs in the basket on the bank."
+      },
+      "alt": "Corgi and Shelly-Pop look at six wet cobs in the basket on the bank."
+    },
+    {
+      "number": 7,
+      "text": "After the stream came the hill. It was steep, and the fallen leaves made it slippery.\n\nCorgi has very short legs. The basket bumped on every step. Shelly-Pop was slower still.",
+      "illustrationDirection": "Low view up a steep hill deep in fallen leaves. Corgi struggles with the basket; Shelly-Pop is far behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8fe7b7ba5285fbc751aebdf0a716889c841ecc381d04a1b5e9008c8daa1f4695",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 362772,
+            "sha256": "a44f048623f39483c7a22825db015a3c516d4fe31ab138618351c7e1988c74eb"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 233130,
+            "sha256": "7c08c554ef3435e2c84c3aaa935aba9acfe6863fcb567ce66789e802fe03d5a9"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112994,
+            "sha256": "a37bca9a3789124b78b335cd363c1e08c1073cbd9f9ede0956c492eeffb83aff"
+          }
+        ],
+        "review": "Six visibly separate cobs, teal scarf, turtle to scale and one basket handle.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi tugs his basket up a steep leaf-covered hill. Six cobs fill the basket, and Shelly-Pop follows much farther down the path."
+      },
+      "alt": "Corgi tugs his basket up a steep leaf-covered hill. Six cobs fill the basket, and Shelly-Pop follows much farther down the path."
+    },
+    {
+      "number": 8,
+      "text": "Clip, clop. Pita-Pan came trotting up behind them.\n\n“Goats are good at hills,” he said. He took the basket handle in his teeth and climbed. Corgi pushed the basket from below to keep it level.",
+      "illustrationDirection": "Pita-Pan climbs with the basket handle in his teeth; Corgi pushes the basket from below with his nose.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b892f7498de45e743ace6eb894929b9cf5b5c07a17bafe28a695866ab2b24615",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 256854,
+            "sha256": "b00aaa3b7d31ce6a11d9b815ade6daf7af96e4d5693117de2abb0eae2ffd0351"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 179502,
+            "sha256": "aaae49ce130640f71c092fdf9892ff21a2d559c0fe818b9c3c3c4e2b0a5b2aa2"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91368,
+            "sha256": "3fa228bcce079ce6e666ef8a0ac2991ce794922c9032a7ab25d80c8d6bc31c54"
+          }
+        ],
+        "review": "The repainted basket shows six overlapping but individually visible ears.",
+        "generator": "built-in imagegen",
+        "alt": "Pita-Pan carries Corgi’s basket uphill by its handle while Corgi pushes it from behind. Six ears are visible."
+      },
+      "alt": "Pita-Pan carries Corgi’s basket uphill by its handle while Corgi pushes it from behind. Six ears are visible."
+    },
+    {
+      "number": 9,
+      "text": "At the top of the hill, Corgi counted again.\n\n“One, two, three, four, five.” He counted again, slower. “Five.”\n\nOne cob was missing.",
+      "illustrationDirection": "Hilltop. Corgi stares into the basket: five cobs. Pita-Pan and Shelly-Pop lean in.",
+      "question": {
+        "prompt": "Corgi had six cobs. Now he has five. How many are missing?",
+        "choices": [
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": "1",
+        "explanation": "Five and one more makes six."
+      },
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f99b1ec0807eb41404bca05056aab40ae6c29880b65bc620fb4cbac63a7383d8",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 367288,
+            "sha256": "ec689c8366156f4c1f29a8a7129994b20169a4da0997f6dee2e225badcfc9973"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 237764,
+            "sha256": "3e3153c711d8bff9f64fbfa333ad868a5709defaaec26a980e660b9c7ceb58c5"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113730,
+            "sha256": "d1f31d70e5173fede93563c0946045e77c9d6cbdac6a3e99aa27ceb92151c04c"
+          }
+        ],
+        "review": "The five separate cobs and missing spot are easy to see at mobile size.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi, Shelly-Pop and Pita-Pan peer at five cobs fanned around a gap in the bottom of the basket."
+      },
+      "alt": "Corgi, Shelly-Pop and Pita-Pan peer at five cobs fanned around a gap in the bottom of the basket."
+    },
+    {
+      "number": 10,
+      "text": "They looked back down the hill. At the bottom, a huge pile of leaves was jumping all by itself.\n\nOut popped Hop-Tart, with a cob in his paws.\n\n“Is this anybody’s?” he called. “It was in my jumping pile.”",
+      "illustrationDirection": "View back down the hill to a huge leaf pile at the bottom. Hop-Tart bursts out of it, holding up a cob, leaves flying.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f55b69e0879d5d2093a9bdae83de0db70099c291656d9b24d4c354274cabbd8e",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 354436,
+            "sha256": "6d1a60d0b5f439e2e8e3cfaeff2a571f220ca63b0869c50f7faf9e46a6fccec2"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 231300,
+            "sha256": "301fd4ca1d2fe2c73fd52765a129c636f6578659f8041a5e606f5afda69aa05e"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112380,
+            "sha256": "5134036bb4c2e0479f008851a08f9169190f7641437db7a392b6926d1c6962a8"
+          }
+        ],
+        "review": "Striped jumper, single missing cob and big leaf pile verified.",
+        "generator": "built-in imagegen",
+        "alt": "Hop-Tart bursts from the leaf pile holding one ear of corn high in his paw."
+      },
+      "alt": "Hop-Tart bursts from the leaf pile holding one ear of corn high in his paw."
+    },
+    {
+      "number": 11,
+      "text": "“Six cobs for six friends!” said Corgi. “Thank you, Hop-Tart.”\n\nNow there were four of them walking along the lane to the barn: Corgi, Shelly-Pop, Pita-Pan and Hop-Tart. Corgi carried the basket the whole way, and he didn’t drop a single cob.",
+      "illustrationDirection": "The four friends walk along the lane in a row: Corgi with the basket of six, Shelly-Pop, Pita-Pan and Hop-Tart. The red barn is ahead. Golden afternoon.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7915dc59272b35913c39208ff8d095b03c09a18817e7964dca16d93e2cdbd29c",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 297538,
+            "sha256": "6beeb71e78bedc90c04fbb743b73d9ef32397797cb7e47da4eb64141f4087d2d"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 195948,
+            "sha256": "7a48d88957f568a8da1760f05daf80ae6495d04e62ea98e76080623598be1509"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97680,
+            "sha256": "1068e76fada8132d8a954f06aec6f4fdd7c3b04db0760caa707d327b12e3f4c8"
+          }
+        ],
+        "review": "Removed Hop-Tart’s extra carrot. All four walkers and six ears are present.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi brings six cobs toward the red barn with Shelly-Pop, Pita-Pan and Hop-Tart."
+      },
+      "alt": "Corgi brings six cobs toward the red barn with Shelly-Pop, Pita-Pan and Hop-Tart."
+    },
+    {
+      "number": 12,
+      "text": "Nutmeg’s red barn was full of warm light. A long table stood in the middle, made of planks laid across hay bales. There were gourds down the middle and a jug of autumn leaves.\n\n“The corn’s here!” called Nutmeg.",
+      "illustrationDirection": "Barn interior wide. The long plank table on hay bales, gourds and a leaf jug. Nutmeg in her rust apron turns to the door with her arms open.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2b734711a3bddc399320c68e09011e48860491a59eb782f7b3928f4b202e0932",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 275412,
+            "sha256": "5d619e1383742e5e1d9c7aaf2d9ad69adfcf87883e18e8e1b1b88aa4e4789d7d"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 182110,
+            "sha256": "6cc3ec5ba4323d5eaaba68aee986017003227ad3da6eaf062d1a2324234c6eef"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86614,
+            "sha256": "4acdf3486337f33debf5327b8cef1ef3ea9017f9775f1e859ea1e59766d8cbd2"
+          }
+        ],
+        "review": "Kept the corn unserved and moved it off the dining table. The place settings and Nutmeg’s welcoming pose read clearly.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg opens her arms beside the long table and seven chairs. The corn waits under a yellow towel on the side counter."
+      },
+      "alt": "Nutmeg opens her arms beside the long table and seven chairs. The corn waits under a yellow towel on the side counter."
+    },
+    {
+      "number": 13,
+      "text": "Ted-E-Bear had brought soup. Panda-Cake had brought rolls, still warm. Nutmeg had made an apple pie with a leaf cut in the top.\n\nPanda-Cake cooked the corn in a big pot on the barn stove, then rolled each cob in butter.",
+      "illustrationDirection": "The barn stove corner. Panda-Cake in green mitts lifts cobs from the big pot; Ted sets down his soup; Nutmeg’s leaf-cut apple pie sits on the counter.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "eeb271215b9b907132163c54565ca70efd6c90c6bfc0ec01af4934f6abbc013d",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 336496,
+            "sha256": "f10b2c38fb656b4c326403b9f51ae08411dd8148be885baaa1d47be51bfa86f2"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 212034,
+            "sha256": "a539a1e1ea79197a160ae279397c1fcfc90b4ec89f48d850de5966dd983fc0d1"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97702,
+            "sha256": "5aa94c8bdc66f5f9620cc690bcea66fb528125b6492175135a50822f8c140d45"
+          }
+        ],
+        "review": "Six ears checked at high resolution. Panda-Cake alone handles the stove and wears green mitts.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake lifts one cob out of a pot with five more inside. Ted sets down soup beside Nutmeg’s pie."
+      },
+      "alt": "Panda-Cake lifts one cob out of a pot with five more inside. Ted sets down soup beside Nutmeg’s pie."
+    },
+    {
+      "number": 14,
+      "text": "Everyone sat down. Before anyone ate, Nutmeg stood up.\n\n“This is a thank-you table,” she said. “Before we eat, everybody says one friend they’re thankful for.”",
+      "illustrationDirection": "Everyone seated in the locked order. Nutmeg stands at the end with a paw raised.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "56a880dcca0d41bc1af9f0f98b38609a10584546c020f511263821d7935c453d",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 344922,
+            "sha256": "746322a1707d67ca77b726e46df12d19a92768bf7ceae8bad50ff3b27b084881"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219878,
+            "sha256": "fab439585b96ccbade1cd3baf19f6c271d060987f565715f7f1ade6ffdcd5965"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97936,
+            "sha256": "f8a096e4f9c93b0973270b15f82bfc48f8d5eb0448c299b546bfc65d3a96fea9"
+          }
+        ],
+        "review": "Removed plated corn before the thank-you round.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg raises a paw beside the long table. The other six friends sit in the barn with soup, rolls and pie."
+      },
+      "alt": "Nutmeg raises a paw beside the long table. The other six friends sit in the barn with soup, rolls and pie."
+    },
+    {
+      "number": 15,
+      "text": "“Panda-Cake,” said Ted. “For the blanket fort.”\n\n“Nutmeg,” said Panda-Cake. “For the barn.”\n\n“Ted,” said Nutmeg. “For carrying the table with me, plank by plank.”",
+      "illustrationDirection": "Mid-shot of the right end of the table: Ted turns to Panda-Cake, Panda-Cake to Nutmeg, Nutmeg to Ted. Warm smiles.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "705a1c3f8a1c5de5e2684f4908dbd9bf37be5a7131dd68fa676bfdc9820d4a18",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 336140,
+            "sha256": "618106dcfbbbeec9750d5e04106127aae0ba0da2079bc2bce62afa4e3628f542"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 215776,
+            "sha256": "85445ab5d7e8e705b39041368fcad299688c3446a4a8f06d15d859dca57bb3dc"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 101872,
+            "sha256": "6f298e623cbc162f67bc3289668994eed9817119cbb516f6b5b8d063fcae03f5"
+          }
+        ],
+        "review": "The three friends are in the correct order. Plates are empty before serving.",
+        "generator": "built-in imagegen",
+        "alt": "Ted, Panda-Cake and Nutmeg smile and look at one another at the end of the table."
+      },
+      "alt": "Ted, Panda-Cake and Nutmeg smile and look at one another at the end of the table."
+    },
+    {
+      "number": 16,
+      "text": "Then it was Corgi’s turn. He thought very hard.\n\n“Shelly-Pop,” he said. “And Pita-Pan. And Hop-Tart.” He looked worried. “Is three allowed?”\n\n“Thank-yous don’t run out,” said Nutmeg.",
+      "illustrationDirection": "Close on Corgi in the centre seat, ears half-down, paw raised in a hopeful question, glancing left to Shelly-Pop, Pita-Pan and Hop-Tart.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "10b94c97f01e25cba9a887c0f0e6187bfcd32551570b89dd3aa3294b2befefed",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 372678,
+            "sha256": "32dc144d79f4cd6ef7bb8e995c4c03a9da2b7fa21fc0b23dc0386778995085b9"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 226752,
+            "sha256": "fb4df5c514b47c8100d1be98c3fb5cf39eb4a669c0a0f31648073fe74327af69"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100276,
+            "sha256": "e579a0aa59ec558e47d76bd4e2ca7df0ae70225b41fc1a0a8e38b7f7b23a9165"
+          }
+        ],
+        "review": "Four in the right order, with the corn still off the table.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi raises a paw and looks toward Pita-Pan, Shelly-Pop and Hop-Tart in their seats."
+      },
+      "alt": "Corgi raises a paw and looks toward Pita-Pan, Shelly-Pop and Hop-Tart in their seats."
+    },
+    {
+      "number": 17,
+      "text": "Panda-Cake set the steaming corn on the table, and Corgi handed it round.\n\n“One for Nutmeg. One for Ted. One for Panda-Cake. One for Shelly-Pop. One for Pita-Pan. One for Hop-Tart.”\n\nSix cobs for six friends.",
+      "illustrationDirection": "Corgi stands on his chair handing out cobs from the platter. Six plates each have one cob.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8758814cc9ab58cccca4091c6d3ef7ec19657aa3c16577c504721ee27ae3ff6f",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 331944,
+            "sha256": "2ff87f6298b1d4517d7ac5bf7f41e08193f4fdda24d35dd08fca8a97c12cd861"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 209450,
+            "sha256": "c1d87e8a3c3a6bf799deb176735ac24cf335a276b5a0f06c94d3af2dbd261abe"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94892,
+            "sha256": "955d873ff84932033cd960c2e5b4c34c6871dd1195ad514ae964ebc5c612561d"
+          }
+        ],
+        "review": "Removed the extra cob and set the serving scene on the floor.",
+        "generator": "built-in imagegen",
+        "alt": "Six friends each have a cob. Corgi stands by the empty serving platter in front of his chair."
+      },
+      "alt": "Six friends each have a cob. Corgi stands by the empty serving platter in front of his chair."
+    },
+    {
+      "number": 18,
+      "text": "Then Corgi looked down at his own plate. It was empty.\n\nHe counted the chairs. There were seven. He had counted six friends, and he had forgotten to count himself.",
+      "illustrationDirection": "Overhead on the table. Seven plates, six with a cob and Corgi’s empty in the centre. Corgi’s nose at the edge of his empty plate.",
+      "question": {
+        "prompt": "Seven friends are at the table, and there are six cobs. How many more cobs would they need for everyone to have one?",
+        "choices": [
+          "1",
+          "2",
+          "6"
+        ],
+        "answer": "1",
+        "explanation": "Six cobs and one more makes seven, one for each friend."
+      },
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3aa22b11592bb3785f5439934526982eacefea66c6c95f4f427854c8d388ad6a",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 320196,
+            "sha256": "0398419805b0af380ae49167baf078294719cb1984bac015ca69cf022fd3e27c"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 209342,
+            "sha256": "db1f5b2077fed8d70dc748ee0f6966c2a4f1abba2f3edc1b01709f33beb9f25a"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99210,
+            "sha256": "b2e75607035782d8033bdea28f1313dfa4ba724e95a330b687ab53f19d658aa8"
+          }
+        ],
+        "review": "Seven occupied chairs, six cobs, one empty place, and Ted’s restored halo. Front-facing angle makes the count legible.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi looks down at his empty plate. Six friends are seated beside him, each with one cob."
+      },
+      "alt": "Corgi looks down at his empty plate. Six friends are seated beside him, each with one cob."
+    },
+    {
+      "number": 19,
+      "text": "“That’s all right,” said Corgi. He made his ears stand up straight. “I had lots of corn this summer.”\n\nNobody said anything for a moment.",
+      "illustrationDirection": "Corgi sitting up very straight, ears forced upright, brave smile. Friends glance at one another.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "049305360a7f4350a2b6ab52f2e59ae290a5126f62a186a7aeb6906ab75f6067",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 361984,
+            "sha256": "4ec289d5f0ee14de1e6dafcf4690825225290f09d51d7a082a2c6e461d0366d2"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 225544,
+            "sha256": "7c6ad372dd6d8878d04704dca1621ef617036ca18394c159f22167d9b76a8e6a"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98326,
+            "sha256": "a4d95c68973ae8af382eb8fc34538fca8291e1db3a42fd3192d09d268a084aac"
+          }
+        ],
+        "review": "Seven seated characters, six cobs around the empty centre setting.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi sits straight in front of his empty plate. Six friends sit on either side with one cob each."
+      },
+      "alt": "Corgi sits straight in front of his empty plate. Six friends sit on either side with one cob each."
+    },
+    {
+      "number": 20,
+      "text": "Then Hop-Tart snapped a piece off the end of his cob. Snap. He put it on Corgi’s plate.\n\nShelly-Pop did the same. Snap.",
+      "illustrationDirection": "Hop-Tart snaps a piece off his cob and reaches over to Corgi’s plate. Shelly-Pop is already breaking hers.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "68ffce66728c85b2a054ae3ad85503ebed4cdd0aeec9dcfdd3c8314a5b7cf9f4",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 320370,
+            "sha256": "05fbfbae213817ecb2ed4b0b6243cf22aac8cce9086708002e27c340f171db20"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 207032,
+            "sha256": "1a12eb370f207a71428f45fc54fd5b5fcc1ee50cb0ed75218c85f62e790fbc2b"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98338,
+            "sha256": "5351553b2bc0857f92c76f2ebd85b11081421c5ec6c453cd232dafb218d80205"
+          }
+        ],
+        "review": "Removed the letter-like badge. One piece is on the plate and one touches it as Hop-Tart places it.",
+        "generator": "built-in imagegen",
+        "alt": "Hop-Tart reaches across the table toward Corgi’s plate, which holds two small pieces of corn."
+      },
+      "alt": "Hop-Tart reaches across the table toward Corgi’s plate, which holds two small pieces of corn."
+    },
+    {
+      "number": 21,
+      "text": "Then Pita-Pan. Then Ted. Then Panda-Cake. Then Nutmeg.\n\nSnap, snap, snap, snap.",
+      "illustrationDirection": "Wide on the table, every friend reaching in with a piece towards Corgi’s plate, which now holds six pieces.",
+      "question": {
+        "prompt": "Every friend gave Corgi one piece. How many pieces are on Corgi’s plate?",
+        "choices": [
+          "4",
+          "5",
+          "6"
+        ],
+        "answer": "6",
+        "explanation": "Six friends gave one piece each."
+      },
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2aacd5f27da60572533b41864734e2b2a1b3f204584a2b48878e286cba3cbb0b",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 383640,
+            "sha256": "0fb9f2d82a76f49319b7e6111ca156e297194dfa4f757d3e3823a12692c2e193"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 229878,
+            "sha256": "258fcb56a8c7ac53aff1207ebef2dac4eabc90e36208de4096c382ed50af85d7"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100240,
+            "sha256": "d2f2561fdd500db859229b37cc98162f03bba62282739ec659c3293835191747"
+          }
+        ],
+        "review": "Six pieces and six shortened cobs verified. Repaint removed spare seats and distracting corn decorations.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi cheers at six round pieces on his centre plate. Each of his six friends has a shortened cob."
+      },
+      "alt": "Corgi cheers at six round pieces on his centre plate. Each of his six friends has a shortened cob."
+    },
+    {
+      "number": 22,
+      "text": "Corgi looked at his plate.\n\n“Six pieces,” he said. “That’s more corn than anybody!”\n\n“Six pieces from six friends,” said Nutmeg.",
+      "illustrationDirection": "Close on Corgi’s plate with six buttery pieces and Corgi’s delighted face behind it, tail a blur.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c767814ab2a0469fb81ca71341b54938ec65cf5f174f5af9804110638cf067ec",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 260260,
+            "sha256": "b494e7145e690e169c88612acf6ddb85dfa1c4bd6e342fd339cf5066e7e80520"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 165444,
+            "sha256": "199a6dbcb46618fcf82b46fbfef91d4a80c8a6cacc2097971c16b482e2fe3037"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 77642,
+            "sha256": "2fdeda85a9ce4550263411394626d6410250ec245d845bd5864a477685bba0c7"
+          }
+        ],
+        "review": "Removed the badge letter and verified all six rounds.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi beams behind a plate with six buttered rounds of corn, in two rows of three."
+      },
+      "alt": "Corgi beams behind a plate with six buttered rounds of corn, in two rows of three."
+    },
+    {
+      "number": 23,
+      "text": "They ate the soup and the rolls and the buttery corn and nearly all the pie.\n\nOutside, the frost came back. Inside, the barn stayed warm right up to the rafters.",
+      "illustrationDirection": "Cosy wide: the feast half eaten, the pie mostly gone, Shelly-Pop holding her lollipop. Frost on the window, stars beginning.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "15ae59e9906a8898f1f24c4b6fc7f305281550a8c0071c3ea579d0086307fffb",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 354462,
+            "sha256": "8b5b2986f0cf2dabcda9b5408d7c799c00e4f202f5b9649bdc3fe6d3d4e8c390"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 223732,
+            "sha256": "4229968c9c7f0eeb272b5dbe5342312d565b84e0c5ca3247e854f7694414aec3"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100846,
+            "sha256": "72547d571be449f4ea84a7e903196108fe96703a6e46934b19a5f33be5ff855c"
+          }
+        ],
+        "review": "Lollipop appears here only, with stars outside and the feast nearly finished.",
+        "generator": "built-in imagegen",
+        "alt": "The seven friends finish their meal by lantern light. Shelly-Pop holds a red-and-white lollipop."
+      },
+      "alt": "The seven friends finish their meal by lantern light. Shelly-Pop holds a red-and-white lollipop."
+    },
+    {
+      "number": 24,
+      "text": "When the stars came out, Corgi walked home with Shelly-Pop, Pita-Pan and Hop-Tart. He carried the empty basket.\n\n“One friend, two friends, three friends,” he counted.\n\n“And you,” said Hop-Tart.\n\n“And me,” said Corgi. “I’m counting me this time.”",
+      "illustrationDirection": "Night lane under stars. Corgi with the empty basket walks with Shelly-Pop, Pita-Pan and Hop-Tart, looking back at the barn’s glowing door.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a15f2baf0d56eab1f38cc09fce089d381e344c43136445091530b3c7bc5e9ef3",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 376618,
+            "sha256": "d0dabefeae41d3e42d67b4821efc6a5d8675eb204716246972bcfdd58c8c576f"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 238754,
+            "sha256": "3ae46f18c7722e0cfd1691902fee89c75f1990c9409df2a1e477d2da8c0116f0"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113622,
+            "sha256": "fe2500bd1c6ed695c1229d067629f6220c8593eb080a86e5308a428dd107e020"
+          }
+        ],
+        "review": "Four friends, empty basket, barn windows.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi carries his empty basket home under the stars with Hop-Tart, Pita-Pan and Shelly-Pop."
+      },
+      "alt": "Corgi carries his empty basket home under the stars with Hop-Tart, Pita-Pan and Shelly-Pop."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "32f0c6e93c02c8293ffae986ad92c44c672ee24f3c20da52f76dff15954d0516",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 326854,
+        "sha256": "698dc651151469a9c4fcdc0f49ce206dff74f0fac61c4d0948d917fbc965e0e5"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 206918,
+        "sha256": "e60c7cda9f9613f06d925b1d1c5a813a69056c2c75bd028cf0ab7bedf6ee1f2d"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 98474,
+        "sha256": "e2cf916faa4ba71e142ce8ba081b8fb160611e820198a85ee54e343fad388e9d"
+      }
+    ],
+    "review": "Repaint removed a letter-like badge. Six distinct cobs, teal scarf and earmuffs read at phone size.",
+    "generator": "built-in imagegen",
+    "alt": "Corgi trots along an autumn lane with six corn cobs in his basket. The lanterns in the red barn are lit."
+  },
+  "sourceFolder": "thanksgiving/corgi-on-the-cob-and-the-harvest-table",
+  "webSlug": "corgi-on-the-cob-and-the-harvest-table"
+}

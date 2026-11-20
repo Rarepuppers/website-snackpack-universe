@@ -72,14 +72,14 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   const cards = [...html.matchAll(/<article class="story-page-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m => m[1]);
   if (!cards.length) continue;
   const text = cards.map(c => {
-    const copy = c.split('story-page-copy')[1];
+    const copy = c.split('story-page-copy')[1].split('<div class="math-question">')[0];
     if (Object.hasOwn(webOriginals, slug)) {
       return norm([...copy.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(p => p[1]).join(' '));
     }
     return norm(copy.match(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/)[1]);
   });
   const previous = prior?.books.find(b => b.slug === slug);
-  const book = hasApps ? candidates.find(b => b.pages.length === text.length && b.pages.every((p, i) => norm(p.text || p.body) === text[i])) : null;
+  const book = hasApps ? candidates.find(b => b.pages.length === text.length && b.pages.every((p, i) => norm(Object.hasOwn(webOriginals, slug) ? (p.text || p.body).replace(/^> /gm, '').replace(/\*\*([^*]+)\*\*|\*([^*]+)\*/g, (_, bold, italic) => bold ?? italic) : p.text || p.body) === text[i])) : null;
   if (hasApps) assert(book, `${slug}: story differs from every current app export; fix source/import first`);
   if (!WRITE) { assert(previous, `${slug}: no committed app-source evidence`); assert.deepEqual(text, previous.text, `${slug}: text changed since app comparison`); }
   const teaching = hasApps ? book.pages.map(p => ({sequence: p.sequenceNumbers || null, observation: p.observationDescription || null})) : previous.teaching;
@@ -113,11 +113,13 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
     }
   });
   for (const item of hasApps ? expected : previous.expected) assert(plain.includes(norm(item)), `${slug}: missing prompt/question/answer: ${item}`);
+  const countTogether = previous?.quizzes?.filter(q => 'page' in q && 'choices' in q) ?? [];
   const quizzes = hasApps ? (spellingIds.has(book.id) ? [book.quiz,book.quiz2,book.quiz3].filter(Boolean).map(q=>({question:norm(q.question),answer:norm(q.answer+'.'+(q.why?' '+q.why:''))})) : []) : previous.quizzes;
-  if (quizzes?.length) {
+  const endQuizzes = quizzes?.filter(q => !('page' in q));
+  if (endQuizzes?.length) {
     const finish = html.split('class="shell story-finish-card"')[1]?.split('<!-- read-next:generated -->')[0] || '';
     const actual = [...finish.matchAll(/<h[23](?:\s[^>]*)?>([\s\S]*?)<\/h[23]>\s*<details class="story-answer">[\s\S]*?<p>([\s\S]*?)<\/p>/g)].map(m=>({question:norm(m[1]),answer:norm(m[2])}));
-    assert.deepEqual(actual,quizzes,`${slug}: app quiz text/answer/explanation differs or contains extra text`);
+    assert.deepEqual(actual,endQuizzes,`${slug}: app quiz text/answer/explanation differs or contains extra text`);
   }
   const art = {};
   for (const card of cards) {
@@ -133,7 +135,7 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'read')).sort()) {
   assert.equal(schema?.numberOfPages, cards.length, `${slug}: schema page count`);
   const source_art = hasApps ? sourceArtFor(book) : previous.source_art;
   if (!WRITE && hasApps) assert.deepEqual(source_art, previous.source_art, `${slug}: owning app artwork changed since review`);
-  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, teaching, expected: hasApps ? expected : previous.expected, quizzes, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
+  const record = { slug, source_id: book?.id || previous.source_id, source_art, text, teaching, expected: hasApps ? expected : previous.expected, quizzes: hasApps ? [...quizzes, ...countTogether] : quizzes, art, pdf, pdf_sha256: sha(path.join(ROOT, pdf)) };
   if (!WRITE) { assert.deepEqual(art, previous.art, `${slug}: art changed without new reviewed evidence`); assert.equal(record.pdf_sha256, previous.pdf_sha256, `${slug}: PDF changed without text/render verification`); }
   records.push(record);
 }

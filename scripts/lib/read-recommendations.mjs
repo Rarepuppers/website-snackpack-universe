@@ -20,7 +20,7 @@ export function nextChoices(shelf, slug, collections = []) {
       next.readingLevel ? `Related book · ${next.readingLevel.toLowerCase()}` : 'Related read-together book';
     choices.push({book:next,label}); excluded.add(next.slug);
   }
-  const eligible = ordered.filter(b => !excluded.has(b.slug) && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
+  const eligible = ordered.filter(b => !excluded.has(b.slug) && !b.seasonalRelease && b.group !== book.group && !/^stage-/.test(b.group) && b.group !== 'trail' && appropriate(b));
   // Stable variety uses the source shelf position, without random or personal
   // history. A single first-match fallback sent most stories to the same book.
   const wider = eligible.length ? eligible[index % eligible.length] : ordered.find(b => !excluded.has(b.slug) && appropriate(b));

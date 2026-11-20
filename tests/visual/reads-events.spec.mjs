@@ -44,7 +44,7 @@ test('Corgi asks the five Count Together questions', async ({ page, browser }) =
   await expect(page.locator('.math-question')).toHaveCount(5);
   const question = page.locator('#page-2 .math-question');
   await question.getByRole('button', { name: '5', exact: true }).click();
-  await expect(question).toContainText(/try again/i);
+  await expect(question).toContainText(/have another go/i);
   await expect(question.getByRole('button', { name: '5', exact: true })).toHaveClass(/is-tried/);
   await question.getByRole('button', { name: '6', exact: true }).click();
   await expect(question).toContainText('Yes!');
@@ -76,6 +76,14 @@ test('Thank-you Leaves keeps names in memory until explicitly saved', async ({ p
   await expect(list.locator('b')).toHaveCount(0);
   await expect(page.locator('[data-activity] [role="status"]')).toHaveText('Leaf added for <b>Grandma</b>');
   expect(await page.evaluate(key => localStorage.getItem(key), key)).toBe(null);
+
+  await page.evaluate(() => { window.print = () => {}; });
+  await page.getByRole('button', { name: 'Print my branch' }).click();
+  await page.emulateMedia({ media: 'print' });
+  await expect(list).toBeVisible();
+  await expect(input).toBeHidden();
+  await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+  await page.emulateMedia({ media: 'screen' });
 
   await keep.check();
   await page.reload();

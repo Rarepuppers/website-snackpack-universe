@@ -51,7 +51,7 @@ test('the Christmas event page lists the six books in reading order and books li
  await expect(page.locator('.read-event-book h3').last()).toHaveText('The Last Parcel Under the Tree');
  await expect(page.locator('[data-tonight]:visible')).toHaveCount(1);
  await page.goto('/read/events/');
- await expect(page.locator('a.read-event-card')).toHaveCount(1);
+ await expect(page.locator('a.read-event-card[data-read-event="christmas"]')).toHaveCount(1);
  await expect(page.locator('.read-event-card')).toHaveCount(5);
  await page.goto('/read/one-more-story-before-santa/');
  await page.locator('.read-event-chip a').click();

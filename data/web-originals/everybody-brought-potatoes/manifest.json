@@ -1,0 +1,1093 @@
+{
+  "schemaVersion": 1,
+  "id": "everybody-brought-potatoes",
+  "title": "Everybody Brought Potatoes",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "thanksgiving",
+  "ageRange": "7–9",
+  "readingLevel": "Newly independent",
+  "readingMode": "newly-independent",
+  "publicationStatus": "published",
+  "storyPageCount": 26,
+  "wordCount": 1008,
+  "blurb": "Bark-B-Q is hosting Friendsgiving, and Eggs-Benedict has made a sign-up sheet so that nobody brings the same thing. Then Belgian-Waffle drops the sheet in the duck pond. He only read one word on it, so that’s the word he tells everybody.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "The leaves in Bark-B-Q’s garden had turned the colour of toast.\n\n“This year,” said Bark-B-Q, “I’m having Friendsgiving. A Thanksgiving feast with all my friends, here, under the apple tree. Everyone brings one dish.”\n\nHe wagged so hard that three leaves fell off the tree.",
+      "illustrationDirection": "Bark-B-Q under his apple tree in the autumn garden, tail a blur, three leaves tumbling.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "75fdd726b5efc925cfe34e02aec53e83542d4d2810168c792409afc36b37f6c9",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 411066,
+            "sha256": "7fd933a957ade57dd37e795878b7085edea303440e69bd9e288f90673a9d3864"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 251844,
+            "sha256": "7e3c4e90bb572b146c00831e2d569f9c3eb3cf21bbfd3c838f11d55526681865"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117118,
+            "sha256": "93168a22ddf2882c58b0bdddbcdffd8fea848a9c61ed281570c3e0f5c7576ad5"
+          }
+        ],
+        "review": "Correct accessories, count and gate. Bark-B-Q is alone in the garden.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q wags his tail under the apple tree. Three yellow leaves spin down above him."
+      },
+      "alt": "Bark-B-Q wags his tail under the apple tree. Three yellow leaves spin down above him."
+    },
+    {
+      "number": 2,
+      "text": "Eggs-Benedict arrived the next morning with a clipboard and a sharp pencil.\n\n“One dish each is a lovely idea,” she said. “But what if everybody brings soup?”\n\nShe drew a sign-up sheet with two columns, **Name** and **Dish**. Then she drew a timing chart, so every dish would be hot at exactly the right moment.",
+      "illustrationDirection": "Eggs-Benedict at Bark-B-Q’s kitchen table drawing columns on a sheet with her clipboard; a second sheet with a ladder of rows beside it. Bark-B-Q watches over her shoulder.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b1c1eb943bf851379a5a5b87cb38f7602ac25c4f95fbdecd8a777ef2a16c0d5b",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 339198,
+            "sha256": "781b0f05e4f40fd3936a056c865361926c321411bf01c976a09cfb47b890b8e7"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 214694,
+            "sha256": "8c58cc9b21e5ab8674d3293f2379d1476b1bf60ac5d578c3d5d7837dfd91aee1"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97646,
+            "sha256": "c3ec20863d99c155c53fe95787ee022fea34807feee1b1fae4c946a632c476b0"
+          }
+        ],
+        "review": "Removed food from the planning table. The ruled sheet and tick-mark timing chart are separate, and the marks are abstract.",
+        "generator": "built-in imagegen",
+        "alt": "Eggs-Benedict writes on a ruled sign-up sheet. A separate timing chart lies on the table, and Bark-B-Q watches."
+      },
+      "alt": "Eggs-Benedict writes on a ruled sign-up sheet. A separate timing chart lies on the table, and Bark-B-Q watches."
+    },
+    {
+      "number": 3,
+      "text": "“Write yours first,” she said, “to show everyone how.”\n\nBark-B-Q took the pencil and wrote in big letters on the top line:\n\n*Bark-B-Q — potatoes, roasted.*\n\n“Perfect,” said Eggs-Benedict. “Now we need someone fast to take it round.”",
+      "illustrationDirection": "Close on Bark-B-Q writing a big squiggle on the top line, tongue out in concentration. Eggs-Benedict nods.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ea93f708db2d33812f690e033fb8094eb60f63a50c881266306d90ed8ec18119",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 240572,
+            "sha256": "e25c96184a0b7029e38ac6ce002b96e955cb9eb4ee39a3a2884f884822c36fde"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 153738,
+            "sha256": "8db36558eba251f5fcf749dcfada25eebd273e8658e1407b86a18bcf1716450a"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 69332,
+            "sha256": "d3ce1e4fdb4bb6523fb2de6e284b6b1d14cdf2272344d791db429ca3262fbfb6"
+          }
+        ],
+        "review": "Returned scene to the kitchen and removed premature potato props.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q draws a bold wavy line on the first row of the sign-up sheet as Eggs-Benedict looks on."
+      },
+      "alt": "Bark-B-Q draws a bold wavy line on the first row of the sign-up sheet as Eggs-Benedict looks on."
+    },
+    {
+      "number": 4,
+      "text": "Belgian-Waffle was the fastest messenger in the woods. He tucked the sign-up sheet under one wing and took off.\n\n“Every door before lunch!” he called.",
+      "illustrationDirection": "Belgian-Waffle takes off from the doorstep with the sheet under one wing, Eggs-Benedict waving her pencil after him.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bdf934f772c20ccdcb1d4869e1003943a319d78e5372da68defa5946a3ef6fb1",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 377946,
+            "sha256": "7b2d559167f118196b4cf76977422fbffe6cef0841e6e2e685eed77d89f50663"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 244012,
+            "sha256": "9eafa193995801e6ad0402651cd2b9215a5d6716fb0b2b4812ad09857e02b47c"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117636,
+            "sha256": "176f6c66d082f0e14b6d87ef754410c3b653d95427240e948d1a25204dd8133b"
+          }
+        ],
+        "review": "One sheet, both bird characters properly dressed.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle takes the sign-up sheet as Eggs-Benedict waves her yellow pencil."
+      },
+      "alt": "Belgian-Waffle takes the sign-up sheet as Eggs-Benedict waves her yellow pencil."
+    },
+    {
+      "number": 5,
+      "text": "Over the duck pond, a gust of wind came out of nowhere. It snatched the sheet from under his wing.\n\nThe paper flipped twice, sailed over the reeds and landed in the water. By the time Belgian-Waffle fished it out, the ink had run into one long blue puddle.",
+      "illustrationDirection": "Over the duck pond, the gust tears the sheet from his wing; it flips above the reeds. Ducks look up. Inset or second beat: the sheet floating, ink spreading.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ffc95030d8474807cb8f76004d064716ec50a591c5caa3c854a7e2883f58a727",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 377800,
+            "sha256": "818652de5ffbe97095fe571072e681a7e152de83a08fb46d288d53fe643f613e"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 222936,
+            "sha256": "c1922a5929a81882bbd0aed4d6a0eecfcd508c9d6955e14800d5e97926da0dd0"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104388,
+            "sha256": "056641b2dba249a4a6c946d974ed61c1c3f98cfaf41b026debc4aa98c6e53c5d"
+          }
+        ],
+        "review": "One sheet looks partly immersed. Blank ruled squiggles, feathered wingtips and blueberry decoration verified.",
+        "generator": "built-in imagegen",
+        "alt": "A gust sweeps Belgian-Waffle’s sign-up sheet into the duck pond. Two ducks look up as the blue ink starts to spread."
+      },
+      "alt": "A gust sweeps Belgian-Waffle’s sign-up sheet into the duck pond. Two ducks look up as the blue ink starts to spread."
+    },
+    {
+      "number": 6,
+      "text": "Belgian-Waffle looked at the soggy paper. He thought about flying back to tell Eggs-Benedict.\n\nThen he thought about her sharp pencil.\n\n“I read the top line,” he told himself. “I know what it said. I’ll just tell everybody.”",
+      "illustrationDirection": "On the little jetty, Belgian-Waffle holds the dripping, blue-smeared sheet at arm’s length and thinks.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a53908925284579b7389915971821eb226a8dd514942dd6be6d96cd893b27d10",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 330386,
+            "sha256": "d19afb2cb16f1cd489da53431cb07c86c0576389b4355aae234c5dfafc06f902"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 206362,
+            "sha256": "3fc717de7cb68fa0a278a0ee758f0e3ad1f1d45f92aba78fd18264d357451256"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97316,
+            "sha256": "1a0e0186ce1c4f56af21916c4e82afb4dc06500791795107c184ca9d2da45431"
+          }
+        ],
+        "review": "Soggy blue ink, cream sheet and water droplets agree with page 5.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle stands on the little jetty, holding the dripping sign-up sheet out in one wingtip."
+      },
+      "alt": "Belgian-Waffle stands on the little jetty, holding the dripping sign-up sheet out in one wingtip."
+    },
+    {
+      "number": 7,
+      "text": "Meow-inara opened her door. “Is it the sign-up sheet? What should I bring?”\n\n“Potatoes,” said Belgian-Waffle. “I think.”\n\n“Potatoes,” said Meow-inara. “All right.”",
+      "illustrationDirection": "Meow-inara at her round plum door, pendant glinting; Belgian-Waffle on the step, wing raised, trying to look certain.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e3fdf4514856059a9103e89451bc19b8ba759ce4b55965b5e5089a03e09426d6",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 360732,
+            "sha256": "f7435817d99d5c4faf0f368ff2b0653be90aa55c3d46876ea04ccf509c0ea0fd"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 216324,
+            "sha256": "8723634aa6bc64a7e3d24ea327a9f6768556182e85454198227ac4cced572de0"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100572,
+            "sha256": "d48563d7e0bd2323aab2d5b27deacd2b924a782d5628d61ba0638c857fbfc8fc"
+          }
+        ],
+        "review": "Two characters, pendant and wing anatomy verified.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle speaks from the step as Meow-inara opens her round plum door."
+      },
+      "alt": "Belgian-Waffle speaks from the step as Meow-inara opens her round plum door."
+    },
+    {
+      "number": 8,
+      "text": "“Potatoes?” said Leo-Lemonade. “I always bring lemonade.”\n\n“This year it’s potatoes,” said Belgian-Waffle. “I’m fairly sure.”\n\n“Potatoes? Not bread?” said French-Toast.\n\n“Definitely potatoes,” said Belgian-Waffle. He was getting better at saying it.",
+      "illustrationDirection": "One scene, no panels: Belgian-Waffle mid-flight along a lane past two doors, Leo-Lemonade at a yellow door with a lemon knocker, French-Toast at a bakery door. Both look puzzled.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f2ee9c30c72d66818ae017ba79b5e41af02ea8a0c6c7bb26c8c171cb5101f13d",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 416234,
+            "sha256": "2db029b846b274afabc393c2d7321b31f81615e454d1e2c2acc9ec2fd6444f06"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 260838,
+            "sha256": "604062aa786e115085e080206a6e1e00918add911bf52786218dba2ec157d457"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 124446,
+            "sha256": "68718e528c2e4a7509a8fdd4e3cb43daaeb8b04ea21b1f092a4b313cec531a08"
+          }
+        ],
+        "review": "Two distinct doors, no umbrella or text.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle flies past a yellow door with a lemon knocker and a bakery door. Leo and French-Toast look puzzled."
+      },
+      "alt": "Belgian-Waffle flies past a yellow door with a lemon knocker and a bakery door. Leo and French-Toast look puzzled."
+    },
+    {
+      "number": 9,
+      "text": "On Friendsgiving afternoon, the long table stood under the apple tree. Bark-B-Q had his potatoes ready for roasting. Eggs-Benedict pinned her timing chart to the tree trunk.\n\n“Four o’clock, soup,” she read. “Quarter past, bread. Half past, lemonade. Quarter to five…”",
+      "illustrationDirection": "Friendsgiving afternoon. The long table under the apple tree. Bark-B-Q beside a crate of potatoes; Eggs-Benedict nails the timing chart to the tree trunk.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "42036f019135c28fbd3e6cdd790a5ba3f22f964b1b80874f8e891bbfd426185d",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 401136,
+            "sha256": "f52cfc7d2708bfc43c221a2677c379081b8673b4d74e8c98d9552e6a3c7336e1"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 251754,
+            "sha256": "ceb96a52b68a1f811b2a858e44e95ab1002fa61efd01cd20921d436256e6b35e"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118784,
+            "sha256": "4d8414c01366dc0db95c56371f82ac74f4b7cd6022e297eeb5fe336baa1ddec4"
+          }
+        ],
+        "review": "Rectangular table and cream timing sheet with tick-mark clocks.",
+        "generator": "built-in imagegen",
+        "alt": "Eggs-Benedict pins a clock-marked timing chart to the apple tree beside Bark-B-Q and his potato crate."
+      },
+      "alt": "Eggs-Benedict pins a clock-marked timing chart to the apple tree beside Bark-B-Q and his potato crate."
+    },
+    {
+      "number": 10,
+      "text": "The gate creaked. Meow-inara came in, pulling a sack.\n\nIt was full of potatoes.\n\n“Lovely,” said Bark-B-Q, a little puzzled. “Two lots of potatoes. That’s fine.”",
+      "illustrationDirection": "The creaking gate. Meow-inara pulls in a small cart with a burlap sack of potatoes. Bark-B-Q’s smile is a little puzzled.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "33b8e01f561500fbc9b52dcc2693d9bab6a611c0854c17efde0038078a79fcba",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 374424,
+            "sha256": "83a2d8afdd11291ed066e60e07b676266c6a156a05fe95c377cf7456ff53ce41"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 236910,
+            "sha256": "45d6a6ccf4701027d70fb277ab512f91a41182213296e23158200b1b19818529"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 114168,
+            "sha256": "926ca520873626cbad083f6770b9cd6758279cdf8098310dcb224d61708955bf"
+          }
+        ],
+        "review": "Single burlap sack and correct gate.",
+        "generator": "built-in imagegen",
+        "alt": "Meow-inara pulls a cart with a potato sack through the gate while Bark-B-Q looks on."
+      },
+      "alt": "Meow-inara pulls a cart with a potato sack through the gate while Bark-B-Q looks on."
+    },
+    {
+      "number": 11,
+      "text": "The gate creaked again. Leo-Lemonade came in, pushing a wheelbarrow.\n\nIn the wheelbarrow was one potato. It was the biggest potato anyone had ever seen.\n\n“I wanted to bring a good one,” he said.",
+      "illustrationDirection": "Leo-Lemonade pushes a wheelbarrow holding one gigantic potato through the gate, proud and puffing.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5947422f7f5254d4bb232168bd0d266e0b132203100ce2ce3ef91352af601489",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 459124,
+            "sha256": "b61f084b3a7ea291f2693099b84a1633eac564e1f163b0a83692e29cf24fa398"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 278150,
+            "sha256": "7d88373c879fc4e72e18f024cd3420810f99d5ac80c666a70e62a7ffb8a9b6b3"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 130036,
+            "sha256": "92d1fe5e9add95cf5e7db66aa59225f932a1892edcfd8f93f502f47f3406b964"
+          }
+        ],
+        "review": "One giant brown potato, correct jumper and no umbrella.",
+        "generator": "built-in imagegen",
+        "alt": "Leo-Lemonade pushes a wheelbarrow carrying one enormous brown potato through the garden gate."
+      },
+      "alt": "Leo-Lemonade pushes a wheelbarrow carrying one enormous brown potato through the garden gate."
+    },
+    {
+      "number": 12,
+      "text": "Then French-Toast arrived with a basket of long orange potatoes.\n\n“Sweet potatoes,” he said proudly.\n\nEverybody looked at Eggs-Benedict.\n\n“A sweet potato isn’t a potato at all,” said Eggs-Benedict. “It grows on a completely different plant. It’s a cousin of the morning glory flower.”",
+      "illustrationDirection": "French-Toast holds up his basket of long orange sweet potatoes; Eggs-Benedict explains with her pencil raised; the others gather round.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "17a0387a582189efdcba0304fc6fa62f50e4eaf50fd4667a1d89162a2ecf8309",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 368812,
+            "sha256": "44d922e758eac2ced701c90f8579cf8a6648be79f77915e6d70aa1ac291f946c"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 235124,
+            "sha256": "83f8edfe1fec2f78f082cd572cad96b2b72b9d02376b982d2340979433dcb245"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113614,
+            "sha256": "d2dfee058d40765f6194b72086781d81b0a1ab16fb20754553e1fd19c98764df"
+          }
+        ],
+        "review": "Repaint restored the single giant potato and removed exterior produce distractions.",
+        "generator": "built-in imagegen",
+        "alt": "French-Toast shows a basket of long orange sweet potatoes. Eggs-Benedict raises her pencil, with Leo’s giant brown potato behind her."
+      },
+      "alt": "French-Toast shows a basket of long orange sweet potatoes. Eggs-Benedict raises her pencil, with Leo’s giant brown potato behind her."
+    },
+    {
+      "number": 13,
+      "text": "“So I’m the only one who didn’t bring potatoes?” said French-Toast.\n\n“You’re the only one who did it by accident,” said Leo-Lemonade.\n\nThen the gate creaked one last time. Belgian-Waffle came in with a small bag of potatoes and a very small voice.",
+      "illustrationDirection": "Belgian-Waffle edges through the gate with a tiny cloth bag, smaller than ever; everyone in the background turns.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a59ce83a01cd6c0e7804d2ead39725d90c9bd944bd6c1f254301c138467ef20c",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 383958,
+            "sha256": "96ed670874f0461fdd74de60bfae605e159662e8b3cea664b295244ba094a56c"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 242408,
+            "sha256": "712f7d15803f8329e34cb62076770b61fbce8dfe4fc37c46cb178f3be714ec08"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115576,
+            "sha256": "46bb7ceaf5832270bd9118556082ced913da71555fb8504239cebbb603826217"
+          }
+        ],
+        "review": "All six friends and their containers.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle edges through the gate with a tiny cloth bag as the other five guests turn toward him."
+      },
+      "alt": "Belgian-Waffle edges through the gate with a tiny cloth bag as the other five guests turn toward him."
+    },
+    {
+      "number": 14,
+      "text": "Everybody looked at Belgian-Waffle.\n\nBelgian-Waffle looked at his feet.\n\n“The sheet fell in the duck pond,” he said. “The only thing I could read was the top line. So I told everybody potatoes.”",
+      "illustrationDirection": "Close on Belgian-Waffle confessing, eyes on his feet; the friends around him, surprised.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4be2ad98057b538dca8256109ca44f220c0b0c0e4d74d224403ad1b1da4e1f58",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 351508,
+            "sha256": "b649102de4723b5005bc3a949093e1eaf4fb129435cbcaac41ddbc68d137ec9a"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 224690,
+            "sha256": "5762b3a5d8e79e2a9b67683dfa265365851e23b68bac6677287855f0ab85e1d8"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108470,
+            "sha256": "689f701d35b455e439fb908be5be9ec991889003898d45984e7e19ada69e2e7e"
+          }
+        ],
+        "review": "Six on-model characters. No paper.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle looks down at his feet. His five friends gather around him with surprised faces."
+      },
+      "alt": "Belgian-Waffle looks down at his feet. His five friends gather around him with surprised faces."
+    },
+    {
+      "number": 15,
+      "text": "For a moment, nobody said anything.\n\nBark-B-Q looked at the timing chart. Four o’clock, soup. There was no soup. Quarter past, bread. There was no bread. Half past, lemonade. There was one enormous potato in a wheelbarrow.\n\nHis tail stopped wagging. “Friendsgiving is ruined,” he said.",
+      "illustrationDirection": "Bark-B-Q in front of the timing chart, tail drooping, hat slightly askew. The piles of potatoes behind him.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "619fe070806b9cd3f232b0a4ae9cbf215f5d7895e411a07206c49dfbb0af4ee1",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 256562,
+            "sha256": "52e3b0a75096d7db179221c178017ebba8275104c2733bc1c9ff7181e13e2537"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 177064,
+            "sha256": "661defb504381e8bbf848207b68e738b99c77afdecf5811bac637caae85c69a9"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85824,
+            "sha256": "afbc07cecbd2a4d37ade6a41b9162eedf8bee01423ee449bbab93bfdc4c10dcb"
+          }
+        ],
+        "review": "The chart matches the blank ink marks and four clocks established on page 9.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q hangs his head beside a chart with four drawn clocks. The potatoes are piled behind him."
+      },
+      "alt": "Bark-B-Q hangs his head beside a chart with four drawn clocks. The potatoes are piled behind him."
+    },
+    {
+      "number": 16,
+      "text": "Eggs-Benedict took the timing chart down from the tree. She turned it over to the clean side.\n\n“Then we need a new chart,” she said.\n\nShe wrote **POTATOES** in the middle of the paper and drew a circle round it. Then she drew lines coming out of the circle, like the spokes of a wheel.",
+      "illustrationDirection": "Eggs-Benedict at the table, turning the chart over and drawing a circle with spokes; the others lean in.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5b2940e1a698d311126194749b1d2342c9b3b2a4eb06221ed6273b6b4702cc03",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 370842,
+            "sha256": "9c169542b627b105606de0d19545bde0d0fce8988c52de65e0dac26ea5c69b86"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 229920,
+            "sha256": "afa13d4915b781f3032d68b2d00cdfc8efafa95edc2aea8ebe7ae15af7f48cfd"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108700,
+            "sha256": "756ec1cce47d60c7f4191bfd71842473e62f9c8a8686b2ef790741fbee20a56e"
+          }
+        ],
+        "review": "Simple unlettered wheel. All six friends.",
+        "generator": "built-in imagegen",
+        "alt": "Eggs-Benedict draws a circle with spokes on the back of the timing chart while the other five lean in."
+      },
+      "alt": "Eggs-Benedict draws a circle with spokes on the back of the timing chart while the other five lean in."
+    },
+    {
+      "number": 17,
+      "text": "“Who can make something out of potatoes?” she asked.\n\n“Potato soup,” said Meow-inara.\n\n“Potato bread,” said French-Toast. “And a sweet potato pie.”\n\n“Potato waffles,” said Belgian-Waffle. “I make very good waffles.”\n\n“Roast potatoes,” said Bark-B-Q, and his tail started to wag again, just a little.",
+      "illustrationDirection": "Friends raise paws and wings with ideas around the wheel diagram; Bark-B-Q’s tail beginning to wag.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e7d1477d1d701e00c1f3d3a14f4acd5b25b53f3dfdaa427a196b596abaa14464",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 339350,
+            "sha256": "e3b857251fa2ae2dae38f3dbfe39e2e80b1207a37894d0aac6bb76acc5255ba0"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219958,
+            "sha256": "9e8e5627252ef779622ffce5b2c705ec1045b9799f1d3b72383438369a0fbd80"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 102522,
+            "sha256": "1b500d00b28958016414715585608b887e37ceec7d3479523a87d23127fcb094"
+          }
+        ],
+        "review": "Restored the flat paper chart and long wooden table.",
+        "generator": "built-in imagegen",
+        "alt": "The six friends raise paws and wings around a sheet with a circle and spokes on the garden table."
+      },
+      "alt": "The six friends raise paws and wings around a sheet with a circle and spokes on the garden table."
+    },
+    {
+      "number": 18,
+      "text": "Leo-Lemonade looked at his enormous potato. “I only know how to make lemonade.”\n\n“Then you can help me,” said Eggs-Benedict, “and we’ll make the biggest pile of mashed potato in the woods.”\n\nShe cooked. He mashed. Leo-Lemonade turned out to be extremely good at mashing.",
+      "illustrationDirection": "In the kitchen, Leo-Lemonade mashing with gusto in a huge bowl; Eggs-Benedict adds butter.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8db9fb5c630cfd1576689d30307bd7fce8cddc8689302afb29706e3963d18241",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 388780,
+            "sha256": "8b7fc73593457f248c2b2cf7b762a664192c65471dd030bda0fa173747ad3518"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 236446,
+            "sha256": "a4abe44b65fbdc9108d7556ddb7d9dad4d6ba061dd328ff3a9493625b423d7e3"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111626,
+            "sha256": "704a0328978e65d1a14f463a3360ee1946581ff6bd15ba8b5cbfa8dfe429a95e"
+          }
+        ],
+        "review": "The two cooks are at the preparation table. Clipboard and pencil visible.",
+        "generator": "built-in imagegen",
+        "alt": "Leo-Lemonade mashes potatoes in a large bowl as Eggs-Benedict adds butter."
+      },
+      "alt": "Leo-Lemonade mashes potatoes in a large bowl as Eggs-Benedict adds butter."
+    },
+    {
+      "number": 19,
+      "text": "Soon every pot and pan in Bark-B-Q’s kitchen was busy. Meow-inara stirred the soup. French-Toast kneaded the dough. Belgian-Waffle heated the waffle iron.\n\nOutside, Bark-B-Q turned the potatoes on the grill, slowly, the way a good roast likes.",
+      "illustrationDirection": "Busy kitchen wide: Meow-inara stirring soup, French-Toast kneading dough, Belgian-Waffle at the waffle iron. Through the window, Bark-B-Q at the grill.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "62055fbdae162e134161ffed25b8a1e4addddb428691efb7d9cfee7d42840b3c",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 404962,
+            "sha256": "512a6eb625f0d0e8067fffee1611a8abb230c07b326412fadcbafa4c7d97090c"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 244750,
+            "sha256": "26abd595530ec98fd0fa41403a326c7692c9deb430f5e3c24daef45696b47551"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112472,
+            "sha256": "be538f71d6d4c2295de5478c49d661677cf4eda1ba548bf48eb84499bc9c8dfb"
+          }
+        ],
+        "review": "Four named characters, with Bark-B-Q alone at the grill.",
+        "generator": "built-in imagegen",
+        "alt": "Meow-inara stirs soup, French-Toast kneads dough and Belgian-Waffle stands by the waffle iron. Through the window Bark-B-Q is at the grill."
+      },
+      "alt": "Meow-inara stirs soup, French-Toast kneads dough and Belgian-Waffle stands by the waffle iron. Through the window Bark-B-Q is at the grill."
+    },
+    {
+      "number": 20,
+      "text": "Eggs-Benedict checked her new chart. There were no times on it at all. Just one line at the bottom: *Everything at five o’clock.*\n\nAt five o’clock exactly, everything was ready.",
+      "illustrationDirection": "Eggs-Benedict pins the new wheel chart back on the tree as everyone carries dishes out at once.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "219167218b5e3810c457d071fbf984e5426c2f9c6be7c0f3431aada606806823",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 384398,
+            "sha256": "d9cd4dea7b4c9ce1cf2f0ecd78a78f1889b9fd2bee7e1e1737bea6d8176a3293"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 256360,
+            "sha256": "cf32be27f3b6cd1e485c0194371d834bc456657ec5cecf30c8e83125f97217ed"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123002,
+            "sha256": "bca89b65678d9148be34279a0f58b0b9ba9d8a8b4a56c74a0550590ec6d81e1d"
+          }
+        ],
+        "review": "Repaint removed a duplicate dish. Six are visible and the chart has only a circle with spokes and one abstract stroke.",
+        "generator": "built-in imagegen",
+        "alt": "The friends bring the dishes out as Eggs-Benedict stands by the new chart. One dish is already on the table."
+      },
+      "alt": "The friends bring the dishes out as Eggs-Benedict stands by the new chart. One dish is already on the table."
+    },
+    {
+      "number": 21,
+      "text": "They carried it out to the table under the apple tree. Potato soup. Potato bread. Potato waffles. Roast potatoes. A mountain of mash. And a sweet potato pie.\n\n“Six dishes,” said Eggs-Benedict, counting them with her pencil. “Six different ways.”",
+      "illustrationDirection": "Table wide with exactly six potato dishes in the locked order. Eggs-Benedict counts with her pencil.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a547a7c60d00d64bfd0e2835fc200ed43ca0b33f7ffa61c2a78c879edf09f087",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 423252,
+            "sha256": "8162cba74cfb3f72a7edb6dfcef915ee03a77bb4ad7140f01ff91f10c0fd940c"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 271088,
+            "sha256": "30b0c30e61029cc25a674d566f6d30894691533e2fd0695ddf6f1442cc0cabb5"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 128048,
+            "sha256": "8ff9a6161bbf37f96191541edabc56c8bda9682d17ba15dc9c0ade3e3fbd3100"
+          }
+        ],
+        "review": "Repainted the round table as a long rectangular table and removed an extra serving dish. Exactly six dishes in order.",
+        "generator": "built-in imagegen",
+        "alt": "Eggs-Benedict points her pencil along six dishes on a long wooden table: soup, bread, waffles, roast potatoes, mash and sweet potato pie."
+      },
+      "alt": "Eggs-Benedict points her pencil along six dishes on a long wooden table: soup, bread, waffles, roast potatoes, mash and sweet potato pie."
+    },
+    {
+      "number": 22,
+      "text": "Bark-B-Q looked at the table for a long time.\n\n“It isn’t what I planned,” he said.\n\n“It’s better,” said Meow-inara. “Nobody in the whole woods has ever had a potato feast.”",
+      "illustrationDirection": "Bark-B-Q gazes at the table, thoughtful; Meow-inara beside him, smiling up.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c10510597a7880bb9718dbe9ee32aabbfeb4df7d01ef122806d5567ee5638a33",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403596,
+            "sha256": "2c84773c1621c18e08dc937d2c56853e4282f553052d96782a8d7c489606a201"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 256572,
+            "sha256": "cd41343e9a976917d4a8241f0be151516668306ed4644dfd57a03ec1963de718"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118722,
+            "sha256": "470ce6f0919b6a6050461a09566bd27a741fda7a8dc778f02b582131977834f3"
+          }
+        ],
+        "review": "Six dishes in sequence.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q looks quietly across the six dishes as Meow-inara smiles beside him."
+      },
+      "alt": "Bark-B-Q looks quietly across the six dishes as Meow-inara smiles beside him."
+    },
+    {
+      "number": 23,
+      "text": "Before they ate, everybody said one thing they were thankful for.\n\n“Eggs-Benedict,” said Bark-B-Q, “for the second chart.”\n\n“Leo-Lemonade,” said Eggs-Benedict, “for the mashing.”\n\n“The duck pond,” said Leo-Lemonade, and everyone laughed, even Belgian-Waffle.",
+      "illustrationDirection": "Seated round the table in dusk light; Leo-Lemonade mid-joke, everyone laughing, even Belgian-Waffle.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f904f9d68df9a31e96e132737ae3131bbc785976b4f1f4e9b50581fc29916f31",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 422632,
+            "sha256": "88c86082ed0f520bb1a664ce8e3a57a4062fc7e58607a5f0a2ca33b0cfbfcd3a"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 274092,
+            "sha256": "55a8465d01bfa5992ec60e60033d6080feeb00db817cbe276655ef1baa31a60a"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 128516,
+            "sha256": "d7a395e3edd4e42db8bbd41e49d2420ea45872164c516b2d138a07d8eab87668"
+          }
+        ],
+        "review": "Restored the six dishes before the meal and retained seating order.",
+        "generator": "built-in imagegen",
+        "alt": "Leo and the five friends laugh together behind a table of six potato dishes in the dusk."
+      },
+      "alt": "Leo and the five friends laugh together behind a table of six potato dishes in the dusk."
+    },
+    {
+      "number": 24,
+      "text": "When it was Bark-B-Q’s turn again, he turned to Belgian-Waffle.\n\n“And I’m thankful for you.”\n\n“Me?” said Belgian-Waffle. “I ruined everything.”\n\n“You made it the best Friendsgiving we’ve ever had,” said Bark-B-Q. “You just did it by accident.”",
+      "illustrationDirection": "Bark-B-Q turns to Belgian-Waffle on his stacked cushion, paw over his heart; Belgian-Waffle’s feathers puff with surprise.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c0a11705644c6585ba379e7521df5db75947f5f2163eea655ecaa291df5e538e",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 359808,
+            "sha256": "255d3bf848224b05f85d74fce7cb052518841bbc687f7211aa42a31fbdb73cf5"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 226202,
+            "sha256": "5f50b6336c0ff0b09589ffa53ce6bb307bb316f394763f241b417309940beffb"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107752,
+            "sha256": "1e5cd658ebc69e3923a37600269f9a65e23fd73d4770cb97bf77e202acef7f05"
+          }
+        ],
+        "review": "Both faces and the stacked cushions are clear.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q touches his apron with one paw as Belgian-Waffle fluffs up on two cushions."
+      },
+      "alt": "Bark-B-Q touches his apron with one paw as Belgian-Waffle fluffs up on two cushions."
+    },
+    {
+      "number": 25,
+      "text": "They ate until the lanterns came on in the apple tree. The sweet potato pie went last.\n\n“The only thing on the table that wasn’t a potato,” said French-Toast, “and it was the first thing to go.”",
+      "illustrationDirection": "Lanterns glow in the apple tree. Only crumbs left of the sweet potato pie; French-Toast holds the empty dish up, laughing.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "00fd01d5f502a14c52c96fa7ca958e934195f065407a7f45b1fa4417fd295aa5",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 419590,
+            "sha256": "8ebc07e04653f8c2c03a8475fd15a0ba640c57dbfabed937b5187df3ac651fe3"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 265404,
+            "sha256": "74ed3b19e28ea71ee183961f28ab15bbd8865bc97070555286c81756d512dec4"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120224,
+            "sha256": "b2113886c8a41fae380bd7136d1d8dd4b250552dc0d3ff3d0b20149b85912065"
+          }
+        ],
+        "review": "Empty pie dish and the three tree lanterns.",
+        "generator": "built-in imagegen",
+        "alt": "French-Toast lifts the empty pie dish and laughs in the lantern light."
+      },
+      "alt": "French-Toast lifts the empty pie dish and laughs in the lantern light."
+    },
+    {
+      "number": 26,
+      "text": "As everybody was leaving, Eggs-Benedict took out a fresh sheet of paper. She wrote next year’s sign-up sheet there and then.\n\nOn the top line, in big letters, she wrote: *Everybody — potatoes.*\n\nUnderneath, in smaller letters, she wrote: *Belgian-Waffle — please carry this very carefully.*",
+      "illustrationDirection": "Eggs-Benedict at the gate writing on a fresh sheet; Belgian-Waffle reading over her shoulder, wings clutched to his chest.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "66ced7a15e9a8da8adb7d78e8560d347a43981ded85b797601f8373029ad40a5",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 348506,
+            "sha256": "c9c1e31b0514718ff654390766cb3e5de19f9eaca2c1e403c6467421489c9fe2"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 222156,
+            "sha256": "e9e7dfbeff04bb76e763498e8ddb06d2121a7a1c30fba6f173a1e1bcf558aa0a"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105442,
+            "sha256": "894760aa38d97b0d9ea495ed7ef3b3b71a43d8d1f75b2dc4207c3e06e3fc4747"
+          }
+        ],
+        "review": "Fresh sheet has exactly two unlettered strokes.",
+        "generator": "built-in imagegen",
+        "alt": "At the garden gate, Eggs-Benedict draws two abstract lines while Belgian-Waffle peeks over her shoulder."
+      },
+      "alt": "At the garden gate, Eggs-Benedict draws two abstract lines while Belgian-Waffle peeks over her shoulder."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "9e9560a4241099ae999cbe50a06d570906551cab802fce68cdabca89238715d2",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 397288,
+        "sha256": "4fb3aa1ff518430e90c7c948a12c4636eaeb977aa39672157260cfc97b960167"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 240052,
+        "sha256": "5c472dba48b503043de0de168dfafdb00c6ce6b75c46dcfce5046ac23b92ecc7"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 110498,
+        "sha256": "e2a378b2b7db5acd43b83bd718acef9680bed2e14dd8badf631df0ae56809e90"
+      }
+    ],
+    "review": "All six friends and their signature accessories are visible. Giant potato stays readable at small size.",
+    "generator": "built-in imagegen",
+    "alt": "Six friends meet at a wooden gate. Bark-B-Q looks surprised, and Leo pushes a wheelbarrow with one enormous potato."
+  },
+  "sourceFolder": "thanksgiving/everybody-brought-potatoes",
+  "webSlug": "everybody-brought-potatoes"
+}
