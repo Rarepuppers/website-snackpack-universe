@@ -171,3 +171,4 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
   .menu { width: min(300px, 100%); }
   .dock .btn { min-height: 38px; padding: 6px 4px; font-size: .78rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; }
 }
+button.customer.locked { display: block; width: 100%; text-align: left; color: inherit; border: 0; font: inherit; cursor: pointer; }
