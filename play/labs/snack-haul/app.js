@@ -23,7 +23,7 @@ function load() {
   if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
   return local || {};
 }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
 function persist() {
@@ -93,6 +93,7 @@ const GOALS = [
   { id: "monster", icon: "🛞", name: "Big Wheels", desc: "Buy the Big Muncher.", coins: 100, test: () => save.trucks.includes("monster") },
   { id: "challenges", icon: "🎯", name: "Up for It", desc: "Complete 10 route challenges.", coins: 120, test: () => Object.keys(save.challenge).length >= 10 },
   { id: "rival", icon: "🏁", name: "Dash Dashed", desc: "Beat Dash Dalloway on 10 routes.", coins: 150, test: () => Object.keys(save.rival).length >= 10 },
+  { id: "ghostwins", icon: "👻", name: "Shadow Boxer", desc: "Beat your own ghost on 10 routes.", coins: 120, test: () => Object.keys(save.ghostWins).length >= 10 },
   { id: "orders10", icon: "📦", name: "Trusted Hauler", desc: "Complete 10 Special Orders.", coins: 150, test: () => Object.keys(save.orders).length >= 10 },
   { id: "orders30", icon: "🤝", name: "Everyone's Favourite", desc: "Complete all 30 Special Orders.", coins: 400, test: () => Object.keys(save.orders).length >= 30 },
   { id: "paint", icon: "🎨", name: "Fresh Coat", desc: "Earn a paint job and put it on a truck.", coins: 60, test: () => Object.values(save.paint).some(Boolean) },
@@ -360,6 +361,9 @@ function kick() { cancelAnimationFrame(frameId); state.last = performance.now();
 let menuLag = 0;
 function tick(now) {
   frameId = requestAnimationFrame(tick);
+  // Recording builds only: draw on every other refresh of a 120 Hz screen, so a
+  // 60 fps screen capture gets evenly spaced frames (see SnackHaulDebug below).
+  if (state.frameCap && now - state.last < state.frameCap - 2) return;
   const dt = Math.min(0.1, (now - state.last) / 1000);
   state.last = now;
   if (state.mode === "menu") {
@@ -374,7 +378,10 @@ function tick(now) {
   while (state.acc >= SH.STEP) {
     // Recording builds only: the bots' driver works the pedals (see SnackHaulDebug below).
     if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; }
-    g.step(state.input); if (g.status === "driving") stepGhost(); state.acc -= SH.STEP;
+    const driving = g.status === "driving";
+    g.step(state.input);
+    if (driving) { stepGhost(); if (state.gap) state.gap.push(g.truck.getPosition().x, state.ghost.game.truck.getPosition().x, state.ghost.game.status === "driving"); }
+    state.acc -= SH.STEP;
   }
   if (state.autopilot) syncPedals();
   drainEvents(g);
@@ -426,7 +433,7 @@ function makeGhost(delivery) {
     if (rival && save.stars[delivery.id] && !save.rival[delivery.id]) {
       return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup" }) };
     }
-    if (saved && saved.v === 2) return { kind: "mine", game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
+    if (saved && saved.v === 2) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
   } catch (e) { /* the run goes on without a ghost */ }
   return null;
 }
@@ -465,6 +472,10 @@ function startDelivery(delivery) {
   state.ghost = makeGhost(delivery);
   world.ghostGame = state.ghost ? state.ghost.game : null;
   world.ghostKind = state.ghost ? state.ghost.kind : null;
+  world.ghostLabel = !state.ghost ? "" : state.ghost.kind === "rival" ? RIVAL : "Your best " + state.ghost.time.toFixed(1) + "s";
+  state.gap = state.ghost ? SH.ghostGap() : null;
+  state.hudGap = null;
+  $("gap").hidden = !state.gap;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
@@ -474,6 +485,7 @@ function startDelivery(delivery) {
   if (delivery.order) hint(SH.orderText(delivery), 4500);
   else if (state.ghost && state.ghost.kind === "rival") hint(RIVAL + " is racing you: " + state.ghost.rival.t + "s to beat", 4500);
   else if (ch) hint("Challenge: " + SH.challengeText(ch), 4500);
+  else if (state.ghost) hint("Race your ghost: " + state.ghost.time.toFixed(1) + "s to beat", 4000);
   const d = localDate();
   if (!save.days.includes(d)) save.days = save.days.concat(d).slice(-60);
   persist();
@@ -509,6 +521,17 @@ function hud(g) {
     $("clock").textContent = metres + " m · next " + (mile + 1) * 250;
     if (mile > (state.mile || 0)) { state.mile = mile; toast(mile * 250 + " m!", 1100); play("medal", 0.5); }
   } else $("clock").textContent = Math.floor(g.time) + "s / " + g.par + "s";
+  // The gap to the ghost at the same point on the road: minus means you are ahead.
+  if (state.gap && g.status === "driving") {
+    const gap = Math.round(state.gap.gap() * 10) / 10;
+    if (state.hudGap !== gap) {
+      state.hudGap = gap;
+      const el = $("gap");
+      el.textContent = (gap > 0 ? "+" : gap < 0 ? "\u2212" : "") + Math.abs(gap).toFixed(1) + "s";
+      el.className = "chip gap " + (gap < 0 ? "ahead" : gap > 0 ? "behind" : "");
+      el.setAttribute("aria-label", gap < 0 ? Math.abs(gap).toFixed(1) + " seconds ahead of the ghost" : gap > 0 ? gap.toFixed(1) + " seconds behind the ghost" : "Level with the ghost");
+    }
+  }
   const f = g.fuel / g.maxFuel;
   $("fuel").style.width = (f * 100).toFixed(1) + "%";
   $("fuel").className = f < 0.25 ? "low" : "";
@@ -627,8 +650,17 @@ function finishDelivery(g) {
     } else if (r.status === "done" && r.time < raced.t) rivalLine = "Faster than " + RIVAL + ", but it only counts with two stars and a clean stop";
     else if (r.status === "done") rivalLine = RIVAL + " was " + gap + "s faster";
   }
+  // Your own ghost: same rules as the rival, so it only counts with two stars and a clean stop.
+  const mine = state.ghost && state.ghost.kind === "mine" ? state.ghost : null;
+  let ghostLine = "", beatGhost = false;
+  if (mine && r.status === "done") {
+    const gap = Math.abs(r.time - mine.time).toFixed(1);
+    if (r.time < mine.time && r.stars >= 2 && !r.dockHit) { beatGhost = true; save.ghostWins[d.id] = true; ghostLine = "You beat your ghost by " + gap + "s"; }
+    else if (r.time < mine.time) ghostLine = "Faster than your ghost, but it only counts with two stars and a clean stop";
+    else ghostLine = gap === "0.0" ? "Dead level with your ghost" : "Your ghost was " + gap + "s faster";
+  }
   const stageNow = depotStage(), stageUp = d.order && orderPay && DEPOT_PARTS[stageNow - 1] === save.parts && stageNow > 1 ? stageNow : 0;
-  r.beatRival = rivalPay > 0; r.challengeDone = chPay > 0; r.orderDone = !!d.order && r.status === "done" && r.stars >= 2;
+  r.beatRival = rivalPay > 0; r.beatGhost = beatGhost; r.challengeDone = chPay > 0; r.orderDone = !!d.order && r.status === "done" && r.stars >= 2;
   const done = countJobs(r);
   s.contracts += done.length;
   const goals = checkGoals(r);
@@ -660,6 +692,7 @@ function finishDelivery(g) {
     ${tip ? `<div class="unlocked">${ico("clock", "⏱️")} Rush tip +${tip}</div>` : ""}
     ${d.order && r.status === "done" && r.stars < 2 && !save.orders[d.id] ? `<p class="challenge">${esc(SH.CUSTOMERS[d.customer].name)} needs at least two stars.</p>` : ""}
     ${rivalLine ? `<div class="${rivalPay ? "unlocked" : "challenge"}">${ico("ghost", "🏁")} ${esc(rivalLine)}</div>` : ""}
+    ${ghostLine ? `<div class="${beatGhost ? "unlocked" : "challenge"}">${ico("ghost", "👻")} ${esc(ghostLine)}</div>` : ""}
     ${chPay ? `<div class="unlocked">${ico("challenge", "🎯")} Challenge done: ${esc(SH.challengeText(ch))} +${chPay}</div>` : ""}
     ${ch && !save.challenge[d.id] && r.status === "done" ? `<p class="challenge">${ico("challenge", "🎯")} Challenge: ${esc(SH.challengeText(ch))}</p>` : ""}
     ${gift ? `<div class="unlocked">${ico("up_straps", "🪢")} ${esc(gift)}</div>` : ""}
@@ -826,7 +859,10 @@ window.SnackHaulBack = () => {
 };
 // Debug and recording builds only: the app sets SNACKHAUL_DEBUG when built with
 // EXPO_PUBLIC_WEBVIEW_DEBUG=1. The website never does, so this does not exist there.
-if (window.SNACKHAUL_DEBUG) window.SnackHaulDebug = { autopilot: (speed) => { state.autopilot = speed || 0; if (!speed) state.input.gas = state.input.brake = false; } };
+if (window.SNACKHAUL_DEBUG) window.SnackHaulDebug = {
+  autopilot: (speed) => { state.autopilot = speed || 0; if (!speed) state.input.gas = state.input.brake = false; },
+  fps: (cap) => { state.frameCap = cap ? 1000 / cap : 0; }
+};
 window.SnackHaulPause = () => { pause(); if (audio.ctx && audio.ctx.state === "running") audio.ctx.suspend(); };
 window.SnackHaulResume = () => { if (audio.ctx && save.sound) audio.ctx.resume(); };
 

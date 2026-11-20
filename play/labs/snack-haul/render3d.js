@@ -1160,6 +1160,24 @@ export class World3D {
       c.material = Array.isArray(c.material) ? list : list[0];
     });
     [gm.root, ...gm.wheels].forEach((o) => { ghostify(o); this.scene.add(o); });
+    // A name tag over the ghost: "Your best 41.2s", or the rival's name.
+    if (this.ghostLabel) {
+      const text = this.ghostLabel;
+      const map = canvasTex(512, 112, (x, w, h) => {
+        x.clearRect(0, 0, w, h);
+        x.font = "800 52px sans-serif";
+        const tw = Math.min(w - 8, x.measureText(text).width + 56);
+        x.fillStyle = rival ? "#ff8a2ae0" : "#fff8ebd8";
+        x.beginPath(); x.roundRect((w - tw) / 2, 10, tw, h - 20, (h - 20) / 2); x.fill();
+        x.fillStyle = rival ? "#fff" : "#2d1b0c"; x.textAlign = "center"; x.textBaseline = "middle";
+        x.fillText(text, w / 2, h / 2 + 2, w - 40);
+      });
+      const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthTest: false, depthWrite: false }));
+      tag.scale.set(3.4, 0.74, 1);
+      tag.renderOrder = 20;
+      this.scene.add(tag);
+      gm.tag = tag;
+    }
     this.ghostModel = gm;
   }
 
@@ -1169,6 +1187,7 @@ export class World3D {
       const gp = gg.truck.getPosition();
       gm.root.position.set(gp.x, gp.y, GHOST_Z);
       gm.root.rotation.z = gg.truck.getAngle();
+      if (gm.tag) gm.tag.position.set(gp.x, gp.y + 2.5, GHOST_Z);
       gg.wheels.forEach((w, i) => { const wp = w.getPosition(); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = w.getAngle(); });
     }
     const model = this.truckModel, truck = game.truck, p = truck.getPosition();

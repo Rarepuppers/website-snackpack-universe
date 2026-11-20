@@ -88,6 +88,9 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
 .hud { position: absolute; top: max(8px, env(safe-area-inset-top)); left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); display: flex; gap: 6px; align-items: center; font-weight: 800; }
 .chip { background: #fff8ebe6; color: #2d1b0c; border-radius: 10px; padding: 5px 8px; font-size: .86rem; white-space: nowrap; }
 .chip.warn { background: var(--bad); color: #fff; }
+.chip.gap { font-variant-numeric: tabular-nums; min-width: 3.6em; text-align: center; }
+.chip.gap.ahead { background: #2f9e57; color: #fff; }
+.chip.gap.behind { background: #c9482e; color: #fff; }
 .fuel { flex: 1; max-width: 220px; min-width: 40px; height: 16px; background: #fff8ebe6; border-radius: 8px; overflow: hidden; padding: 2px; }
 .fuel i { display: block; height: 100%; background: var(--go); border-radius: 6px; }
 .fuel i.low { background: var(--bad); }

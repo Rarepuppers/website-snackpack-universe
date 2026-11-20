@@ -111,6 +111,30 @@ function ghost() {
     if (!same) bad++;
     console.log(id.padEnd(11), same ? "replays exactly" : "DIFFERS", a.status, a.kept + "/" + a.total, a.time.toFixed(2), "vs", b.status, b.kept + "/" + b.total, b.time.toFixed(2), "rec", a.rec.length);
   }
+  // Beat your ghost: one run becomes the ghost, another races it in lockstep.
+  // The live gap starts at zero. Racing a slower ghost it goes negative and stays
+  // between zero and the final margin (it is measured where the ghost is now).
+  // Racing a faster ghost it ends within a second of the real margin.
+  for (const [ghostV, meV] of [[4, 5.5], [5.5, 4]]) for (const id of ["bakery-2", "bakery-5", "dunes-3", "frost-2", "harbour-2", "market-1"]) {
+    const ghostRun = drive(id, base, ghostV, 200);
+    if (ghostRun.status !== "done") { console.log(id.padEnd(11), "ghost run failed, skipped"); continue; }
+    const me = SH.createGame({ id, upgrades: base }), gh = SH.createGame({ id, upgrades: base }), gap = SH.ghostGap();
+    let i = 0, k = 0, first = null, frames = 0;
+    while (me.status === "driving" && frames++ < 200 * 60) {
+      me.step(SH.botInput(me, meV));
+      if (gh.status === "driving" && i < ghostRun.rec.length) {
+        gh.step({ gas: !!(ghostRun.rec[i] & 1), brake: !!(ghostRun.rec[i] & 2) });
+        if (++k >= ghostRun.rec[i + 1]) { i += 2; k = 0; }
+      }
+      gap.push(me.truck.getPosition().x, gh.truck.getPosition().x, gh.status === "driving");
+      if (first == null) first = gap.gap();
+    }
+    const r = SH.report(me), end = gap.gap(), diff = r.time - ghostRun.time;
+    if (r.status !== "done") { console.log(id.padEnd(11), "racing run failed, skipped"); continue; }
+    const ok = first === 0 && r.status === "done" && (diff < 0 ? end < 0 && end >= diff - 0.05 : Math.abs(end - diff) < 1);
+    if (!ok) bad++;
+    console.log(id.padEnd(11), (ok ? "gap ok" : "GAP WRONG").padEnd(10), "ghost", ghostRun.time.toFixed(1) + "s", "me", r.time.toFixed(1) + "s", "margin", diff.toFixed(2), "live gap at finish", end.toFixed(2));
+  }
   process.exitCode = bad ? 1 : 0;
 }
 

@@ -877,6 +877,33 @@
     return { path: path, every: every, report: report(g) };
   }
 
+  // The live gap to a ghost, in seconds: positive means you are behind it.
+  // Both runs step in lockstep, so each keeps its furthest x per step and the gap
+  // is when you reached a point against when the ghost did. Whoever is behind is
+  // measured from now, so stopping costs time; a finished ghost is measured from
+  // its arrival, so pulling deeper into the stop zone does not count as gaining.
+  function ghostGap() {
+    var me = [], gh = [], meMax = -Infinity, ghMax = -Infinity, ghEnd = -1;
+    function firstAt(list, x) {
+      var lo = 0, hi = list.length - 1;
+      while (lo < hi) { var mid = (lo + hi) >> 1; if (list[mid] >= x) hi = mid; else lo = mid + 1; }
+      return lo;
+    }
+    return {
+      push: function (xMe, xGhost, ghostDriving) {
+        meMax = Math.max(meMax, xMe); ghMax = Math.max(ghMax, xGhost);
+        me.push(meMax); gh.push(ghMax);
+        if (!ghostDriving && ghEnd < 0) ghEnd = gh.length - 1;
+      },
+      gap: function () {
+        var now = me.length - 1;
+        if (now < 0) return 0;
+        if (meMax >= ghMax) return (firstAt(me, ghMax) - (ghEnd >= 0 ? firstAt(gh, ghMax) : now)) * STEP;
+        return (now - firstAt(gh, meMax)) * STEP;
+      }
+    };
+  }
+
   // ════ Route challenges: one extra objective per career route ═════
   // The table is written by `node dev/sim.js challenges --write`, which sets each
   // target from what a bot driver manages, so every challenge is proven possible.
@@ -972,8 +999,9 @@
     { id: "metres", text: "Drive 2 kilometres", goal: 2000, pay: 40, count: function (r) { return r.metres; } },
     { id: "runs", text: "Finish 4 deliveries", goal: 4, pay: 35, count: function (r) { return r.status === "done" ? 1 : 0; } },
     { id: "long", text: "Drive 400 metres in one Long Haul", goal: 1, pay: 50, count: function (r) { return r.long && r.metres >= 400 ? 1 : 0; } },
-    // app.js adds beatRival, challengeDone and orderDone to the report before counting.
+    // app.js adds beatRival, beatGhost, challengeDone and orderDone to the report before counting.
     { id: "rival", text: "Beat Dash Dalloway on any route", goal: 1, pay: 50, count: function (r) { return r.beatRival ? 1 : 0; } },
+    { id: "ghost", text: "Beat your own ghost on any route", goal: 1, pay: 45, count: function (r) { return r.beatGhost ? 1 : 0; } },
     { id: "challenge", text: "Complete a route challenge", goal: 1, pay: 50, count: function (r) { return r.challengeDone ? 1 : 0; } },
     { id: "order", text: "Deliver a Special Order", goal: 1, pay: 60, count: function (r) { return r.orderDone ? 1 : 0; } },
     { id: "landings", text: "Land 10 jumps", goal: 10, pay: 35, count: function (r) { return r.landings || 0; } },
@@ -1031,7 +1059,7 @@
     TRUCKS: TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
-    contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, featureAt: featureAt,
+    contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
     heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng
