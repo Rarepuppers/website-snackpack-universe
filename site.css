@@ -2617,3 +2617,62 @@ button:focus-visible {
 .story-reader-page .counting-sequence,.story-reader-page .counting-observation{border:1px solid var(--line-strong);border-radius:12px;padding:12px;background:var(--surface-strong);color:var(--ink);font-size:1.1rem;line-height:1.6}
 .story-reader-page .counting-sequence{font-weight:800;word-spacing:.2em}
 .math-choice[aria-disabled="true"]{cursor:default}
+
+/* Holiday and event bookshelves (scripts/build-read-events.mjs, read/events.js).
+   --event-accent is a dark colour checked against light ink by the generator. */
+.read-season[hidden],.read-season-event[hidden],.read-event-tonight-pick[hidden]{display:none}
+.read-season{padding:8px 0 40px}
+.read-season-event{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:24px;align-items:start;padding:24px;border-radius:30px;background:var(--event-accent);color:#fffdf8;box-shadow:0 22px 64px rgba(55,43,35,.14)}
+.read-season-event+.read-season-event{margin-top:20px}
+.read-season-head .eyebrow{color:#fffdf8;opacity:.9}
+.read-season-head h2{margin:10px 0 8px;font-family:var(--font-display,Georgia,serif);font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.05;color:#fffdf8}
+.read-season-head p{margin:0 0 14px;line-height:1.55}
+.read-season-head .text-link{color:#fffdf8;font-weight:800;text-decoration:underline;text-underline-offset:.18em}
+.read-season-books{display:grid;grid-auto-flow:column;grid-auto-columns:150px;gap:14px;margin:0;padding:0 0 8px;list-style:none;overflow-x:auto;scroll-snap-type:x proximity;flex-grow:0}
+.read-season-books li{scroll-snap-align:start}
+.read-season-book{display:flex;flex-direction:column;gap:4px;color:#fffdf8;text-decoration:none}
+.read-season-book img{width:100%;height:auto;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.28)}
+.read-season-book strong{font-size:.95rem;line-height:1.25}
+.read-season-book:hover strong,.read-season-book:focus-visible strong{text-decoration:underline}
+.read-season-when{margin-top:4px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.9}
+.read-season-age{font-size:.82rem;opacity:.9}
+.read-season-all{margin:16px 0 0}
+.read-event-chip{margin:0 0 12px}
+.read-event-chip a{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--event-accent);color:#fffdf8;font-weight:800;font-size:.9rem;text-decoration:none}
+.read-event-chip a:hover,.read-event-chip a:focus-visible{text-decoration:underline}
+.story-event-link{margin:0 auto 24px;color:var(--muted);text-align:center}
+.read-event-crumbs{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+.read-event-crumbs a{color:inherit}
+.read-event-hero{padding:72px 0 40px;border-top:10px solid var(--event-accent)}
+.read-event-hero h1{max-width:850px;margin:14px 0 18px;font-family:var(--font-display,Georgia,serif);font-size:clamp(2.8rem,7vw,5.6rem);line-height:.95;letter-spacing:-.04em}
+.read-event-tonight-pick{display:inline-flex;gap:16px;align-items:center;max-width:520px;margin-top:10px;padding:14px;border:1px solid var(--line-strong);border-radius:22px;background:var(--surface-strong);color:inherit;text-decoration:none}
+.read-event-tonight-pick img{width:84px;height:auto;border-radius:10px}
+.read-event-tonight-pick>span{display:flex;flex-direction:column;gap:4px}
+.read-event-tonight-pick strong{font-family:var(--font-display,Georgia,serif);font-size:1.3rem;line-height:1.15}
+.read-event-books{display:grid;gap:22px;margin:0 0 48px;padding:0;list-style:none;counter-reset:none}
+.read-event-book{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:start;padding:20px;border:1px solid var(--line);border-radius:26px;background:var(--surface-strong)}
+.read-event-book img{width:100%;height:auto;border-radius:16px}
+.read-event-book h3{margin:6px 0 6px;font-family:var(--font-display,Georgia,serif);font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.1}
+.read-event-book h3 a{color:inherit}
+.read-event-book p{margin:0 0 8px;line-height:1.55}
+.read-event-step{font-size:.8rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--event-accent)}
+:root[data-theme="dark"] .read-event-step{color:inherit}
+.read-event-meta{color:var(--muted)}
+.read-event-sub{margin-top:8px}
+.read-event-also{margin:0 0 32px;padding-left:1.2em;line-height:1.9}
+.read-event-also span{color:var(--muted)}
+.read-event-note{color:var(--muted)}
+.read-event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin:0 0 40px}
+.read-event-card{display:flex;flex-direction:column;gap:6px;padding:22px;border-radius:26px;background:var(--event-accent);color:#fffdf8;text-decoration:none}
+.read-event-card .eyebrow{color:#fffdf8;opacity:.9}
+.read-event-card h2{margin:4px 0 0;font-family:var(--font-display,Georgia,serif);font-size:1.9rem;color:#fffdf8}
+.read-event-card p{margin:0;line-height:1.5}
+.read-event-card.is-featured{grid-column:span 2}
+.read-event-card.is-coming{opacity:.82}
+.read-event-count{font-weight:800}
+.read-event-stack{display:flex;margin-bottom:10px}
+.read-event-stack picture+picture{margin-left:-28px}
+.read-event-stack img{width:86px;height:auto;border-radius:10px;border:2px solid rgba(255,253,248,.85);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+a.read-event-card:hover h2,a.read-event-card:focus-visible h2{text-decoration:underline}
+@media(max-width:760px){.read-season-event{grid-template-columns:1fr;padding:18px;border-radius:22px}.read-season-books{grid-auto-columns:120px}.read-event-book{grid-template-columns:110px 1fr;gap:14px;padding:14px}.read-event-card.is-featured{grid-column:auto}.read-event-hero{padding:32px 0 24px}}
+.read-season-head .eyebrow,.read-event-card .eyebrow{padding:0;background:none;color:#fffdf8;opacity:.92}

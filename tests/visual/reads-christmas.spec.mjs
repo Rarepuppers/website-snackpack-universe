@@ -42,3 +42,19 @@ test('the harbour mystery is discoverable by age and can open a chapter directly
  await expect(page).toHaveURL(/#page-31$/);
  await expect(page.locator('#page-31').getByRole('heading')).toHaveText('The blue boathouse');
 });
+
+test('the Christmas event page lists the six books in reading order and books link back to it',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/read/events/christmas/');
+ await expect(page.locator('.read-event-book')).toHaveCount(6);
+ await expect(page.locator('.read-event-book h3').first()).toHaveText('Nutmeg and the Tree That Wouldn’t Come');
+ await expect(page.locator('.read-event-book h3').last()).toHaveText('The Last Parcel Under the Tree');
+ await expect(page.locator('[data-tonight]:visible')).toHaveCount(1);
+ await page.goto('/read/events/');
+ await expect(page.locator('a.read-event-card')).toHaveCount(1);
+ await expect(page.locator('.read-event-card')).toHaveCount(5);
+ await page.goto('/read/one-more-story-before-santa/');
+ await page.locator('.read-event-chip a').click();
+ await expect(page).toHaveURL(/\/read\/events\/christmas\/$/);
+ expect(errors).toEqual([]);
+});
