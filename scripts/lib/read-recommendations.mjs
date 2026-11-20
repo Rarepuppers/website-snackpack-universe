@@ -1,3 +1,5 @@
+import { READ_EVENTS } from './read-events.mjs';
+
 // Choices use the published shelf order and explicit groups; no reading history.
 export function nextChoices(shelf, slug, collections = []) {
   const index = shelf.findIndex(b => b.slug === slug), book = shelf[index];
@@ -11,9 +13,10 @@ export function nextChoices(shelf, slug, collections = []) {
     ordered.find(b => peers?.books.includes(b.slug)) ||
     ordered.find(b => b.group === book.group && (book.group !== 'christmas' || appropriate(b)));
   const choices = [];
+  const event = READ_EVENTS.find(e => e.id === book.group);
   if (next) {
     const label = phonics ? (next.group === 'trail' ? 'Next Reading Trail practice · read together' : next.group === book.group ? 'More practice at this stage' : 'Next phonics stage · when ready') :
-      book.group === 'christmas' ? `Next Christmas story · ${next.readingLevel?.toLowerCase() ?? 'read together'}` :
+      event ? `Next ${event.title} story · ${next.readingLevel?.toLowerCase() ?? 'read together'}` :
       next.readingLevel ? `Related book · ${next.readingLevel.toLowerCase()}` : 'Related read-together book';
     choices.push({book:next,label}); excluded.add(next.slug);
   }

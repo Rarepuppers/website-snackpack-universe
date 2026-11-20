@@ -21,6 +21,11 @@
   "/assets/fonts/fonts.css",
   "/assets/favicon-32.png",
   "/assets/snackpack-mark-96.png",
+  "/read/events/icons/christmas.svg",
+  "/read/events/icons/new-year.svg",
+  "/read/events/icons/lunar-new-year.svg",
+  "/read/events/icons/easter.svg",
+  "/read/events/icons/thanksgiving.svg",
   "/assets/fonts/dmsans-b38d5bb1.woff2",
   "/assets/fonts/dmsans-ed656a5d.woff2",
   "/assets/fonts/fraunces-23cb87eb.woff2",
@@ -59,7 +64,7 @@
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p23.webp",
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p24.webp"
    ],
-   "html_sha256": "180847b0586f0464efb033e41b7cb495a267bbd49e838fe4e6cf1ff3b5440fb1",
+   "html_sha256": "2aad4c27a8de66fef08731d1a25738fce93f30d92e83e59d8f6abde43595dc4a",
    "bytes": 10146370
   },
   {
@@ -93,7 +98,7 @@
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp"
    ],
-   "html_sha256": "c931ec9284ccda5210f67bdbab01244b053c74e1e9386e2ac53b501a1c03165e",
+   "html_sha256": "0ddac88d366cd1500c8d894d005cc6497c5b0756e66598bc0cfa09de803c9a81",
    "bytes": 9688408
   },
   {
@@ -127,7 +132,7 @@
     "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
     "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp"
    ],
-   "html_sha256": "e824221809882d59e991ee383f08373714db103f0f3bd750b444d1b0f246e466",
+   "html_sha256": "9a8d15497d1dfbdeccbb5c92abeddf9ccd1ee49630192c8070de85b80d55d937",
    "bytes": 6113052
   },
   {
@@ -181,7 +186,7 @@
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp"
    ],
-   "html_sha256": "7e553acc55c2e7ed575e82b45334817dc360bc3f2faa927a430f373afffe4d6b",
+   "html_sha256": "41458fe1d21c12dab22fce76377fae4228a6a40777d6082f5657f3180e494a50",
    "bytes": 18464118
   },
   {
@@ -215,7 +220,7 @@
     "/read/one-more-story-before-santa/pages/p23.webp",
     "/read/one-more-story-before-santa/pages/p24.webp"
    ],
-   "html_sha256": "a76bc80fc92e5e85385d16602efba4af8c2c8ebad1b62d877abed60cb73bdb20",
+   "html_sha256": "39bcce7a508b447f150450b1930b2abf7eb9b79a0df4d7be47fd8e3d49e1269e",
    "bytes": 5652364
   },
   {
@@ -251,7 +256,7 @@
     "/read/the-last-parcel-under-the-tree/pages/p25.webp",
     "/read/the-last-parcel-under-the-tree/pages/p26.webp"
    ],
-   "html_sha256": "f2e98a8ad3aeb01b8a23bad76276f8585dbd96174aad8979806187da2dfecc32",
+   "html_sha256": "48ecee26f8de0fb116ef4f05c4698e196a5b3cc7d37b936ed1458fe0d9e6146c",
    "bytes": 9806592
   },
   {
@@ -1732,6 +1737,11 @@
   "/assets/fonts/fonts.css",
   "/assets/favicon-32.png",
   "/assets/snackpack-mark-96.png",
+  "/read/events/icons/christmas.svg",
+  "/read/events/icons/new-year.svg",
+  "/read/events/icons/lunar-new-year.svg",
+  "/read/events/icons/easter.svg",
+  "/read/events/icons/thanksgiving.svg",
   "/assets/fonts/dmsans-b38d5bb1.woff2",
   "/assets/fonts/dmsans-ed656a5d.woff2",
   "/assets/fonts/fraunces-23cb87eb.woff2",

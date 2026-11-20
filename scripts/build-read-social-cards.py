@@ -1,7 +1,7 @@
 """Build a 1200x630 share card for every book under /read/ and point its tags at it.
 
     python scripts/build-read-social-cards.py          # write cards + update tags
-    python scripts/build-read-social-cards.py --check  # exit 1 if any page or card is stale
+    python scripts/build-read-social-cards.py --check  # validate image metadata and every JPEG
 
 Why: /read/ grows through links shared in chat apps (Telegram, WhatsApp), and
 every book used its portrait cover as og:image. Chat previews are landscape, so
@@ -25,17 +25,20 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 READ = os.path.join(ROOT, "read")
 SITE = "https://www.snackpackuniverse.com"
-FONTS = os.environ.get("WINDIR", r"C:\Windows") + r"\Fonts"
+FONTS = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
+HAS_WINDOWS_FONTS = os.path.isfile(os.path.join(FONTS, "segoeuib.ttf"))
+MAC_FONTS = "/System/Library/Fonts/Supplemental"
+MAC_FONT_NAMES = {"segoeuib.ttf": "Arial Bold.ttf", "segoeui.ttf": "Arial.ttf", "georgiab.ttf": "Georgia Bold.ttf"}
 W, H = 1200, 630
 BG = (255, 246, 230)
 INK = (32, 23, 19)
 MUTED = (103, 93, 85)
 ACCENT = (31, 111, 92)
-CHECK = "--check" in sys.argv
 
 
 def font(name, size):
-    return ImageFont.truetype(os.path.join(FONTS, name), size)
+    folder, name = (FONTS, name) if HAS_WINDOWS_FONTS else (MAC_FONTS, MAC_FONT_NAMES[name])
+    return ImageFont.truetype(os.path.join(folder, name), size)
 
 
 def wrap(draw, text, fnt, width):
@@ -110,35 +113,54 @@ def set_tags(page, slug, title):
     return page[:m.end()] + tags + page[m.end():]
 
 
-stale = []
-for slug in sorted(os.listdir(READ)):
-    path = os.path.join(READ, slug, "index.html")
-    if slug == "sound-cards" or not os.path.isfile(path):
-        continue
-    page = open(path, encoding="utf-8").read()
-    if 'class="story-page-card"' not in page:
-        continue  # Collection/utility pages have their own sharing metadata.
-    title = meta(page, "og:title")
-    eyebrow_m = re.search(r'<section class="story-title-section">.*?<span class="eyebrow">([^<]*)</span>', page, re.S)
-    art_m = re.search(r'<section class="story-title-section">.*?<img src="\./([^"]+)"', page, re.S)
-    if not (title and eyebrow_m and art_m):
-        raise SystemExit(f"read/{slug}/index.html: missing og:title, eyebrow or title art")
-    eyebrow = htmllib.unescape(eyebrow_m.group(1)).replace(" · Free", "").strip()
-    eyebrow = "Free " + eyebrow[0].lower() + eyebrow[1:] if not eyebrow.lower().startswith("free") else eyebrow
-    jpg = card(title, eyebrow, os.path.join(READ, slug, art_m.group(1)))
-    out = os.path.join(READ, slug, "social-card.jpg")
-    new_page = set_tags(page, slug, title)
-    old_jpg = open(out, "rb").read() if os.path.exists(out) else None
-    if new_page != page:
-        stale.append(f"read/{slug}/index.html")
-    if old_jpg != jpg:
-        stale.append(f"read/{slug}/social-card.jpg")
-    if not CHECK:
-        open(path, "w", encoding="utf-8", newline="").write(new_page)
-        open(out, "wb").write(jpg)
-        print(f"  {slug}: {len(jpg) // 1024} KB")
+def main():
+    check = "--check" in sys.argv
+    only = {arg.split("=", 1)[1] for arg in sys.argv[1:] if arg.startswith("--slug=")}
+    if not check and not HAS_WINDOWS_FONTS and not only:
+        sys.exit("Use --slug=BOOK to generate only the intended cards with local fonts.")
 
-if CHECK and stale:
-    print("build-read-social-cards: stale:\n  " + "\n  ".join(stale))
-    sys.exit(1)
-print("build-read-social-cards: " + ("all current." if CHECK else "done."))
+    stale = []
+    for slug in sorted(os.listdir(READ)):
+        if only and slug not in only:
+            continue
+        path = os.path.join(READ, slug, "index.html")
+        if slug == "sound-cards" or not os.path.isfile(path):
+            continue
+        page = open(path, encoding="utf-8").read()
+        if 'class="story-page-card"' not in page:
+            continue  # Collection/utility pages have their own sharing metadata.
+        title = meta(page, "og:title")
+        eyebrow_m = re.search(r'<section class="story-title-section">.*?<span class="eyebrow">([^<]*)</span>', page, re.S)
+        art_m = re.search(r'<section class="story-title-section">.*?<img src="\./([^"]+)"', page, re.S)
+        if not (title and eyebrow_m and art_m):
+            raise SystemExit(f"read/{slug}/index.html: missing og:title, eyebrow or title art")
+        eyebrow = htmllib.unescape(eyebrow_m.group(1)).replace(" · Free", "").strip()
+        eyebrow = "Free " + eyebrow[0].lower() + eyebrow[1:] if not eyebrow.lower().startswith("free") else eyebrow
+        out = os.path.join(READ, slug, "social-card.jpg")
+        new_page = set_tags(page, slug, title)
+        old_jpg = open(out, "rb").read() if os.path.exists(out) else None
+        if new_page != page:
+            stale.append(f"read/{slug}/index.html")
+        if check:
+            try:
+                with Image.open(io.BytesIO(old_jpg or b"")) as image:
+                    valid = image.format == "JPEG" and image.size == (W, H) and len(old_jpg) < 300_000
+                    image.verify()
+            except (OSError, TypeError):
+                valid = False
+            if not valid:
+                stale.append(f"read/{slug}/social-card.jpg")
+        if not check:
+            jpg = card(title, eyebrow, os.path.join(READ, slug, art_m.group(1)))
+            open(path, "w", encoding="utf-8", newline="").write(new_page)
+            open(out, "wb").write(jpg)
+            print(f"  {slug}: {len(jpg) // 1024} KB")
+
+    if check and stale:
+        print("build-read-social-cards: stale:\n  " + "\n  ".join(stale))
+        sys.exit(1)
+    print("build-read-social-cards: " + ("all current." if check else "done."))
+
+
+if __name__ == "__main__":
+    main()

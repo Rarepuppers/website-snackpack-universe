@@ -15,9 +15,16 @@
 // build-read-shelf.mjs. An event with no books is shown as "Coming up" on
 // /read/events/ and gets no page of its own until it has finished titles.
 
+import fs from "node:fs";
+
+const originalRegistry = JSON.parse(fs.readFileSync(new URL("../../data/web-originals.json", import.meta.url), "utf8"));
+const released = timeline => timeline.filter(({ slug }) => originalRegistry[slug]);
+const publishedSlugs = (slugs) => slugs.filter(slug => originalRegistry[slug]);
+
 export const READ_EVENTS = [
   {
     id: "christmas",
+    icon: "christmas",
     title: "Christmas",
     heading: "Christmas stories",
     tagline: "A woodland Christmas, from choosing the tree to the last parcel on Christmas morning.",
@@ -43,17 +50,31 @@ export const READ_EVENTS = [
   },
   {
     id: "new-year",
+    icon: "new-year",
     title: "New Year",
     heading: "New Year stories",
     tagline: "Countdowns, paper hats and a jar of good things.",
+    intro: "Two woodland stories share one New Year’s Eve. Sort a year of memories with Ted, then follow the clock wall with Cluck and Coop.",
+    activity: "midnight-clocks",
+    printables: [
+      { href: "/read/events/new-year/jar-of-good-things.pdf", label: "Jar of Good Things activity sheet" },
+      { href: "/read/events/new-year/colouring-ted-e-bear-and-the-jar-of-good-things.pdf", label: "Colour Ted’s story" },
+      { href: "/read/events/new-year/colouring-cluck-oclock-and-the-midnight-that-came-early.pdf", label: "Colour Cluck’s story" },
+    ],
     accent: "#2B2F6B",
     dates: [{ kind: "fixed", month: 1, day: 1 }],
     leadDays: 14,
     tailDays: 9,
-    timeline: [],
+    timeline: released([
+      { when: "New Year’s Eve, 6 to 9 pm", slug: "ted-e-bear-and-the-jar-of-good-things" },
+      { when: "New Year’s Eve to New Year’s Day", slug: "cluck-oclock-and-the-midnight-that-came-early" },
+    ]),
+    tonight: publishedSlugs(["cluck-oclock-and-the-midnight-that-came-early"]),
+    alsoGood: ["pork-ulele-and-the-clockwork-concert", "nutmegs-four-seasons"],
   },
   {
     id: "lunar-new-year",
+    icon: "lunar-new-year",
     title: "Lunar New Year",
     heading: "Lunar New Year stories",
     tagline: "Reunion dinners, lion dances and the year of the goat.",
@@ -65,6 +86,7 @@ export const READ_EVENTS = [
   },
   {
     id: "easter",
+    icon: "easter",
     title: "Easter",
     heading: "Easter stories",
     tagline: "Egg hunts, hatching chicks and an autumn Easter in the south.",
@@ -76,9 +98,17 @@ export const READ_EVENTS = [
   },
   {
     id: "thanksgiving",
+    icon: "thanksgiving",
     title: "Thanksgiving",
     heading: "Thanksgiving stories",
     tagline: "Harvest tables, potluck mix-ups and saying thank you.",
+    intro: "Meet the friends around two woodland tables. Share a Friendsgiving mix-up, or read aloud and count the cobs on the way to Nutmeg’s harvest feast.",
+    activity: "thank-you-leaves",
+    printables: [
+      { href: "/read/events/thanksgiving/thank-you-leaves.pdf", label: "Thank-you Leaves activity sheet" },
+      { href: "/read/events/thanksgiving/colouring-everybody-brought-potatoes.pdf", label: "Colour Everybody Brought Potatoes" },
+      { href: "/read/events/thanksgiving/colouring-corgi-on-the-cob-and-the-harvest-table.pdf", label: "Colour Corgi’s harvest story" },
+    ],
     accent: "#7A3B12",
     dates: [
       { kind: "nthWeekday", month: 10, weekday: 1, n: 2, region: "Canada" },
@@ -86,7 +116,12 @@ export const READ_EVENTS = [
     ],
     leadDays: 28,
     tailDays: 3,
-    timeline: [],
+    timeline: released([
+      { when: "The week before", slug: "everybody-brought-potatoes" },
+      { when: "Thanksgiving Day", slug: "corgi-on-the-cob-and-the-harvest-table" },
+    ]),
+    tonight: publishedSlugs(["corgi-on-the-cob-and-the-harvest-table"]),
+    alsoGood: ["nutmegs-stormy-barn", "corgi-on-the-cobs-ten-frame-picnic", "panda-cakes-market-basket"],
   },
 ];
 
@@ -138,3 +173,21 @@ export function eventDates(event, from = FIRST_YEAR, to = LAST_YEAR) {
 export const eventBooks = (event) => event.timeline.map((t) => t.slug);
 export const eventForBook = (slug) => READ_EVENTS.find((e) => eventBooks(e).includes(slug)) ?? null;
 export const publishedEvents = () => READ_EVENTS.filter((e) => e.timeline.length);
+
+export const eventIconPath = (event) => `/read/events/icons/${event.icon}.svg`;
+export const eventIcon = (event) => `<img class="read-event-icon" src="${eventIconPath(event)}" alt="" aria-hidden="true" width="20" height="20">`;
+
+export function releasedEventBooks() {
+  const releaseDates = { thanksgiving: "2026-11-24", "new-year": "2026-12-18" };
+  return READ_EVENTS.filter(event => releaseDates[event.id]).flatMap(event => event.timeline.map(({ slug }) => {
+    const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
+    const label = slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
+    const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
+    return {
+      slug, group: event.id, age: book.ageRange.split("–").map(Number),
+      readingLevel: book.readingLevel, added: releaseDates[event.id], title: book.title,
+      eyebrow: `${label} · ${format} · ${book.storyPageCount} pages`, blurb: book.blurb,
+      cover: "pages/cover", ext: "jpg", alt: book.cover.alt, w: book.cover.width, h: book.cover.height,
+    };
+  }));
+}

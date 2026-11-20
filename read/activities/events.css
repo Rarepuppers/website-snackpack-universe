@@ -1,0 +1,143 @@
+.read-event-activity {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.read-leaves-form {
+  display: grid;
+  gap: .65rem;
+  justify-items: start;
+}
+
+.read-leaves-form input[type="text"] {
+  width: min(100%, 28rem);
+  padding: .6rem .75rem;
+  border: 1px solid currentColor;
+  border-radius: .5rem;
+  color: inherit;
+  background: var(--surface-strong);
+  font: inherit;
+}
+
+.read-leaves-form fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.read-leaf-colours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+}
+
+.read-leaf-colours label,
+.read-leaf-keep {
+  display: inline-flex;
+  gap: .35rem;
+  align-items: center;
+  min-height: 2.5rem;
+  cursor: pointer;
+}
+
+.read-leaf-colours input {
+  outline: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.read-event-activity :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.read-leaf-branch {
+  position: relative;
+  width: min(100%, 45rem);
+  margin-block: 1.25rem;
+}
+
+.read-leaf-branch svg {
+  display: block;
+  width: 100%;
+  color: var(--ink);
+}
+
+.read-leaf-branch ul,
+.read-clock-grid {
+  display: grid;
+  padding: 0;
+  gap: .85rem;
+  list-style: none;
+}
+
+.read-leaf-branch ul {
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  margin: 0;
+}
+
+.read-leaf-branch li,
+.read-leaf-falling {
+  display: grid;
+  align-content: center;
+  min-height: 3.6rem;
+  padding: .6rem 1rem;
+  color: #fffdf8;
+  background: #75402a;
+  border-radius: 10% 55% 12% 55%;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transform: rotate(var(--leaf-tilt, 0deg));
+}
+
+.read-leaf-falling {
+  position: absolute;
+  pointer-events: none;
+}
+
+.read-leaf-branch [data-colour="gold"] { background: #e9b34b; color: #231a13; }
+.read-leaf-branch [data-colour="red"] { background: #a13732; }
+.read-leaf-branch [data-colour="brown"] { background: #69482f; }
+
+.read-clock-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+  margin-block: 1rem;
+}
+
+.read-clock {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  padding: .75rem .4rem;
+  border-radius: .75rem;
+  background: var(--surface-strong);
+  text-align: center;
+}
+
+.read-clock h3,
+.read-clock p { margin: .25rem 0; }
+
+.read-clock svg { color: #483221; }
+.read-clock svg circle:first-child { fill: #fff4d8; stroke: currentColor; stroke-width: 2; }
+.read-clock-ticks { stroke: currentColor; stroke-width: 1.5; }
+.read-clock svg [data-hour-hand],
+.read-clock svg [data-minute-hand] { stroke: currentColor; stroke-linecap: round; stroke-width: 2; }
+.read-clock svg [data-hour-hand] { stroke-width: 3.5; }
+.read-clock-badge { background: #e9b34b; color: #231a13; padding: .2rem .5rem; border-radius: .45rem; }
+.read-activity-status { min-height: 1.5em; overflow-wrap: anywhere; }
+
+@media print {
+  body.read-print-branch > :not(main),
+  .read-print-branch main > :not([data-activity="thank-you-leaves"]),
+  .read-print-branch [data-activity="thank-you-leaves"] > .shell > :not([data-leaves-controls]),
+  .read-print-branch [data-leaves-controls] > :not(.read-leaf-branch),
+  .read-print-branch .read-leaf-falling { display: none !important; }
+
+  .read-print-branch .read-leaf-branch { break-inside: avoid; color: #231a13; }
+  .read-print-branch .read-leaf-branch svg { color: #231a13; }
+  .read-print-branch .read-leaf-branch li {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    border: 1px solid currentColor;
+  }
+}

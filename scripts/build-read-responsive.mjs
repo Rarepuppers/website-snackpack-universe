@@ -11,11 +11,11 @@
 //
 // Run after any importer (they write plain single-file <source> tags) and
 // before build-read-shelf.mjs, whose hub/homepage cards use the same helper.
-// Variants are made with ImageMagick from the JPEG/PNG original (quality 82,
-// method 6, the same as build-webp.mjs); --check needs no ImageMagick.
+// Variants are made with cwebp at quality 82 and method 6. A complete
+// set of reviewed derivatives from an importer takes precedence.
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { isVariant, sourceTag, variantPath, wantedWidths, webpWidth } from "./lib/read-srcset.mjs";
 
@@ -24,6 +24,8 @@ const READ = path.join(ROOT, "read");
 const CHECK = process.argv.includes("--check");
 const stale = [];
 let made = 0;
+const reviewed = JSON.parse(fs.readFileSync(path.join(ROOT, "data/web-originals.json"), "utf8"));
+const hasMagick = !CHECK && spawnSync("magick", ["-version"], { stdio: "ignore" }).status === 0;
 
 const books = fs.readdirSync(READ).filter((d) => fs.existsSync(path.join(READ, d, "pages")) && fs.existsSync(path.join(READ, d, "index.html")));
 
@@ -37,13 +39,17 @@ for (const book of books) {
     for (const w of wantedWidths(webpWidth(webp))) {
       const out = variantPath(webp, w);
       const fresh = fs.existsSync(out) && fs.statSync(out).mtimeMs >= fs.statSync(raster).mtimeMs - 1000;
-      if (fresh) continue;
+      if (fresh || (reviewed[book] && fs.existsSync(out))) continue;
       if (CHECK) {
         // mtimes are not preserved by git checkouts, so CI only asks "does it exist".
         if (!fs.existsSync(out)) stale.push(path.relative(ROOT, out));
         continue;
       }
-      execFileSync("magick", [raster, "-resize", `${w}x`, "-quality", "82", "-define", "webp:method=6", out]);
+      if (hasMagick) {
+        execFileSync("magick", [raster, "-resize", `${w}x`, "-quality", "82", "-define", "webp:method=6", out]);
+      } else {
+        execFileSync("cwebp", ["-quiet", "-q", "82", "-m", "6", "-resize", String(w), "0", raster, "-o", out]);
+      }
       made++;
     }
   }

@@ -26,7 +26,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { isVariant, sourceTag } from "./lib/read-srcset.mjs";
 import { READ_COLLECTIONS } from "./lib/read-collections.mjs";
-import { READ_EVENTS, eventForBook } from "./lib/read-events.mjs";
+import { READ_EVENTS, eventForBook, eventIcon, eventIconPath, releasedEventBooks } from "./lib/read-events.mjs";
 import {printable,printableLabel} from './lib/read-printables.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -42,6 +42,8 @@ const GROUPS = [
   { id: "trail", title: "Reading Trail · next steps", intro: "Eight read-together stories for focused phonics practice, rather than controlled independent decodables: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams, word endings, ar/or/er/ir/ur, and y and -le endings." },
   { id: "places", title: "Real places · Copán, Honduras", intro: "Two books about one real place: the Maya city of Copán in Honduras and its scarlet macaws. A read-together story for younger readers and a class report for ages 9 to 12, with the facts checked against named sources." },
   { id: "christmas", title: "Christmas picture books", intro: "Six woodland Christmas stories, in the order they happen. Share one aloud or follow a mystery on your own; they stay on the shelf all year." },
+  { id: "thanksgiving", title: "Thanksgiving stories", intro: "Share a woodland feast, count the corn cobs and see what happens when all six friends bring potatoes." },
+  { id: "new-year", title: "New Year stories", intro: "Sort a year of memories and count down to midnight with the woodland friends." },
   { id: "short", title: "Short reads · four-page stories", intro: "Quick illustrated stories to read together, with a talk prompt on every page and a question at the end: friendship and kindness, adventures and mysteries, nature and the night sky." },
   { id: "numbers", title: "Number stories · maths on every page", intro: "Illustrated maths stories with a question on every page, from counting to factors and primes. Tap an answer to check it, or print the book and work on paper." },
   { id: "animals", title: "Animal fact books · real science, original art", intro: "Read-together animal books from SnackPack Zoo World, every fact checked against zoo and science sources, every picture made for the book." },
@@ -63,6 +65,7 @@ const SHELF = [
   {"slug": "captain-beakon-and-the-bell-across-the-bay", "group": "christmas", "age": [12, 14], "readingLevel": "Independent reading", "added": "2026-11-19", "title": "Captain Beakon and the Bell Across the Bay", "eyebrow": "Christmas · Harbour mystery for older readers · 44 pages", "blurb": "Every December, the harbour bell opens the lantern procession with the same three strokes. This year the third stroke never comes. When Polly Roger hears the tune from the wrong shore the following evening, she thinks somebody has moved the bell. Her best clue points to a friend.", "cover": "pages/cover", "ext": "jpg", "alt": "Polly Roger looks across the dark harbour from the market wall towards a stone tower and a blue boathouse.", "w": 1024, "h": 1536},
   {"slug": "one-more-story-before-santa", "group": "christmas", "age": [5, 7], "added": "2026-11-18", "title": "One More Story Before Santa", "eyebrow": "Christmas Eve · Read-aloud · 24 pages", "blurb": "Cluck O’Clock and Coop-Accino plan to stay awake on Christmas Eve. He’ll listen for Santa. She’ll keep watch at the window. But first, Hen-Berry has a little story about a house with no chimney.", "cover": "pages/cover", "ext": "jpg", "alt": "Two chicken twins peer and listen by a snowy bedroom window.", "w": 1024, "h": 1536},
   {"slug": "the-last-parcel-under-the-tree", "group": "christmas", "age": [7, 9], "readingLevel": "Newly independent", "added": "2026-11-19", "title": "The Last Parcel Under the Tree", "eyebrow": "Christmas morning · Mystery · 26 pages", "blurb": "Ted-E-Bear and Corgi-on-the-Cob find one parcel after everyone has opened their Christmas presents. Its tag says it’s for whoever gets there last. But where is “there”? And how can anybody be last if the door keeps opening?", "cover": "pages/cover", "ext": "jpg", "alt": "Ted and Corgi study a blue-tied parcel under the library’s paper Christmas tree.", "w": 1024, "h": 1536},
+  ...releasedEventBooks(),
   { slug: "panda-cake-discovers-her-abcs", group: "alphabet", age: [3, 5], added: "2026-10-18", title: "Panda-Cake Discovers Her ABCs", eyebrow: "Alphabet picture book · A-Z · 26 pages", blurb: "Acorn to zucchini: join Panda-Cake in the kitchen and garden for every letter of the alphabet.", cover: "pages/letter-a", ext: "jpg", alt: "", w: 1200, h: 800 },
   { slug: "pip-sits", group: "stage-1", age: [4, 5], added: "2026-08-12", title: "Pip Sits", eyebrow: "Stage 1 · first reader · 6 pages", blurb: "A supported Stage 1 bridge using s, a, t, p, i and n, with tricky words and -s endings to prepare together.", cover: "pages/cover", ext: "jpg", alt: "Pip Sits first-reader book cover.", w: 1024, h: 1536 },
   { slug: "nan-and-pip", group: "stage-1", age: [4, 5], added: "2026-08-13", title: "Nan and Pip", eyebrow: "Stage 1 decodable · 6 pages", blurb: "A take-turns story that repeats a small set of words so a new reader builds confidence.", cover: "pages/cover", ext: "jpg", alt: "Nan and Pip decodable book cover.", w: 1024, h: 1536 },
@@ -145,7 +148,7 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { christmas: "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KIND = { christmas: "stories", thanksgiving: "stories", "new-year": "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
 const KINDS = [["alphabet", "ABCs"], ["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 if (SHELF.some(book => book.age[1] >= 13)) AGES.push(["11-12", "11–12"], ["13-14", "13–14"]);
@@ -352,7 +355,7 @@ SHELF.forEach((b, i) => {
   const rel = `read/${b.slug}/index.html`;
   let html = ensureShareTopMarker(fs.readFileSync(path.join(ROOT, rel), "utf8"), rel);
   const ev = eventForBook(b.slug);
-  const chip = ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
+  const chip = ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${eventIcon(ev)}${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
   html = splice(html, "read-share-top:generated", chip + shareTopBlock() + printInfo(b) + `\n<div class="read-offline" data-offline-book="${b.slug}" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save this book for offline</button><button class="text-link" type="button" data-read-remove hidden>Remove saved book</button><button class="text-link" type="button" data-read-cancel hidden>Cancel saving</button><p class="read-offline-status" data-read-offline-status role="status"></p></div><script defer src="/read/offline.js"></script>`, rel);
   html = bookSchema(html, b, rel);
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
@@ -380,6 +383,7 @@ function offlineManifest() {
   }
   urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js", "/read/events.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
+  urls.push(...READ_EVENTS.map(eventIconPath));
   for (const f of fs.readdirSync(path.join(ROOT, "assets/fonts")).filter((f) => f.endsWith(".woff2")).sort()) urls.push(`/assets/fonts/${f}`);
   // The size shown to readers counts only the book art (~95% of the download).
   // Counting HTML/CSS too would make this file stale, and CI red, on every
