@@ -28,7 +28,7 @@ export const READ_EVENTS = [
     title: "Christmas",
     heading: "Christmas stories",
     tagline: "A woodland Christmas, from choosing the tree to the last parcel on Christmas morning.",
-    intro: "Six original picture books set in the SnackPack woodland in the days before Christmas. Read them in the order they happen, or pick by age: four read-alouds for ages 4 to 9 and one harbour mystery for confident readers aged 12 to 14.",
+    intro: "Six original picture books follow the woodland friends up to Christmas morning. Read them in the order they happen, or pick by age. Five stories are for ages 4 to 9, and the harbour mystery is for confident readers aged 12 to 14.",
     accent: "#8C1D2B",
     dates: [{ kind: "fixed", month: 12, day: 25 }],
     leadDays: 40,
@@ -178,9 +178,8 @@ export const eventIconPath = (event) => `/read/events/icons/${event.icon}.svg`;
 export const eventIcon = (event) => `<img class="read-event-icon" src="${eventIconPath(event)}" alt="" aria-hidden="true" width="20" height="20">`;
 
 export function releasedEventBooks() {
-  const releaseDates = { thanksgiving: "2026-11-24", "new-year": "2026-12-18" };
-  const releases = READ_EVENTS.filter(event => releaseDates[event.id])
-    .sort((a, b) => releaseDates[a.id].localeCompare(releaseDates[b.id]));
+  const releaseDates = { thanksgiving: "2026-11-20", "new-year": "2026-11-20" };
+  const releases = Object.keys(releaseDates).map(id => READ_EVENTS.find(event => event.id === id));
   return releases.flatMap(event => event.timeline.map(({ slug }) => {
     const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
     const label = slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;

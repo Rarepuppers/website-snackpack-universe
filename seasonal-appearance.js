@@ -5,11 +5,18 @@
   const key = "snackpack.seasonal-appearance.v1";
   const choices = { auto: "Automatic", winter: "Winter", classic: "Classic" };
   const day = 86400000;
-  // Every year from 25 November to 31 December, in the visitor's calendar.
-  // The Christmas bookshelf (scripts/lib/read-events.mjs) is featured over the
-  // same weeks; keep the two in step if either window changes.
-  const seasonStart = (year) => Date.UTC(year, 10, 25);
+  // The automatic winter palette starts with the Christmas homepage feature.
+  const seasonStart = (year) => Date.UTC(year, 11, 2);
   const seasonEnd = (year) => Date.UTC(year, 11, 31);
+
+  function homeEvent(date, year) {
+    const novemberFirst = new Date(Date.UTC(year, 10, 1));
+    const thanksgivingDay = 22 + (4 - novemberFirst.getUTCDay() + 7) % 7;
+    if (date >= Date.UTC(year, 10, thanksgivingDay - 7) && date < seasonStart(year)) return "thanksgiving";
+    if (date >= seasonStart(year) && date <= Date.UTC(year, 11, 25)) return "christmas";
+    if (date >= Date.UTC(year, 11, 26) || date <= Date.UTC(year, 0, 7)) return "new-year";
+    return "";
+  }
 
   function storedChoice() {
     try {
@@ -36,6 +43,7 @@
     const rotation = Math.floor((date - start) / day) + offset;
     root.dataset.season = active ? "winter" : "classic";
     root.dataset.winterScene = String((rotation % 4 + 4) % 4);
+    root.dataset.homeEvent = homeEvent(date, now.getFullYear());
 
     if (select) {
       select.value = choice;
@@ -73,7 +81,7 @@
         </select>
       </label>
       <p aria-live="polite" data-season-description></p>
-      <p class="season-help">Automatic uses Winter from November 25 through December 30, 2026, in your local time.</p>
+      <p class="season-help">Automatic uses Winter from December 2 through December 31, in your local time.</p>
       <form method="dialog"><button type="submit">Done</button></form>`;
     select = dialog.querySelector("select");
     description = dialog.querySelector("[data-season-description]");

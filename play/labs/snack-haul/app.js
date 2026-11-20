@@ -9,11 +9,33 @@ const ui = $("ui"), veil = $("veil"), sheet = $("sheet"), driveEl = $("drive"), 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 // ════ Save ════════════════════════════════════════════════════════
-function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, rival: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+// ════ The Android app: the game runs in a WebView there ════════════
+// The app keeps its own copy of the save, outside the WebView, and passes it in
+// as SNACKHAUL_NATIVE_SAVE before the page loads. On the website none of this exists.
+const nativeApp = typeof window !== "undefined" && window.ReactNativeWebView ? window.ReactNativeWebView : null;
+function tellApp(msg) { if (nativeApp) { try { nativeApp.postMessage(JSON.stringify(msg)); } catch (e) { /* the game carries on */ } } }
+
+// The newer of the WebView's copy and the app's copy wins.
+function load() {
+  let local = null, kept = null;
+  try { local = JSON.parse(localStorage.getItem(KEY)); } catch (e) { /* no local save */ }
+  try { kept = window.SNACKHAUL_NATIVE_SAVE ? JSON.parse(window.SNACKHAUL_NATIVE_SAVE) : null; } catch (e) { /* no app save */ }
+  if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
+  return local || {};
+}
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
-function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* plays on without storage */ } }
+function persist() {
+  save.savedAt = Date.now();
+  const json = JSON.stringify(save);
+  try { localStorage.setItem(KEY, json); } catch (e) { /* plays on without storage */ }
+  tellApp({ type: "save", data: json });
+}
+function buzz(kind) { if (save.haptics) tellApp({ type: "haptic", kind }); }
+// Vibration in the app: losses and hard hits, never coins (too often).
+const BUZZ = { lost: "warning", broken: "warning", ruined: "warning", dock: "heavy", pickup: "light" };
+function buzzFor(ev) { if (BUZZ[ev.type]) buzz(BUZZ[ev.type]); else if (ev.type === "land" && ev.air > 0.6) buzz("medium"); }
 
 function localDate(d = new Date()) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -22,10 +44,19 @@ function localDate(d = new Date()) {
 function weekKey() { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return localDate(d); }
 const level = (id) => save.upgrades[id] || 0;
 const totalStars = () => Object.values(save.stars).reduce((n, v) => n + v, 0);
-const regionOpen = (r) => SH.isOpen(SH.DELIVERIES.find((d) => d.region === r).id, save.stars);
+// ════ The full-game unlock (Android app only) ═══════════════════════
+// The unlisted web labs page stays fully free. In the app, Bakery Hills, the daily,
+// the Weekly Cup, the Pickup and the Tuk-Tuk are free; one purchase opens the rest.
+const FREE_TRUCKS = ["pickup", "tuktuk"];
+const paywalled = () => !!nativeApp && !save.pro;
+const regionPaid = (r) => r > 0 && paywalled();
+const truckPaid = (id) => paywalled() && !FREE_TRUCKS.includes(id);
+const billing = { ready: false, price: "", busy: false, note: "" };
+const regionReached = (r) => SH.isOpen(SH.DELIVERIES.find((d) => d.region === r).id, save.stars);
+const regionOpen = (r) => !regionPaid(r) && regionReached(r);
 const maxRegion = () => { let m = 0; SH.REGIONS.forEach((_, r) => { if (regionOpen(r)) m = r; }); return m; };
 function nextRoute() {
-  const open = SH.DELIVERIES.filter((d) => SH.isOpen(d.id, save.stars));
+  const open = SH.DELIVERIES.filter((d) => !regionPaid(d.region) && SH.isOpen(d.id, save.stars));
   return open.find((d) => !save.stars[d.id]) || open.find((d) => save.stars[d.id] < 3) || open[open.length - 1];
 }
 const railFor = (truckId) => 0.2 + 0.14 * level("straps") + SH.truckSpec(truckId).rail;
@@ -246,7 +277,7 @@ function setMusic(name) {
   audio.wantMusic = name;
   if (!audio.ctx || audio.musicName === name) return;
   stopLoop(audio.music); audio.music = null; audio.musicName = "";
-  if (!name || !save.sound || !audio.buffers["music/" + name]) return;
+  if (!name || !save.sound || save.music === false || !audio.buffers["music/" + name]) return;
   audio.music = source("music/" + name, true, 0);
   audio.music.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, 0.6);
   audio.music.src.start();
@@ -340,7 +371,12 @@ function tick(now) {
   if (state.mode === "paused") return;
   const g = state.game;
   state.acc += dt;
-  while (state.acc >= SH.STEP) { g.step(state.input); if (g.status === "driving") stepGhost(); state.acc -= SH.STEP; }
+  while (state.acc >= SH.STEP) {
+    // Recording builds only: the bots' driver works the pedals (see SnackHaulDebug below).
+    if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; }
+    g.step(state.input); if (g.status === "driving") stepGhost(); state.acc -= SH.STEP;
+  }
+  if (state.autopilot) syncPedals();
   drainEvents(g);
   if (now > state.toastUntil) $("toast").classList.remove("on");
   if (now > state.hintUntil) $("hint").classList.remove("on");
@@ -350,7 +386,7 @@ function tick(now) {
   if (g.status === "driving") coach(g);
   else {
     state.endTimer += dt;
-    if (state.endTimer > 1.5 && state.mode === "drive") { state.mode = "result"; finishDelivery(g); }
+    if (state.endTimer > 1.5 && state.mode === "drive") { state.mode = "result"; buzz(g.status === "done" || g.delivery.long ? "success" : "error"); finishDelivery(g); }
   }
 }
 
@@ -359,6 +395,7 @@ function drainEvents(g) {
   g.events.splice(0).forEach((ev) => {
     if (ev.type === "done") ev.at = g.truck.getPosition();
     world.react(ev);
+    buzzFor(ev);
     if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
@@ -408,6 +445,9 @@ function stepGhost() {
 
 // ════ Delivery flow ═══════════════════════════════════════════════
 function startDelivery(delivery) {
+  // Paid content never starts without the unlock (Next delivery can point past Bakery Hills).
+  if (delivery && regionPaid(delivery.region) && !delivery.daily) return showUnlock("route");
+  if (delivery && delivery.truck && truckPaid(delivery.truck) && !save.trucks.includes(delivery.truck)) return showUnlock("truck");
   ensureAudio();
   state.delivery = delivery;
   // A Special Order can name its truck; it must be owned to start.
@@ -628,6 +668,7 @@ function finishDelivery(g) {
     ${done.map((c) => `<div class="unlocked">${ico("contracts", "📋")} ${esc(c.text)} +${c.pay}</div>`).join("")}
     ${goals.map((g2) => `<div class="unlocked">${ico("goal_" + g2.id, g2.icon)} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
     ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
+    ${paywalled() && d.id === "bakery-6" && r.status === "done" ? `<div class="unlocked">${ico("pro", "⭐")} Five more regions are waiting. <button class="btn primary" data-unlock="results" style="margin-top:6px">Unlock the full game${billing.price ? " " + esc(billing.price) : ""}</button></div>` : ""}
     ${nextBest(r, d) ? `<p class="nextbest">${esc(nextBest(r, d))}</p>` : ""}
     <div class="row" style="margin-top:8px">
       ${canAdvance ? '<button class="btn primary" data-act="next">Next delivery</button>' : ""}
@@ -680,6 +721,54 @@ function toMenu(screen) {
   renderScreen();
   kick();
 }
+// ════ Unlock sheet ════════════════════════════════════════════════
+function unlockSheet() {
+  const price = billing.price || "";
+  const buy = billing.busy ? "Waiting for Google Play…" : !billing.ready ? "Store loading…" : "Unlock" + (price ? " for " + price : "");
+  sheet.innerHTML = `<h2>Unlock the full game</h2>
+    <ul class="lines">
+      <li><span>5 more regions and 40 routes</span><b>✓</b></li>
+      <li><span>25 Special Orders from 5 customers</span><b>✓</b></li>
+      <li><span>Bread Van, Dune Buggy, Long Hauler, Big Muncher</span><b>✓</b></li>
+      <li><span>Long Haul in every region</span><b>✓</b></li>
+      <li><span>Future regions included</span><b>✓</b></li>
+    </ul>
+    <p>One payment. No ads, no subscription.</p>
+    ${billing.note ? `<p class="challenge">${esc(billing.note)}</p>` : ""}
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" data-buy${billing.busy || !billing.ready ? " disabled" : ""}>${esc(buy)}</button>
+      <button class="btn" data-restore${billing.busy ? " disabled" : ""}>Restore purchase</button>
+      <button class="btn" data-act="unlock-close">Not now</button>
+    </div>`;
+}
+function showUnlock(from) {
+  if (!paywalled()) return;
+  state.unlockOpen = true; state.unlockFrom = from;
+  billing.note = "";
+  if (!billing.ready) tellApp({ type: "billing-hello" });
+  unlockSheet();
+  veil.classList.add("on");
+}
+function closeUnlock() {
+  state.unlockOpen = false;
+  veil.classList.remove("on");
+  if (state.mode === "result") toMenu("home"); else if (state.mode === "menu") renderScreen();
+}
+// The app answers with { ready, price, pro, busy, note }.
+window.SnackHaulBilling = (b) => {
+  const wasPro = !!save.pro;
+  Object.assign(billing, b);
+  if (typeof b.pro === "boolean" && b.pro !== wasPro) {
+    save.pro = b.pro; persist();
+    if (b.pro) { toast("Full game unlocked!", 2200); play("unlock", 0.8) || play("goal", 0.7); }
+  }
+  if (state.unlockOpen) { if (save.pro) closeUnlock(); else unlockSheet(); }
+  else if (state.mode === "menu") renderScreen();
+};
+function buyFullGame() { billing.busy = true; billing.note = ""; unlockSheet(); tellApp({ type: "buy" }); }
+function restoreFullGame() { billing.busy = true; billing.note = ""; if (state.unlockOpen) unlockSheet(); tellApp({ type: "restore" }); }
+tellApp({ type: "billing-hello" });
+
 function pause() {
   if (state.mode !== "drive") return;
   state.mode = "paused";
@@ -688,19 +777,40 @@ function pause() {
   veil.classList.add("on");
 }
 sheet.addEventListener("click", (e) => {
+  if (e.target.closest("[data-buy]") && !e.target.closest("[data-buy]").disabled) return buyFullGame();
+  if (e.target.closest("[data-restore]") && !e.target.closest("[data-restore]").disabled) return restoreFullGame();
+  if (e.target.closest("[data-unlock]")) return showUnlock(e.target.closest("[data-unlock]").dataset.unlock);
   const b = e.target.closest("[data-act]");
   if (!b) return;
   const a = b.dataset.act;
   ensureAudio();
-  if (a === "garage") toMenu("garage");
+  if (a === "unlock-close") return closeUnlock();
+  if (a === "garage") { state.unlockOpen = false; toMenu("garage"); }
   if (a === "retry") startDelivery(state.delivery.long ? SH.longHaul(state.delivery.region, Date.now().toString(36)) : state.delivery);
   if (a === "next") startDelivery(following(state.delivery));
   if (a === "resume") { veil.classList.remove("on"); state.mode = "drive"; kick(); }
-  if (a === "reset-yes") { try { localStorage.removeItem(KEY); } catch (x) { /* ignore */ } location.reload(); }
+  // An empty save with a newer timestamp, so an older copy held by the app can never win.
+  if (a === "reset-yes") { try { localStorage.setItem(KEY, JSON.stringify({ savedAt: Date.now() })); } catch (x) { /* ignore */ } tellApp({ type: "reset" }); setTimeout(() => location.reload(), 150); }
   if (a === "close") veil.classList.remove("on");
 });
 $("pause").addEventListener("click", pause);
 document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+
+// The app calls these for the Android back button and when it goes to the background.
+window.SnackHaulBack = () => {
+  if (state.mode === "drive") return pause();
+  if (state.mode === "paused") { veil.classList.remove("on"); state.mode = "drive"; return kick(); }
+  if (state.unlockOpen) return closeUnlock();
+  if (state.mode === "result") return toMenu("home");
+  if (veil.classList.contains("on")) return veil.classList.remove("on");
+  if (state.screen !== "home") return toMenu("home");
+  tellApp({ type: "exit" });
+};
+// Debug and recording builds only: the app sets SNACKHAUL_DEBUG when built with
+// EXPO_PUBLIC_WEBVIEW_DEBUG=1. The website never does, so this does not exist there.
+if (window.SNACKHAUL_DEBUG) window.SnackHaulDebug = { autopilot: (speed) => { state.autopilot = speed || 0; if (!speed) state.input.gas = state.input.brake = false; } };
+window.SnackHaulPause = () => { pause(); if (audio.ctx && audio.ctx.state === "running") audio.ctx.suspend(); };
+window.SnackHaulResume = () => { if (audio.ctx && save.sound) audio.ctx.resume(); };
 
 // ════ Controls: each pedal tracks its own pointers, so both work together ═
 function syncPedals() {
@@ -761,6 +871,7 @@ function ordersReady() { return SH.ORDERS.some((o) => orderOpen(o) && !save.orde
 function ordersScreen() {
   const cards = SH.CUSTOMERS.map((c, r) => {
     const region = SH.REGIONS[r];
+    if (regionPaid(r)) return `<button class="customer locked" data-unlock="orders"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Unlock the full game to meet ${esc(c.name)} and their 5 Special Orders.</small></button>`;
     if (!regionOpen(r)) return `<div class="customer locked"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Reach ${esc(region.name)} to meet ${esc(c.name)}.</small></div>`;
     const lvl = SH.repLevel(r, save.stars), stars = regionStars(r), next = SH.REP_STARS[lvl];
     const list = SH.ORDERS.filter((o) => o.region === r).map((o) => {
@@ -780,6 +891,7 @@ function ordersScreen() {
 function longScreen() {
   const rows = SH.REGIONS.map((r, i) => {
     const open = regionOpen(i), best = save.longBest[i] || 0, mile = save.longMile[i] || 0;
+    if (regionPaid(i)) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-long="${i}"${open ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${open ? (best ? "Best " + best + " m. " : "") + "Next milestone " + (mile + 1) * 250 + " m, +" + Math.round(20 * (mile + 1) * r.pay) : "Not reached yet"}</small></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}<p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
@@ -812,7 +924,7 @@ function eventsScreen() {
 }
 
 function routesScreen() {
-  const tabs = SH.REGIONS.map((r, i) => `<button class="tab" data-region="${i}" aria-pressed="${state.regionTab === i}"${regionOpen(i) ? "" : " disabled"}>${ico("region_" + r.id)} ${esc(r.name)}${regionOpen(i) ? "" : " " + ico("lock", "🔒")}</button>`).join("");
+  const tabs = SH.REGIONS.map((r, i) => `<button class="tab" ${regionPaid(i) ? 'data-unlock="routes"' : `data-region="${i}"`} aria-pressed="${state.regionTab === i}"${regionOpen(i) || regionPaid(i) ? "" : " disabled"}>${ico("region_" + r.id)} ${esc(r.name)}${regionOpen(i) ? "" : " " + ico("lock", "🔒")}</button>`).join("");
   const region = SH.REGIONS[state.regionTab];
   const cells = SH.DELIVERIES.filter((d) => d.region === state.regionTab).map((d) => {
     const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3;
@@ -823,12 +935,13 @@ function routesScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
-    <p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills would be free and the rest would be a one-time unlock.</p></section>`;
+    ${nativeApp ? "" : '<p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills is free and the rest is a one-time unlock.</p>'}</section>`;
 }
 
 function garageScreen() {
   const trucks = SH.TRUCKS.map((t) => {
     const owned = save.trucks.includes(t.id), selected = save.truck === t.id;
+    if (truckPaid(t.id) && !owned) return `<button class="truck" data-unlock="truck">${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small><span class="price">${ico("lock", "🔒")} Full game</span></button>`;
     return `<button class="truck" data-truck="${t.id}" aria-pressed="${selected}"${!owned && save.coins < t.cost ? " disabled" : ""}>
       ${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small>${owned ? `<small class="mastery">Mastery ${masteryLevel(t.id)}${masteryLevel(t.id) < 10 ? " · " + (MASTERY_KM[masteryLevel(t.id)] - (save.mastery[t.id] || 0) / 1000).toFixed(1) + " km to " + (masteryLevel(t.id) + 1) : ""}</small>` : ""}<span class="price">${selected ? "Driving" : owned ? "Owned" : ico("coin", "🪙") + " " + t.cost}</span></button>`;
   }).join("");
@@ -862,16 +975,21 @@ function goalsScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Goals")}<div class="stats">${stats}</div><h3 class="small">Goals</h3>${list}</section>`;
 }
 
+// Website only: Google Play does not allow an outside payment link inside the app.
+const TIP_URL = "https://buy.stripe.com/14A00k7Gi4TF3wl6AL0VO04?client_reference_id=snack-haul";
 function settingsScreen() {
   const opt = (group, value, label, on) => `<button class="tab" data-set="${group}" data-val="${value}" aria-pressed="${on}">${label}</button>`;
   ui.innerHTML = `<section class="panel">${panelHead("Settings")}
     <div class="set"><b>Sound</b><div class="opts">${opt("sound", 1, "On", save.sound)}${opt("sound", 0, "Off", !save.sound)}</div></div>
+    <div class="set"><b>Music</b><div class="opts">${opt("music", 1, "On", save.music !== false)}${opt("music", 0, "Off", save.music === false)}</div></div>
+    ${nativeApp ? `<div class="set"><b>Vibration</b><div class="opts">${opt("haptics", 1, "On", save.haptics !== false)}${opt("haptics", 0, "Off", save.haptics === false)}</div></div>` : ""}
     <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1), save.quality === q)).join("")}</div></div>
     <div class="set"><b>Ghost and rival</b><div class="opts">${opt("ghost", 1, "On", save.ghostOn !== false)}${opt("ghost", 0, "Off", save.ghostOn === false)}</div></div>
     <div class="set"><b>Camera shake</b><div class="opts">${opt("shake", 1, "On", save.shake)}${opt("shake", 0, "Off", !save.shake)}</div></div>
     <div class="set"><b>Progress</b><div class="opts"><button class="tab" data-reset>Reset game</button></div></div>
-    <p class="note">Playtest build: your progress stays on this device. Turn your phone sideways for the best view. Arrow keys drive on a computer.</p>
-    <p class="note"><a href="../../" style="color:inherit">Back to the arcade</a></p></section>`;
+    ${nativeApp ? `<div class="set"><b>Full game</b><div class="opts">${save.pro ? '<span class="tab" aria-pressed="true">Unlocked ✓</span>' : '<button class="tab" data-unlock="settings">Unlock</button>'}<button class="tab" data-restore>Restore purchase</button></div></div>${billing.note ? `<p class="note">${esc(billing.note)}</p>` : ""}` : '<p class="note">Playtest build: your progress stays on this device. Turn your phone sideways for the best view. Arrow keys drive on a computer.</p>'}
+    ${nativeApp ? "" : `<p class="note">Enjoying Snack Haul? <a href="${TIP_URL}" target="_blank" rel="noopener" style="color:inherit;font-weight:700">Tip the studio</a></p>`}
+    ${nativeApp ? "" : '<p class="note"><a href="../../" style="color:inherit">Back to the arcade</a></p>'}</section>`;
 }
 
 ui.addEventListener("click", (e) => {
@@ -879,6 +997,8 @@ ui.addEventListener("click", (e) => {
   let b;
   ensureAudio();
   if ((b = t("button")) && !b.disabled) play("button", 0.45);
+  if ((b = t("[data-unlock]"))) return showUnlock(b.dataset.unlock);
+  if ((b = t("[data-restore]"))) return restoreFullGame();
   if ((b = t("[data-look]"))) { save[b.dataset.look] = b.dataset.val; persist(); return renderScreen(); }
   if ((b = t("[data-nav]"))) {
     const nav = b.dataset.nav;
@@ -926,6 +1046,8 @@ ui.addEventListener("click", (e) => {
   }
   if ((b = t("[data-set]"))) {
     const group = b.dataset.set, v = b.dataset.val;
+    if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || "music_menu"); } else { setMusic(""); audio.wantMusic = keep; } }
+    if (group === "haptics") { save.haptics = v === "1"; if (save.haptics) buzz("light"); }
     if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || "music_menu"); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
     if (group === "shake") save.shake = v === "1";
     if (group === "ghost") save.ghostOn = v === "1";
