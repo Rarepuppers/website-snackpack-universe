@@ -20,7 +20,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { READ_EVENTS, eventDates, eventBooks, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
+import { READ_EVENTS, eventDates, eventBooks, eventEntries, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
 
 import { renderReadEventActivity } from "./lib/read-event-activities.mjs";
 
@@ -118,18 +118,18 @@ function badgifyParity() {
 }
 
 // ---------------------------------------------------------------- markup
-const dataAttrs = (e) => `data-read-event="${e.id}" data-dates="${eventDates(e).map((d) => d.date).join(" ")}" data-lead="${e.leadDays}" data-tail="${e.tailDays}" data-day="${esc(DAY_LABEL[e.id])}" data-books="${e.timeline.length}" style="--event-accent:${e.accent}"`;
+const dataAttrs = (e) => `data-read-event="${e.id}" data-dates="${eventDates(e).map((d) => d.date).join(" ")}" data-lead="${e.leadDays}" data-tail="${e.tailDays}" data-day="${esc(DAY_LABEL[e.id])}" data-books="${eventBooks(e).length}" style="--event-accent:${e.accent}"`;
 const relPicture = (card, prefix, sizes) => card.picture.replace(/(src(?:set)?=")\.\//g, `$1${prefix}`).replace(/, \.\//g, `, ${prefix}`).replace(/sizes="[^"]*"/, `sizes="${sizes}"`).replace(/<img /, '<img loading="lazy" ');
 const ages = (c) => `Ages ${c.age[0]}–${c.age[1]}`;
 const pagesLabel = (c) => `${c.pages} pages`;
 
 function hubBand() {
   const events = publishedEvents().map((e) => {
-    const books = e.timeline.map((t) => {
+    const books = eventEntries(e).map((t) => {
       const c = CARDS.get(t.slug);
       return `<li><a class="read-season-book" href="./${c.slug}/">${relPicture(c, "./", "(max-width: 760px) 34vw, 150px")}<span class="read-season-when">${esc(t.when)}</span><strong>${c.title}</strong><span class="read-season-age">${ages(c)} · ${pagesLabel(c)}</span></a></li>`;
     }).join("");
-    return `<div class="read-season-event" ${dataAttrs(e)} hidden><div class="read-season-head"><span class="eyebrow">${eventIcon(e)}In season · <span data-event-countdown>${esc(e.title)}</span></span><h2>${esc(e.heading)}</h2><p>${esc(e.tagline)}</p><a class="text-link" href="./events/${e.id}/">See all ${e.timeline.length} ${esc(e.title)} stories, in reading order →</a></div><ol class="read-season-books">${books}</ol></div>`;
+    return `<div class="read-season-event" ${dataAttrs(e)} hidden><div class="read-season-head"><span class="eyebrow">${eventIcon(e)}In season · <span data-event-countdown>${esc(e.title)}</span></span><h2>${esc(e.heading)}</h2><p>${esc(e.tagline)}</p><a class="text-link" href="./events/${e.id}/">See all ${eventBooks(e).length} ${esc(e.title)} stories${e.summer?.length ? "" : ", in reading order"} →</a></div><ol class="read-season-books">${books}</ol></div>`;
   }).join("\n");
   return `<section class="read-season" data-read-season aria-label="Stories for this time of year" hidden><div class="shell">\n${events}\n<p class="read-season-all"><a class="text-link" href="./events/">Holiday and event stories all year →</a></p></div></section>\n<script src="./events.js"></script>`;
 }
@@ -149,10 +149,14 @@ ${sharedHead}</head><body>${header}<main>${body}</main><footer class="foot"><div
 }
 
 function eventPage(e) {
-  const books = e.timeline.map((t, i) => {
+  const renderBooks = (entries, numbered) => entries.map((t, i) => {
     const c = CARDS.get(t.slug);
-    return `<li class="read-event-book"><a href="../../${c.slug}/">${relPicture(c, "../../", "(max-width: 760px) 40vw, 220px")}</a><div><span class="read-event-step">${i + 1} · ${esc(t.when)}</span><h3><a href="../../${c.slug}/">${c.title}</a></h3><p class="read-event-meta">${ages(c)} · ${pagesLabel(c)} · <a class="text-link" href="../../${c.slug}/${c.slug}.pdf" download>PDF</a></p><p>${c.blurb}</p></div></li>`;
+    return `<li class="read-event-book"><a href="../../${c.slug}/">${relPicture(c, "../../", "(max-width: 760px) 40vw, 220px")}</a><div><span class="read-event-step">${numbered ? `${i + 1} · ` : ""}${esc(t.when)}</span><h3><a href="../../${c.slug}/">${c.title}</a></h3><p class="read-event-meta">${ages(c)} · ${pagesLabel(c)} · <a class="text-link" href="../../${c.slug}/${c.slug}.pdf" download>PDF</a></p><p>${c.blurb}</p></div></li>`;
   }).join("\n");
+  const books = renderBooks(e.timeline, true);
+  const summer = e.summer?.length
+    ? `<section aria-labelledby="summer-christmas"><div class="shell"><h2 id="summer-christmas" class="read-shelf-heading">Summer Christmas</h2><p class="read-shelf-intro">Christmas by the sea, with long summer days and friends around the table.</p><ul class="read-event-books">${renderBooks(e.summer, false)}</ul></div></section>`
+    : "";
   const tonight = (e.tonight ?? []).map((slug, i) => {
     const c = CARDS.get(slug);
     const special = e.tonightSpecial?.[slug];
@@ -164,9 +168,9 @@ function eventPage(e) {
     return `<li><a href="../../${c.slug}/">${c.title}</a> <span>· ${ages(c)} · ${pagesLabel(c)}</span></li>`;
   }).join("");
   const extras = (e.extras ?? []).map((x) => `<li><a href="${x.href}">${esc(x.label)}</a></li>`).join("");
-  const desc = `${e.timeline.length} free illustrated ${e.title} stories for children, in the order they happen: read online, read aloud or print. ${e.tagline}`;
+  const desc = `${eventBooks(e).length} free illustrated ${e.title} stories for children${summer ? ", with snowy woodland and summer coastal stories" : ", in the order they happen"}: read online, read aloud or print. ${e.tagline}`;
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: e.heading, description: desc, url: `${SITE}/read/events/${e.id}/`, inLanguage: "en-GB", isAccessibleForFree: true,
-    mainEntity: { "@type": "ItemList", itemListOrder: "https://schema.org/ItemListOrderAscending", numberOfItems: e.timeline.length, itemListElement: e.timeline.map((t, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}/read/${t.slug}/`, name: CARDS.get(t.slug).title })) } };
+    mainEntity: { "@type": "ItemList", itemListOrder: summer ? "https://schema.org/ItemListUnordered" : "https://schema.org/ItemListOrderAscending", numberOfItems: eventBooks(e).length, itemListElement: eventEntries(e).map((t, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}/read/${t.slug}/`, name: CARDS.get(t.slug).title })) } };
   const printables = (e.printables ?? []).map(({ href, label }) => {
     const kb = Math.ceil(fs.statSync(path.join(ROOT, href)).size / 1024);
     const size = kb < 1024 ? `${kb} KB` : `${(kb / 1024).toFixed(1)} MB`;
@@ -175,17 +179,17 @@ function eventPage(e) {
   const sources = bannerPaths(e);
   const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
   const activity = e.activity ? renderReadEventActivity(e.activity) : "";
-  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide()}` : ""}
+  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}${summer ? " Find a summer Christmas by the sea in its own section." : ""}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide(Boolean(summer))}` : ""}
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
 ${books}
 </ol>${also || extras ? `<h2 class="read-shelf-heading read-event-sub">Also good this season</h2><ul class="read-event-also">${also}${extras}</ul>` : ""}<p class="read-event-note">Every book is free to read online, read aloud with your device’s voice, save for offline or print as a PDF. They stay on the shelf all year.</p><p><a class="text-link" href="/read/events/">All holiday and event stories</a> · <a class="text-link" href="/read/">The whole bookshelf</a></p></div></section>
-${activity}
+${summer ? `${summer}\n` : ""}${activity}
 ${printables ? `<section><div class="shell"><h2 class="read-shelf-heading">Printables</h2><ul class="read-event-also">${printables}</ul></div></section>` : ""}
 <script src="../../events.js"></script>`;
   return page({ title: `${e.heading}: free illustrated picture books`, desc, url: `/read/events/${e.id}/`, image: socialImage(e), body, jsonld, activity: e.activity });
 }
 
-function renderChristmasGuide() {
+function renderChristmasGuide(hasSummer) {
   const guide = christmasGuide;
   const choices = guide.choices.map(({slug, time, mode, why}) => {
     const c = CARDS.get(slug);
@@ -194,7 +198,7 @@ function renderChristmasGuide() {
   return `<section aria-labelledby="christmas-reading-guide"><div class="shell"><div class="content-card">
 <h2 class="read-shelf-heading" id="christmas-reading-guide">${esc(guide.title)}</h2><p class="read-shelf-intro">${esc(guide.intro)}</p>
 <div class="stack-inline">${guideLinks.map(({href, label}) => `<a class="btn btn-secondary" href="${href}" download>${esc(label)}</a>`).join("")}</div>
-<ul class="read-event-also">${choices}</ul><p class="read-event-note">${esc(guide.timeNote)}</p>
+<ul class="read-event-also">${choices}</ul><p class="read-event-note">${esc(guide.timeNote)}</p>${hasSummer ? '<p><a class="text-link" href="#summer-christmas">Browse Summer Christmas stories →</a></p>' : ""}
 <h3>Talk about the story</h3><ol>${guide.questions.map(question => `<li>${esc(question)}</li>`).join("")}</ol>
 <h3>${esc(guide.activity.title)}</h3><p>${esc(guide.activity.instruction)}</p></div></div></section>`;
 }
@@ -205,7 +209,7 @@ function socialImage(e) {
 
 function indexPage() {
   const cards = READ_EVENTS.map((e) => {
-    const has = e.timeline.length;
+    const has = eventBooks(e).length;
     const covers = has ? `<div class="read-event-stack">${e.timeline.slice(0, 3).map((t) => relPicture(CARDS.get(t.slug), "../", "120px")).join("")}</div>` : "";
     const inner = `${covers}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Every year</span></span><h2>${esc(e.title)}</h2><p>${esc(e.tagline)}</p><p class="read-event-count">${has ? `${has} stories` : "Stories coming soon"}</p>`;
     return has ? `<a class="read-event-card" href="./${e.id}/" ${dataAttrs(e)}>${inner}</a>` : `<div class="read-event-card is-coming" ${dataAttrs(e)}>${inner}</div>`;
