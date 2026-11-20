@@ -9,11 +9,33 @@ const ui = $("ui"), veil = $("veil"), sheet = $("sheet"), driveEl = $("drive"), 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 // ════ Save ════════════════════════════════════════════════════════
-function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, rival: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+// ════ The Android app: the game runs in a WebView there ════════════
+// The app keeps its own copy of the save, outside the WebView, and passes it in
+// as SNACKHAUL_NATIVE_SAVE before the page loads. On the website none of this exists.
+const nativeApp = typeof window !== "undefined" && window.ReactNativeWebView ? window.ReactNativeWebView : null;
+function tellApp(msg) { if (nativeApp) { try { nativeApp.postMessage(JSON.stringify(msg)); } catch (e) { /* the game carries on */ } } }
+
+// The newer of the WebView's copy and the app's copy wins.
+function load() {
+  let local = null, kept = null;
+  try { local = JSON.parse(localStorage.getItem(KEY)); } catch (e) { /* no local save */ }
+  try { kept = window.SNACKHAUL_NATIVE_SAVE ? JSON.parse(window.SNACKHAUL_NATIVE_SAVE) : null; } catch (e) { /* no app save */ }
+  if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
+  return local || {};
+}
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, rival: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
-function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* plays on without storage */ } }
+function persist() {
+  save.savedAt = Date.now();
+  const json = JSON.stringify(save);
+  try { localStorage.setItem(KEY, json); } catch (e) { /* plays on without storage */ }
+  tellApp({ type: "save", data: json });
+}
+function buzz(kind) { if (save.haptics) tellApp({ type: "haptic", kind }); }
+// Vibration in the app: losses and hard hits, never coins (too often).
+const BUZZ = { lost: "warning", broken: "warning", ruined: "warning", dock: "heavy", pickup: "light" };
+function buzzFor(ev) { if (BUZZ[ev.type]) buzz(BUZZ[ev.type]); else if (ev.type === "land" && ev.air > 0.6) buzz("medium"); }
 
 function localDate(d = new Date()) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -246,7 +268,7 @@ function setMusic(name) {
   audio.wantMusic = name;
   if (!audio.ctx || audio.musicName === name) return;
   stopLoop(audio.music); audio.music = null; audio.musicName = "";
-  if (!name || !save.sound || !audio.buffers["music/" + name]) return;
+  if (!name || !save.sound || save.music === false || !audio.buffers["music/" + name]) return;
   audio.music = source("music/" + name, true, 0);
   audio.music.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, 0.6);
   audio.music.src.start();
@@ -350,7 +372,7 @@ function tick(now) {
   if (g.status === "driving") coach(g);
   else {
     state.endTimer += dt;
-    if (state.endTimer > 1.5 && state.mode === "drive") { state.mode = "result"; finishDelivery(g); }
+    if (state.endTimer > 1.5 && state.mode === "drive") { state.mode = "result"; buzz(g.status === "done" || g.delivery.long ? "success" : "error"); finishDelivery(g); }
   }
 }
 
@@ -359,6 +381,7 @@ function drainEvents(g) {
   g.events.splice(0).forEach((ev) => {
     if (ev.type === "done") ev.at = g.truck.getPosition();
     world.react(ev);
+    buzzFor(ev);
     if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
@@ -696,11 +719,24 @@ sheet.addEventListener("click", (e) => {
   if (a === "retry") startDelivery(state.delivery.long ? SH.longHaul(state.delivery.region, Date.now().toString(36)) : state.delivery);
   if (a === "next") startDelivery(following(state.delivery));
   if (a === "resume") { veil.classList.remove("on"); state.mode = "drive"; kick(); }
-  if (a === "reset-yes") { try { localStorage.removeItem(KEY); } catch (x) { /* ignore */ } location.reload(); }
+  // An empty save with a newer timestamp, so an older copy held by the app can never win.
+  if (a === "reset-yes") { try { localStorage.setItem(KEY, JSON.stringify({ savedAt: Date.now() })); } catch (x) { /* ignore */ } tellApp({ type: "reset" }); setTimeout(() => location.reload(), 150); }
   if (a === "close") veil.classList.remove("on");
 });
 $("pause").addEventListener("click", pause);
 document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+
+// The app calls these for the Android back button and when it goes to the background.
+window.SnackHaulBack = () => {
+  if (state.mode === "drive") return pause();
+  if (state.mode === "paused") { veil.classList.remove("on"); state.mode = "drive"; return kick(); }
+  if (state.mode === "result") return toMenu("home");
+  if (veil.classList.contains("on")) return veil.classList.remove("on");
+  if (state.screen !== "home") return toMenu("home");
+  tellApp({ type: "exit" });
+};
+window.SnackHaulPause = () => { pause(); if (audio.ctx && audio.ctx.state === "running") audio.ctx.suspend(); };
+window.SnackHaulResume = () => { if (audio.ctx && save.sound) audio.ctx.resume(); };
 
 // ════ Controls: each pedal tracks its own pointers, so both work together ═
 function syncPedals() {
@@ -866,6 +902,8 @@ function settingsScreen() {
   const opt = (group, value, label, on) => `<button class="tab" data-set="${group}" data-val="${value}" aria-pressed="${on}">${label}</button>`;
   ui.innerHTML = `<section class="panel">${panelHead("Settings")}
     <div class="set"><b>Sound</b><div class="opts">${opt("sound", 1, "On", save.sound)}${opt("sound", 0, "Off", !save.sound)}</div></div>
+    <div class="set"><b>Music</b><div class="opts">${opt("music", 1, "On", save.music !== false)}${opt("music", 0, "Off", save.music === false)}</div></div>
+    ${nativeApp ? `<div class="set"><b>Vibration</b><div class="opts">${opt("haptics", 1, "On", save.haptics !== false)}${opt("haptics", 0, "Off", save.haptics === false)}</div></div>` : ""}
     <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1), save.quality === q)).join("")}</div></div>
     <div class="set"><b>Ghost and rival</b><div class="opts">${opt("ghost", 1, "On", save.ghostOn !== false)}${opt("ghost", 0, "Off", save.ghostOn === false)}</div></div>
     <div class="set"><b>Camera shake</b><div class="opts">${opt("shake", 1, "On", save.shake)}${opt("shake", 0, "Off", !save.shake)}</div></div>
@@ -926,6 +964,8 @@ ui.addEventListener("click", (e) => {
   }
   if ((b = t("[data-set]"))) {
     const group = b.dataset.set, v = b.dataset.val;
+    if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || "music_menu"); } else { setMusic(""); audio.wantMusic = keep; } }
+    if (group === "haptics") { save.haptics = v === "1"; if (save.haptics) buzz("light"); }
     if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || "music_menu"); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
     if (group === "shake") save.shake = v === "1";
     if (group === "ghost") save.ghostOn = v === "1";
