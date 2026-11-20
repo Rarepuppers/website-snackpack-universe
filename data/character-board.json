@@ -1,0 +1,191 @@
+{
+  "characters": [
+    {
+      "id": "professor-hooten",
+      "name": "Professor Hooten",
+      "kind": "Owl",
+      "greeting": "Hello, curious friend! Come and see my clock wall.",
+      "moment": "At the library party, Professor Hooten shows the twins five clocks and leads the countdowns.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A brown owl in round spectacles and a green waistcoat"
+    },
+    {
+      "id": "hen-berry",
+      "name": "Hen-Berry",
+      "kind": "Hen",
+      "greeting": "Hello, dear! Would you like to help me fold a paper hat?",
+      "moment": "Hen-Berry makes a gold paper hat for Cluck and a green one for Coop. After the party, she pulls Cluck home on the sled.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A red-feathered hen with a cream face and a cluster of berries and leaves",
+      "family": [
+        "cluck-oclock",
+        "coop-accino"
+      ]
+    },
+    {
+      "id": "corgi-on-the-cob",
+      "name": "Corgi-on-the-Cob",
+      "kind": "Dog",
+      "greeting": "Hi! Count the cobs with me. This time, help me remember to count myself!",
+      "moment": "Corgi sets off for Nutmeg’s harvest table with a basket of corn. Three friends help keep his feast on track.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "An orange-and-white corgi with upright ears"
+    },
+    {
+      "id": "cluck-oclock",
+      "name": "Cluck O’Clock",
+      "kind": "Rooster",
+      "greeting": "Hello! My watch is ready. Are you staying up for midnight?",
+      "moment": "Cluck brings his brass pocket watch to the library. At the party he discovers that midnight arrives at different times around the world.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A cream rooster with a red comb and a blue-green tail",
+      "family": [
+        "coop-accino",
+        "hen-berry"
+      ]
+    },
+    {
+      "id": "coop-accino",
+      "name": "Coop-Accino",
+      "kind": "Chicken",
+      "greeting": "Hi! Let’s count down together. I’ll start at three.",
+      "moment": "Coop wears the green paper hat and helps finish a countdown at the library with her twin, Cluck.",
+      "book": [
+        "cluck-oclock-and-the-midnight-that-came-early",
+        "Cluck O’Clock and the Midnight That Came Early"
+      ],
+      "alt": "A golden-brown chicken with a dark crest and a coffee-bean bandana",
+      "family": [
+        "cluck-oclock",
+        "hen-berry"
+      ]
+    },
+    {
+      "id": "panda-cake",
+      "name": "Panda-Cake",
+      "kind": "Panda",
+      "greeting": "Hello! Come help me count what’s in my market basket.",
+      "moment": "At Nutmeg’s harvest feast, Panda-Cake brings rolls and helps cook the corn.",
+      "book": [
+        "corgi-on-the-cob-and-the-harvest-table",
+        "Corgi-on-the-Cob and the Harvest Table"
+      ],
+      "alt": "A cream-and-dark panda with a pancake wrap",
+      "animal": "giant-panda"
+    }
+  ],
+  "animals": [
+    {
+      "id": "giant-panda",
+      "name": "Giant panda",
+      "fact": "A special wrist bone helps a giant panda grip bamboo as it eats.",
+      "sourceName": "Smithsonian’s National Zoo",
+      "source": "https://nationalzoo.si.edu/animals/giant-panda"
+    }
+  ],
+  "rounds": [
+    {
+      "answer": "cluck-oclock",
+      "clues": [
+        [
+          "I went to the New Year party at the library.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "I’m one of a pair of twins.",
+          [
+            "cluck-oclock",
+            "coop-accino"
+          ]
+        ],
+        [
+          "I brought my brass pocket watch.",
+          [
+            "cluck-oclock"
+          ]
+        ]
+      ],
+      "explanation": "Cluck brought his brass pocket watch to the library party."
+    },
+    {
+      "answer": "hen-berry",
+      "clues": [
+        [
+          "I was at the library’s New Year party.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "You’ll find me in the twins’ kitchen.",
+          [
+            "hen-berry",
+            "cluck-oclock",
+            "coop-accino"
+          ]
+        ],
+        [
+          "I folded a paper hat for each twin.",
+          [
+            "hen-berry"
+          ]
+        ]
+      ],
+      "explanation": "Hen-Berry folded gold and green paper hats for the twins."
+    },
+    {
+      "answer": "professor-hooten",
+      "clues": [
+        [
+          "You’ll find me at the library’s New Year party.",
+          [
+            "professor-hooten",
+            "hen-berry",
+            "corgi-on-the-cob",
+            "cluck-oclock",
+            "coop-accino",
+            "panda-cake"
+          ]
+        ],
+        [
+          "I helped get the party ready for the countdown.",
+          [
+            "professor-hooten",
+            "hen-berry"
+          ]
+        ],
+        [
+          "I’m the owl who showed everyone the five clocks on the wall.",
+          [
+            "professor-hooten"
+          ]
+        ]
+      ],
+      "explanation": "Professor Hooten shows the twins how the five clocks work."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "answer": "cluck-oclock",
+    "clues": [
+      "I went to the New Year party at the library.",
+      "I’m one of a pair of twins.",
+      "I brought my brass pocket watch."
+    ],
+    "explanation": "Cluck brought his brass pocket watch to the library party.",
+    "name": "Cluck O’Clock"
+  },
+  {
+    "answer": "hen-berry",
+    "clues": [
+      "I was at the library’s New Year party.",
+      "You’ll find me in the twins’ kitchen.",
+      "I folded a paper hat for each twin."
+    ],
+    "explanation": "Hen-Berry folded gold and green paper hats for the twins.",
+    "name": "Hen-Berry"
+  },
+  {
+    "answer": "professor-hooten",
+    "clues": [
+      "You’ll find me at the library’s New Year party.",
+      "I helped get the party ready for the countdown.",
+      "I’m the owl who showed everyone the five clocks on the wall."
+    ],
+    "explanation": "Professor Hooten shows the twins how the five clocks work.",
+    "name": "Professor Hooten"
+  }
+]
