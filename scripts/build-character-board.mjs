@@ -134,7 +134,7 @@ document.documentElement.dataset.themeDefault = "cream";
 <main class="cast-shell">
 ${body}
 </main>
-<footer class="cast-footer"><div class="cast-shell"><a href="/characters/">Meet the Characters</a><a href="/characters/colouring/">Colouring pages</a><a href="/read/events/">Holiday stories</a></div></footer>
+<footer class="cast-footer"><div class="cast-shell"><a href="/characters/">Meet the Characters</a><a href="/characters/colouring/">Colouring pages</a><a href="/read/events/">Holiday stories</a><a href="/terms/#art-and-asset-rights">Art &amp; asset rights</a><p>Original SnackPack art and assets © SnackPack Studios.</p></div></footer>
 </body>
 </html>
 `;
