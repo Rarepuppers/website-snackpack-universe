@@ -22,3 +22,16 @@ node scripts/check-read-publication.mjs
 The refresh compares website prose, paragraphs, chapter starts, and alt text to the reviewed manifests. It compares WebP, JPEG and PDF hashes to delivery evidence. With a source directory, it also verifies original master hashes. CI can verify the committed evidence without a companion checkout.
 
 Run the Reads browser suite to verify the new readers, age filters, images and chapter links. Run the scoped check with `--source-root` for web-original source parity. The broader `--require-apps` check applies to app exports and has previously identified unrelated source drift in `centi-peeds-below-zero-burrow`.
+
+## Seasonal picks and family reading guide
+
+The Christmas event page pins *One More Story Before Santa* on 24 December and *The Last Parcel Under the Tree* on 25 December in the reader’s local time. Other days use the regular rotation. The event data is in `scripts/lib/read-events.mjs`.
+
+Edit `data/christmas-reading-guide.json` to change the web and printable guide together. Run these commands with Node and Python with ReportLab installed:
+
+```sh
+python3 scripts/build-christmas-reading-guide.py
+node scripts/build-read-events.mjs
+```
+
+Open both PDFs and check the single-page layout, clickable book links and bottom-right website address at actual size. Run the Christmas browser spec to check the midnight transition and both downloads.

@@ -57,11 +57,35 @@
     }
   }
 
-  // "Read together tonight": one read-aloud per day, the same for everyone.
+  // "Read together tonight": the local holiday pick takes priority over rotation.
+  const tonight = [];
   for (const box of document.querySelectorAll("[data-read-tonight]")) {
     const picks = [...box.querySelectorAll("[data-tonight]")];
-    if (!picks.length) continue;
-    const pick = picks[Math.floor(today / DAY) % picks.length];
-    for (const p of picks) p.hidden = p !== pick;
+    if (picks.length) tonight.push(picks);
+  }
+  if (tonight.length) {
+    let timer;
+    function refreshTonight() {
+      const local = new Date();
+      const day = Date.UTC(local.getFullYear(), local.getMonth(), local.getDate());
+      const date = new Date(day).toISOString().slice(5, 10);
+      for (const picks of tonight) {
+        const special = picks.find(pick => pick.dataset.tonightDate === date);
+        const chosen = special ?? picks[Math.floor(day / DAY) % picks.length];
+        for (const pick of picks) {
+          pick.hidden = pick !== chosen;
+          const label = pick.querySelector("[data-tonight-label]");
+          if (label) label.textContent = pick === special ? pick.dataset.tonightSpecial : "Read together tonight";
+        }
+      }
+      clearTimeout(timer);
+      const midnight = new Date(local.getFullYear(), local.getMonth(), local.getDate() + 1);
+      timer = setTimeout(refreshTonight, midnight - local + 100);
+    }
+    window.addEventListener("pageshow", refreshTonight);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshTonight();
+    });
+    refreshTonight();
   }
 })();

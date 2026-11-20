@@ -58,3 +58,41 @@ test('the Christmas event page lists the six books in reading order and books li
  await expect(page).toHaveURL(/\/read\/events\/christmas\/$/);
  expect(errors).toEqual([]);
 });
+
+test.describe('Christmas reading picks in Auckland',()=>{
+ test.use({timezoneId:'Pacific/Auckland'});
+
+ test('Christmas Eve changes to the Christmas Day pick at local midnight',async({page})=>{
+   const beforeMidnight=new Date('2026-12-24T10:59:55Z');
+   await page.clock.install({time:beforeMidnight});
+   await page.clock.pauseAt(beforeMidnight);
+   await page.goto('/read/events/christmas/');
+   const pick=page.locator('[data-tonight]:visible');
+   await expect(pick).toHaveCount(1);
+   await expect(pick).toContainText('Christmas Eve pick');
+   await expect(pick).toContainText('One More Story Before Santa');
+   await page.clock.fastForward(6_000);
+   await expect(pick).toHaveCount(1);
+   await expect(pick).toContainText('Christmas Day pick');
+   await expect(pick).toContainText('The Last Parcel Under the Tree');
+ });
+
+ test('ordinary days keep the rotation and both guide PDFs are downloadable',async({page})=>{
+   await page.clock.setFixedTime(new Date('2026-12-26T05:00:00Z'));
+   await page.setViewportSize({width:320,height:700});
+   await page.goto('/read/events/christmas/');
+   const pick=page.locator('[data-tonight]:visible');
+   await expect(pick).toHaveCount(1);
+   await expect(pick).toContainText('Read together tonight');
+   const guide=page.getByRole('region',{name:'Christmas reading guide'});
+   await expect(guide).toBeVisible();
+   await expect(guide.getByRole('link',{name:'Captain Beakon and the Bell Across the Bay'})).toBeVisible();
+   for(const size of ['A4','US Letter']){
+     const href=await guide.getByRole('link',{name:new RegExp(size)}).getAttribute('href');
+     const response=await page.request.get(new URL(href,page.url()).href);
+     expect(response.ok()).toBe(true);
+     expect((await response.body()).subarray(0,5).toString()).toBe('%PDF-');
+   }
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ });
+});

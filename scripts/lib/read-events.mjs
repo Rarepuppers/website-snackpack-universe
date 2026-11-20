@@ -46,6 +46,10 @@ export const READ_EVENTS = [
     extras: [{ href: "/winter/", label: "Winter in the Woods: two short winter stories and two winter games" }],
     // Read-alouds that "Read together tonight" rotates through, in order.
     tonight: ["nutmeg-and-the-tree-that-wouldnt-come", "vincent-van-mouse-and-the-christmas-shadow-show", "sub-zero-and-the-great-snowball-truce", "one-more-story-before-santa", "the-last-parcel-under-the-tree"],
+    tonightSpecial: {
+      "one-more-story-before-santa": { date: "12-24", label: "Christmas Eve pick" },
+      "the-last-parcel-under-the-tree": { date: "12-25", label: "Christmas Day pick" },
+    },
     appearance: "winter",
   },
   {
