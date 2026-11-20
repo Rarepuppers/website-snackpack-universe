@@ -37,6 +37,11 @@ const bannerPaths = (e) => {
   } : null;
 };
 const DAY_LABEL = { christmas: "Christmas Day", "new-year": "New Year’s Day", "lunar-new-year": "Lunar New Year", easter: "Easter Sunday", thanksgiving: "Thanksgiving" };
+const christmasGuide = JSON.parse(read("data/christmas-reading-guide.json"));
+const guideLinks = [
+  { href: "/read/events/christmas/christmas-reading-guide-a4.pdf", label: "Reading guide · A4 PDF" },
+  { href: "/read/events/christmas/christmas-reading-guide-letter.pdf", label: "Reading guide · US Letter PDF" },
+];
 
 // ---------------------------------------------------------------- the shelf
 const hub = read("read/index.html");
@@ -57,6 +62,7 @@ for (const e of READ_EVENTS) {
   required.push(...Object.values(bannerPaths(e) ?? {}));
   if (e.activity) required.push("/read/activities/events.css", `/read/activities/${e.activity}.js`);
   if (e.timeline.length) for (const printable of e.printables ?? []) required.push(printable.href);
+  if (e.id === "christmas") required.push(...guideLinks.map(({href}) => href));
   for (const asset of required) if (!fs.existsSync(path.join(ROOT, asset))) problems.push(`${e.id}: missing ${asset}`);
   for (const slug of [...eventBooks(e), ...(e.alsoGood ?? []), ...(e.tonight ?? [])]) if (!CARDS.has(slug)) problems.push(`${e.id}: ${slug} is not on the shelf`);
   for (const slug of eventBooks(e)) {
@@ -64,6 +70,18 @@ for (const e of READ_EVENTS) {
     seen.set(slug, e.id);
   }
   for (const slug of e.tonight ?? []) if (!eventBooks(e).includes(slug)) problems.push(`${e.id}: tonight pick ${slug} is not one of its books`);
+  const specialDates = new Set();
+  for (const [slug, {date, label}] of Object.entries(e.tonightSpecial ?? {})) {
+    const parsed = new Date(`2000-${date}T00:00:00Z`);
+    const validDate = Number.isFinite(+parsed) && parsed.toISOString().slice(5, 10) === date;
+    if (!e.tonight?.includes(slug) || !validDate || !label?.trim() || specialDates.has(date)) {
+      problems.push(`${e.id}: invalid special pick ${slug} for ${date}`);
+    }
+    specialDates.add(date);
+  }
+  if (e.id === "christmas") for (const {slug} of christmasGuide.choices) {
+    if (!eventBooks(e).includes(slug)) problems.push(`Christmas reading guide: ${slug} is not a Christmas book`);
+  }
   if (!eventDates(e).some((d) => d.date >= todayIso && d.date <= horizon)) problems.push(`${e.id}: no date in the next 24 months — extend its date table`);
   if (contrast(e.accent, "#fffdf8") < 4.5) problems.push(`${e.id}: accent ${e.accent} is too light for light text (${contrast(e.accent, "#fffdf8").toFixed(2)}:1)`);
   if (!DAY_LABEL[e.id]) problems.push(`${e.id}: no day label`);
@@ -137,7 +155,9 @@ function eventPage(e) {
   }).join("\n");
   const tonight = (e.tonight ?? []).map((slug, i) => {
     const c = CARDS.get(slug);
-    return `<a class="read-event-tonight-pick" data-tonight href="../../${c.slug}/"${i ? " hidden" : ""}>${relPicture(c, "../../", "120px")}<span><span class="eyebrow">Read together tonight</span><strong>${c.title}</strong><span>${ages(c)} · ${pagesLabel(c)}</span></span></a>`;
+    const special = e.tonightSpecial?.[slug];
+    const dateAttrs = special ? ` data-tonight-date="${special.date}" data-tonight-special="${esc(special.label)}"` : "";
+    return `<a class="read-event-tonight-pick" data-tonight${dateAttrs} href="../../${c.slug}/"${i ? " hidden" : ""}>${relPicture(c, "../../", "120px")}<span><span class="eyebrow"${special ? " data-tonight-label" : ""}>Read together tonight</span><strong>${c.title}</strong><span>${ages(c)} · ${pagesLabel(c)}</span></span></a>`;
   }).join("");
   const also = (e.alsoGood ?? []).map((slug) => {
     const c = CARDS.get(slug);
@@ -155,7 +175,7 @@ function eventPage(e) {
   const sources = bannerPaths(e);
   const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
   const activity = e.activity ? renderReadEventActivity(e.activity) : "";
-  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>
+  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide()}` : ""}
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
 ${books}
 </ol>${also || extras ? `<h2 class="read-shelf-heading read-event-sub">Also good this season</h2><ul class="read-event-also">${also}${extras}</ul>` : ""}<p class="read-event-note">Every book is free to read online, read aloud with your device’s voice, save for offline or print as a PDF. They stay on the shelf all year.</p><p><a class="text-link" href="/read/events/">All holiday and event stories</a> · <a class="text-link" href="/read/">The whole bookshelf</a></p></div></section>
@@ -163,6 +183,20 @@ ${activity}
 ${printables ? `<section><div class="shell"><h2 class="read-shelf-heading">Printables</h2><ul class="read-event-also">${printables}</ul></div></section>` : ""}
 <script src="../../events.js"></script>`;
   return page({ title: `${e.heading}: free illustrated picture books`, desc, url: `/read/events/${e.id}/`, image: socialImage(e), body, jsonld, activity: e.activity });
+}
+
+function renderChristmasGuide() {
+  const guide = christmasGuide;
+  const choices = guide.choices.map(({slug, time, mode, why}) => {
+    const c = CARDS.get(slug);
+    return `<li><strong><a href="../../${c.slug}/">${c.title}</a></strong><br>${ages(c)} · ${esc(time)} · ${esc(mode)}. ${esc(why)}</li>`;
+  }).join("\n");
+  return `<section aria-labelledby="christmas-reading-guide"><div class="shell"><div class="content-card">
+<h2 class="read-shelf-heading" id="christmas-reading-guide">${esc(guide.title)}</h2><p class="read-shelf-intro">${esc(guide.intro)}</p>
+<div class="stack-inline">${guideLinks.map(({href, label}) => `<a class="btn btn-secondary" href="${href}" download>${esc(label)}</a>`).join("")}</div>
+<ul class="read-event-also">${choices}</ul><p class="read-event-note">${esc(guide.timeNote)}</p>
+<h3>Talk about the story</h3><ol>${guide.questions.map(question => `<li>${esc(question)}</li>`).join("")}</ol>
+<h3>${esc(guide.activity.title)}</h3><p>${esc(guide.activity.instruction)}</p></div></div></section>`;
 }
 
 function socialImage(e) {

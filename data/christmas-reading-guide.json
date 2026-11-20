@@ -1,0 +1,18 @@
+{
+  "title": "Christmas reading guide",
+  "intro": "Pick a story for home or class. Use the age bands and time estimates as a starting point.",
+  "timeNote": "Times are approximate and leave room to pause over the pictures or discuss clues.",
+  "choices": [
+    {"slug": "one-more-story-before-santa", "time": "8–12 minutes", "mode": "Read together", "why": "A quiet Christmas Eve story about two chicks trying to stay awake."},
+    {"slug": "the-last-parcel-under-the-tree", "time": "12–18 minutes", "mode": "Read together or independently", "why": "A Christmas morning mystery with a parcel and a clue about who gets there last."},
+    {"slug": "captain-beakon-and-the-bell-across-the-bay", "time": "25–35 minutes, or one chapter at a time", "mode": "Independent reading", "why": "An older-reader mystery about a bell ringing from the wrong shore."}
+  ],
+  "questions": [
+    "What did a character notice that changed what they did next?",
+    "Which detail in a picture helped you understand something the words left out?"
+  ],
+  "activity": {
+    "title": "Draw the next moment",
+    "instruction": "Choose a character. Draw what they might do after the story ends. Add one sentence about your picture, or tell it to someone."
+  }
+}
