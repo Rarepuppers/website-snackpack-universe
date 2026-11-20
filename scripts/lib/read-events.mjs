@@ -179,7 +179,9 @@ export const eventIcon = (event) => `<img class="read-event-icon" src="${eventIc
 
 export function releasedEventBooks() {
   const releaseDates = { thanksgiving: "2026-11-24", "new-year": "2026-12-18" };
-  return READ_EVENTS.filter(event => releaseDates[event.id]).flatMap(event => event.timeline.map(({ slug }) => {
+  const releases = READ_EVENTS.filter(event => releaseDates[event.id])
+    .sort((a, b) => releaseDates[a.id].localeCompare(releaseDates[b.id]));
+  return releases.flatMap(event => event.timeline.map(({ slug }) => {
     const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
     const label = slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
     const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
