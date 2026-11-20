@@ -172,3 +172,14 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
   .dock .btn { min-height: 38px; padding: 6px 4px; font-size: .78rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center; }
 }
 button.customer.locked { display: block; width: 100%; text-align: left; color: inherit; border: 0; font: inherit; cursor: pointer; }
+.unlock-hero { height: 96px; margin: -4px -4px 10px; border-radius: 12px; background-size: cover; background-position: center; position: relative; }
+.unlock-hero .badge-one { position: absolute; top: 8px; left: 8px; background: var(--sun); color: #33210a; font-weight: 800; font-size: .72rem; border-radius: 8px; padding: 3px 8px; }
+/* Sheets never run off a short landscape phone: they scroll, and the unlock sheet tightens. */
+.sheet { max-height: calc(100vh - 24px); overflow-y: auto; }
+@media (max-height: 560px) {
+  .unlock-hero { height: 64px; margin-bottom: 6px; }
+  .sheet h2 { font-size: 1.3rem; }
+  .sheet .lines li { padding: 2px 0; font-size: .86rem; }
+  .sheet .row .btn { min-height: 40px; padding-block: 7px; }
+  .sheet .note { margin: 6px 0 0; }
+}

@@ -724,8 +724,18 @@ function toMenu(screen) {
 // ════ Unlock sheet ════════════════════════════════════════════════
 function unlockSheet() {
   const price = billing.price || "";
-  const buy = billing.busy ? "Waiting for Google Play…" : !billing.ready ? "Store loading…" : "Unlock" + (price ? " for " + price : "");
-  sheet.innerHTML = `<h2>Unlock the full game</h2>
+  // Same shape as the other apps' custom unlock screens: hero, what you get, one-time
+  // price, restore, and a plain message when the store can't be reached.
+  if (save.pro) {
+    sheet.innerHTML = `${artUrl("unlock_hero") ? `<div class="unlock-hero" style="background-image:url('${artUrl("unlock_hero")}')"></div>` : ""}
+      <h2>You're all set</h2><p>Every region, Special Order, Long Haul and truck is open. Thanks for supporting Snack Haul.</p>
+      <div class="row" style="margin-top:10px"><button class="btn primary" data-act="unlock-close">Let's drive</button></div>`;
+    return;
+  }
+  const unavailable = !billing.ready && billing.waited;
+  const buy = billing.busy ? "Waiting for Google Play…" : unavailable ? "Try again" : !billing.ready ? "Loading the store…" : "Unlock" + (price ? " for " + price : "");
+  sheet.innerHTML = `${artUrl("unlock_hero") ? `<div class="unlock-hero" style="background-image:url('${artUrl("unlock_hero")}')"><span class="badge-one">One-time</span></div>` : ""}
+    <h2>Unlock the full game</h2>
     <ul class="lines">
       <li><span>5 more regions and 40 routes</span><b>✓</b></li>
       <li><span>25 Special Orders from 5 customers</span><b>✓</b></li>
@@ -733,19 +743,26 @@ function unlockSheet() {
       <li><span>Long Haul in every region</span><b>✓</b></li>
       <li><span>Future regions included</span><b>✓</b></li>
     </ul>
-    <p>One payment. No ads, no subscription.</p>
-    ${billing.note ? `<p class="challenge">${esc(billing.note)}</p>` : ""}
+    ${billing.note ? `<p class="challenge">${esc(billing.note)}</p>` : unavailable ? `<p class="challenge">The store price isn't available right now. You can keep playing and try again later.</p>` : ""}
     <div class="row" style="margin-top:10px">
-      <button class="btn primary" data-buy${billing.busy || !billing.ready ? " disabled" : ""}>${esc(buy)}</button>
+      <button class="btn primary" ${unavailable ? "data-retry" : "data-buy"}${billing.busy || (!billing.ready && !unavailable) ? " disabled" : ""}>${esc(buy)}</button>
       <button class="btn" data-restore${billing.busy ? " disabled" : ""}>Restore purchase</button>
       <button class="btn" data-act="unlock-close">Not now</button>
-    </div>`;
+    </div>
+    <p class="note">One purchase unlocks the full game in Snack Haul. No subscription, no ads.</p>`;
+}
+// Ask the app for the price; if it hasn't come within 6 s, say so and offer Try again.
+function askForPrice() {
+  billing.waited = false;
+  tellApp({ type: "billing-hello" });
+  clearTimeout(state.priceTimer);
+  state.priceTimer = setTimeout(() => { if (!billing.ready) { billing.waited = true; if (state.unlockOpen) unlockSheet(); } }, 6000);
 }
 function showUnlock(from) {
   if (!paywalled()) return;
   state.unlockOpen = true; state.unlockFrom = from;
   billing.note = "";
-  if (!billing.ready) tellApp({ type: "billing-hello" });
+  if (!billing.ready) askForPrice();
   unlockSheet();
   veil.classList.add("on");
 }
@@ -762,7 +779,7 @@ window.SnackHaulBilling = (b) => {
     save.pro = b.pro; persist();
     if (b.pro) { toast("Full game unlocked!", 2200); play("unlock", 0.8) || play("goal", 0.7); }
   }
-  if (state.unlockOpen) { if (save.pro) closeUnlock(); else unlockSheet(); }
+  if (state.unlockOpen) unlockSheet();
   else if (state.mode === "menu") renderScreen();
 };
 function buyFullGame() { billing.busy = true; billing.note = ""; unlockSheet(); tellApp({ type: "buy" }); }
@@ -778,6 +795,7 @@ function pause() {
 }
 sheet.addEventListener("click", (e) => {
   if (e.target.closest("[data-buy]") && !e.target.closest("[data-buy]").disabled) return buyFullGame();
+  if (e.target.closest("[data-retry]")) { askForPrice(); return unlockSheet(); }
   if (e.target.closest("[data-restore]") && !e.target.closest("[data-restore]").disabled) return restoreFullGame();
   if (e.target.closest("[data-unlock]")) return showUnlock(e.target.closest("[data-unlock]").dataset.unlock);
   const b = e.target.closest("[data-act]");
