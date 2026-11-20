@@ -99,6 +99,21 @@ The plan, rules and held-back list live in `READ-PLAN-2026-10.md`. The scripts:
 | `build-read-pdfs.mjs` | One printable PDF per book, zero dependencies; ends with a questions page (prompts, maths questions, end question; answers below a fold line) extracted from the book's HTML, so re-run it after any text change | `--slug=<slug> --write` per new book |
 | `build-read-responsive.mjs` | Makes 480/800/960 px WebP sizes of every book picture (ImageMagick, from the JPEG/PNG original) and gives each `<source>` a `srcset` + measured `sizes`. Widths and the measurements behind them live in `lib/read-srcset.mjs` | After any importer, **before** `build-read-shelf.mjs`. `--check` (no ImageMagick needed) runs in CI |
 
+## Google Play QR codes
+
+Generate a website-ready PNG from the Android application ID. Install the QR
+encoder in a Python virtual environment, then run the generator.
+
+```bash
+python3 -m pip install "qrcode[pil]==8.2"
+python3 scripts/generate-play-qr.py snack-haul com.snackpackuniverse.snackhaul
+```
+
+The script writes `assets/qrcodes/qr-code-<app-slug>.png` and encodes the
+public Google Play URL. You can generate it before the listing goes live.
+For Snack Haul, remove the opening and closing tags of the
+`snack-haul-play-qr` template when publishing the Play badge.
+
 ## Install attribution
 
 `build-play-links.mjs` rewrites every outbound Play link to carry:

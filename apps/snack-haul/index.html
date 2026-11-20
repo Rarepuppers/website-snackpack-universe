@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Pre-launch page (live 2026-11-21): trailers public, no store link yet. At launch: add the Play badge
-     with a /go/app-page/snack-haul/ redirect and QR code, change "Coming soon" copy, and move the /apps/ card. -->
+     with a /go/app-page/snack-haul/ redirect, unwrap the snack-haul-play-qr template, change "Coming soon" copy,
+     and move the /apps/ card. -->
 <title>Snack Haul | Physics Truck Driving Game for Android</title>
 <meta name="description" content="Snack Haul is a physics truck-driving game for Android. Drive six trucks across six regions and 48 routes, keep eggs, jelly, cakes and ice cream on board, race the rival and beat the ghost of your best run. Bakery Hills is free to play; one purchase unlocks the full game. No ads.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/apps/snack-haul/">
@@ -34,6 +35,8 @@
   .sh-copy .lead { color: #fff6e8; }
   .sh-copy .ios-note { color: #fff6e8; opacity: .95; }
   .sh-copy .btn { text-shadow: none; }
+  .sh-copy .featured-qr { text-shadow: none; }
+  .sh-copy .featured-qr img { width: 128px; height: 128px; }
   .sh-copy .btn-secondary { background: #fff8ebeb; color: #2c1f17; border-color: transparent; }
   @media (max-width: 860px) {
     .sh-banner { aspect-ratio: auto; min-height: 0; background: var(--card, #fff8eb); box-shadow: 0 8px 24px #0002; }
@@ -175,6 +178,12 @@
             <a class="btn btn-primary" href="#trailers">Watch the trailers</a>
             <a class="btn btn-secondary" href="#signup">Hear when it launches</a>
           </div>
+          <template id="snack-haul-play-qr">
+            <div class="featured-qr">
+              <img src="../../assets/qrcodes/qr-code-snack-haul.png" alt="QR code for the Snack Haul Google Play listing" width="128" height="128" loading="lazy" decoding="async">
+              <span>Scan to get Snack Haul on Android</span>
+            </div>
+          </template>
           <p class="ios-note" style="margin-top:14px;">🤖 Android first. Bakery Hills is free to play; one purchase unlocks the full game. No ads, no subscriptions, no account.</p>
         </div>
       </div>
