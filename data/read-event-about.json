@@ -1,0 +1,396 @@
+[
+  {
+    "id": "christmas",
+    "title": "Christmas",
+    "intro": "Why can Christmas be a snowy day in one story and a picnic day in another?",
+    "guides": [
+      [
+        "cluck-oclock",
+        "Cluck O’Clock",
+        "Bark-B-Q set his Christmas table by the sea. Wouldn’t everyone be cold?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "In Australia and New Zealand, December is in summer. Let’s find out what people are celebrating, wherever they spend the day."
+      ]
+    ],
+    "when": "Many churches celebrate Christmas on 25 December. Some churches use a different calendar and mark it on another date. The season outside depends on where you live.",
+    "who": "Christians celebrate Christmas around the world. Many other families join in with community gatherings, decorations or gift-giving. Each family decides how to spend the day.",
+    "why": "Christmas celebrates the birth of Jesus. Christians tell the Nativity story, in which Mary gives birth to Jesus in Bethlehem. Some families tell it with a crib scene, a church service or a song.",
+    "history": "Over time, people added their own customs to the celebration. A family might sing carols in the evening, share a special meal, or hang decorations. The seaside lunch in Bark-B-Q’s story is one fictional family-and-friends Christmas gathering.",
+    "fact": [
+      "One date, two seasons",
+      "When Australia and New Zealand are in summer, many places north of the equator are in winter. Both can have Christmas in December."
+    ],
+    "question": [
+      "Why can Bark-B-Q have a Christmas picnic in warm weather?",
+      [
+        "December is summer where Bark-B-Q lives.",
+        "Yes. His coastal Christmas is in the Southern Hemisphere."
+      ],
+      [
+        "Christmas falls in a different month at the beach.",
+        "Christmas can still fall in December. The seasons change with where you live."
+      ]
+    ],
+    "sources": [
+      [
+        "Church of England · Advent and Christmas",
+        "https://www.churchofengland.org/faith/advent-and-christmas/what-is-advent-and-christmas"
+      ],
+      [
+        "NASA Space Place · What causes the seasons?",
+        "https://spaceplace.nasa.gov/seasons/en/"
+      ]
+    ],
+    "related": [
+      [
+        "Read Bark-B-Q’s seaside Christmas",
+        "/read/bark-b-q-and-the-long-christmas-table/"
+      ]
+    ]
+  },
+  {
+    "id": "easter",
+    "title": "Easter",
+    "intro": "Why does Easter move on the calendar, and why are the leaves turning in Nutmeg’s garden?",
+    "guides": [
+      [
+        "nutmeg",
+        "Nutmeg",
+        "My cousin sent a picture of spring flowers. I’m sweeping autumn leaves. Can it be Easter in both gardens?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "It can. Easter moves from year to year, and the seasons depend on where you live."
+      ]
+    ],
+    "when": "Easter Sunday moves each year. In many Western churches, its date follows a church calendar rule based on spring in the Northern Hemisphere and a full moon. Some churches use a different calendar and may celebrate on a different Sunday.",
+    "who": "Christians around the world celebrate Easter. Customs vary between churches and families. Some people also join in activities such as egg hunts and family meals.",
+    "why": "Christians celebrate their belief that Jesus rose from the dead. Holy Week is the time leading up to Easter. On Good Friday, Christians remember Jesus’s death. On Easter Sunday, they celebrate the resurrection.",
+    "history": "Christians have marked Easter since the early centuries of Christianity. Later customs have taken many forms. Some churches light an Easter candle. Families in many places decorate eggs or share special foods.",
+    "fact": [
+      "Autumn Easter",
+      "Easter is in autumn in Australia and New Zealand. An egg hunt among fallen leaves makes just as much sense as one among spring flowers."
+    ],
+    "question": [
+      "Why might Nutmeg and her cousin see different seasons on Easter Sunday?",
+      [
+        "They live on opposite sides of the equator.",
+        "Yes. Their gardens can be in different seasons on the same day."
+      ],
+      [
+        "The eggs tell the seasons when to change.",
+        "The seasons depend on where the gardens are. The eggs are one custom."
+      ]
+    ],
+    "sources": [
+      [
+        "Church of England · Common questions about Easter",
+        "https://www.churchofengland.org/faith/lent-holy-week-and-easter/common-questions-about-lent-and-easter"
+      ],
+      [
+        "Church of England · How the date is worked out",
+        "https://www.churchofengland.org/liturgy/common-worship/calendar-and-date-easter-and-other-variable-dates"
+      ],
+      [
+        "NASA Space Place · What causes the seasons?",
+        "https://spaceplace.nasa.gov/seasons/en/"
+      ]
+    ]
+  },
+  {
+    "id": "new-year",
+    "title": "New Year",
+    "intro": "Two clocks, one moment. Why does one town reach midnight before another?",
+    "guides": [
+      [
+        "captain-beakon",
+        "Captain Beakon",
+        "Our clock has struck midnight. Can I call Cluck and say Happy New Year?"
+      ],
+      [
+        "cluck-oclock",
+        "Cluck O’Clock",
+        "You can, but my clock still says yesterday! Let’s work out what happened."
+      ]
+    ],
+    "when": "On the Gregorian calendar, New Year’s Day is 1 January. The date changes at midnight in each place’s local time. At the same moment, different places can be on different dates.",
+    "who": "Many people around the world mark 1 January, which is used on calendars for school, work and everyday life. Communities also mark new years on other calendars.",
+    "why": "A new year gives people time to remember what happened and think about the year ahead. Some count down, watch fireworks, make plans or share a quiet meal.",
+    "history": "Calendars and new-year dates have varied over time. Today, 1 January is the start of the Gregorian year used in many places. Local time zones mean the calendar page turns at different moments around the world.",
+    "fact": [
+      "Midnight travels",
+      "Midnight comes to different time zones in turn. Live clocks can show a city on 1 January while another is still on 31 December."
+    ],
+    "question": [
+      "Your local clock says 12:01 am on 1 January. Could a friend elsewhere still be on 31 December?",
+      [
+        "No. All calendars must change together.",
+        "Clocks in different time zones can show different dates at the same moment."
+      ],
+      [
+        "Yes. The friend’s time zone might reach midnight later.",
+        "Exactly. Local midnight is what changes the date."
+      ]
+    ],
+    "sources": [
+      [
+        "NIST · Local time and time zones",
+        "https://www.nist.gov/pml/time-and-frequency-division/local-time-faqs"
+      ],
+      [
+        "USAGov · New Year’s Day and other holidays",
+        "https://www.usa.gov/holidays"
+      ]
+    ],
+    "related": [
+      [
+        "Try the midnight clocks and read the New Year stories",
+        "/read/events/new-year/"
+      ]
+    ]
+  },
+  {
+    "id": "lunar-new-year",
+    "title": "Lunar New Year",
+    "intro": "Pita-Pan’s calendar puzzle begins with a reunion dinner.",
+    "guides": [
+      [
+        "pita-pan",
+        "Pita-Pan",
+        "My friend’s family is getting ready for a reunion dinner. Why do I have to look up the date each year?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "Their festival follows a calendar that keeps track of the Moon. Let’s see how one family welcomes the year."
+      ]
+    ],
+    "when": "Lunar New Year usually falls in January or February on the everyday Gregorian calendar. The Chinese calendar tracks both the Moon and the seasons. Check the date for the community and year you are learning about.",
+    "who": "Chinese New Year, Vietnamese Tết and Korean Seollal are examples of observances around Lunar New Year. Families in these communities and their diasporas have their own traditions.",
+    "why": "For many families it is a time to reunite and wish each other a good year. One Chinese New Year example is a reunion dinner, where relatives may serve dishes with an extra meaning.",
+    "history": "Families have passed down and adapted these customs over many generations. For example, some Chinese families put red paper cuttings on windows or display good wishes by the door. Traditions can look different from house to house.",
+    "fact": [
+      "A wish on the dinner table",
+      "Some Chinese families serve a whole fish as a wish for abundance. The words for fish and surplus sound alike in Mandarin."
+    ],
+    "question": [
+      "Pita-Pan sees a whole fish at one Chinese New Year dinner. What might the dish express?",
+      [
+        "A wish for plenty in the year ahead.",
+        "Yes. Foods at celebrations can carry special meanings."
+      ],
+      [
+        "A rule that every family must eat fish.",
+        "One family’s tradition is an example. Other families may serve something different."
+      ]
+    ],
+    "sources": [
+      [
+        "Smithsonian National Museum of Asian Art · Lunar New Year traditions",
+        "https://asia-archive.si.edu/lunar-new-year-celebration/"
+      ],
+      [
+        "Smithsonian National Museum of Asian Art · A family perspective",
+        "https://asia.si.edu/whats-on/blog/posts/lunar-new-year-then-now/"
+      ]
+    ]
+  },
+  {
+    "id": "ramadan",
+    "title": "Ramadan and Eid al-Fitr",
+    "intro": "Cluck follows the evening clock to learn about a month of worship and a celebration that comes after it.",
+    "guides": [
+      [
+        "cluck-oclock",
+        "Cluck O’Clock",
+        "My friend’s family is getting a meal ready for sunset. What makes that time special?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "During Ramadan, sunset is when people who have been fasting can break their fast. Let’s look at what else the month means."
+      ]
+    ],
+    "when": "Ramadan is the ninth month of the Islamic lunar calendar. It starts earlier on the Gregorian calendar each year. Communities may announce different start dates depending on how they determine the new month. Eid al-Fitr begins after Ramadan ends.",
+    "who": "Muslims around the world observe Ramadan. Many adults who are able fast from dawn to sunset. Some people are excused from fasting, and younger children are generally not expected to fast.",
+    "why": "For Muslims, Ramadan is a holy month for worship, reflection and generosity. Many people spend extra time praying, reading the Qur’an or helping neighbours. Eid al-Fitr is a celebration at the end of the month.",
+    "history": "Muslims remember the beginning of the Qur’an’s revelation during Ramadan. Families and communities have many ways to mark the month. The meal that breaks a day’s fast is called iftar.",
+    "fact": [
+      "Two different names",
+      "Iftar is the meal that breaks a day’s fast. Eid al-Fitr is the festival after the month of Ramadan."
+    ],
+    "question": [
+      "Which word names the meal at sunset that breaks the day’s fast?",
+      [
+        "Eid al-Fitr.",
+        "Eid al-Fitr is the celebration after the whole month of Ramadan."
+      ],
+      [
+        "Iftar.",
+        "Yes. Iftar is the evening meal for people breaking the day’s fast."
+      ]
+    ],
+    "sources": [
+      [
+        "Islamic Relief UK · What is Ramadan?",
+        "https://www.islamic-relief.org.uk/giving/islamic-giving/ramadan/what-is-ramadan/"
+      ]
+    ]
+  },
+  {
+    "id": "diwali",
+    "title": "Diwali and Deepavali",
+    "intro": "A row of small lamps sparks a big question for Panda-Cake.",
+    "guides": [
+      [
+        "panda-cake",
+        "Panda-Cake",
+        "I’ve seen little clay lamps in pictures of Diwali. Do they tell the same story in every home?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "Families and communities can light lamps for different reasons. Let’s listen to a few of those meanings."
+      ]
+    ],
+    "when": "Diwali or Deepavali usually falls in October or November on the Gregorian calendar. The timing and length of celebrations vary by calendar and community.",
+    "who": "Hindus in South Asia and around the world celebrate Diwali in many ways. Jains also observe Diwali with their own meaning. Many Sikhs mark Bandi Chhor Divas around the same time.",
+    "why": "In one Hindu tradition, families remember Rama’s return to Ayodhya and welcome him with lights. For Jains, Diwali recalls Mahavira’s liberation. Sikhs describe Bandi Chhor Divas through Guru Hargobind’s release and the freedom he helped secure for others.",
+    "history": "Stories, local practices and family memories all shape how people observe these occasions. Some households light diyas, make rangoli patterns or share sweets. A particular practice or explanation belongs to the family or tradition that shares it.",
+    "fact": [
+      "A tiny lamp",
+      "A diya is a small oil lamp, often made of clay. You may see rows of them near a doorway."
+    ],
+    "question": [
+      "Panda-Cake finds two families with lights and different stories. Can both stories belong?",
+      [
+        "Yes. Similar customs can have different meanings.",
+        "Exactly. Ask each family what the lights mean to them."
+      ],
+      [
+        "No. All lights have to tell the same story.",
+        "The same object can be meaningful in different ways to different communities."
+      ]
+    ],
+    "sources": [
+      [
+        "Hindu American Foundation · Diwali toolkit",
+        "https://www.hinduamerican.org/diwali"
+      ],
+      [
+        "Jainworld · A brief introduction to Jainism",
+        "https://jainworld.jainworld.com/JWEnglish/A%20brief%20introduction%20to%20Jainism.pdf"
+      ],
+      [
+        "Sikh Coalition · Educator’s guide",
+        "https://www.sikhcoalition.org/wp-content/uploads/2018/08/Sikhism-educator-guide.pdf"
+      ]
+    ]
+  },
+  {
+    "id": "hanukkah",
+    "title": "Hanukkah",
+    "intro": "Cluck counts the nights and spots a light with a special job.",
+    "guides": [
+      [
+        "cluck-oclock",
+        "Cluck O’Clock",
+        "Eight nights, but the lamp can hold nine lights. Does my counting need a tune-up?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "Your counting is fine. One of those lights has a different job. Let’s find out which one."
+      ]
+    ],
+    "when": "Hanukkah begins on 25 Kislev in the Hebrew calendar and lasts eight nights. Its dates move on the Gregorian calendar, usually falling in November or December.",
+    "who": "Jewish communities around the world mark Hanukkah. Customs differ between families and places. Some gather to light the Hanukkah lamp, play dreidel or share foods cooked in oil.",
+    "why": "Hanukkah remembers the rededication of the Temple in Jerusalem. A traditional story in the Talmud tells how oil enough for one day kept the Temple lamp burning for eight days.",
+    "history": "The Temple rededication followed a revolt led by the Maccabees. In later generations, the account of the oil became an important way of telling the festival’s story. Today, many families add one Hanukkah light each night.",
+    "fact": [
+      "One light helps the others",
+      "A Hanukkah lamp is also called a hanukkiah. It has places for eight festival lights and a helper light called the shamash."
+    ],
+    "question": [
+      "Why does the hanukkiah have space for a ninth light?",
+      [
+        "It marks a ninth night of Hanukkah.",
+        "Hanukkah lasts eight nights. The extra place has another purpose."
+      ],
+      [
+        "It holds the shamash, the helper light.",
+        "Yes. The shamash can be used to light the others."
+      ]
+    ],
+    "sources": [
+      [
+        "Reform Judaism · The Hanukkah story",
+        "https://reformjudaism.org/jewish-holidays/hanukkah/history-hanukkah-story"
+      ],
+      [
+        "My Jewish Learning · Hanukkah questions and customs",
+        "https://www.myjewishlearning.com/article/hanukkah-faq/"
+      ]
+    ]
+  },
+  {
+    "id": "thanksgiving",
+    "title": "Thanksgiving",
+    "intro": "Bark-B-Q has two Thanksgiving dates on his timetable. Both are right.",
+    "guides": [
+      [
+        "bark-b-q",
+        "Bark-B-Q",
+        "One friend’s Thanksgiving is in October and another’s is in November. Which date goes on my timetable?"
+      ],
+      [
+        "booklava",
+        "Booklava",
+        "Both. Canada and the United States mark Thanksgiving on different dates, and people tell different stories about it."
+      ]
+    ],
+    "when": "Thanksgiving in Canada is on the second Monday in October. In the United States it is on the fourth Thursday in November.",
+    "who": "Many families in Canada and the United States gather for Thanksgiving. Others spend the day in their own way or do not observe it. Some Indigenous people in the United States mark it as a National Day of Mourning.",
+    "why": "Some families use the day to share a meal or name things they are grateful for. For others it is a time to remember what colonisation has meant for Indigenous people and to learn from their perspectives.",
+    "history": "A harvest gathering at Plymouth in 1621 involved Wampanoag people and English colonists. It was later retold as a national origin story. Wampanoag histories also describe what happened after that gathering, including the loss of land and violence that followed.",
+    "fact": [
+      "One name, two dates",
+      "The Canadian and US dates use rules about weekdays. That is why each can fall on a different numbered day from one year to the next."
+    ],
+    "question": [
+      "Which date belongs on Bark-B-Q’s timetable for Canadian Thanksgiving?",
+      [
+        "The second Monday in October.",
+        "Yes. The November date is for Thanksgiving in the United States."
+      ],
+      [
+        "The fourth Thursday in November.",
+        "That is the US date. Canada’s is on the second Monday in October."
+      ]
+    ],
+    "sources": [
+      [
+        "Government of Canada · Public holidays",
+        "https://www.canada.ca/en/revenue-agency/services/tax/public-holidays.html"
+      ],
+      [
+        "USAGov · American holidays",
+        "https://www.usa.gov/holidays"
+      ],
+      [
+        "National Museum of the American Indian · Wampanoag perspectives",
+        "https://americanindian.si.edu/nk360/thanksgiving/"
+      ]
+    ],
+    "related": [
+      [
+        "Read the Thanksgiving stories",
+        "/read/events/thanksgiving/"
+      ]
+    ]
+  }
+]

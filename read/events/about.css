@@ -1,0 +1,86 @@
+.holiday-about-hero {
+  padding: clamp(1.75rem, 5vw, 4rem) 0 2.5rem;
+  background: linear-gradient(135deg, var(--accent-soft), var(--bg-soft));
+  border-block-end: 1px solid var(--line);
+}
+
+.holiday-about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(8rem, 15rem);
+  align-items: center;
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin-block: 1.25rem 1.75rem;
+}
+
+.holiday-about-intro h1 {
+  max-width: 21ch;
+  margin: 0;
+  font: 750 clamp(2.3rem, 6vw, 4.75rem)/1.02 var(--serif);
+}
+
+.holiday-about-intro .lead { margin-block: 1rem; }
+.holiday-about-intro img {
+  width: 100%;
+  height: auto;
+  border-radius: 50% 50% 22% 22%;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.holiday-about-review { margin-block: 1rem 0; color: var(--muted); }
+.holiday-about-dialogue, .holiday-about-facts, .holiday-about-pair, .holiday-about-options {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.holiday-about-dialogue p, .holiday-about-facts > div, .holiday-about-card {
+  margin: 0;
+  padding: clamp(1rem, 3vw, 1.65rem);
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.holiday-about-character {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  width: fit-content;
+  margin-block-end: .65rem;
+  color: var(--ink);
+  font-weight: 750;
+  text-underline-offset: .2em;
+}
+
+.holiday-about-character img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--accent-soft);
+}
+
+.holiday-about-character:is(:hover, :focus-visible) {
+  text-decoration-thickness: .14em;
+}
+.holiday-about-content { display: grid; gap: 1.25rem; padding-block: 2rem 4rem; }
+.holiday-about-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.holiday-about h2 { font: 700 clamp(1.25rem, 3vw, 1.7rem)/1.15 var(--serif); margin-block: 0 .65rem; }
+.holiday-about p:last-child { margin-bottom: 0; }
+.holiday-about-highlight { background: var(--accent-soft); }
+.holiday-about details { border: 1px solid var(--line-strong); border-radius: .85rem; background: var(--surface-strong); }
+.holiday-about summary { padding: .9rem 1rem; cursor: pointer; font-weight: 700; }
+.holiday-about details p { padding: 0 1rem .9rem; margin-top: 0; }
+.holiday-about :is(a, summary):focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.holiday-about-card li + li { margin-top: .5rem; }
+.holiday-about-more ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; list-style: none; padding: 0; }
+
+@media (max-width: 700px) {
+  .holiday-about-facts, .holiday-about-pair, .holiday-about-options { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .holiday-about-intro, .holiday-about-dialogue { grid-template-columns: 1fr; }
+  .holiday-about-intro img { width: min(10rem, 60%); }
+}
