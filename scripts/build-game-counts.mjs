@@ -209,7 +209,8 @@ const phraseFiles = {
   ],
   "apps/snackpack-brain-games/index.html": [
     { key: "vol1", re: /(calm, offline collection of )(\d+)( card, puzzle)/ },
-    { key: "vol1", re: /(A calm, offline collection of )(\d+)( classic games)/ }
+    { key: "vol1", re: /(A calm, offline collection of )(\d+)( classic games)/ },
+    { key: "vol1", re: /(og:description" content=")(\d+)( classic games)/ }
   ]
 };
 

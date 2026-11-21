@@ -598,6 +598,10 @@
       var el = cells[i];
       el.className = "su-cell" + (given[i] ? " given" : "");
       el.innerHTML = "";
+      var position = "Row " + (Math.floor(i / 9) + 1) + ", column " + (i % 9 + 1);
+      var cellNotes = notes[i] && [...notes[i]].sort().join(", ");
+      var state = value[i] ? (given[i] ? "Given " : "") + value[i] : (cellNotes ? "Notes " + cellNotes : "Blank");
+      el.setAttribute("aria-label", position + ": " + state);
       if (value[i]) {
         el.textContent = value[i];
       } else if (notes[i] && notes[i].size) {

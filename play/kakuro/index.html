@@ -455,18 +455,25 @@
       } else {
         el.type = "button";
         el.className = "kk-cell kk-fill" + (cell.locked ? " is-locked" : "");
-        el.textContent = cell.value != null ? cell.value : "";
+        paintFill(el, cell);
       }
       gridEl.appendChild(el);
     });
     updateCompletion();
   }
 
+  function paintFill(el, cell) {
+    var coords = cell.id.split(":").map(Number);
+    var state = cell.value == null ? "Blank" : (cell.locked ? "Given " : "") + cell.value;
+    el.textContent = cell.value == null ? "" : cell.value;
+    el.setAttribute("aria-label", "Row " + (coords[0] + 1) + ", column " + (coords[1] + 1) + ": " + state);
+  }
+
   function paint() {
     Array.from(gridEl.children).forEach(function (el) {
       var cell = cellById(el.dataset.id);
       if (!cell || cell.kind !== "fill") return;
-      el.textContent = cell.value != null ? cell.value : "";
+      paintFill(el, cell);
       el.classList.toggle("is-selected", el.dataset.id === selectedId);
     });
   }

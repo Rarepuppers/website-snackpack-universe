@@ -75,7 +75,21 @@ const book = {
 if (book.pages.length !== 9 || book.pages.some((p, i) => p.n !== i + 1)) throw new Error(`${ID}: expected pages 1-9, got ${book.pages.map((p) => p.n)}`);
 
 const NOTES = fs.readFileSync(path.join(APP, "constants/zooData/sourceNotes.ts"), "utf8");
+// Verified replacements for source URLs that moved or were retired.
+const sourceUpdates = {
+  "san-diego-zoo-octopus": {
+    title: "Giant Pacific octopus",
+    publisher: "Monterey Bay Aquarium",
+    url: "https://www.montereybayaquarium.org/animals-the-ocean/animals-a-to-z/giant-pacific-octopus",
+  },
+  "usgs-pollinators": {
+    title: "Pollinator conservation",
+    publisher: "U.S. Geological Survey",
+    url: "https://pubs.usgs.gov/publication/fs20233026/full",
+  },
+};
 const sources = book.sources.map((key) => {
+  if (sourceUpdates[key]) return sourceUpdates[key];
   const b = NOTES.slice(NOTES.indexOf(`'${key}': {`));
   const get = (f) => b.match(new RegExp(`${f}: '([^']*)'`))[1];
   return { title: get("title"), publisher: get("publisher"), url: get("url") };
@@ -154,7 +168,7 @@ ${HEADER}<main>
 ${cards}
 </section>
 
-<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(ed.end.q)}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(ed.end.a)}</p></details><p>Facts checked against ${sources.map((s) => `<a class="text-link" href="${s.url}" target="_blank" rel="noopener">${esc(s.publisher)}: ${esc(s.title)}</a>`).join(", ").replace(/, ([^,]*)$/, " and $1")}. SnackPack Zoo World has more animal stories, sixty animals to meet and a sound library.</p><!-- read-next:generated -->
+<section><div class="shell story-finish-card"><span class="eyebrow">The end · Great reading</span><h2>${esc(ed.end.q)}</h2><details class="story-answer"><summary>Show the answer</summary><p>${esc(ed.end.a)}</p></details><p>Facts checked against ${sources.map((s) => `<a class="text-link" href="${s.url}" target="_blank" rel="noopener">${esc(s.publisher)}: ${esc(s.title)}</a>`).join(", ").replace(/, ([^,]*)$/, " and $1")}. SnackPack Zoo World has more animal stories, real animal profiles and a sound library.</p><!-- read-next:generated -->
 <!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-primary" href="${PLAY}" target="_blank" rel="noopener">Get the app on Google Play</a><a class="btn btn-secondary" href="../../apps/snackpack-12-zoo-world/">Explore the app</a><a class="btn btn-secondary" href="./${ed.slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>
 </main>
 <footer class="foot"><div class="shell foot-wrap"><p class="foot-note">Story and illustrations from SnackPack Zoo World.</p><div class="footer-links"><a class="text-link" href="../">Bookshelf</a><a class="text-link" href="../../privacy/snackpack-12-zoo-world/">Privacy</a></div></div></footer>

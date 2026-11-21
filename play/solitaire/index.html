@@ -28,7 +28,10 @@
    365px, so the tableau hung 10px off the right edge. 10.5vw lands at ~41px,
    which is a hair above the 40px floor and fits with room to spare. Desktop is
    unchanged — both still cap at 62px well before that matters. */
-.sol-table { --cw: clamp(40px, 10.5vw, 62px); --ch: calc(var(--cw) * 1.4); --gap: clamp(4px, 1.1vw, 12px); margin: 0 auto; width: fit-content; max-width: 100%; }
+.sol-board-wrap { container-type: inline-size; }
+.sol-table { --preferred-card-width: clamp(40px, 10.5vw, 62px); --gap: clamp(4px, 1.1vw, 12px);
+  --cw: min(var(--preferred-card-width), calc((100cqw - 6 * var(--gap)) / 7));
+  --ch: calc(var(--cw) * 1.4); margin: 0 auto; width: fit-content; max-width: 100%; }
 .sol-row { display: grid; grid-template-columns: repeat(7, var(--cw)); gap: var(--gap); }
 .sol-top { margin-bottom: calc(var(--ch) * 0.28); }
 .sol-slot { width: var(--cw); height: var(--ch); border-radius: calc(var(--cw) * 0.13); }
@@ -239,7 +242,7 @@
           </div>
         </div>
         <p class="game-status" id="sol-status" aria-live="polite">Pick a card, then choose where it should go.</p>
-        <div class="game-board-wrap">
+        <div class="game-board-wrap sol-board-wrap">
           <div class="sol-table" id="sol-table">
             <div class="sol-row sol-top">
               <div class="sol-pile" id="sol-stock" data-pile="stock"></div>
@@ -444,7 +447,7 @@
   var CARD_SIZE_KEY = "sp-cards-large";
   function applyCardSize() {
     var large = localStorage.getItem(CARD_SIZE_KEY) === "1";
-    tableEl.style.setProperty("--cw", large ? "clamp(46px, 13vw, 76px)" : "");
+    tableEl.style.setProperty("--preferred-card-width", large ? "clamp(46px, 13vw, 76px)" : "");
     largeBtn.setAttribute("aria-pressed", String(large));
   }
   largeBtn.addEventListener("click", function () {

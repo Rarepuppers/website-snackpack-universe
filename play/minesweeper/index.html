@@ -419,23 +419,32 @@
   }
 
   function build() {
-    gridEl.style.gridTemplateColumns = "repeat(" + cols + ", 32px)";
+    gridEl.dataset.difficulty = diff;
+    gridEl.style.setProperty("--ms-cols", cols);
+    gridEl.style.setProperty("--ms-cell-size", cols > 20 ? "26px" : "32px");
     gridEl.innerHTML = "";
     cells = [];
-    // Shrink cells for the big expert board so it fits.
-    var size = cols > 20 ? 26 : 32;
-    gridEl.style.gridTemplateColumns = "repeat(" + cols + ", " + size + "px)";
     for (var i = 0; i < rows * cols; i++) {
       revealed[i] = false; flags[i] = false; adj[i] = 0;
       var b = document.createElement("button");
       b.className = "ms-cell";
-      b.style.width = size + "px";
-      b.style.height = size + "px";
       b.type = "button";
       b.dataset.i = i;
       cells.push(b);
+      labelCell(i, "Covered");
       gridEl.appendChild(b);
     }
+  }
+
+  function labelCell(i, state) {
+    var row = Math.floor(i / cols) + 1;
+    var column = i % cols + 1;
+    cells[i].setAttribute("aria-label", "Row " + row + ", column " + column + ": " + state);
+  }
+
+  function labelRevealedCell(i) {
+    var count = adj[i];
+    labelCell(i, count + (count === 1 ? " adjacent mine" : " adjacent mines"));
   }
 
   function idx(r, c) { return r * cols + c; }
@@ -494,6 +503,7 @@
       revealed[cur] = true; revealCount++;
       var el = cells[cur];
       el.classList.add("is-open");
+      labelRevealedCell(cur);
       if (adj[cur] > 0) {
         el.textContent = adj[cur];
         el.dataset.n = adj[cur];
@@ -520,6 +530,7 @@
     flags[i] = !flags[i];
     flagsUsed += flags[i] ? 1 : -1;
     cells[i].classList.toggle("is-flag", flags[i]);
+    labelCell(i, flags[i] ? "Flagged" : "Covered");
     cells[i].textContent = "";
     minesEl.textContent = mineCount - flagsUsed;
     if (resume) resume.changed();
@@ -531,6 +542,7 @@
     for (var i = 0; i < rows * cols; i++) {
       if (mineSet[i]) {
         cells[i].classList.add("is-open", "is-mine");
+        labelCell(i, "Mine");
         if (!flags[i]) cells[i].textContent = "";
       }
     }
@@ -548,6 +560,7 @@
       for (var i = 0; i < rows * cols; i++) {
         if (mineSet[i] && !flags[i]) {
           cells[i].classList.add("is-flag");
+          labelCell(i, "Flagged mine");
           cells[i].textContent = "";
         }
       }
@@ -678,9 +691,11 @@
     cells.forEach(function (cell, i) {
       if (revealed[i]) {
         cell.classList.add("is-open");
+        labelRevealedCell(i);
         if (adj[i] > 0) { cell.textContent = adj[i]; cell.dataset.n = adj[i]; }
       } else if (flags[i]) {
         cell.classList.add("is-flag");
+        labelCell(i, "Flagged");
       }
     });
     minesEl.textContent = mineCount - flagsUsed;

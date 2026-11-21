@@ -583,6 +583,9 @@
       if (cell.isBlack) continue;
       var letEl = node.querySelector(".cw-clet");
       letEl.textContent = userGrid[r][c];
+      var position = "Row " + (r + 1) + ", column " + (c + 1);
+      var clue = cell.number ? ", clue " + cell.number : "";
+      node.setAttribute("aria-label", position + clue + ": " + (userGrid[r][c] || "Blank"));
       node.classList.toggle("is-active", inActiveWord(cell));
       node.classList.toggle("is-selected", r === selR && c === selC);
       node.classList.toggle("is-correct", checkGrid[r][c] === "correct");

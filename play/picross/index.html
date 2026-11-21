@@ -536,13 +536,17 @@
       if (c4 % 5 === 0 && c4 > 0) cell.classList.add("pc-edge-l");
       if (r4 % 5 === 0 && r4 > 0) cell.classList.add("pc-edge-t");
       gridEl.appendChild(cell);
+      paintCell(r4, c4);
     }
   }
 
   function paintCell(r, c) {
     var cell = gridEl.children[r * cols + c];
-    cell.classList.toggle("is-fill", grid[r][c] === 1);
-    cell.classList.toggle("is-cross", grid[r][c] === 2);
+    var mark = grid[r][c];
+    cell.classList.toggle("is-fill", mark === 1);
+    cell.classList.toggle("is-cross", mark === 2);
+    var state = ["Empty", "Filled", "Crossed out"][mark];
+    cell.setAttribute("aria-label", "Row " + (r + 1) + ", column " + (c + 1) + ": " + state);
   }
 
   // ── Undo ──────────────────────────────────────────

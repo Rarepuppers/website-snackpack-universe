@@ -497,7 +497,7 @@ function groupPage(letter) {
 }
 @media (max-width: 900px) {
   .group-hero { grid-template-columns: 1fr; }
-  .group-layout { grid-template-columns: 1fr; }
+  .group-layout { grid-template-columns: minmax(0, 1fr); }
   .group-side { position: static; }
   .team-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cup-ball-art { min-height: 160px; }
