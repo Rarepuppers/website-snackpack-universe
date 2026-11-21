@@ -144,6 +144,248 @@
       "pdf_sha256": "845a3e5c9291e46b150caa088a70cf625788f8e0bc393f37bc712036bcf80dd3"
     },
     {
+      "slug": "bark-b-q-and-the-long-christmas-table",
+      "source_id": "web-christmas-bark-b-q-and-the-long-christmas-table",
+      "source_art": {
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/cover.png": "751ca169150728126841aea0562980f43599a8d889a86ba53e1183dbbe1d4f37",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p01.png": "390e66a6c709dc0357b26b3c5e40ccb9794ed73b9d9f2698c3f3819ecbd59061",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p02.png": "b8ad30206532889d23d0c914201593fc71c183d84914082c822d36aeab77b20b",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p03.png": "421987caddc1e45d2dafbe600904c47c26fdd9b5fea3cb6a42c7068a5b09b3a9",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p04.png": "bdbe7f3ce9277be3eae83b24615605ac1a480f41f7fec3d4c60a9dda74c07502",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p05.png": "d6c591602f60cb8758ba28b79a30cc93ff395d583448cb4b2ad4dc9730f3fee0",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p06.png": "06b91593661b8d00915d95578ec97fae19f04c3537f3a1582896866b6e3ba8a9",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p07.png": "972ff3727e947b0a3c38e45cc21a0dc733eedcd48dfde7c13809e95db4e9b4e8",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p08.png": "ce2e0568b66690be64cde96fd90b62a61d5fc7a3154a6ccb2162df1b8f0b90e1",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p09.png": "ef00608cfa03daaec1d0a4ea6dd6068052354f820b71383878dbcfae060b67fe",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p10.png": "eb4386ea20df1906b5ee0ca980429f4da147170a9bf1e28b730069b162cc04fc",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p11.png": "ca954e720093d74c68b079402bbf501b80260a94d6c6c145d65a1bf4be6f91d2",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p12.png": "8327c296fdf47045e6d44292bfb8963038a787417636167b168ff0d3413e9a12",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p13.png": "78bf9688c2c6e758a19d01a2a9a1ab0efe2e6ca907c1ca0905dc8a3e01fa7697",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p14.png": "1715b87fc9c32b1e0dc323b44a180e1c5d61e08916a9c6d75cbaadc4321ce735",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p15.png": "81960dd71f6eee0113265d14c9716cbc14a254558f76bc962e9242caa9dff0eb",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p16.png": "54e8190fb457d06bc02aca6de690b60f4d0ccd3b1d8a4a087261838f11f30181",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p17.png": "67890bcd810e0c1f118fec469439e72f6baf13605c95dbe57818cacf1d91c631",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p18.png": "4e7a29fbfadcdc9e5eb6e58b0c0658b20a22d492d8736cbd13f3500212cb2bf6",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p19.png": "b6ff82c32387b6e4f00f8487794755a41e3feaa25305d6c580fb6c8b511f1137",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p20.png": "4a6dad4f2b5ffb04444ef7e1054a99062906a438cf8bdf16377c22f4f25d5c41",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p21.png": "6ccb65832057f74db309d24379ad1453464464b9690d56b6859a7e0bb76ffef6",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p22.png": "dbe01abe6b33558914e0f540dee570abc3b336ded581c034447eeb6b55ea3560",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p23.png": "b9776b4d78b3ba895481efc8e16323fcf5d2cc95a33c49665d78d004bae171e9",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p24.png": "002fb7444c98790116a686d7007a40f0c5bad44c11a552eeeaad9ff82495e0a1",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p25.png": "96010e0a0133600c7ce787e43f53c23ac739b9a48edda662230f352cc7071538",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p26.png": "d6f756244222d8ba04e12d31c402732e7f05452864cbb18a696f67e55c28e7d8",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p27.png": "6b2d9719bea8c9f6c3cc2992304e3dfb09864430593cedd47bb8c921679eeb8f",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p28.png": "007b40b89bb537f7cfb471ccd1b85d0f8b8e24a1c2d252ea6dd76c24608d9187",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p29.png": "280082da6a57cba1c06188a32f4eb7a60c01b68fc701975a537a6b1d8c50bd19",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p30.png": "92ed55b65be60d4ddb1a0be8e1ce961b71646fda52b7fbc0edd227e33155989a",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p31.png": "7b1df4a7f5f24b0a3fb98e36fc313a293c7241a297643160623e1a364baef3e1",
+        "../docs/christmas-picture-books-2026/sequels/bark-b-q-and-the-long-christmas-table/p32.png": "4e50df8f82d0186d0ea5282ff67773efefcb7c106dc111a53594aaece2d0f894"
+      },
+      "text": [
+        "On Christmas morning, Bark-B-Q could see the sea between the posts of the picnic shelter. Sunlight danced on the bay, and a breeze stirred the paper stars he had hung along the shelter roof. He carried a stack of plates down the sandy path to the long wooden table. A stripe of shade lay right across it. He could already picture everyone sitting there.",
+        "Bark-B-Q had made seven place cards. He had drawn a lemon for Leo-Lemonade and a tiny watch for Cluck O'Clock. His own card had a little star. It went at the head of the table, in front of his blue chair. From there he could see every plate. If somebody needed more bread, he could be up in a second.",
+        "He clipped a timetable to his board. Drinks at eleven fifty-five. Lunch at twelve. Something sweet at twelve thirty. Then he tucked a pencil behind his ear and walked all the way round the table. Two long benches, one blue chair and seven places. He tapped the back of his chair. \"I'll see you at twelve,\" he told it.",
+        "At the cooking station, away from the path and the tables, Bark-B-Q checked his lunch supplies. He covered the bread, then set out an empty jug and seven cups. When he came back, the shade had slipped from the plates to one of the benches. He slid his card a little towards it.",
+        "Leo-Lemonade came up the path carrying a blue crate. Something clinked inside. \"My family puts lemon peel in the jug first,\" he said. \"Then the ice. If you put the ice in first, it's very hard to give the lemon peel a proper stir.\" Bark-B-Q checked the timetable. Leo was seven minutes early.",
+        "Eggs-Benedict looked over his shoulder. She wore her gold crown, as usual. Today she had tucked a pencil beside one of its butter-yellow points. \"The drinks can wait in the cooler,\" she said. \"Shall I write that down?\" \"There's room right here,\" Bark-B-Q said, and found a space between two very straight lines.",
+        "Panda-Cake arrived with a round tin hugged against her chest. Through the gap under the lid came the smell of orange. \"My aunt taught me to put little bits of candied peel on top,\" she said. \"One piece per slice. The first time I made it, I missed a slice and had to eat it myself.\"",
+        "Bark-B-Q weighted the cloth with a stack of plates. He had just smoothed the other end when a warm gust set a napkin flapping against his paw. Leo held down the bread basket. Panda caught the corner of the cloth. \"Thank you,\" said Bark-B-Q. \"A bit of breeze is nice.\" His blue chair was now in full sun.",
+        "Hen-Berry came through the gate with a dish covered by a red checked cloth. Cluck O'Clock and Coop-Accino each carried a small spoon in a clean teatowel. \"Cucumber salad,\" said Coop, \"with mint from our pot.\" \"Use both spoons,\" said Cluck. \"I tried using one and a slice of cucumber landed on my foot.\"",
+        "Coop tried a place on the bench. To reach her cup she had to lean forward until her feet lifted off the ground. When she sat back again, the cup was just where she had left it. \"I could move the cup,\" she said. \"But then I'd still have to reach the salad.\"",
+        "Hen-Berry tried the other bench. The rail underneath left very little room to turn her feet. \"I'd do better with a chair I can pull out,\" she said. \"Is there one spare?\" Bark-B-Q looked at his blue chair. He could give her that one and stand by the bread basket. He was already reaching for it when Cluck spoke.",
+        "\"Look at the shade,\" said Cluck. The shade that had stretched across the table that morning was now a dark wedge on the ground beside it. Cluck's card, with its little watch, lay in the middle of the hot tabletop. A warm gust ruffled the feathers behind his comb. The napkin flapped over the edge of the table. This time nobody had a free hand to catch it.",
+        "Bark-B-Q tucked the napkin under a plate. If he could move a bench closer to the shade, some of the trouble might go away. He and Leo lifted one end and shuffled it sideways. They lowered the bench and stood back. Cluck sat down. His feet were cool, but his plate was still in the sun. He tried to reach it without getting up. \"I think we've invented a bench for feet,\" he said.",
+        "\"Can we move the table as well?\" Coop asked. Bark-B-Q tried to picture it between the shelter posts. The long table had wide legs and a wobbly foot. Turning it through the narrow opening would take everyone. He looked back at the timetable. Drinks should have started by now. He could hear ice ticking softly against the side of the cooler.",
+        "\"I thought I could fix it before anyone noticed,\" Bark-B-Q said. Coop was still trying to reach her cup. Hen-Berry had found a patch of shade for the salad. Leo was holding the cloth down with both paws. Bark-B-Q took the pencil from behind his ear. \"What would make lunch work for you?\"",
+        "\"A chair I can pull out,\" said Hen-Berry. \"A table where I can reach things,\" said Coop. \"A place to put the cold jug,\" said Leo. \"I've got a folding table in my camp trailer. It's a little shorter than this one. Want to see if it fits?\" Bark-B-Q put his timetable down. \"Yes, please.\"",
+        "Leo came back carrying the table by its handle, with the legs folded flat beneath it. Eggs-Benedict stretched a piece of spare cord between the shelter posts. Coop held one end while Eggs pinched the cord at the other post. They held the cord against the long edge of the table. The cord was a good wingtip longer. The table would fit.",
+        "The table cleared the posts. Leo and Bark-B-Q unfolded the legs and set it down in the shade. It stood steady on the shelter floor with room to walk all the way round. \"Smaller table,\" said Eggs-Benedict. \"Same number of friends.\" Panda brought up the little chairs that had been stacked at the back of the shelter.",
+        "Bark-B-Q started to gather up the place cards, then put them down again. \"Could someone bring these in? I'll check the food.\" \"We've got them,\" said Hen-Berry. She lifted the salad dish while Cluck and Coop collected the cards. Cluck held the two cards marked with a watch and a star together like a pair of tickets.",
+        "This time Coop chose a low chair with a firm cushion and put her cup where she could reach it. Hen-Berry pulled out a chair with no rail in her way. Leo brought over Bark-B-Q's blue chair and kept the passage clear. Bark-B-Q caught himself straightening three plates in a row. Then he passed the rest to Hen-Berry.",
+        "Eggs-Benedict tried putting the bread basket, salad dish and jug between the plates. There was barely room for a spoon. She took the basket off again. \"How about we have it in rounds?\" Panda asked. \"We can leave my tin closed until later.\" \"Salad and bread first,\" said Hen-Berry. \"Then we can make room for whatever's next.\"",
+        "Everybody had a turn with the bread basket. Coop swung the little salad dish round so Cluck could use both spoons. The mint had made tiny green marks on the underside of the red checked cloth. Leo put the jug where Coop could reach the handle. She poured a little lemonade and watched a twist of peel turn over in her cup.",
+        "Bark-B-Q stuck his head round the shelter post. He had been keeping an eye on the food at the cooking station. \"Is it twelve yet?\" \"According to this,\" said Eggs-Benedict, tapping the timetable, \"we're late for drinks and early for cake.\" Cluck opened his pocket watch. \"It's exactly time for another piece of bread.\" Eggs pushed the basket towards him.",
+        "Bark-B-Q brought the warm tray over and set it down on the wooden mat Hen-Berry had brought from the old table. He returned to the cooking station to turn everything off, then carried back the serving tongs. Panda made room for the tray. \"Could you pass that round?\" Bark-B-Q asked. She held up the tongs. \"I was hoping you'd ask.\"",
+        "Panda told Coop about the year her aunt had set the orange cake on a stool to cool. Everyone had walked past it and said how lovely it smelled. By the time they were ready to cut it, her aunt had forgotten where she'd put it. \"What happened?\" Coop asked. \"They found it when someone needed a seat.\"",
+        "Bark-B-Q laughed. Then he looked down and found he was still standing on the outside of the shelter, peering over everyone's shoulders. He could smell the mint and see the bread basket. He'd been looking after lunch for so long that he hadn't had a bite.",
+        "Cluck took the card with the star from beside his own. \"I kept this for you,\" he said. He put it down beside Bark-B-Q's plate. There was a piece of bread on it, with a little pile of cucumber salad and the biggest mint leaf Cluck had found.",
+        "Hen-Berry moved the jug. Leo pulled out the blue chair. Bark-B-Q reached for the tongs, out of habit. Panda already had them. He looked for the timetable. There it was, lying face down on the end of the table. \"Do you need anything?\" he asked. \"Yes,\" said Coop. \"Can you sit a bit closer? I've got something to tell you.\"",
+        "Bark-B-Q sat. The chair creaked in the same familiar way it did in his kitchen. He tucked his feet under the table. Coop told him she could see the sea from her chair. When he leaned a little towards her, he could see it too. A bright strip of water showed between the posts, just below the paper stars.",
+        "Cluck nudged his place card towards the middle of the table. \"My card's been waiting all morning. I think it would like a seat for the cake.\" Coop sent hers after it. Hen-Berry made room by moving the empty basket. One by one the other cards joined them. Bark-B-Q turned his own around so the star faced his friends, then slid it into the little row.",
+        "Panda opened the tin. Everyone looked for the candied peel on their slice. Bark-B-Q found his beneath a crumb and balanced it on the end of a fork. \"I did have a time for cake,\" he said. Coop took a bite. \"You picked a good one.\" She was already looking to see if anyone had left a piece of peel on their plate.",
+        "The paper stars lifted in the breeze. Through the shelter posts Bark-B-Q could see the old table, its bare boards bright in the sun. \"Shall we stay a bit longer?\" asked Leo. Bark-B-Q took his pencil from beside the timetable and set it down next to the little row of cards. Then he asked Coop what else she could see from where she sat."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/bark-b-q-and-the-long-christmas-table/pages/p01.jpg": "d868ab2e0f5b22d81c60ba0e67c162123f770a2a16a1f0919eed085dc96b764a",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p02.jpg": "7e339909652146a142c532c098eaec8dee7c03b78444d6106cf149e0114f3bd7",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p03.jpg": "8ce2c2c9910c3d6f53588f1dc3885868ff4b6e874ec76c7769d74e9d2559d04b",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p04.jpg": "9ecc68b6cdd21b861fceb273e2bd8dc4cd95617351deb1b02a12e780561d0162",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p05.jpg": "d194a4166d16f6c3152f19adde394f6cb223ed5b6c0281b23cd0316f3075b8f5",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p06.jpg": "195eb95d4037ae14845e51126a405aee1eef8ec8be958ee2284ff1a7a6acb05c",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p07.jpg": "d4c64e6ae81951d4affbb90b0dfc363a17c63c290aea7082cccf2476734ed08d",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p08.jpg": "9c80e20f94397f48741f674d179d3473103d1dd5691ea9525f0977e7abebd3c6",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p09.jpg": "5d895a8632dc20931f88b92251fbee0623ad355e5e4688b2b22e8211dd568b2f",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p10.jpg": "9df0a748c47240ce1f3c2bcb46f17678aa6d8a575a93299c182a140122f6ac43",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p11.jpg": "8ce904f09734bed6786efd718430a96428df8fa3069791b7ccb9ae12de85f35c",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p12.jpg": "79b84e763333d100ecd1782c6544ee63a77ac3bd4bab105fefd4a7824f21427b",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p13.jpg": "2c797f4693ee7357ed38bde095a8450b50a4d8e5a83b0d8978cef11f68e2245a",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p14.jpg": "646bd090cc89a7e3cc88b1b333ca6a39352d749095d1752d2f7492eb66255c23",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p15.jpg": "8a425274c7b757369c6901fe9e92d662aed86be7eaf0e3cc26116cef22e1bacd",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p16.jpg": "ee9a5ccfbfe9d1f0456c4fcfdcf10ed39148b83211bdfa25838df8f3557d41e7",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p17.jpg": "b6a916594e5b0e205a16d7134f03523006fccb61ba97b588552769ab9f072d94",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p18.jpg": "27502e45bcf5b1e345346102b2208c672395d7a36b2b14bb629217b940f08883",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p19.jpg": "693b2476206e451f385759e555f985a96b2909e30337b652154be576c07f8dd3",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p20.jpg": "baca4fba9f4cea71ac55009d7302be5004db652e1f772197f2e5913b47aea2c0",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p21.jpg": "5338a0cb59ff66cba09e26a53c1386cd75e85195d652715ae76cba45f7b9fbea",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p22.jpg": "19648b965479fae048d3336243706b2c0d09d6cfbd348d339b3b609a0a00e50c",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p23.jpg": "f5e0a21917c502cb8e673686cb1a231c347cd8fafca78d325375c1cc674471d9",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p24.jpg": "102e676fed8de22f8ae4adadcd8828e7de3933317dae5415ef258b4847aad9fa",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p25.jpg": "b304d66a907058a446eba5a3ad388ae17f0f8656461d04b13ae1bed51d041c35",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p26.jpg": "2a8497ad1599d4894645dcd98d0bf8cddc5b2f981ef15dfb54652664694ec4c8",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p27.jpg": "2678b2b6707d1bd60c8efa3504b84400da6977ab13cc1f8521d000b736986851",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p28.jpg": "5db280bb7dada851df7902eb26312e61f4244778d7cfdca75c6a82b7f6932a61",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p29.jpg": "10b751f7ebd0f77da839e045cd06fc03c0fe5a926ce0b26e85aad39e56c110cd",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p30.jpg": "123a42f7225568c67f7e0fddaffa828cf035b4b7fe9543c66da6e150208296fa",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p31.jpg": "d2d3336b7d9bf78f0013fb3dde78c321f5757d6b9caaf1b3fb437e151020b700",
+        "read/bark-b-q-and-the-long-christmas-table/pages/p32.jpg": "18268e8232b225be0b59ce7167c6b98de497f032969f8b6c73e9cd73c777247d"
+      },
+      "pdf": "read/bark-b-q-and-the-long-christmas-table/bark-b-q-and-the-long-christmas-table.pdf",
+      "pdf_sha256": "8b6517184187021794cfadddf5f4e61e69865194d2e232ed55f4510cbe76b9f8",
+      "cover_jpeg_sha256": "3f21888692894c429416e5e92e59704a16a6ea2ab264b1045fcd237beb399d36"
+    },
+    {
       "slug": "biscuit-bouncers-parcel-parade",
       "source_id": "biscuit-bouncer-parcel-parade",
       "source_art": {
