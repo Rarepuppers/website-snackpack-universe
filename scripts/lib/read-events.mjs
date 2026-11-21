@@ -43,7 +43,7 @@ export const READ_EVENTS = [
       { when: "Christmas morning", slug: "the-last-parcel-under-the-tree" },
     ],
     summer: released([
-      { when: "Christmas lunch", slug: "bark-b-q-and-the-long-christmas-table", added: "2026-12-04", cast: [
+      { when: "Christmas lunch", slug: "bark-b-q-and-the-long-christmas-table", added: "2026-11-21", cast: [
         ["bark-b-q", "Bark-B-Q"], ["leo-lemonade", "Leo-Lemonade"], ["eggs-benedict", "Eggs-Benedict"],
         ["panda-cake", "Panda-Cake"], ["hen-berry", "Hen-Berry"], ["cluck-oclock", "Cluck O’Clock"],
         ["coop-accino", "Coop-Accino"],
