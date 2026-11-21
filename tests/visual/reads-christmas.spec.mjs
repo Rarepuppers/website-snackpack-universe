@@ -135,9 +135,9 @@ test('Summer Christmas discovery reflects the released web originals',async({pag
    await expect(page).toHaveURL(/#summer-christmas$/);
    await expect(group.getByRole('heading',{level:3})).toHaveText(summerBooks.map(({title})=>title));
    for(const book of summerBooks){
-     const entry=group.locator('li').filter({has:group.getByRole('heading',{name:book.title,exact:true})});
+     const entry=group.locator('li').filter({has:page.getByRole('heading',{name:book.title,exact:true})});
      const pdfLink=entry.getByRole('link',{name:'PDF',exact:true});
-     const href=reader(book).slice(0,-1)+`/${book.slug}.pdf`;
+     const href=`${reader(book)}${book.slug}.pdf`;
      await expect(pdfLink).toHaveAttribute('href',`../../${book.slug}/${book.slug}.pdf`);
      const response=await page.request.get(href);
      expect(response.ok()).toBe(true);
@@ -231,6 +231,7 @@ for(const book of summerBooks){
    await expect(page.locator('#page-2')).toBeVisible();
    await turner.getByRole('button',{name:'Back',exact:true}).click();
    await expect(page.locator('#page-1')).toBeVisible();
+   await page.keyboard.press('Escape');
    await page.goto(`${reader(book)}#page-${book.pages}`);
    await mode.click();
    const last=page.locator(`#page-${book.pages} picture img`);

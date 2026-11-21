@@ -51,7 +51,11 @@ python3 scripts/import-christmas-books.py <absolute-source-directory> --book seq
 node scripts/build-read-responsive.mjs
 node scripts/build-read-shelf.mjs
 node scripts/build-read-events.mjs
+python3 scripts/build-read-social-cards.py --slug=<slug>
+node scripts/build-breadcrumbs.mjs
+node scripts/build-read-shelf.mjs
+node scripts/build-sitemap.mjs
 node scripts/check-christmas-publication.mjs --write-evidence --source-root=<absolute-source-directory> --book=<slug>
 ```
 
-Run the standard social-card, breadcrumb, and sitemap builders. The Summer Christmas section is derived from the released titles in the web-original registry. The six woodland books keep their existing reading order.
+The second shelf build refreshes the offline manifest after the social-card and breadcrumb builders change reader HTML. The Summer Christmas section is derived from the released titles in the web-original registry. The six woodland books keep their existing reading order.

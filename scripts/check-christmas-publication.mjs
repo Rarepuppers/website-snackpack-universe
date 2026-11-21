@@ -51,11 +51,12 @@ for(const [slug,manifest] of selected){
   page:number,prompt:norm(q.prompt),answer:norm(String(q.answer)),choices:q.choices.map(c=>norm(String(c))),explanation:norm(q.explanation),
  }]:[]);
  assert.deepEqual(questions,expectedQuestions,`${slug}: published counting questions differ`);
- const coverAlt=html.match(/<section class="story-title-section">[\s\S]*?<picture>[\s\S]*?<img [^>]*alt="([^"]+)"/)?.[1];
- assert.equal(norm(coverAlt ?? ''),norm(book.cover.alt),`${slug}: published cover alt differs`);
+ const cover=html.match(/<section class="story-title-section">[\s\S]*?<picture>[\s\S]*?<img src="\.\/([^"]+)"[^>]*alt="([^"]+)"/);
+ assert.equal(norm(cover?.[2] ?? ''),norm(book.cover.alt),`${slug}: published cover alt differs`);
  const assets=[book.cover,...book.pages.map(p=>p.art)];
  for(const art of assets){
   assert.equal(art.status,'accepted');
+  if(book.reviewedPrintableSha256) assert.deepEqual(art.derivatives.map(d=>d.width).sort((a,b)=>a-b),[480,800,art.width],`${slug}: missing reviewed WebP width`);
   for(const d of art.derivatives) assert.equal(hash(path.join(root,'read',slug,'pages',d.path)),d.sha256,`${slug}: reviewed WebP differs`);
   if(source) assert.equal(hash(path.join(source,book.sourceFolder ?? book.id,art.master)),art.sha256,`${slug}: reviewed master differs`);
  }
@@ -64,11 +65,17 @@ for(const [slug,manifest] of selected){
  const pdf=`read/${slug}/${slug}.pdf`;
  if(book.reviewedPrintableSha256 || (book.event && book.event !== 'christmas')) assert(fs.statSync(path.join(root,pdf)).size < 10_000_000,`${slug}: PDF exceeds 10 MB`);
  const record={slug,source_id:owner.id,source_art:Object.fromEntries(owner.art.map((rel,i)=>['../'+rel,assets[i].sha256])),text,teaching:owner.pages.map(()=>({sequence:null,observation:null})),expected:[],quizzes:questions,art,pdf,pdf_sha256:hash(path.join(root,pdf))};
- if(book.reviewedPrintableSha256) assert.equal(record.pdf_sha256,book.reviewedPrintableSha256,`${slug}: reviewed PDF differs`);
+ if(book.reviewedPrintableSha256) {
+  assert.equal(record.pdf_sha256,book.reviewedPrintableSha256,`${slug}: reviewed PDF differs`);
+  assert.equal(cover[1],'pages/cover.jpg',`${slug}: cover JPEG fallback missing`);
+  record.cover_jpeg_sha256=hash(path.join(root,'read',slug,cover[1]));
+ }
+ if((source && book.reviewedPrintableSha256) || (write && book.event && book.event !== 'christmas')){
+  const localPdf=path.join(source,book.sourceFolder ?? book.id,`${slug}.pdf`);
+  assert.equal(record.pdf_sha256,hash(localPdf),`${slug}: reviewed source PDF differs`);
+ }
  const old=evidence.books.find(b=>b.slug===slug);
  if(write){
-  const localPdf=path.join(source,book.sourceFolder ?? book.id,`${slug}.pdf`);
-  if(book.reviewedPrintableSha256 || (book.event && book.event !== 'christmas')) assert.equal(record.pdf_sha256,hash(localPdf),`${slug}: reviewed PDF differs`);
   if(old)evidence.books[evidence.books.indexOf(old)]=record;else evidence.books.push(record);}
  else assert.deepEqual(old,record,`${slug}: publication differs from reviewed evidence`);
 }
