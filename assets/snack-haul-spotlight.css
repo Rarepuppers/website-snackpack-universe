@@ -1,0 +1,43 @@
+.snack-haul-spotlight {
+  padding-block: 0 clamp(20px, 3.5vw, 42px);
+}
+
+.snack-haul-spotlight-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.14fr);
+  align-items: center;
+  gap: clamp(16px, 3vw, 36px);
+  padding: clamp(16px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface-strong), var(--accent-soft));
+}
+
+.snack-haul-spotlight h2 {
+  margin: 6px 0 8px;
+  font: 700 clamp(1.85rem, 4vw, 3rem)/1.08 var(--serif);
+  color: var(--ink);
+}
+
+.snack-haul-spotlight-copy > p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 39ch;
+}
+
+.snack-haul-spotlight .stack-inline {
+  margin-top: 16px;
+}
+
+.snack-haul-spotlight img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 700px) {
+  .snack-haul-spotlight-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
