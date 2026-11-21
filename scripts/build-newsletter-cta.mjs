@@ -43,11 +43,12 @@ const ACTION =
 const releaseAlerts = {
   "snack-haul": {
     name: "Snack Haul",
+    privacy: "/privacy/snack-haul/#launch-alerts",
     form: "https://c8e915bf.sibforms.com/serve/MUIFAOu-KUA_U069pC1vk1KQq3yCfcIysm_IcXvD9ngdbahu70Q3W9K2izlb7f-eSPfsJPoWMAMURGmi2tQejmS_hNMfx2CIVrN6aje7CM50Rbvi0uAO3Jz3B7tzADnDE1p_ADFMugVIWXLjkE2ulpWos9EAnBVJJ2DCJUzeUh_rm0xb_ttHTMNzEgB5Bj6Iq8T05fme8ctxhj3cdw==",
   },
 };
 
-function releaseBlock({name, form}) {
+function releaseBlock({name, form, privacy}) {
   return `${OPEN}
   <section>
     <div class="shell">
@@ -56,7 +57,7 @@ function releaseBlock({name, form}) {
         <p class="section-copy">For adults. Sign up for one email when ${name} is available on Google Play. Brevo will ask you to confirm your address first.</p>
         <div class="stack-inline">
           <a class="btn btn-primary" href="${form}">Sign up for the launch email</a>
-          <a class="text-link" href="/privacy/">Privacy policy</a>
+          <a class="text-link" href="${privacy}">Privacy policy</a>
         </div>
       </div>
     </div>
