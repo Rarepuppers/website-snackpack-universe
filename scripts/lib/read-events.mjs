@@ -42,6 +42,16 @@ export const READ_EVENTS = [
       { when: "Christmas Eve", slug: "one-more-story-before-santa" },
       { when: "Christmas morning", slug: "the-last-parcel-under-the-tree" },
     ],
+    summer: released([
+      { when: "Christmas lunch", slug: "bark-b-q-and-the-long-christmas-table", added: "2026-11-21", cast: [
+        ["bark-b-q", "Bark-B-Q"], ["leo-lemonade", "Leo-Lemonade"], ["eggs-benedict", "Eggs-Benedict"],
+        ["panda-cake", "Panda-Cake"], ["hen-berry", "Hen-Berry"], ["cluck-oclock", "Cluck O’Clock"],
+        ["coop-accino", "Coop-Accino"],
+      ] },
+      { when: "Summer market", slug: "foxy-lox-and-the-postcard-present", added: "2026-12-11", cast: [
+        ["foxy-lox", "Foxy-Lox"], ["quill-berry", "Quill-Berry"], ["french-toast", "French-Toast"],
+      ] },
+    ]),
     alsoGood: ["sub-zero-and-the-snowflake-post", "sub-zeros-magic-e-lantern", "nutmegs-four-seasons"],
     extras: [{ href: "/winter/", label: "Winter in the Woods: two short winter stories and two winter games" }],
     // Read-alouds that "Read together tonight" rotates through, in order.
@@ -174,25 +184,30 @@ export function eventDates(event, from = FIRST_YEAR, to = LAST_YEAR) {
   return out.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export const eventBooks = (event) => event.timeline.map((t) => t.slug);
+export const eventEntries = (event) => [...event.timeline, ...(event.summer ?? [])];
+export const eventBooks = (event) => eventEntries(event).map(({slug}) => slug);
 export const eventForBook = (slug) => READ_EVENTS.find((e) => eventBooks(e).includes(slug)) ?? null;
-export const publishedEvents = () => READ_EVENTS.filter((e) => e.timeline.length);
+export const publishedEvents = () => READ_EVENTS.filter((e) => eventBooks(e).length);
 
 export const eventIconPath = (event) => `/read/events/icons/${event.icon}.svg`;
 export const eventIcon = (event) => `<img class="read-event-icon" src="${eventIconPath(event)}" alt="" aria-hidden="true" width="20" height="20">`;
 
 export function releasedEventBooks() {
   const releaseDates = { thanksgiving: "2026-11-20", "new-year": "2026-11-20" };
-  const releases = Object.keys(releaseDates).map(id => READ_EVENTS.find(event => event.id === id));
-  return releases.flatMap(event => event.timeline.map(({ slug }) => {
-    const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
-    const label = slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
-    const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
-    return {
-      slug, group: event.id, seasonalRelease: true, age: book.ageRange.split("–").map(Number),
-      readingLevel: book.readingLevel, added: releaseDates[event.id], title: book.title,
-      eyebrow: `${label} · ${format} · ${book.storyPageCount} pages`, blurb: book.blurb,
-      cover: "pages/cover", ext: "jpg", alt: book.cover.alt, w: book.cover.width, h: book.cover.height,
-    };
-  }));
+  const events = [...Object.keys(releaseDates), "christmas"].map(id => READ_EVENTS.find(event => event.id === id));
+  return events.flatMap(event => {
+    const entries = event.id === "christmas" ? event.summer : event.timeline;
+    return entries.map(({ slug, added, cast }) => {
+      const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
+      const isSummer = event.id === "christmas";
+      const label = isSummer ? "Summer Christmas" : slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
+      const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
+      return {
+        slug, group: isSummer ? "summer-christmas" : event.id, seasonalRelease: true, age: book.ageRange.split("–").map(Number),
+        readingLevel: book.readingLevel, cast, added: added ?? releaseDates[event.id], title: book.title,
+        eyebrow: `${label} · ${format} · ${book.storyPageCount} pages`, blurb: book.blurb,
+        cover: "pages/cover", ext: "jpg", alt: book.cover.alt, w: book.cover.width, h: book.cover.height,
+      };
+    });
+  });
 }

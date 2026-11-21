@@ -1,6 +1,6 @@
 """Import reviewed web-original event books, with the original Christmas defaults."""
 from pathlib import Path
-import argparse, json, html, re, shutil, subprocess
+import argparse, hashlib, json, html, re, shutil, subprocess
 ROOT=Path(__file__).resolve().parent.parent
 EVENTS = {
     'thanksgiving': 'Thanksgiving',
@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source_root', type=Path)
 parser.add_argument('--book', nargs=2, metavar=('SOURCE_FOLDER', 'WEB_SLUG'),
                     help='Import just this reviewed book, preserving other registry entries.')
+parser.add_argument('--use-reviewed-printable', action='store_true',
+                    help='Install the reviewed PDF from the source folder.')
 args = parser.parse_args()
 SOURCE=args.source_root.resolve()
 BOOKS={'nutmeg-tree':'nutmeg-and-the-tree-that-wouldnt-come','vincent-shadow-show':'vincent-van-mouse-and-the-christmas-shadow-show'}
@@ -63,8 +65,10 @@ for source,slug in selected:
     if event != 'christmas':
         if not source_folder.startswith(event + '/'):
             parser.error('Use docs/reads-events-bookshelf as the source root for event books')
-        if not (src / f'{slug}.pdf').is_file():
-            parser.error('A reviewed book PDF is required')
+    install_printable = event != 'christmas' or args.use_reviewed_printable
+    printable = src / f'{slug}.pdf'
+    if install_printable and not printable.is_file():
+        parser.error('A reviewed book PDF is required')
     page_count = data['storyPageCount']
     if [p['number'] for p in data['pages']] != list(range(1, page_count + 1)):
         parser.error('Manifest page order or count is invalid')
@@ -76,6 +80,8 @@ for source,slug in selected:
     stored=ROOT/'data/web-originals'/slug; stored.mkdir(parents=True,exist_ok=True)
     shutil.copy2(src/'manuscript.md',stored/'manuscript.md')
     data['publicationStatus']='published';data['webSlug']=slug
+    if args.use_reviewed_printable:
+        data['reviewedPrintableSha256'] = hashlib.sha256(printable.read_bytes()).hexdigest()
     (stored/'manifest.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     registry[slug]=f'data/web-originals/{slug}/manifest.json'
     assets = [('cover', data['cover']), *((f'p{p["number"]:02}', p['art']) for p in data['pages'])]
@@ -84,14 +90,14 @@ for source,slug in selected:
         jpeg = str(folder / 'pages' / f'{key}.jpg')
         if shutil.which('magick'):
             subprocess.run(['magick', raster, '-strip', '-quality', '88', jpeg], check=True)
-        elif event != 'christmas':
+        elif event != 'christmas' or not Path(jpeg).is_file():
+            if not shutil.which('sips'):
+                parser.error('ImageMagick or macOS sips is required to create missing JPEGs')
             subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '88', raster, '--out', jpeg],
                            check=True, stdout=subprocess.DEVNULL)
-        elif not Path(jpeg).is_file():
-            parser.error('ImageMagick is required to recreate missing Christmas JPEGs')
     # Install only reviewed printables.
-    if event != 'christmas':
-        shutil.copy2(src / f'{slug}.pdf', folder / f'{slug}.pdf')
+    if install_printable:
+        shutil.copy2(printable, folder / printable.name)
     for _, art in assets:
         for d in art['derivatives']: shutil.copy2(src/d['path'],folder/'pages'/d['path'])
     def picture(key,art,lazy=False):

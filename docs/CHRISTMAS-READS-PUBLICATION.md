@@ -35,3 +35,27 @@ node scripts/build-read-events.mjs
 ```
 
 Open both PDFs and check the single-page layout, clickable book links and bottom-right website address at actual size. Run the Christmas browser spec to check the midnight transition and both downloads.
+
+## Summer Christmas books
+
+Package only after each painting has been accepted. The companion packager accepts the Christmas event flag and adds the clickable website footer to the cover and story pages. Keep the title's source README intact:
+
+```sh
+python3 docs/reads-events-bookshelf/package-event-book.py <absolute-book-folder> --event christmas --keep-readme --card-script <absolute-website-folder>/scripts/build-read-social-cards.py
+```
+
+Import under the Christmas source directory and copy its reviewed PDF directly:
+
+```sh
+python3 scripts/import-christmas-books.py <absolute-source-directory> --book sequels/<slug> <slug> --use-reviewed-printable
+node scripts/build-read-responsive.mjs
+node scripts/build-read-shelf.mjs
+node scripts/build-read-events.mjs
+python3 scripts/build-read-social-cards.py --slug=<slug>
+node scripts/build-breadcrumbs.mjs
+node scripts/build-read-shelf.mjs
+node scripts/build-sitemap.mjs
+node scripts/check-christmas-publication.mjs --write-evidence --source-root=<absolute-source-directory> --book=<slug>
+```
+
+The second shelf build refreshes the offline manifest after the social-card and breadcrumb builders change reader HTML. The Summer Christmas section is derived from the released titles in the web-original registry. The six woodland books keep their existing reading order.

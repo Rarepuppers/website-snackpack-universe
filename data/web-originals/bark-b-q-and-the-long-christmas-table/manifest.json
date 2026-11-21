@@ -1,0 +1,1334 @@
+{
+  "schemaVersion": 1,
+  "id": "bark-b-q-and-the-long-christmas-table",
+  "title": "Bark-B-Q and the Long Christmas Table",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "8–11",
+  "readingLevel": "Confident readers",
+  "readingMode": "confident-readers",
+  "publicationStatus": "published",
+  "storyPageCount": 32,
+  "wordCount": 1870,
+  "blurb": "Bark-B-Q has a seaside Christmas lunch planned down to the minute. By the time everyone arrives, the shade has slipped away and the benches don’t work for everyone. A folding table might save lunch, if the host can give his friends enough room to help.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On Christmas morning, Bark-B-Q could see the sea between the posts of the picnic shelter. Sunlight danced on the bay, and a breeze stirred the paper stars he had hung along the shelter roof.\n\nHe carried a stack of plates down the sandy path to the long wooden table. A stripe of shade lay right across it. He could already picture everyone sitting there.",
+      "illustrationDirection": "High establishing view inland toward the bay. Detached table and benches on the left, timber shelter and walkable gap on the right, cook counter in the distance. Bark crosses with plates. Early shelter shadow brushes the far end of the table.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "390e66a6c709dc0357b26b3c5e40ccb9794ed73b9d9f2698c3f3819ecbd59061",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 335204,
+            "sha256": "a1771ed13b058a98196afb4e25591b18e09ad9e85f4482e843bde8a1e8ca08b4"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 200094,
+            "sha256": "e54cc9bd78c2c9889639673629bbf691dbd5f6d1384d21239de0adcbcdaacf8c"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85380,
+            "sha256": "c5b8c1d44c6330c5f0e311146782533d33f8742ca4143500f9c6e967f8396766"
+          }
+        ],
+        "review": "The table, path, cooking counter and empty shelter establish the campsite.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q carries plates across the sand towards a long wooden table by the bay."
+      },
+      "alt": "Bark-B-Q carries plates across the sand towards a long wooden table by the bay."
+    },
+    {
+      "number": 2,
+      "text": "Bark-B-Q had made seven place cards. He had drawn a lemon for Leo-Lemonade and a tiny watch for Cluck O’Clock. His own card had a little star.\n\nIt went at the head of the table, in front of his blue chair. From there he could see every plate. If somebody needed more bread, he could be up in a second.",
+      "illustrationDirection": "Tight tabletop with cream cards. Put the star card in Bark’s paw above his blue chair and a lemon and watch card further down.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b8ad30206532889d23d0c914201593fc71c183d84914082c822d36aeab77b20b",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 302700,
+            "sha256": "1fc2b3970e7cffe555298dd295083d090e4b0dd35d35db7977cfe7117eaa69f2"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 187506,
+            "sha256": "2db3a22b7fa3b5050255478aca6607cc1204ff0a6b377f1b300175bdf3f47125"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 81416,
+            "sha256": "1c9c145f41ca0a83d885468afdb4293a77550612e1ff99d7aca5c513f1853417"
+          }
+        ],
+        "review": "The star, lemon and watch motifs establish the place cards.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q holds up his star card beside the lemon and watch cards."
+      },
+      "alt": "Bark-B-Q holds up his star card beside the lemon and watch cards."
+    },
+    {
+      "number": 3,
+      "text": "He clipped a timetable to his board. Drinks at eleven fifty-five. Lunch at twelve. Something sweet at twelve thirty.\n\nThen he tucked a pencil behind his ear and walked all the way round the table. Two long benches, one blue chair and seven places. He tapped the back of his chair.\n\n“I’ll see you at twelve,” he told it.",
+      "illustrationDirection": "Low from the side, Bark pats the chair back. Two benches and clipboard with pale ruled marks.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "421987caddc1e45d2dafbe600904c47c26fdd9b5fea3cb6a42c7068a5b09b3a9",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 350476,
+            "sha256": "ac7813b1291db3dbf0abbfd949c437345a0bc025133d214d6505c8a4589efe2f"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 210652,
+            "sha256": "1d7993c44ff5c7783d5a92140b6c2268e6735d0bb6f55698652996d9403e1835"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 89998,
+            "sha256": "71e71bdc3fe3dcff590365be88edefb24be4dc589e9b756d8b50e51abdb1420d"
+          }
+        ],
+        "review": "The clipboard and two benches establish the planned seating.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q checks his timetable beside a blue chair and two wooden benches."
+      },
+      "alt": "Bark-B-Q checks his timetable beside a blue chair and two wooden benches."
+    },
+    {
+      "number": 4,
+      "text": "At the cooking station, away from the path and the tables, Bark-B-Q checked his lunch supplies. He covered the bread, then set out an empty jug and seven cups.\n\nWhen he came back, the shade had slipped from the plates to one of the benches. He slid his card a little towards it.",
+      "illustrationDirection": "View out from the cook counter towards the table, where the shade now touches a bench. Covered bread and empty jug ready.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "bdbe7f3ce9277be3eae83b24615605ac1a480f41f7fec3d4c60a9dda74c07502",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 353240,
+            "sha256": "fe6cef776365816576cd7d43e93052692ae4d4ee42125216ab8d9953f035d23a"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 214894,
+            "sha256": "2c90f66523f1c83ba094ca06439ae570a3aa97e125dc0bbb2cee9961fca31f50"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93146,
+            "sha256": "43edb775936388c79b42286a04cb082a9841d73a72204d1bf88c9c37bf231888"
+          }
+        ],
+        "review": "The wide view shows the shelter's shadow slipping away from the table.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q checks the cooking station while the shelter casts a shadow beside the table."
+      },
+      "alt": "Bark-B-Q checks the cooking station while the shelter casts a shadow beside the table."
+    },
+    {
+      "number": 5,
+      "text": "Leo-Lemonade came up the path carrying a blue crate. Something clinked inside.\n\n“My family puts lemon peel in the jug first,” he said. “Then the ice. If you put the ice in first, it’s very hard to give the lemon peel a proper stir.”\n\nBark-B-Q checked the timetable. Leo was seven minutes early.",
+      "illustrationDirection": "Leo emerges on the inland path with the blue crate, Bark turns with clipboard. No drinks poured.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d6c591602f60cb8758ba28b79a30cc93ff395d583448cb4b2ad4dc9730f3fee0",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 333116,
+            "sha256": "8ed32396d4335caa6c2d72325939d2414dde7bd3deb725150b89e5f280df38c0"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 205076,
+            "sha256": "d8673eb17fe00ed0abc39ee50e75ffe6998ff0f100141fc90eb0726ee55365bf"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91076,
+            "sha256": "b8ee776da9a6f63433be7c66fd019d794e600cefdc18b78eb4dc453751f3e43b"
+          }
+        ],
+        "review": "Leo's crate arrives along the sandy gap beside the original table.",
+        "generator": "built-in imagegen",
+        "alt": "Leo-Lemonade carries a blue crate to the picnic table, where Bark-B-Q waits."
+      },
+      "alt": "Leo-Lemonade carries a blue crate to the picnic table, where Bark-B-Q waits."
+    },
+    {
+      "number": 6,
+      "text": "Eggs-Benedict looked over his shoulder. She wore her gold crown, as usual. Today she had tucked a pencil beside one of its butter-yellow points.\n\n“The drinks can wait in the cooler,” she said. “Shall I write that down?”\n\n“There’s room right here,” Bark-B-Q said, and found a space between two very straight lines.",
+      "illustrationDirection": "Two-shot over Bark’s shoulder. Eggs points out a spot on the timetable, cooler beyond.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "06b91593661b8d00915d95578ec97fae19f04c3537f3a1582896866b6e3ba8a9",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 344710,
+            "sha256": "40486bd9d56239caa58c252bbcbd5085144d666da511fd6ca7adcce1aed228cf"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 211132,
+            "sha256": "3b2e60da7610d30a1298ef7b363a1fb22554e86b48e3c0b0fb5144bcec1597ed"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92548,
+            "sha256": "b0bf0fa3292414c45ba74a7ff33b399e0c419c61d58109744904b70f8b6747da"
+          }
+        ],
+        "review": "Eggs is identifiable by her crown and the clipboard carries forward.",
+        "generator": "built-in imagegen",
+        "alt": "Crown-wearing Eggs-Benedict checks the timetable with Bark-B-Q."
+      },
+      "alt": "Crown-wearing Eggs-Benedict checks the timetable with Bark-B-Q."
+    },
+    {
+      "number": 7,
+      "text": "Panda-Cake arrived with a round tin hugged against her chest. Through the gap under the lid came the smell of orange.\n\n“My aunt taught me to put little bits of candied peel on top,” she said. “One piece per slice. The first time I made it, I missed a slice and had to eat it myself.”",
+      "illustrationDirection": "Panda cradles the round cake tin with a narrow lid gap. A small hint of the orange cake inside.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "972ff3727e947b0a3c38e45cc21a0dc733eedcd48dfde7c13809e95db4e9b4e8",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 327188,
+            "sha256": "105e45d53226cd7ecb5db2b044adb03ee4675669056a49814ba5a40c84a23703"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 205474,
+            "sha256": "c6dbea50a3fc6b384be9ff8f1d5e37255624c933ac96ab563e67a8a656d1ef61"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91284,
+            "sha256": "f82a239ce17609334d88871196bad1732c9007c26a24b40324bd75c2283a991e"
+          }
+        ],
+        "review": "Panda carries the tin off the shelter deck, with a narrow lid gap and the original timber table on sand.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake cradles a teal tin with a glimpse of orange cake beneath the lid."
+      },
+      "alt": "Panda-Cake cradles a teal tin with a glimpse of orange cake beneath the lid."
+    },
+    {
+      "number": 8,
+      "text": "Bark-B-Q weighted the cloth with a stack of plates. He had just smoothed the other end when a warm gust set a napkin flapping against his paw.\n\nLeo held down the bread basket. Panda caught the corner of the cloth.\n\n“Thank you,” said Bark-B-Q. “A bit of breeze is nice.”\n\nHis blue chair was now in full sun.",
+      "illustrationDirection": "Action at tabletop height. Panda catches the white cloth and Leo anchors the bread basket. Show the blue chair in full sun.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ce2e0568b66690be64cde96fd90b62a61d5fc7a3154a6ccb2162df1b8f0b90e1",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 333618,
+            "sha256": "9c01548d0def953b6e02e69b612434f835ed62127f9a69e8ae81351c6bc11af1"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 204430,
+            "sha256": "923348788166c1abf320b56b92dd1fc0bdc137400041f04e28e6cabe5f2abcd8"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91108,
+            "sha256": "8ff22c12d009723def6dc0b2199d20f5270bb4d1650993f1eebf20e29c444b1b"
+          }
+        ],
+        "review": "The raised napkin and taut cloth make the gust visible.",
+        "generator": "built-in imagegen",
+        "alt": "A napkin flies up as Leo-Lemonade and Panda-Cake hold down the white cloth."
+      },
+      "alt": "A napkin flies up as Leo-Lemonade and Panda-Cake hold down the white cloth."
+    },
+    {
+      "number": 9,
+      "text": "Hen-Berry came through the gate with a dish covered by a red checked cloth. Cluck O’Clock and Coop-Accino each carried a small spoon in a clean teatowel.\n\n“Cucumber salad,” said Coop, “with mint from our pot.”\n\n“Use both spoons,” said Cluck. “I tried using one and a slice of cucumber landed on my foot.”",
+      "illustrationDirection": "Hen-Berry and the two distinct twins enter by the rope gate, dish in its cover and one spoon wrapped in cloth per child.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ef00608cfa03daaec1d0a4ea6dd6068052354f820b71383878dbcfae060b67fe",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 381650,
+            "sha256": "b21e722c0f02444c07f90a9c004387b1d5b9e0959c472e1c30e25051cc2d2707"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 232136,
+            "sha256": "5f84747776172e63c68b7e9fa3f23b4d2a51a9aca12ad03f5273f2bed21d1475"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 102562,
+            "sha256": "57542ba7c1631b347c897e0962cf465cc655e5c81842e1f0b5dfafb3d169324b"
+          }
+        ],
+        "review": "Hen-Berry and both distinct twins enter on sand with the covered dish and one wrapped spoon apiece.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry carries a red-checked dish through the rope gate, with a spoon in each twin’s wings."
+      },
+      "alt": "Hen-Berry carries a red-checked dish through the rope gate, with a spoon in each twin’s wings."
+    },
+    {
+      "number": 10,
+      "text": "Coop tried a place on the bench. To reach her cup she had to lean forward until her feet lifted off the ground. When she sat back again, the cup was just where she had left it.\n\n“I could move the cup,” she said. “But then I’d still have to reach the salad.”",
+      "illustrationDirection": "Side profile makes the reach legible. Coop leans with both feet off the ground, cup still safely set flat on the table.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "eb4386ea20df1906b5ee0ca980429f4da147170a9bf1e28b730069b162cc04fc",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 348904,
+            "sha256": "17429860bc4d6671a5303983d8b12a9ddcd3d69be7c138c633436a6ab76cf71d"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219686,
+            "sha256": "3ffa663f5c80b845ffe001857ed50ea7fb06191879886de0c3030a95120d1dcc"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100988,
+            "sha256": "36363170261bbdf70a69b40ba88a362ce3838a950897ad88ec2dcfe67e054237"
+          }
+        ],
+        "review": "Coop’s feet dangle from the timber bench and her outstretched wing falls short of the cup.",
+        "generator": "built-in imagegen",
+        "alt": "Coop-Accino leans off the wooden bench towards a cream cup just out of reach."
+      },
+      "alt": "Coop-Accino leans off the wooden bench towards a cream cup just out of reach."
+    },
+    {
+      "number": 11,
+      "text": "Hen-Berry tried the other bench. The rail underneath left very little room to turn her feet.\n\n“I’d do better with a chair I can pull out,” she said. “Is there one spare?”\n\nBark-B-Q looked at his blue chair. He could give her that one and stand by the bread basket. He was already reaching for it when Cluck spoke.",
+      "illustrationDirection": "Hen-Berry is seated sideways with a clear view of the bench rail; Bark’s paw reaches towards the back of the blue chair.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ca954e720093d74c68b079402bbf501b80260a94d6c6c145d65a1bf4be6f91d2",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 345422,
+            "sha256": "25545288457cb31448d2d8620ca60a76ee5bbf1397512ef4ddd8e2775366fa81"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 207524,
+            "sha256": "8e6d844dd55e20722d79856ee62956a17090d54137acd312d40987e5281c0413"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 90538,
+            "sha256": "e45d8098d2b2e009d3d236ad04844f56365e8fe1c48d94d4f460307494e4d40c"
+          }
+        ],
+        "review": "Hen-Berry tries the low wooden bench while Bark puts a paw on the blue chair.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry turns on the bench as Bark-B-Q reaches for his blue chair."
+      },
+      "alt": "Hen-Berry turns on the bench as Bark-B-Q reaches for his blue chair."
+    },
+    {
+      "number": 12,
+      "text": "“Look at the shade,” said Cluck.\n\nThe shade that had stretched across the table that morning was now a dark wedge on the ground beside it. Cluck’s card, with its little watch, lay in the middle of the hot tabletop.\n\nA warm gust ruffled the feathers behind his comb. The napkin flapped over the edge of the table. This time nobody had a free hand to catch it.",
+      "illustrationDirection": "Cluck points towards the wedge of shadow on the sand. Exposed watch card, fluttering napkin and blue chair edge in hard sunlight. Numberless clock icons.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8327c296fdf47045e6d44292bfb8963038a787417636167b168ff0d3413e9a12",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 336410,
+            "sha256": "05cebe82bbc6a30d97188f9a8c5cd00cc47763b76837d911d1ea9e3c6b6f06f8"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 198248,
+            "sha256": "8cadd6b2ff1f7a8685517b0e06d5e726fd89ecfedb634c9a6e556fad065b03d1"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86002,
+            "sha256": "f8dc2e7cf5f08a302824896b97eb1798f48831d07704b9e5bfcd6d5ee7782fa0"
+          }
+        ],
+        "review": "Cluck's watch card stays on the exposed table, apart from the shadow.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck O’Clock points to the shelter’s shadow beside the sunlit wooden table."
+      },
+      "alt": "Cluck O’Clock points to the shelter’s shadow beside the sunlit wooden table."
+    },
+    {
+      "number": 13,
+      "text": "Bark-B-Q tucked the napkin under a plate. If he could move a bench closer to the shade, some of the trouble might go away.\n\nHe and Leo lifted one end and shuffled it sideways. They lowered the bench and stood back.\n\nCluck sat down. His feet were cool, but his plate was still in the sun. He tried to reach it without getting up.\n\n“I think we’ve invented a bench for feet,” he said.",
+      "illustrationDirection": "Show the short reach between bench and original table. Cluck is seated on the repositioned bench and looks back towards his plate.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "78bf9688c2c6e758a19d01a2a9a1ab0efe2e6ca907c1ca0905dc8a3e01fa7697",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 365600,
+            "sha256": "a7d71e233bf393822190b1536ec44e80cfc8b945881fedfe9e76717adfac5284"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 228210,
+            "sha256": "72fdbb9b75b06922bdf85ad7ed00dc5c7cbb79d12a52c1ed503a7ad0a5337b3c"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 101580,
+            "sha256": "4f5fc8cd195abd9411e1268cf337c2c08ed3f2dad49fc5b62b49be7fdf68fba7"
+          }
+        ],
+        "review": "The shifted bench is shaded while Cluck’s plate and the tucked napkin remain on the outdoor timber table.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck sits in the shelter’s shadow, looking towards his plate on the sunny table."
+      },
+      "alt": "Cluck sits in the shelter’s shadow, looking towards his plate on the sunny table."
+    },
+    {
+      "number": 14,
+      "text": "“Can we move the table as well?” Coop asked.\n\nBark-B-Q tried to picture it between the shelter posts. The long table had wide legs and a wobbly foot. Turning it through the narrow opening would take everyone.\n\nHe looked back at the timetable. Drinks should have started by now. He could hear ice ticking softly against the side of the cooler.",
+      "illustrationDirection": "Coop looks from the wide-legged original table to the narrow gap between two shelter posts. Bark studies the schedule.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1715b87fc9c32b1e0dc323b44a180e1c5d61e08916a9c6d75cbaadc4321ce735",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 340148,
+            "sha256": "876f8b1efa9bc3cb389b8d50223a5c8573dc1a3c9e48a9bf96be82a720fa7609"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 209284,
+            "sha256": "e7bcb19927cbf5995cbd8df8241ed2893d33216e0a1bcd420008e4fb19e616f5"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92402,
+            "sha256": "3f9baeab7535b51aea3bbf01e4000d521be05fbff4d34b7ccbdb3123dfb57aeb"
+          }
+        ],
+        "review": "The timber table stays on sand, leaving an open view through the empty shelter and between its posts.",
+        "generator": "built-in imagegen",
+        "alt": "Coop looks into the empty shelter while Bark-B-Q studies his timetable beside her."
+      },
+      "alt": "Coop looks into the empty shelter while Bark-B-Q studies his timetable beside her."
+    },
+    {
+      "number": 15,
+      "text": "“I thought I could fix it before anyone noticed,” Bark-B-Q said.\n\nCoop was still trying to reach her cup. Hen-Berry had found a patch of shade for the salad. Leo was holding the cloth down with both paws.\n\nBark-B-Q took the pencil from behind his ear.\n\n“What would make lunch work for you?”",
+      "illustrationDirection": "Bark lowers his pencil and talks to the group at eye level. Hen shades her salad, Leo anchors the cloth and Coop looks up at him.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "81960dd71f6eee0113265d14c9716cbc14a254558f76bc962e9242caa9dff0eb",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 397798,
+            "sha256": "62b7845be4b8b1f7cadd9a0ce3fd2803ca6f9282e0863c4b0f8e8b59c186e7cb"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 235640,
+            "sha256": "889e83dec97c15b20ea783c87e099fcd1bb62974e2086be0659927fd31e35614"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104746,
+            "sha256": "b068c7d78032aa778ac079c19a6c668648c760126f3ec7a017637f25683965d8"
+          }
+        ],
+        "review": "The group gathers at the exposed timber table, with the covered salad and white cloth visible.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q speaks to his friends while Hen-Berry and Leo hold down the cloths."
+      },
+      "alt": "Bark-B-Q speaks to his friends while Hen-Berry and Leo hold down the cloths."
+    },
+    {
+      "number": 16,
+      "text": "“A chair I can pull out,” said Hen-Berry.\n\n“A table where I can reach things,” said Coop.\n\n“A place to put the cold jug,” said Leo. “I’ve got a folding table in my camp trailer. It’s a little shorter than this one. Want to see if it fits?”\n\nBark-B-Q put his timetable down. “Yes, please.”",
+      "illustrationDirection": "Focus on Leo indicating the path towards the trailer. Bark sets the clipboard down.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "54e8190fb457d06bc02aca6de690b60f4d0ccd3b1d8a4a087261838f11f30181",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 314758,
+            "sha256": "4b7dd85574ff92cf97c6d444e67536fd1bcafbf2ad552991f9c558b8e5c86a28"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 204916,
+            "sha256": "0e3d613c3e22be6cd80dcea44af8875604b0a9e24be478de378f3cb67a14200a"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95548,
+            "sha256": "82d42e0acca42de8ff3a6ba41677cf5153ed4ff93793e418ad6202cdda99ca24"
+          }
+        ],
+        "review": "Leo points towards the track in a blue vest, as Bark leaves the clipboard on the outdoor timber table.",
+        "generator": "built-in imagegen",
+        "alt": "Leo points towards the sandy track while Bark-B-Q rests his paws beside the timetable."
+      },
+      "alt": "Leo points towards the sandy track while Bark-B-Q rests his paws beside the timetable."
+    },
+    {
+      "number": 17,
+      "text": "Leo came back carrying the table by its handle, with the legs folded flat beneath it. Eggs-Benedict stretched a piece of spare cord between the shelter posts. Coop held one end while Eggs pinched the cord at the other post.\n\nThey held the cord against the long edge of the table. The cord was a good wingtip longer. The table would fit.",
+      "illustrationDirection": "Perspective inside the opening. Eggs and Coop stretch the measuring cord against the long edge of the table with its legs folded flat.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "67890bcd810e0c1f118fec469439e72f6baf13605c95dbe57818cacf1d91c631",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 341348,
+            "sha256": "876854ec8e35a0cd7233481b5ae9e0bc974f6c51b2fa12e82127370aecabe284"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 211518,
+            "sha256": "975d546bc41758f0e372e9620bb506fc9e8845dfc8415d3f8fa02db974150068"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95046,
+            "sha256": "bc1e36e6726908e07f8c0eb77c7fb0fcef6855f1b3e25dd65a70315c8b78d618"
+          }
+        ],
+        "review": "The cream folding table first appears with its legs folded. Leo holds it as Eggs and Coop measure with the cord.",
+        "generator": "built-in imagegen",
+        "alt": "Leo carries the folded cream table while Eggs-Benedict and Coop-Accino measure its length."
+      },
+      "alt": "Leo carries the folded cream table while Eggs-Benedict and Coop-Accino measure its length."
+    },
+    {
+      "number": 18,
+      "text": "The table cleared the posts. Leo and Bark-B-Q unfolded the legs and set it down in the shade. It stood steady on the shelter floor with room to walk all the way round.\n\n“Smaller table,” said Eggs-Benedict. “Same number of friends.”\n\nPanda brought up the little chairs that had been stacked at the back of the shelter.",
+      "illustrationDirection": "Elevated view of unfolded cream table on shade floor. Bark and Leo at opposite edges, Eggs to the side and Panda bringing one light chair. Show circulation.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4e7a29fbfadcdc9e5eb6e58b0c0658b20a22d492d8736cbd13f3500212cb2bf6",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 355466,
+            "sha256": "1036c1cd7db46e683b0be13861a437fb62c3eefcea14a31fae991440c77e2bd1"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 212672,
+            "sha256": "ab975ce3b5d47096d3b9fc44c898b9f24926b4cec66949b6db4b7e015d5c805d"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92690,
+            "sha256": "ad1bc753ae9bce92bad84e1c8a2f21120be81d20804594346b3535948daca093"
+          }
+        ],
+        "review": "The unfolded cream table sits inside the shelter with room around it.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q and Leo-Lemonade set up the folding table while Panda-Cake brings a chair."
+      },
+      "alt": "Bark-B-Q and Leo-Lemonade set up the folding table while Panda-Cake brings a chair."
+    },
+    {
+      "number": 19,
+      "text": "Bark-B-Q started to gather up the place cards, then put them down again. “Could someone bring these in? I’ll check the food.”\n\n“We’ve got them,” said Hen-Berry. She lifted the salad dish while Cluck and Coop collected the cards.\n\nCluck held the two cards marked with a watch and a star together like a pair of tickets.",
+      "illustrationDirection": "At the still-sunny old table, twins collect the folded cream cards. Hen heads towards shade carrying the covered salad.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b6ff82c32387b6e4f00f8487794755a41e3feaa25305d6c580fb6c8b511f1137",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 360756,
+            "sha256": "28b0d50d115012d88f3b8d2e1ca07e19179ff676881be48f0a690048fb3d08a1"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 226298,
+            "sha256": "2ced49ba7ccdd08dea94e69a8863e0fc9828739f1ccbd96e579dcd7098706fe2"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103046,
+            "sha256": "59007bb8f7941fe48542c2f66aadfcb45992ff42be6d2b946852598b837ca97e"
+          }
+        ],
+        "review": "Coop collects cards across from Cluck. The watch and star, covered salad, and moved cream table remain distinct.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck holds the watch and star cards while Coop gathers the others and Hen-Berry carries the salad."
+      },
+      "alt": "Cluck holds the watch and star cards while Coop gathers the others and Hen-Berry carries the salad."
+    },
+    {
+      "number": 20,
+      "text": "This time Coop chose a low chair with a firm cushion and put her cup where she could reach it. Hen-Berry pulled out a chair with no rail in her way. Leo brought over Bark-B-Q’s blue chair and kept the passage clear.\n\nBark-B-Q caught himself straightening three plates in a row. Then he passed the rest to Hen-Berry.",
+      "illustrationDirection": "Three-quarter view of Coop’s secure low cushion, her near cup, Hen’s chair and Leo bringing the blue one.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4a6dad4f2b5ffb04444ef7e1054a99062906a438cf8bdf16377c22f4f25d5c41",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 338154,
+            "sha256": "17387ff028773b65f35d8fbf231941e79baa556f40dbe1f9efc22276c1471ba0"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 212554,
+            "sha256": "769f5cfe94dfa1b2b9c20dd19df38b5b1a62aed6db462e1df3f090511d6aeade"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98010,
+            "sha256": "7135ee7a8bed038cb76e36b5b1a9641b5509ab9a5725ee27842677b064f837c6"
+          }
+        ],
+        "review": "Leo brings the blue chair, Hen-Berry pulls out her own, and Coop can reach her cup from the cushion.",
+        "generator": "built-in imagegen",
+        "alt": "Leo brings the blue chair while Coop reaches her cup and Hen-Berry pulls out a chair."
+      },
+      "alt": "Leo brings the blue chair while Coop reaches her cup and Hen-Berry pulls out a chair."
+    },
+    {
+      "number": 21,
+      "text": "Eggs-Benedict tried putting the bread basket, salad dish and jug between the plates. There was barely room for a spoon. She took the basket off again.\n\n“How about we have it in rounds?” Panda asked. “We can leave my tin closed until later.”\n\n“Salad and bread first,” said Hen-Berry. “Then we can make room for whatever’s next.”",
+      "illustrationDirection": "Top-down crop of an overfull smaller tabletop. Eggs lifts the covered bread basket, with salad and clear lemon jug still in view.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6ccb65832057f74db309d24379ad1453464464b9690d56b6859a7e0bb76ffef6",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 288654,
+            "sha256": "bc8f6f7fe8369dbd720f87c435a27723b16ac9213635477ad99005c97cbb65eb"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 176494,
+            "sha256": "af4e1e5520acd59cce83293f5d04fd1f8e9cef93a08d752b8eaa0891b18b7137"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 80584,
+            "sha256": "62226c89e170f8ec79077de5f6b5ee9705849c0b6f1088e16d23cd48f7ae873b"
+          }
+        ],
+        "review": "Eggs lifts the bread basket from a tight crop, with the salad in its own bowl and space limited by the jug and plates.",
+        "generator": "built-in imagegen",
+        "alt": "Golden wings lift a basket of rolls and sliced bread from the crowded table."
+      },
+      "alt": "Golden wings lift a basket of rolls and sliced bread from the crowded table."
+    },
+    {
+      "number": 22,
+      "text": "Everybody had a turn with the bread basket. Coop swung the little salad dish round so Cluck could use both spoons. The mint had made tiny green marks on the underside of the red checked cloth.\n\nLeo put the jug where Coop could reach the handle. She poured a little lemonade and watched a twist of peel turn over in her cup.",
+      "illustrationDirection": "Coop pours a little lemonade from reachable handle. Cluck tosses bright cucumber with the paired spoons. Checked cloth folded back.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dbe01abe6b33558914e0f540dee570abc3b336ded581c034447eeb6b55ea3560",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 331042,
+            "sha256": "694cee4bfad87009b8db0f03b3450d8da971a3fff79fff46437baa23b89c686a"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 215260,
+            "sha256": "14aa2b4d0413413129bf79251b2081d0626ac91d0d2b79c6824cb67f8450834b"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100810,
+            "sha256": "91c7f309b54ececf839e39c46ae37d731ffade89dbedb958cbea1889ab3be749"
+          }
+        ],
+        "review": "Cream-and-red Cluck uses both spoons while Coop pours lemonade, with the checked cover folded aside.",
+        "generator": "built-in imagegen",
+        "alt": "Coop pours lemonade as Cluck tosses cucumber salad with two small spoons."
+      },
+      "alt": "Coop pours lemonade as Cluck tosses cucumber salad with two small spoons."
+    },
+    {
+      "number": 23,
+      "text": "Bark-B-Q stuck his head round the shelter post. He had been keeping an eye on the food at the cooking station.\n\n“Is it twelve yet?”\n\n“According to this,” said Eggs-Benedict, tapping the timetable, “we’re late for drinks and early for cake.”\n\nCluck opened his pocket watch. “It’s exactly time for another piece of bread.”\n\nEggs pushed the basket towards him.",
+      "illustrationDirection": "Bark peers around the post from outside. Cluck opens his watch and Eggs moves the basket towards him.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b9776b4d78b3ba895481efc8e16323fcf5d2cc95a33c49665d78d004bae171e9",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 385538,
+            "sha256": "03393e58f574626b22ee137ec5a1cc2282dcf17c0964685856f423bfb0fecad5"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 238972,
+            "sha256": "85990c7a1c40db6720ec6cbbe3f029dada90fbd6c07c8bc263161deffbc23635"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 109756,
+            "sha256": "376b833b726a93a62f9845f49f63b375780a365de923caf1ffced5f1ccc64ab4"
+          }
+        ],
+        "review": "Cluck holds the watch itself and Eggs has the bread basket.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck checks his pocket watch as Eggs-Benedict holds the bread basket."
+      },
+      "alt": "Cluck checks his pocket watch as Eggs-Benedict holds the bread basket."
+    },
+    {
+      "number": 24,
+      "text": "Bark-B-Q brought the warm tray over and set it down on the wooden mat Hen-Berry had brought from the old table. He returned to the cooking station to turn everything off, then carried back the serving tongs.\n\nPanda made room for the tray. “Could you pass that round?” Bark-B-Q asked.\n\nShe held up the tongs. “I was hoping you’d ask.”",
+      "illustrationDirection": "Low angle across the table. Warm tray set safely on wooden trivet. Panda accepts tongs from Bark, cook station small in background.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "002fb7444c98790116a686d7007a40f0c5bad44c11a552eeeaad9ff82495e0a1",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 372788,
+            "sha256": "bd4b2a4a3bfa66e53d830f465ecb0212fa03888e80e7d9691a9073468721b936"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 230198,
+            "sha256": "f9859bd9c4b253de3409fe384f6cbf9a3c2299a3b5796f056538376b01803014"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105756,
+            "sha256": "297f16d0150af5effd6aa892f4b1577c802f7dde18fa52b43a895ef94abe2f27"
+          }
+        ],
+        "review": "The wooden mat supports the tray and Panda takes the tongs.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake takes the serving tongs from Bark-B-Q beside the warm tray."
+      },
+      "alt": "Panda-Cake takes the serving tongs from Bark-B-Q beside the warm tray."
+    },
+    {
+      "number": 25,
+      "text": "Panda told Coop about the year her aunt had set the orange cake on a stool to cool. Everyone had walked past it and said how lovely it smelled. By the time they were ready to cut it, her aunt had forgotten where she’d put it.\n\n“What happened?” Coop asked.\n\n“They found it when someone needed a seat.”",
+      "illustrationDirection": "Intimate shot of Panda and Coop talking, closed tin in frame. Convey the cake-on-a-stool story through faces and gesture.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "96010e0a0133600c7ce787e43f53c23ac739b9a48edda662230f352cc7071538",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 376692,
+            "sha256": "040d9eafc3eaa4e8e1777ed5ac6d2b3832b6ea09a7162ae1effbf87f44ab656e"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 225516,
+            "sha256": "501c132e708a94ab74025e40b37a7954f848ee88d72901a0e376083b6678de60"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 101234,
+            "sha256": "f6115d9985bae0384f32d71ac96779e6decb6779463587b68e286121f15e2c5b"
+          }
+        ],
+        "review": "Panda and Coop talk beside the closed teal tin.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake gestures towards Coop-Accino across the closed cake tin."
+      },
+      "alt": "Panda-Cake gestures towards Coop-Accino across the closed cake tin."
+    },
+    {
+      "number": 26,
+      "text": "Bark-B-Q laughed. Then he looked down and found he was still standing on the outside of the shelter, peering over everyone’s shoulders.\n\nHe could smell the mint and see the bread basket. He’d been looking after lunch for so long that he hadn’t had a bite.",
+      "illustrationDirection": "Frame Bark alone in profile at the sunlit edge of the shade, peering over a few shoulders toward his empty chair.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d6f756244222d8ba04e12d31c402732e7f05452864cbb18a696f67e55c28e7d8",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 351148,
+            "sha256": "3a29dc9b918f938db304c06cfdf9670b975146165ff22495d7b9bd667b56aa6a"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 218836,
+            "sha256": "bb54fe33f918de730a6668a700e625be9d8c0eae754835e82dfb0de65aa00b35"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99938,
+            "sha256": "b6baf2360caf80400f9f88756e306ac87d2f2d2bd6e1bec6872e16bb2889b14b"
+          }
+        ],
+        "review": "Bark pauses on the sand with empty paws. Seated guests and the bread basket are visible beyond his empty chair.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q stands with empty paws outside the shelter, looking towards his blue chair."
+      },
+      "alt": "Bark-B-Q stands with empty paws outside the shelter, looking towards his blue chair."
+    },
+    {
+      "number": 27,
+      "text": "Cluck took the card with the star from beside his own.\n\n“I kept this for you,” he said.\n\nHe put it down beside Bark-B-Q’s plate. There was a piece of bread on it, with a little pile of cucumber salad and the biggest mint leaf Cluck had found.",
+      "illustrationDirection": "Hands and tabletop. Cluck puts down star card next to bread, salad and a particularly broad mint leaf.",
+      "art": {
+        "status": "accepted",
+        "master": "p27.png",
+        "webp": "p27.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6b2d9719bea8c9f6c3cc2992304e3dfb09864430593cedd47bb8c921679eeb8f",
+        "derivatives": [
+          {
+            "path": "p27.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 320976,
+            "sha256": "78d1aec3460dea8b4f01b2ac80561e5679e4e826e581f1ab4a7ac7159b78718d"
+          },
+          {
+            "path": "p27-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 198838,
+            "sha256": "9005592629d0320e2fd66a684786dec0ae73a71373fc9b4f0af1f5f2bd85f823"
+          },
+          {
+            "path": "p27-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92864,
+            "sha256": "1688bcbb2440d3b52f3cd5b76f814538666de9fa9f24b05672a4c859ee3a3584"
+          }
+        ],
+        "review": "The blue chair is empty as Cluck returns the star card.",
+        "generator": "built-in imagegen",
+        "alt": "Cluck sets down Bark-B-Q’s star card beside a plate of bread and cucumber salad."
+      },
+      "alt": "Cluck sets down Bark-B-Q’s star card beside a plate of bread and cucumber salad."
+    },
+    {
+      "number": 28,
+      "text": "Hen-Berry moved the jug. Leo pulled out the blue chair.\n\nBark-B-Q reached for the tongs, out of habit. Panda already had them. He looked for the timetable. There it was, lying face down on the end of the table.\n\n“Do you need anything?” he asked.\n\n“Yes,” said Coop. “Can you sit a bit closer? I’ve got something to tell you.”",
+      "illustrationDirection": "Leo draws out the blue chair. Coop leans towards the empty seat. Panda holds tongs on other side of the tabletop.",
+      "art": {
+        "status": "accepted",
+        "master": "p28.png",
+        "webp": "p28.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "007b40b89bb537f7cfb471ccd1b85d0f8b8e24a1c2d252ea6dd76c24608d9187",
+        "derivatives": [
+          {
+            "path": "p28.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 374944,
+            "sha256": "0c991993f80599b0616c1fe0d0993ea651b4c670ad8bb5043b929ef57286d28b"
+          },
+          {
+            "path": "p28-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 237620,
+            "sha256": "7ff5590f1c383d80308a507da80f1f99bc747d063909905bc648ea9079d046bf"
+          },
+          {
+            "path": "p28-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110856,
+            "sha256": "018da9730cea646eea82d01b5086fbfd6f5a57f223af126cac53e46baeadd15b"
+          }
+        ],
+        "review": "Leo draws out the blue chair, Panda holds the tongs, and the dessert tin is shut.",
+        "generator": "built-in imagegen",
+        "alt": "Leo pulls out the blue chair as Coop gestures towards it and Panda holds the tongs."
+      },
+      "alt": "Leo pulls out the blue chair as Coop gestures towards it and Panda holds the tongs."
+    },
+    {
+      "number": 29,
+      "text": "Bark-B-Q sat. The chair creaked in the same familiar way it did in his kitchen. He tucked his feet under the table.\n\nCoop told him she could see the sea from her chair. When he leaned a little towards her, he could see it too. A bright strip of water showed between the posts, just below the paper stars.",
+      "illustrationDirection": "Near the head at table height. Bark sits, leans towards Coop at the near right corner. Put the band of bright sea between two posts below the stars.",
+      "art": {
+        "status": "accepted",
+        "master": "p29.png",
+        "webp": "p29.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "280082da6a57cba1c06188a32f4eb7a60c01b68fc701975a537a6b1d8c50bd19",
+        "derivatives": [
+          {
+            "path": "p29.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 341574,
+            "sha256": "e5e22f93f6b416ccaa79002b65eed325ba86f60e52b4c054c1c2d087ddf91d76"
+          },
+          {
+            "path": "p29-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 226280,
+            "sha256": "f805ada2227cf5656dc2f02a2f7438f64b6054b93c184fb24406914ca3b6add5"
+          },
+          {
+            "path": "p29-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105440,
+            "sha256": "423a67f76ea8dd6c39b61c00d6162cfe2fe3e2fd08f4911287d9c622ac1e0dd3"
+          }
+        ],
+        "review": "Bark and Coop share the view of the bay from their seats. The cake tin remains closed.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q sits in his blue chair beside Coop, with a bright strip of sea beyond the table."
+      },
+      "alt": "Bark-B-Q sits in his blue chair beside Coop, with a bright strip of sea beyond the table."
+    },
+    {
+      "number": 30,
+      "text": "Cluck nudged his place card towards the middle of the table. “My card’s been waiting all morning. I think it would like a seat for the cake.”\n\nCoop sent hers after it. Hen-Berry made room by moving the empty basket. One by one the other cards joined them. Bark-B-Q turned his own around so the star faced his friends, then slid it into the little row.",
+      "illustrationDirection": "Top-down central strip, cream cards in a short row. Bark’s paw releases the star card.",
+      "art": {
+        "status": "accepted",
+        "master": "p30.png",
+        "webp": "p30.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "92ed55b65be60d4ddb1a0be8e1ce961b71646fda52b7fbc0edd227e33155989a",
+        "derivatives": [
+          {
+            "path": "p30.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 378776,
+            "sha256": "008640c921993f6e0139d1cdb599a94b29331dcd404d7db38c13f40dce4259c2"
+          },
+          {
+            "path": "p30-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 232988,
+            "sha256": "7a08b832680d3746eccfde3f0b929181fa5d08d68ec791659a6bc04247061103"
+          },
+          {
+            "path": "p30-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107362,
+            "sha256": "886d03d0b781d1b579197247affcf0366dc9d8c57ae7a32b0a961d6be8ea063e"
+          }
+        ],
+        "review": "The cast is seated as the star card joins the row.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q reaches across the table to slide his star card into the row."
+      },
+      "alt": "Bark-B-Q reaches across the table to slide his star card into the row."
+    },
+    {
+      "number": 31,
+      "text": "Panda opened the tin. Everyone looked for the candied peel on their slice. Bark-B-Q found his beneath a crumb and balanced it on the end of a fork.\n\n“I did have a time for cake,” he said.\n\nCoop took a bite. “You picked a good one.”\n\nShe was already looking to see if anyone had left a piece of peel on their plate.",
+      "illustrationDirection": "Close on cake tin, crumbs and orange peel on a fork in Bark’s paw; Coop takes a bite.",
+      "art": {
+        "status": "accepted",
+        "master": "p31.png",
+        "webp": "p31.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7b1df4a7f5f24b0a3fb98e36fc313a293c7241a297643160623e1a364baef3e1",
+        "derivatives": [
+          {
+            "path": "p31.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 351204,
+            "sha256": "ec55f7561b81acc7a82fd0c3414e8601f2d1cb38e9bdec1046f4a445927e0525"
+          },
+          {
+            "path": "p31-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 226790,
+            "sha256": "3f51dcf0e9607a8d9115a0e8999936974bc02fb78961411805c521c60d3293bf"
+          },
+          {
+            "path": "p31-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103184,
+            "sha256": "3968ccfadd841389ca580b8ee3788d46a662cac1c2b29f22a63a0821dd3b2b77"
+          }
+        ],
+        "review": "The open tin and exposed slices mark the start of dessert.",
+        "generator": "built-in imagegen",
+        "alt": "With the orange cake tin open, Bark-B-Q lifts candied peel on his fork while Coop takes a bite."
+      },
+      "alt": "With the orange cake tin open, Bark-B-Q lifts candied peel on his fork while Coop takes a bite."
+    },
+    {
+      "number": 32,
+      "text": "The paper stars lifted in the breeze. Through the shelter posts Bark-B-Q could see the old table, its bare boards bright in the sun.\n\n“Shall we stay a bit longer?” asked Leo.\n\nBark-B-Q took his pencil from beside the timetable and set it down next to the little row of cards. Then he asked Coop what else she could see from where she sat.",
+      "illustrationDirection": "Seated-eye-level ensemble. All seven recognisable in the seating order, empty original table outside, pencil beside cream cards and bay below bunting. Wide field but an intimate eyeline to Coop.",
+      "art": {
+        "status": "accepted",
+        "master": "p32.png",
+        "webp": "p32.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4e50df8f82d0186d0ea5282ff67773efefcb7c106dc111a53594aaece2d0f894",
+        "derivatives": [
+          {
+            "path": "p32.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 364524,
+            "sha256": "d9868ef529561927c1cfef39a0760c835c1af8ed204c3afeb22ade4231015ac8"
+          },
+          {
+            "path": "p32-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 230452,
+            "sha256": "d43f3852b3439ff06efe17928bd57977da74384d66b59b12e0be92167bffcca7"
+          },
+          {
+            "path": "p32-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105646,
+            "sha256": "b230ce7a5b181da005a8de14c3c5919811f357be7b5dadf850883ae105914a3a"
+          }
+        ],
+        "review": "All seven are seated with an open view through the shelter.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q sits with his friends under the paper stars, with the old table empty in the sun."
+      },
+      "alt": "Bark-B-Q sits with his friends under the paper stars, with the old table empty in the sun."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "751ca169150728126841aea0562980f43599a8d889a86ba53e1183dbbe1d4f37",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 281480,
+        "sha256": "f03ceca6e27cbfb4559014350331184dbbede6991722517356358f01afb46122"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 168410,
+        "sha256": "1e2d06a0a519f89340891bdd5d80011e9c08b810ecda2830f70043730cbb5e7b"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 73176,
+        "sha256": "f5c7eda3266b8439652dce0a1fdbe44e0de13163fa55cb2c38decdf11f284f04"
+      }
+    ],
+    "review": "The star card, blue chair and bay identify the book at a glance.",
+    "generator": "built-in imagegen",
+    "alt": "Bark-B-Q sets a star place card on a seaside table beside his blue chair."
+  },
+  "sourceFolder": "sequels/bark-b-q-and-the-long-christmas-table",
+  "webSlug": "bark-b-q-and-the-long-christmas-table",
+  "reviewedPrintableSha256": "8b6517184187021794cfadddf5f4e61e69865194d2e232ed55f4510cbe76b9f8"
+}
