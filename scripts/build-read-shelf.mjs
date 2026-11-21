@@ -149,7 +149,7 @@ function card(b, i) {
 // Bookshelf filters (READ-PLAN C2). The buttons are rendered `hidden` and only
 // revealed by read/shelf-filter.js, so without JavaScript the whole shelf shows
 // and nothing on the page pretends to work.
-const KIND = { christmas: "stories", thanksgiving: "stories", "new-year": "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
+const KIND = { christmas: "stories", "summer-christmas": "stories", thanksgiving: "stories", "new-year": "stories", alphabet: "alphabet", "stage-1": "phonics", "stage-2": "phonics", "stage-3": "phonics", trail: "phonics", places: "stories", short: "stories", numbers: "maths", animals: "animals", more: "stories" };
 const KINDS = [["alphabet", "ABCs"], ["phonics", "Phonics"], ["stories", "Stories"], ["maths", "Maths"], ["animals", "Animals"]];
 const AGES = [["3-4", "Ages 3–4"], ["5-6", "5–6"], ["7-8", "7–8"], ["9-10", "9–10"]];
 if (SHELF.some(book => book.age[1] >= 13)) AGES.push(["11-12", "11–12"], ["13-14", "13–14"]);
@@ -238,7 +238,9 @@ function nextBlock(i) {
   const ev = eventForBook(book.slug);
   const isSummer = book.group === "summer-christmas";
   const partOf = isSummer ? '\n<p class="story-event-link">Part of <a href="/read/events/christmas/#summer-christmas">Summer Christmas</a>.</p>' : ev ? `\n<p class="story-event-link">Part of <a href="/read/events/${ev.id}/">${ev.heading}</a>: ${ev.timeline.length} books in the order they happen.</p>` : "";
-  return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + `\n${share}`;
+  const castLinks = book.cast?.map(([slug, name]) => `<a href="/characters/${slug}/">${escape(name)}</a>`).join(" · ");
+  const cast = castLinks ? `\n<p class="story-cast">Meet the characters: ${castLinks}</p>` : "";
+  return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + cast + `\n${share}`;
 }
 
 // The homepage section: a few books spread across the reading path, so the
