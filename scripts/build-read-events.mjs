@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { READ_EVENTS, eventDates, eventBooks, eventEntries, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
 
 import { renderReadEventActivity } from "./lib/read-event-activities.mjs";
+import { aboutPath, isPublishedAbout, renderEventAbout } from "./lib/read-event-about.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
@@ -37,6 +38,8 @@ const bannerPaths = (e) => {
   } : null;
 };
 const DAY_LABEL = { christmas: "Christmas Day", "new-year": "New Year’s Day", "lunar-new-year": "Lunar New Year", easter: "Easter Sunday", thanksgiving: "Thanksgiving" };
+const aboutEntries = JSON.parse(read("data/read-event-about.json"));
+const publishedAbout = aboutEntries.filter(isPublishedAbout);
 const christmasGuide = JSON.parse(read("data/christmas-reading-guide.json"));
 const guideLinks = [
   { href: "/read/events/christmas/christmas-reading-guide-a4.pdf", label: "Reading guide · A4 PDF" },
@@ -140,9 +143,9 @@ const template = read("read/ted-e-bears-blanket-fort/index.html");
 const sharedHead = template.slice(template.indexOf("<!-- pwa:generated -->"), template.indexOf("</head>"));
 const header = template.slice(template.indexOf('<header class="topbar">'), template.indexOf("<main>"));
 const BEACON = `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"0e57cfb3eb86422ca40e5fac02b1cf94","spa":false}'></script>`;
-function page({ title, desc, url, image, body, jsonld, activity }) {
+function page({ title, desc, url, image, body, jsonld, activity, stylesheet = "", noindex = false }) {
   return `<!DOCTYPE html>
-<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | SnackPack Reads</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${SITE}${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}${image}"><meta property="og:url" content="${SITE}${url}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}${image}"><link rel="icon" href="/assets/favicon-32.png"><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="/site.css">${activity ? '<link rel="stylesheet" href="/read/activities/events.css">' : ""}<script type="application/ld+json">${JSON.stringify(jsonld)}</script><!-- breadcrumbs:generated -->
+<html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | SnackPack Reads</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${SITE}${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}${image}"><meta property="og:url" content="${SITE}${url}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}${image}"><link rel="icon" href="/assets/favicon-32.png"><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="/site.css">${stylesheet ? `<link rel="stylesheet" href="${stylesheet}">` : ""}${noindex ? '<meta name="robots" content="noindex">' : ""}${activity ? '<link rel="stylesheet" href="/read/activities/events.css">' : ""}<script type="application/ld+json">${JSON.stringify(jsonld)}</script><!-- breadcrumbs:generated -->
 <!-- /breadcrumbs:generated -->
 ${sharedHead}</head><body>${header}<main>${body}</main><footer class="foot"><div class="shell"><p>Free to read and print. No account, sign-up or ads.</p><a href="/privacy/">Privacy</a></div></footer>${activity ? "" : BEACON}</body></html>
 `;
@@ -179,7 +182,9 @@ function eventPage(e) {
   const sources = bannerPaths(e);
   const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
   const activity = e.activity ? renderReadEventActivity(e.activity) : "";
-  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}${summer ? " Find a summer Christmas by the sea in its own section." : ""}</p>${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide(Boolean(summer))}` : ""}
+  const about = publishedAbout.find(entry => entry.id === e.id);
+  const aboutLink = about ? `<p><a class="text-link" href="${aboutPath(about.id)}">About ${esc(about.title)}</a></p>` : "";
+  const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}${summer ? " Find a summer Christmas by the sea in its own section." : ""}</p>${aboutLink}${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide(Boolean(summer))}` : ""}
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
 ${books}
 </ol>${also || extras ? `<h2 class="read-shelf-heading read-event-sub">Also good this season</h2><ul class="read-event-also">${also}${extras}</ul>` : ""}<p class="read-event-note">Every book is free to read online, read aloud with your device’s voice, save for offline or print as a PDF. They stay on the shelf all year.</p><p><a class="text-link" href="/read/events/">All holiday and event stories</a> · <a class="text-link" href="/read/">The whole bookshelf</a></p></div></section>
@@ -217,11 +222,13 @@ function indexPage() {
   const desc = "Free illustrated stories for Christmas, New Year, Lunar New Year, Easter and Thanksgiving. The current season comes first; every book stays readable all year.";
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: "Holiday and event stories", description: desc, url: `${SITE}/read/events/`, inLanguage: "en-GB", isAccessibleForFree: true,
     hasPart: publishedEvents().map((e) => ({ "@type": "CollectionPage", name: e.heading, url: `${SITE}/read/events/${e.id}/` })) };
+  const aboutLinks = publishedAbout.length ? `<section aria-labelledby="about-holidays"><div class="shell"><h2 id="about-holidays">About the holidays</h2><ul class="read-event-also">${publishedAbout.map(entry => `<li><a href="${aboutPath(entry.id)}">About ${esc(entry.title)}</a></li>`).join("")}</ul></div></section>
+` : "";
   const body = `<section class="read-hub-hero"><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › Holidays and events</p><span class="eyebrow">Holiday and event stories</span><h1>Stories for every season</h1><p class="lead">${esc(desc)}</p></div></section>
 <section><div class="shell"><div class="read-event-grid" data-read-event-list>
 ${cards}
 </div><p><a class="text-link" href="/read/">Back to the whole bookshelf</a></p></div></section>
-<script src="../events.js"></script>`;
+${aboutLinks}<script src="../events.js"></script>`;
   return page({ title: "Holiday and event stories for children", desc, url: "/read/events/", image: socialImage(READ_EVENTS[0]), body, jsonld });
 }
 
@@ -250,6 +257,15 @@ hubNext = hubNext.slice(0, a + OPEN.length) + "\n" + hubBand() + "\n" + hubNext.
 write("read/index.html", hubNext);
 write("read/events/index.html", indexPage());
 for (const e of publishedEvents()) write(`read/events/${e.id}/index.html`, eventPage(e));
+for (const entry of aboutEntries) {
+  const url = aboutPath(entry.id);
+  const hasShelf = publishedEvents().some(event => event.id === entry.id);
+  const { body, portrait, noindex } = renderEventAbout(entry, aboutEntries, hasShelf, esc);
+  const title = `About ${entry.title}`;
+  const jsonld = { "@context": "https://schema.org", "@type": "WebPage", name: title, description: entry.intro, url: SITE + url, inLanguage: "en-GB" };
+  write(url.slice(1) + "index.html", page({ title, desc: entry.intro, url, image: portrait, body, jsonld, stylesheet: "/read/events/about.css", noindex }));
+}
+
 for (const dir of fs.existsSync(path.join(ROOT, "read/events")) ? fs.readdirSync(path.join(ROOT, "read/events"), { withFileTypes: true }) : []) {
   if (dir.isDirectory() && fs.existsSync(path.join(ROOT, "read/events", dir.name, "index.html")) &&
       !publishedEvents().some((e) => e.id === dir.name)) problems.push(`read/events/${dir.name}/ has no published event — remove the old index page`);

@@ -85,6 +85,15 @@ async function main() {
     for (let i = 0; i < parts.length; i++) {
       acc += `/${parts[i]}`;
       const isLast = i === parts.length - 1;
+      // Some About pages describe an event before it has a story shelf.
+      if (!isLast && i === 2 && /^read\/events\/[^/]+\/about$/.test(dir)) {
+        try {
+          await fs.access(path.join(root, acc.slice(1), "index.html"));
+        } catch (error) {
+          if (error.code !== "ENOENT") throw error;
+          continue;
+        }
+      }
       const label = isLast
         ? titleOf(html) || SECTION[parts[i]] || parts[i]
         : SECTION[parts[i]] ||
