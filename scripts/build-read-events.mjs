@@ -23,7 +23,7 @@ import { fileURLToPath } from "node:url";
 import { READ_EVENTS, eventDates, eventBooks, eventEntries, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
 
 import { renderReadEventActivity } from "./lib/read-event-activities.mjs";
-import { aboutPath, isReviewedAbout, renderEventAbout } from "./lib/read-event-about.mjs";
+import { aboutPath, isPublishedAbout, renderEventAbout } from "./lib/read-event-about.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
@@ -39,7 +39,7 @@ const bannerPaths = (e) => {
 };
 const DAY_LABEL = { christmas: "Christmas Day", "new-year": "New Year’s Day", "lunar-new-year": "Lunar New Year", easter: "Easter Sunday", thanksgiving: "Thanksgiving" };
 const aboutEntries = JSON.parse(read("data/read-event-about.json"));
-const reviewedAbout = aboutEntries.filter(isReviewedAbout);
+const publishedAbout = aboutEntries.filter(isPublishedAbout);
 const christmasGuide = JSON.parse(read("data/christmas-reading-guide.json"));
 const guideLinks = [
   { href: "/read/events/christmas/christmas-reading-guide-a4.pdf", label: "Reading guide · A4 PDF" },
@@ -182,7 +182,7 @@ function eventPage(e) {
   const sources = bannerPaths(e);
   const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
   const activity = e.activity ? renderReadEventActivity(e.activity) : "";
-  const about = reviewedAbout.find(entry => entry.id === e.id);
+  const about = publishedAbout.find(entry => entry.id === e.id);
   const aboutLink = about ? `<p><a class="text-link" href="${aboutPath(about.id)}">About ${esc(about.title)}</a></p>` : "";
   const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}${summer ? " Find a summer Christmas by the sea in its own section." : ""}</p>${aboutLink}${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide(Boolean(summer))}` : ""}
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
@@ -222,7 +222,7 @@ function indexPage() {
   const desc = "Free illustrated stories for Christmas, New Year, Lunar New Year, Easter and Thanksgiving. The current season comes first; every book stays readable all year.";
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: "Holiday and event stories", description: desc, url: `${SITE}/read/events/`, inLanguage: "en-GB", isAccessibleForFree: true,
     hasPart: publishedEvents().map((e) => ({ "@type": "CollectionPage", name: e.heading, url: `${SITE}/read/events/${e.id}/` })) };
-  const aboutLinks = reviewedAbout.length ? `<section aria-labelledby="about-holidays"><div class="shell"><h2 id="about-holidays">About the holidays</h2><ul class="read-event-also">${reviewedAbout.map(entry => `<li><a href="${aboutPath(entry.id)}">About ${esc(entry.title)}</a></li>`).join("")}</ul></div></section>
+  const aboutLinks = publishedAbout.length ? `<section aria-labelledby="about-holidays"><div class="shell"><h2 id="about-holidays">About the holidays</h2><ul class="read-event-also">${publishedAbout.map(entry => `<li><a href="${aboutPath(entry.id)}">About ${esc(entry.title)}</a></li>`).join("")}</ul></div></section>
 ` : "";
   const body = `<section class="read-hub-hero"><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › Holidays and events</p><span class="eyebrow">Holiday and event stories</span><h1>Stories for every season</h1><p class="lead">${esc(desc)}</p></div></section>
 <section><div class="shell"><div class="read-event-grid" data-read-event-list>

@@ -49,7 +49,8 @@
         "Read Bark-B-Q’s seaside Christmas",
         "/read/bark-b-q-and-the-long-christmas-table/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "easter",
@@ -99,7 +100,8 @@
         "NASA Space Place · What causes the seasons?",
         "https://spaceplace.nasa.gov/seasons/en/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "new-year",
@@ -151,7 +153,8 @@
         "Try the midnight clocks and read the New Year stories",
         "/read/events/new-year/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "lunar-new-year",
@@ -197,7 +200,8 @@
         "Smithsonian National Museum of Asian Art · A family perspective",
         "https://asia.si.edu/whats-on/blog/posts/lunar-new-year-then-now/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "ramadan",
@@ -239,7 +243,8 @@
         "Islamic Relief UK · What is Ramadan?",
         "https://www.islamic-relief.org.uk/giving/islamic-giving/ramadan/what-is-ramadan/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "diwali",
@@ -289,7 +294,8 @@
         "Sikh Coalition · Educator’s guide",
         "https://www.sikhcoalition.org/wp-content/uploads/2018/08/Sikhism-educator-guide.pdf"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "hanukkah",
@@ -335,7 +341,8 @@
         "My Jewish Learning · Hanukkah questions and customs",
         "https://www.myjewishlearning.com/article/hanukkah-faq/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   },
   {
     "id": "thanksgiving",
@@ -391,6 +398,7 @@
         "Read the Thanksgiving stories",
         "/read/events/thanksgiving/"
       ]
-    ]
+    ],
+    "publishedOn": "2026-11-22"
   }
 ]

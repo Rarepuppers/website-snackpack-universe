@@ -1,11 +1,11 @@
 export const aboutPath = (id) => `/read/events/${id}/about/`;
-export const isReviewedAbout = (entry) => Boolean(entry?.review?.date && entry.review.scope);
+export const isPublishedAbout = (entry) => Boolean(entry.publishedOn);
 
 // The dialogue, fact and activity are all ordinary HTML. Native disclosures
 // keep answers available by keyboard, touch and with scripting disabled.
 export function renderEventAbout(entry, entries, hasShelf, escape) {
   const { id, title, intro, guides, when, who, why, history, fact, question, sources, related = [], review } = entry;
-  const reviewed = isReviewedAbout(entry);
+  const published = isPublishedAbout(entry);
   const parent = hasShelf ? `/read/events/${id}/` : "/read/events/";
   const parentLabel = hasShelf ? `${title} stories` : "Holidays and events";
   const portrait = `/characters/media/${guides[0][0]}-480.webp`;
@@ -16,14 +16,14 @@ export function renderEventAbout(entry, entries, hasShelf, escape) {
     ["Who observes it?", who],
     ["Why does it matter?", why],
   ];
-  const otherPages = entries.filter(item => item.id !== id && (!reviewed || isReviewedAbout(item)));
+  const otherPages = entries.filter(item => item.id !== id && (!published || isPublishedAbout(item)));
   const links = otherPages.map(item => `<li><a href="${aboutPath(item.id)}">${escape(item.title)}</a></li>`).join("");
   const relatedLinks = related.map(([label, url]) => `<a class="text-link" href="${escape(url)}">${escape(label)}</a>`).join(" · ");
   const body = `<div class="holiday-about">
 <section class="holiday-about-hero">
   <div class="shell">
     <nav class="read-event-crumbs" aria-label="Breadcrumb"><a href="/read/">Reads</a> › <a href="${parent}">${escape(parentLabel)}</a> › About</nav>
-    ${reviewed ? "" : '<p class="holiday-about-review">Editorial preview · Community review pending</p>'}
+${published ? "" : '<p class="holiday-about-review">Editorial preview · Community review pending</p>'}
     <div class="holiday-about-intro">
       <div><h1>About ${escape(title)}</h1><p class="lead">${escape(intro)}</p>
         <a class="text-link" href="#how-it-began">How it began</a> · <a class="text-link" href="#try-it">Try the question</a>
@@ -43,11 +43,11 @@ export function renderEventAbout(entry, entries, hasShelf, escape) {
     <div class="holiday-about-options">${options.map(([option, feedback]) => `<details><summary>${escape(option)}</summary><p>${escape(feedback)}</p></details>`).join("")}</div>
   </div>
   <div class="holiday-about-card"><h2>Learn more</h2><ul>${sources.map(([label, url]) => `<li><a href="${escape(url)}">${escape(label)}</a></li>`).join("")}</ul>
-${reviewed ? `<p>Review dated <time datetime="${escape(review.date)}">${escape(review.date)}</time>. ${escape(review.scope)}</p>` : ""}
+${review?.date && review.scope ? `<p>Review dated <time datetime="${escape(review.date)}">${escape(review.date)}</time>. ${escape(review.scope)}</p>` : ""}
 ${relatedLinks ? `<p>${relatedLinks}</p>` : ""}
   </div>
   ${links ? `<nav class="holiday-about-more" aria-label="Explore other holidays"><h2>Explore other holidays</h2><ul>${links}</ul></nav>` : ""}
 </section>
 </div>`;
-  return { body, portrait, noindex: !reviewed };
+  return { body, portrait, noindex: !published };
 }
