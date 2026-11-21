@@ -38,6 +38,33 @@ const CLOSE = "<!-- /newsletter:generated -->";
 const ACTION =
   "https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==";
 
+// Brevo-hosted double opt-in forms for product launch announcements. Use a
+// dedicated contact list for each release so signups match the email promised.
+const releaseAlerts = {
+  "snack-haul": {
+    name: "Snack Haul",
+    privacy: "/privacy/snack-haul/#launch-alerts",
+    form: "https://c8e915bf.sibforms.com/serve/MUIFAOu-KUA_U069pC1vk1KQq3yCfcIysm_IcXvD9ngdbahu70Q3W9K2izlb7f-eSPfsJPoWMAMURGmi2tQejmS_hNMfx2CIVrN6aje7CM50Rbvi0uAO3Jz3B7tzADnDE1p_ADFMugVIWXLjkE2ulpWos9EAnBVJJ2DCJUzeUh_rm0xb_ttHTMNzEgB5Bj6Iq8T05fme8ctxhj3cdw==",
+  },
+};
+
+function releaseBlock({name, form, privacy}) {
+  return `${OPEN}
+  <section>
+    <div class="shell">
+      <div class="signup-card">
+        <h2 class="section-title">Get the ${name} launch email</h2>
+        <p class="section-copy">For adults. Sign up for one email when ${name} is available on Google Play. Brevo will ask you to confirm your address first.</p>
+        <div class="stack-inline">
+          <a class="btn btn-primary" href="${form}">Sign up for the launch email</a>
+          <a class="text-link" href="${privacy}">Privacy policy</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  ${CLOSE}`;
+}
+
 function block(appName, source) {
   const copy = source
     ? "A handful of new games a month. No spam, and you can unsubscribe in one click."
@@ -99,7 +126,8 @@ for (const slug of fs.readdirSync(appsDir).sort()) {
 
   const title = (original.match(/<title>([^<]*)<\/title>/) || [])[1] || slug;
   const appName = title.split("|")[0].replace(/^SnackPack\s+/i, "").trim() || "this app";
-  updatePage(file, block(appName), `apps/${slug}/index.html`);
+  const alert = releaseAlerts[slug];
+  updatePage(file, alert ? releaseBlock(alert) : block(appName), `apps/${slug}/index.html`);
 }
 
 // Small measured arcade pilot. SOURCE is deliberately page-specific so Brevo
