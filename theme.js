@@ -1,6 +1,5 @@
 /**
- * Three-way theme toggle — shared verbatim across snackpackuniverse.com,
- * isclaudeup.com and iscodexup.com.
+ * Three-way theme toggle and SnackPack Universe header controls.
  *
  *   dark   →  light  →  cream  →  dark …
  *
@@ -118,6 +117,71 @@
     paint(current());
   }
 
+  // Keep the disclosure outside the horizontal scroller so its panel can
+  // open below the sticky header. Reuse the original links and desktop order.
+  function mountMobileNavigation() {
+    var links = document.querySelector(".topbar .topbar-inner > nav > .nav-links");
+    if (!links || !window.matchMedia) return;
+
+    var secondary = Array.from(links.children).filter(function (item) {
+      var link = item.querySelector("a[href]");
+      return link && (
+        link.protocol === "mailto:" ||
+        /^\/(?:play\/daily|guides|privacy|terms)\/?$/.test(link.pathname) ||
+        (link.pathname === "/" && link.hash === "#pipeline")
+      );
+    });
+    if (!secondary.length) return;
+
+    var header = links.closest(".topbar-inner");
+    var menu = document.createElement("details");
+    menu.className = "nav-more";
+    var summary = document.createElement("summary");
+    summary.textContent = "More";
+    var panel = document.createElement("ul");
+    panel.className = "nav-more-links";
+    menu.append(summary, panel);
+    header.appendChild(menu);
+
+    var positions = secondary.map(function (item) {
+      var marker = document.createComment("secondary navigation link");
+      item.before(marker);
+      return marker;
+    });
+
+    var compact = window.matchMedia("(max-width: 980px)");
+    function arrange() {
+      menu.open = false;
+      header.classList.toggle("topbar-has-more", compact.matches);
+      secondary.forEach(function (item, index) {
+        if (compact.matches) panel.appendChild(item);
+        else positions[index].after(item);
+      });
+    }
+    arrange();
+    if (compact.addEventListener) compact.addEventListener("change", arrange);
+    else compact.addListener(arrange);
+
+    document.addEventListener("click", function (event) {
+      if (!menu.contains(event.target)) menu.open = false;
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape" || !menu.open) return;
+      menu.open = false;
+      if (menu.contains(document.activeElement)) summary.focus();
+    });
+    panel.addEventListener("click", function (event) {
+      if (!event.target.closest("a")) return;
+      summary.focus();
+      menu.open = false;
+    });
+  }
+
+  function mountHeader() {
+    mount();
+    mountMobileNavigation();
+  }
+
   // Follow the OS only while the visitor has never chosen for themselves.
   if (window.matchMedia) {
     var query = window.matchMedia("(prefers-color-scheme: dark)");
@@ -131,8 +195,8 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount);
+    document.addEventListener("DOMContentLoaded", mountHeader);
   } else {
-    mount();
+    mountHeader();
   }
 })();

@@ -2567,6 +2567,68 @@ button:focus-visible {
   .topbar-inner .pill-link{padding:7px 13px}
   .topbar-inner .theme-toggle{width:30px;height:30px;font-size:13px}
 }
+.nav-more {
+  display: none;
+  position: relative;
+  flex: none;
+}
+
+.nav-more > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 10px;
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.nav-more > summary::-webkit-details-marker { display: none; }
+.nav-more > summary:hover,
+.nav-more[open] > summary { background: var(--accent-soft); }
+.nav-more > summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.nav-more-links {
+  position: absolute;
+  inset: calc(100% + 8px) 0 auto auto;
+  width: min(13rem, calc(100vw - 20px));
+  max-height: calc(100dvh - 70px);
+  overflow: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.nav-more-links a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-more-links a:hover,
+.nav-more-links a:focus-visible { text-decoration: underline; }
+
+@media (max-width: 980px) {
+  .topbar-has-more { gap: 8px; }
+  .topbar-has-more > nav { mask-image: none; }
+  .topbar-has-more .nav-links { padding-right: 2px; }
+  .nav-more { display: block; }
+}
+
 @media (max-width: 720px) {
   .topbar-inner .brand-copy{display:none}
   .topbar-inner .brand-mark{width:34px;height:34px;border-radius:11px}
