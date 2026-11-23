@@ -6,7 +6,7 @@ link.addEventListener("click", (event) => {
 
   event.preventDefault();
   const player = document.createElement("iframe");
-  player.title = "Brain Games Vol. 1 gameplay trailer";
+  player.title = "Brain Games Vol. 1 iPhone gameplay Short";
   player.src = `https://www.youtube-nocookie.com/embed/${container.dataset.brainGamesPlayer}?autoplay=1&playsinline=1`;
   player.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
   player.allowFullscreen = true;
