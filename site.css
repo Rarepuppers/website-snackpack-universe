@@ -1848,6 +1848,10 @@ button:focus-visible {
   width: auto;
 }
 
+.store-badge--google-play {
+  height: 58px;
+}
+
 .store-badge-link--card {
   margin-top: 14px;
 }

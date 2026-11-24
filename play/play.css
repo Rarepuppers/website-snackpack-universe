@@ -162,7 +162,8 @@
   cursor: default;
 }
 
-.game-tile--soon:hover {
+.game-tile--soon:hover,
+.game-tile--in-app:hover {
   transform: none;
   border-color: var(--line);
   box-shadow: var(--shadow);
