@@ -27,6 +27,21 @@ function load() {
 const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 migrateWinterSave(save);
+// 1.0.2 rebuilt the first roads. Stars, medals and challenges stay; best times,
+// ghosts and Weekly Cup times from the old roads would not compare, so they go.
+function migrateRoads() {
+  const roads = SH.ROADS, rev = (id) => (roads[id] && roads[id].rev) || 1;
+  if ((save.roads || 0) >= 2) return;
+  Object.keys(roads).forEach((id) => {
+    if (save.ghost[id] && (save.ghost[id].rev || 1) !== rev(id)) delete save.ghost[id];
+    delete save.best[id];
+    if (save.cup && save.cup.best) delete save.cup.best[id];
+  });
+  // Anyone who already earned stars on Bakery Hills 3 got the straps gift.
+  if (save.stars["bakery-3"] || save.stars["bakery-4"]) save.gifts.straps = true;
+  save.roads = 2;
+}
+migrateRoads();
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
 function persist() {
   save.savedAt = Date.now();
@@ -64,15 +79,24 @@ const totalStars = () => Object.values(save.stars).reduce((n, v) => n + v, 0);
 // The unlisted web labs page stays fully free. In the app, Bakery Hills, the daily,
 // the Weekly Cup, the Pickup and the Tuk-Tuk are free; one purchase opens the rest.
 const FREE_TRUCKS = ["pickup", "tuktuk"];
-const paywalled = () => !!nativeApp && !save.pro;
-const regionPaid = (r) => r > 0 && paywalled();
+// The website demo has the same free set as the app, with a link to Google Play in
+// place of the purchase. ?full=1 (unlisted) and saves that already went further keep everything.
+const fullWeb = !nativeApp && (params.get("full") === "1" || SH.DELIVERIES.some((d) => !SH.isFree(d.id) && save.stars[d.id]) || save.webFull);
+if (fullWeb && !nativeApp) save.webFull = true;
+const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&utm_source=website&utm_medium=web-demo";
+const paywalled = () => !fullWeb && !save.pro;
+const routePaid = (d) => paywalled() && !d.daily && !d.winter && !SH.isFree(d.id);
+// A region is paid when none of its roads are free.
+const regionPaid = (r) => r > 0 && paywalled() && !SH.DELIVERIES.some((d) => d.region === r && SH.isFree(d.id));
 const truckPaid = (id) => paywalled() && id!=="sleigh" && !FREE_TRUCKS.includes(id);
 const billing = { ready: false, price: "", busy: false, note: "" };
 const regionReached = (r) => SH.isOpen(SH.DELIVERIES.find((d) => d.region === r).id, save.stars);
 const regionOpen = (r) => !regionPaid(r) && regionReached(r);
+// Regions open in full, for orders, Long Haul and goals (a free taste does not count).
+const regionFull = (r) => regionOpen(r) && !(r > 0 && paywalled());
 const maxRegion = () => { let m = 0; SH.REGIONS.forEach((_, r) => { if (regionOpen(r)) m = r; }); return m; };
 function nextRoute() {
-  const open = SH.DELIVERIES.filter((d) => !regionPaid(d.region) && SH.isOpen(d.id, save.stars));
+  const open = SH.DELIVERIES.filter((d) => !routePaid(d) && regionOpen(d.region) && SH.isOpen(d.id, save.stars));
   return open.find((d) => !save.stars[d.id]) || open.find((d) => save.stars[d.id] < 3) || open[open.length - 1];
 }
 const railFor = (truckId) => 0.2 + 0.14 * level("straps") + SH.truckSpec(truckId).rail;
@@ -86,18 +110,18 @@ const GOALS = [
   { id: "eggs", icon: "🥚", name: "Egg Whisperer", desc: "Deliver 20 trays of eggs.", coins: 60, test: () => save.stats.eggs >= 20 },
   { id: "crates", icon: "🏗️", name: "Heavy Lifter", desc: "Deliver 100 loads of cargo.", coins: 80, test: () => save.stats.crates >= 100 },
   { id: "bakery", icon: "🥐", name: "Bakery Boss", desc: "Three stars on all of Bakery Hills.", coins: 100, test: () => regionStars(0) === 24 },
-  { id: "dunes", icon: "🥛", name: "Cream of the Crop", desc: "Reach Honey Harbour.", coins: 80, test: () => regionOpen(2) },
-  { id: "chilli", icon: "🌶️", name: "Feeling the Heat", desc: "Reach Chilli Ridge.", coins: 120, test: () => regionOpen(4) },
+  { id: "dunes", icon: "🥛", name: "Cream of the Crop", desc: "Reach Honey Harbour.", coins: 80, test: () => regionFull(2) },
+  { id: "chilli", icon: "🌶️", name: "Feeling the Heat", desc: "Reach Chilli Ridge.", coins: 120, test: () => regionFull(4) },
   { id: "fleet", icon: "🚚", name: "Second Set of Wheels", desc: "Buy another truck.", coins: 50, test: () => save.trucks.length >= 2 },
   { id: "maxed", icon: "🔧", name: "Fully Tuned", desc: "Max out one upgrade.", coins: 100, test: () => SH.UPGRADES.some((u) => level(u.id) >= SH.MAX_LEVEL) },
   { id: "streak", icon: "📅", name: "Regular Run", desc: "Do the daily delivery 3 days in a row.", coins: 90, test: () => save.daily.streak >= 3 },
-  { id: "harbour", icon: "⚓", name: "Harbour Master", desc: "Reach Frosty Pass.", coins: 100, test: () => regionOpen(3) },
-  { id: "market", icon: "🏮", name: "Night Shift", desc: "Reach Midnight Market.", coins: 150, test: () => regionOpen(5) },
+  { id: "harbour", icon: "⚓", name: "Harbour Master", desc: "Reach Frosty Pass.", coins: 100, test: () => regionFull(3) },
+  { id: "market", icon: "🏮", name: "Night Shift", desc: "Reach Midnight Market.", coins: 150, test: () => regionFull(5) },
   { id: "frost", icon: "❄️", name: "Cold Chain", desc: "Finish every Frosty Pass route.", coins: 150, test: () => SH.DELIVERIES.every((d) => d.region !== 3 || save.stars[d.id] > 0) },
   { id: "melon", icon: "🍉", name: "Melon Minder", desc: "Deliver 15 melons.", coins: 60, test: () => save.stats.melons >= 15 },
   { id: "cake", icon: "🎂", name: "Right Way Up", desc: "Deliver 10 cakes.", coins: 70, test: () => save.stats.cakes >= 10 },
   { id: "popcorn", icon: "🍿", name: "Light Touch", desc: "Deliver 20 bags of popcorn.", coins: 80, test: () => save.stats.popcorn >= 20 },
-  { id: "icecream", icon: "🍦", name: "Brain Freeze", desc: "Deliver 10 ice creams inside the gold time.", coins: 90, test: () => save.stats.coldIcecream >= 10 },
+  { id: "icecream", icon: "🍦", name: "Brain Freeze", desc: "Deliver 10 ice creams before they start to melt.", coins: 90, test: () => save.stats.coldIcecream >= 10 },
   { id: "bridge", icon: "🌉", name: "Bridge Builder", desc: "Make 10 deliveries over bridges.", coins: 60, test: () => save.stats.bridges >= 10 },
   { id: "ramp", icon: "🛬", name: "Stuck the Landing", desc: "Land 50 jumps.", coins: 50, test: () => save.stats.landings >= 50 },
   { id: "gold", icon: "🥇", name: "Gold Standard", desc: "Win 10 gold medals.", coins: 120, test: () => Object.values(save.medal).filter((m) => m === 3).length >= 10 },
@@ -191,8 +215,8 @@ function weekJob() {
 // The Weekly Cup's legs are fixed for the week from the regions open when it is first seen.
 function cup() {
   const wk = weekKey();
-  if (save.cup.week !== wk) save.cup = { week: wk, top: maxRegion(), best: {}, paid: {} };
-  return SH.cupFor(wk, save.cup.top);
+  if (save.cup.week !== wk) save.cup = { week: wk, top: maxRegion(), free: paywalled(), best: {}, paid: {} };
+  return SH.cupFor(wk, save.cup.top, !!save.cup.free);
 }
 const CUP_PAY = { bronze: 120, silver: 220, gold: 360 };
 function cupTotal(c) { return c.legs.every((d) => save.cup.best[d.id]) ? Math.round(c.legs.reduce((n, d) => n + save.cup.best[d.id], 0) * 10) / 10 : null; }
@@ -249,20 +273,17 @@ function ensureAudio() {
   } catch (e) { audio.ctx = null; }
 }
 // Decodes every loaded sound once the audio context exists. Safe to call again.
+// Music is the exception: a decoded loop holds about 25 MB, so only the track that
+// is playing is decoded (see musicBuffer).
 function decodeSounds() {
   if (!audio.ctx) return;
   Object.keys(Assets.sounds).forEach((name) => {
+    if (name.startsWith("music/")) { if (audio.wantMusic && !audio.music) setMusic(audio.wantMusic); return; }
     if (audio.buffers[name] || audio.decoding[name]) return;
     audio.decoding[name] = true;
     try {
       audio.ctx.decodeAudioData(soundData(name).slice(0), (buffer) => {
         audio.buffers[name] = buffer;
-        if (audio.wantMusic && !audio.music) setMusic(audio.wantMusic);
-        else if ((name==="music/music_northpole" || name.startsWith("music/music_carol_")) && audio.musicName==="music_northpole" && audio.music?.src.loop) {
-          const loop=audio.music;
-          loop.src.loop=false;
-          loop.src.onended=()=> { if (audio.music===loop) setMusic("music_northpole",1); };
-        }
         if (audio.wantEngine && !audio.loops) engineLoops(audio.wantEngine);
         if (audio.wantRoad && name.startsWith("road/") && !(audio.road || {})[name.slice(5)]) roadLoops(audio.wantRoad);
       }, () => {});
@@ -297,27 +318,40 @@ function engineLoops(truckId) {
   audio.loops = { idle: source("engine/" + truckId + "_idle", true, 0), drive: source("engine/" + truckId + "_drive", true, 0) };
   audio.loops.idle.src.start(); audio.loops.drive.src.start();
 }
+// Decodes one music track and lets every other decoded track go.
+function musicBuffer(key, done) {
+  const name = "music/" + key;
+  Object.keys(audio.buffers).forEach((k) => { if (k.startsWith("music/") && k !== name) delete audio.buffers[k]; });
+  if (audio.buffers[name]) return done(audio.buffers[name]);
+  if (!Assets.sounds[name] || audio.decoding[name]) return;
+  audio.decoding[name] = true;
+  try {
+    audio.ctx.decodeAudioData(soundData(name).slice(0), (buffer) => { audio.decoding[name] = false; audio.buffers[name] = buffer; done(buffer); }, () => { audio.decoding[name] = false; });
+  } catch (e) { audio.decoding[name] = false; }
+}
 function setMusic(name, trackIndex = 0) {
   audio.wantMusic = name;
-  if (!audio.ctx || (audio.musicName === name && !trackIndex && audio.music)) return;
-  stopLoop(audio.music); audio.music = null; audio.musicName = "";
+  if (!audio.ctx || (audio.musicName === name && !trackIndex && (audio.music || audio.musicPending === name))) return;
+  stopLoop(audio.music); audio.music = null; audio.musicName = ""; audio.musicPending = "";
   if (!name || !save.sound || save.music === false) return;
+  const have = (key) => !!Assets.sounds["music/" + key];
   const winter = name === "music_northpole";
-  const tracks = winter ? [name,...Object.keys(Assets.sounds).filter((key)=>key.startsWith("music/music_carol_")).sort()
-    .map((key)=>key.slice(6))].filter((key)=>audio.buffers["music/"+key]) : [name];
-  if (!tracks.length) tracks.push("music_frost");
-  if (name==="music_winter_menu" && !audio.buffers["music/"+name]) tracks[0]="music_menu";
-  const track=tracks[trackIndex % tracks.length];
-  if (!audio.buffers["music/"+track]) return;
-  const loop=source("music/"+track,tracks.length===1,0);
-  audio.music=loop;
-  // The set can grow as carols decode. Change tracks only at a natural end.
-  if (winter && tracks.length>1) loop.src.onended=()=> {
-    if (audio.music===loop) setMusic(name,trackIndex+1);
-  };
-  loop.gain.gain.setTargetAtTime(MUSIC_LEVEL,audio.ctx.currentTime,.6);
-  loop.src.start();
-  audio.musicName=name;
+  const tracks = winter ? [name, ...Object.keys(Assets.sounds).filter((key) => key.startsWith("music/music_carol_")).sort().map((key) => key.slice(6))].filter(have) : [name];
+  if (!tracks.length || !have(tracks[0])) tracks[0] = winter ? "music_frost" : name === "music_winter_menu" ? "music_menu" : name;
+  const track = tracks[trackIndex % tracks.length];
+  if (!have(track)) return;
+  audio.musicPending = name;
+  musicBuffer(track, () => {
+    if (audio.wantMusic !== name || audio.musicPending !== name) return;
+    audio.musicPending = "";
+    const loop = source("music/" + track, tracks.length === 1, 0);
+    audio.music = loop;
+    // A playlist changes track only at a natural end.
+    if (tracks.length > 1) loop.src.onended = () => { if (audio.music === loop) setMusic(name, trackIndex + 1); };
+    loop.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, .6);
+    loop.src.start();
+    audio.musicName = name;
+  });
 }
 const MUSIC_LEVEL = 0.32;
 // Tyre noise by region, swapped on bridges and ice, plus a quiet backdrop.
@@ -419,17 +453,22 @@ function tick(now) {
   }
   if (state.mode === "paused") return;
   const g = state.game;
-  state.acc += dt;
+  if (state.slow > 0) { state.slow -= dt; state.acc += dt * 0.4; } else state.acc += dt;
   while (state.acc >= SH.STEP) {
     // Recording builds only: the bots' driver works the pedals (see SnackHaulDebug below).
     if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; }
     const driving = g.status === "driving";
+    // The picture is drawn between the last two physics steps (see World3D.pose).
+    snapBodies(g);
+    if (state.ghost) snapBodies(state.ghost.game);
     g.step(state.input);
     if (driving) { stepGhost(); if (state.gap) state.gap.push(g.truck.getPosition().x, state.ghost.game.truck.getPosition().x, state.ghost.game.status === "driving"); }
     state.acc -= SH.STEP;
   }
   if (state.autopilot) syncPedals();
+  world.alpha = Math.min(1, state.acc / SH.STEP);
   drainEvents(g);
+  if (g.status === "driving") roadSounds(g);
   if (now > state.toastUntil) $("toast").classList.remove("on");
   if (now > state.hintUntil) $("hint").classList.remove("on");
   engineSound(g, g.status === "driving");
@@ -442,7 +481,19 @@ function tick(now) {
   }
 }
 
+function snapBodies(g) {
+  const keep = (b) => { const p = b.getPosition(); b.px = p.x; b.py = p.y; b.pa = b.getAngle(); };
+  keep(g.truck); g.wheels.forEach(keep); g.cargo.forEach((c) => keep(c.body));
+}
 const LOST_SOUND = { melon: "melon_splat", jelly: "jelly_boing", milk: "milk_clink" };
+// Sounds that follow the road rather than an engine event: logs under the wheels,
+// and ice cream starting to melt once the gold time has gone.
+function roadSounds(g) {
+  const x = g.truck.getPosition().x;
+  const logs = state.logs || (state.logs = g.rocks.filter((r) => r.kind === "log").map((r) => r.x));
+  while (logs.length && logs[0] < x - 1) { logs.shift(); if (g.grounded() && Math.abs(g.speed()) > 1.5) play("log_bump", 0.55, 0.9 + Math.random() * 0.2); }
+  if (!state.melted && g.time > g.par && g.cargo.some((c) => c.type === "icecream" && !c.lost && !c.broken)) { state.melted = true; play("icecream_melt", 0.6); toast("The ice cream is melting!", 1100); }
+}
 function drainEvents(g) {
   g.events.splice(0).forEach((ev) => {
     if (ev.type === "done") ev.at = g.truck.getPosition();
@@ -452,7 +503,13 @@ function drainEvents(g) {
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
     else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
-    else if (ev.type === "land") { thud(Math.min(1, ev.air)); if (ev.air > 0.35 && g.live()) play("crate_thud", Math.min(0.7, ev.air * 0.6)); }
+    else if (ev.type === "land") {
+      thud(Math.min(1, ev.air));
+      if (ev.air > 0.35 && g.live()) play("crate_thud", Math.min(0.7, ev.air * 0.6));
+      const aboard = (type) => g.cargo.some((c) => c.type === type && !c.lost && !c.broken && !c.delivered);
+      if (ev.air > 0.3 && aboard("melon")) play("melon_roll", 0.5);
+      if (ev.air > 0.3 && aboard("popcorn")) play("popcorn_pop", 0.5, 0.95 + Math.random() * 0.1);
+    }
     else if (ev.type === "pickup") { play("pickup_load", 0.8) || (beep(660, 0.12, "triangle", 0.08), beep(880, 0.16, "triangle", 0.08, 0.1)); toast("Loaded " + ev.items.length + " more!", 1100); }
     else if (ev.type === "dropoff") { play("present_drop",.75) || (beep(680,.14,"sine",.08),beep(910,.18,"triangle",.06,.05)); toast("Porch delivered!",1000); }
     else if (ev.type === "missedDrop") { beep(247,.22,"triangle",.06); toast("Passed a porch",950); }
@@ -480,7 +537,7 @@ function makeGhost(delivery) {
     if (rival && save.stars[delivery.id] && !save.rival[delivery.id]) {
       return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup" }) };
     }
-    if (saved && saved.v === 2) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
+    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
   } catch (e) { /* the run goes on without a ghost */ }
   return null;
 }
@@ -509,21 +566,25 @@ function startDelivery(delivery) {
     delivery={...delivery,snowy:true};
   }
   // Paid content never starts without the unlock (Next delivery can point past Bakery Hills).
-  if (!delivery.winter && regionPaid(delivery.region) && !delivery.daily) return showUnlock("route");
-  if (delivery && delivery.truck && truckPaid(delivery.truck) && !save.trucks.includes(delivery.truck)) return showUnlock("truck");
+  if (routePaid(delivery)) return showUnlock("route");
+  if (delivery.truck && !delivery.loan && truckPaid(delivery.truck) && !save.trucks.includes(delivery.truck)) return showUnlock("truck");
+  // Straps arrive before the first road that needs them, however the player got there.
+  if (delivery.id === "bakery-4" && !save.gifts.straps) giveStraps();
   ensureAudio();
   state.delivery = delivery;
   // A Special Order can name its truck; it must be owned to start.
   const truckId = delivery.truck || drivingTruck();
-  const game = SH.createGame({ delivery, upgrades: save.upgrades, truck: truckId });
-  state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0;
+  // The daily is driven in a loaner truck with set upgrades, the same for everyone.
+  const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId });
+  state.logs = null; state.melted = false;
+  state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0; state.slow = 0;
   state.input.gas = state.input.brake = false;
   syncPedals();
   engineLoops(truckId);
   const region=SH.regionFor(delivery.region);
   setMusic("music_" + region.id);
   roadLoops(region.id);
-  state.hudLoad = state.hudCoins = null;
+  state.hudLoad = state.hudCoins = state.hudClock = null;
   world.look = look(truckId);
   world.reduceMotion = !save.shake;
   state.ghost = delivery.winter ? null : makeGhost(delivery);
@@ -536,7 +597,7 @@ function startDelivery(delivery) {
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
-  const label = delivery.long ? "Long Haul" : delivery.daily ? "Daily delivery" : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
+  const label = delivery.long ? "Long Haul" : delivery.daily ? "World Tour Daily: " + SH.REGIONS[delivery.region].name + " in the " + SH.truckSpec(truckId).name : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
   toast(label + ": " + (delivery.winter ? delivery.dropoffs + " porches" : game.total + " loads"), 1700);
   const ch = !delivery.long && !delivery.daily && save.stars[delivery.id] && !save.challenge[delivery.id] ? SH.challengeFor(delivery.id) : null;
   if (delivery.winter) hint("Stop on each doormat, then return to the depot",4500);
@@ -560,10 +621,14 @@ function coach(g) {
   const h = state.hints, x = g.truck.getPosition().x, id = g.delivery.id;
   if (save.tutorial < 1 && id === "bakery-1") {
     if (!h.gas && g.time > 0.3 && !state.input.gas) { h.gas = true; hint("Hold GAS to drive", 6000); }
-    if (!h.ease && x > 30) { h.ease = true; hint("Ease off before crests, or your crates fly out"); }
+    // The first ramp: the game slows for a moment and says what to do. Only the
+    // picture slows; the physics keeps its fixed step.
+    const ramp = g.terrain.features.find((f) => f.type === "ramp");
+    if (!h.ease && ramp && x > ramp.x0 - 7 && x < ramp.x0) { h.ease = true; state.slow = 0.7; hint("Let go of GAS before the ramp, or the crates fly out", 3200); }
+    if (!h.air && !g.grounded() && g.airTime > 0.15 && performance.now() > state.hintUntil) { h.air = true; hint("In the air: GAS tips the nose up, BRAKE tips it down", 3200); }
     if (!h.brake && x > g.terrain.zoneStart - 26) { h.brake = true; hint("Depot ahead. Brake early and stop in the arrows", 5000); }
   }
-  if (save.tutorial < 2 && !g.grounded() && g.airTime > 0.3 && !h.air) { h.air = true; hint("In the air: GAS tips the nose up, BRAKE tips it down"); }
+  if (save.tutorial < 2 && !g.grounded() && g.airTime > 0.3 && !h.air && performance.now() > state.hintUntil) { h.air = true; hint("In the air: GAS tips the nose up, BRAKE tips it down"); }
   if (g.stuckTime > 3.5 && !h.stuck) { h.stuck = true; hint("Stuck? Hold BRAKE to back up, then take a run at it", 5000); }
   if (!h.fuel && g.fuel / g.maxFuel < 0.22) { h.fuel = true; toast("Low fuel!", 1100); play("low_fuel", 0.7) || beep(330, 0.2, "square", 0.04); }
 }
@@ -579,7 +644,12 @@ function hud(g) {
     const metres = Math.max(0, Math.round(g.truck.getPosition().x - 8)), mile = Math.floor(metres / 250);
     $("clock").textContent = metres + " m · next " + (mile + 1) * 250;
     if (mile > (state.mile || 0)) { state.mile = mile; toast(mile * 250 + " m!", 1100); play("medal", 0.5); }
-  } else $("clock").textContent = Math.floor(g.time) + "s / " + g.par + "s";
+  } else {
+    // The clock shows the medal still in reach, and turns as each one passes.
+    const m = g.medals, t = g.time, tier = t <= m.gold ? 3 : t <= m.silver ? 2 : t <= m.bronze ? 1 : 0;
+    const text = Math.floor(t) + "s" + (tier ? " / " + ["", "bronze ", "silver ", "gold "][tier] + [0, m.bronze, m.silver, m.gold][tier] + "s" : "");
+    if (state.hudClock !== text) { state.hudClock = text; $("clock").textContent = text; $("clock").className = "chip m" + tier; }
+  }
   // The gap to the ghost at the same point on the road: minus means you are ahead.
   if (state.gap && g.status === "driving") {
     const gap = Math.round(state.gap.gap() * 10) / 10;
@@ -619,7 +689,7 @@ function finishDelivery(g) {
   // Mastery grows with distance driven on a delivery made, or any Long Haul.
   const truckId = g.spec.id, mBefore = masteryLevel(truckId);
   let masteryPay = 0, masteryUp = 0;
-  if (r.status === "done" || d.long) {
+  if ((r.status === "done" || d.long) && save.trucks.includes(truckId)) {
     save.mastery[truckId] = (save.mastery[truckId] || 0) + r.metres;
     masteryPay = Math.round(r.earned * masteryBonus(truckId));
     if (masteryPay) { save.coins += masteryPay; s.earned += masteryPay; }
@@ -666,7 +736,7 @@ function finishDelivery(g) {
       }
     } else {
       if (r.stars > (save.stars[d.id] || 0)) save.stars[d.id] = r.stars;
-      if (!save.best[d.id] || r.time < save.best[d.id]) save.best[d.id] = Math.round(r.time * 10) / 10;
+      if (!save.best[d.id] || r.time < save.best[d.id]) { if (save.best[d.id] && r.stars >= 2) setTimeout(() => play("saved", 0.6), 2000); save.best[d.id] = Math.round(r.time * 10) / 10; }
       if (r.express) save.express[d.id] = true;
       if (r.medal > (save.medal[d.id] || 0)) save.medal[d.id] = r.medal;
       // Keep the pedals of the fastest run, for the ghost.
@@ -683,10 +753,10 @@ function finishDelivery(g) {
           }
         });
       } else if (d.cup) cupLine = "Cup legs count with two stars and a clean stop.";
-      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
+      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
     }
     // Bakery Hills 4 is the first route where a bare truck loses its load, so the farm hands over spare straps first.
-    if (d.id === "bakery-3" && !save.gifts.straps) { save.gifts.straps = true; if (level("straps") < 1) { save.upgrades.straps = 1; gift = "The egg farm gave you spare straps: Cargo Straps level 1"; } }
+    if (d.id === "bakery-3" && !save.gifts.straps) gift = giveStraps();
     if (save.tutorial < 1 && d.id === "bakery-1") save.tutorial = 1;
     else if (save.tutorial < 2 && d.id === "bakery-2") save.tutorial = 2;
   } else s.failed += 1;
@@ -720,6 +790,9 @@ function finishDelivery(g) {
     else if (r.time < mine.time) ghostLine = "Faster than your ghost, but it only counts with two stars and a clean stop";
     else ghostLine = gap === "0.0" ? "Dead level with your ghost" : "Your ghost was " + gap + "s faster";
   }
+  // Fast lane: three stars on the very first try at route 1 offers route 3 straight away.
+  const fastLane = d.id === "bakery-1" && r.stars === 3 && !save.stars["bakery-2"] && !save.stars["bakery-3"] && s.deliveries === 1;
+  askForReview(r, d);
   const stageNow = depotStage(), stageUp = d.order && orderPay && DEPOT_PARTS[stageNow - 1] === save.parts && stageNow > 1 ? stageNow : 0;
   r.beatRival = rivalPay > 0; r.beatGhost = beatGhost; r.challengeDone = chPay > 0; r.orderDone = !!d.order && r.status === "done" && r.stars >= 2;
   const done = countJobs(r);
@@ -732,9 +805,10 @@ function finishDelivery(g) {
   const list = r.lines.map((l) => `<li><span>${esc(l.label)}</span><b>+${l.coins}</b></li>`).join("");
   const next = d.daily || d.long || d.order || d.cup ? null : following(d);
   const medalName = ["", "Bronze", "Silver", "Gold"][r.medal];
-  const canAdvance = r.status === "done" && next;
+  const canAdvance = r.status === "done" && next && !routePaid(next);
   // After a lost load, point to the garage when an upgrade is affordable.
-  const toGarage = r.status !== "done" && !d.long && r.reason !== "flip" && cheapestUpgrade() && save.coins >= cheapestUpgrade().cost;
+  const toGarage = (r.status !== "done" && !d.long && r.reason !== "flip" && cheapestUpgrade() && save.coins >= cheapestUpgrade().cost) ||
+    (d.id === "bakery-2" && r.status === "done" && !save.gifts.garageTip && bestNext() && save.coins >= bestNext().cost && (save.gifts.garageTip = true));
   const stars = "★".repeat(r.stars) + "☆".repeat(3 - r.stars);
   sheet.innerHTML = `<h2>${d.long ? "Long Haul: " + r.metres + " m" : r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
     ${d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0) + "."} Best distance in ${esc(SH.REGIONS[d.region].name)}: ${save.longBest[d.region] || 0} m</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c === "★" ? ico("star_on", c, "ico star") : ico("star_off", c, "ico star")}</span>`).join("")}</div>`}
@@ -762,12 +836,15 @@ function finishDelivery(g) {
     ${done.map((c) => `<div class="unlocked">${ico("contracts", "📋")} ${esc(c.text)} +${c.pay}</div>`).join("")}
     ${goals.map((g2) => `<div class="unlocked">${ico("goal_" + g2.id, g2.icon)} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
     ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
-    ${paywalled() && d.id === "bakery-6" && r.status === "done" ? `<div class="unlocked">${ico("pro", "⭐")} Five more regions are waiting. <button class="btn primary" data-unlock="results" style="margin-top:6px">Unlock the full game${billing.price ? " " + esc(billing.price) : ""}</button></div>` : ""}
+    ${offerCard(r, d)}
+    ${d.daily ? `<p class="nextbest">${ico("daily", "📅")} Tomorrow: ${esc(SH.REGIONS[SH.dailyRegion(localDate(new Date(Date.now() + 864e5)))].name)}.</p>` : ""}
+    ${fastLane ? `<div class="unlocked">Three stars first time. You can skip ahead to Egg Farm Drop. <button class="btn" data-act="skip" style="margin-top:6px">Skip ahead</button></div>` : ""}
     ${nextBest(r, d) ? `<p class="nextbest">${esc(nextBest(r, d))}</p>` : ""}
     <div class="row" style="margin-top:8px">
       ${canAdvance ? '<button class="btn primary" data-act="next">Next delivery</button>' : ""}
-      <button class="btn${canAdvance || toGarage ? "" : " primary"}" data-act="retry">Try again</button>
-      <button class="btn${toGarage && !canAdvance ? " primary" : ""}" data-act="garage">Garage</button>
+      <button class="btn${canAdvance || toGarage ? "" : " primary"}" data-act="retry">${d.long ? "Same road" : "Try again"}</button>
+      ${d.long ? '<button class="btn" data-act="newroad">New road</button>' : ""}
+      <button class="btn${toGarage && !canAdvance ? " primary" : ""}" data-act="garage">${toGarage && bestNext() ? "Garage: " + esc(bestNext().name) + " next" : "Garage"}</button>
     </div>`;
   veil.classList.add("on");
   engineLoops(null); roadLoops(null);
@@ -805,6 +882,29 @@ function finishWinterRun(report, delivery) {
   else play("failed",.6);
 }
 
+function giveStraps() {
+  save.gifts.straps = true;
+  if (level("straps") >= 1) return "";
+  save.upgrades.straps = 1;
+  persist();
+  if (state.mode !== "result") toast("The egg farm gave you spare straps!", 2200);
+  return "The egg farm gave you spare straps: Cargo Straps level 1";
+}
+// The garage's "Best next": straps first, then suspension and tyres. More engine
+// throws more cargo, so it waits until Cargo Straps reach level 2.
+function bestNext() {
+  const order = level("straps") < 2 ? ["straps"] : ["suspension", "tyres", "straps", "engine", "tank"];
+  const pick = order.map((id) => SH.UPGRADES.find((u) => u.id === id)).find((u) => SH.upgradeCost(level(u.id)) != null);
+  return pick ? { id: pick.id, name: pick.name, level: level(pick.id) + 1, cost: SH.upgradeCost(level(pick.id)) } : null;
+}
+// A store review is asked for once, after a good run on route 5 or a Dunes road,
+// never after a failure, and never in the same session as the unlock sheet.
+function askForReview(r, d) {
+  if (!nativeApp || save.gifts.review || state.offerShown || r.stars < 3) return;
+  if (d.id !== "bakery-5" && d.region !== 1) return;
+  save.gifts.review = true;
+  setTimeout(() => tellApp({ type: "review" }), 2600);
+}
 function cheapestUpgrade() {
   return SH.UPGRADES.map((u) => ({ name: u.name, level: level(u.id) + 1, cost: SH.upgradeCost(level(u.id)) })).filter((u) => u.cost != null).sort((a, b) => a.cost - b.cost)[0] || null;
 }
@@ -816,10 +916,10 @@ function nextBest(r, d) {
     const gap = r.time - target;
     if (gap > 0 && gap < 15) return (["Bronze", "Silver", "Gold"][r.medal]) + " is " + gap.toFixed(1) + "s faster.";
   }
-  if (r.status === "done" && r.stars < 3) return "Keep the whole load for three stars.";
+  if (r.status === "done" && r.stars < 3) return "Keep the whole load for three stars" + (r.time <= r.medals.gold ? ", and the gold is yours." : ".");
   const ch = SH.challengeFor(d.id);
   if (r.status === "done" && r.medal === 3 && ch && !save.challenge[d.id]) return "Next: the route challenge.";
-  const u = cheapestUpgrade();
+  const u = bestNext() || cheapestUpgrade();
   if (!u) return "";
   return save.coins >= u.cost ? "You can afford " + u.name + " level " + u.level + " in the garage." : (u.cost - save.coins) + " coins to " + u.name + " level " + u.level + ".";
 }
@@ -842,34 +942,62 @@ function toMenu(screen) {
   kick();
 }
 // ════ Unlock sheet ════════════════════════════════════════════════
+// The paid set, counted from the game data.
+function paidCounts() {
+  const routes = SH.DELIVERIES.filter((d) => !SH.isFree(d.id)).length;
+  return { routes, regions: SH.REGIONS.length - 1, orders: SH.ORDERS.filter((o) => o.region > 0).length, trucks: SH.TRUCKS.filter((t) => !FREE_TRUCKS.includes(t.id)) };
+}
+// The offer on the results card, at the moments it helps: the last free Dunes road,
+// all 24 Bakery stars, and the free roads all driven. At most once a session.
+function offerCard(r, d) {
+  if (!paywalled() || r.status !== "done" || state.offerShown) return "";
+  const c = paidCounts(), bakery = regionStars(0);
+  let title = "";
+  if (d.id === "dunes-2") title = totalStars() + " stars so far. " + c.routes + " more roads are open with the full game";
+  else if (d.region === 0 && bakery === 24 && !save.gifts.bakery24) { save.gifts.bakery24 = true; title = "All 24 Bakery stars! Dairy Dunes and four more regions are next"; }
+  else if (!SH.FREE_ROUTES.some((id) => !save.stars[id]) && !d.daily) title = "You've driven every free road. " + c.routes + " more are waiting";
+  if (!title) return "";
+  state.offerShown = true;
+  return `<div class="offer"><b>${esc(title)}</b>${nativeApp ? "One payment. No ads. Every future road included." : "The full game is on Google Play."}
+    <button class="btn primary" data-unlock="results">${nativeApp ? "See the full game" : "Get it on Google Play"}</button></div>`;
+}
+const regionStrip = () => `<div class="strip">${SH.REGIONS.slice(1).map((r) => `<i style="background-image:url('${artUrl("region_" + r.id)}')"><span>${esc(r.name)}</span></i>`).join("")}</div>`;
 function unlockSheet() {
   const price = billing.price || "";
   // Same shape as the other apps' custom unlock screens: hero, what you get, one-time
   // price, restore, and a plain message when the store can't be reached.
   if (save.pro) {
     sheet.innerHTML = `${artUrl("unlock_hero") ? `<div class="unlock-hero" style="background-image:url('${artUrl("unlock_hero")}')"></div>` : ""}
-      <h2>You're all set</h2><p>Every region, Special Order, Long Haul and truck is open. Thanks for supporting Snack Haul.</p>
+      <h2>You're all set</h2><p>Every region, Special Order, Long Haul and truck is open, and the Bread Van is parked in your garage. Thanks for supporting Snack Haul.</p>
       <div class="row" style="margin-top:10px"><button class="btn primary" data-act="unlock-close">Let's drive</button></div>`;
+    return;
+  }
+  const c = paidCounts(), from = state.unlockFrom;
+  const title = from === "truck" ? "Keep every truck" : from === "route" || from === "routes" ? "Open every road" : from === "long" ? "Long Haul everywhere" : from === "orders" ? "Meet every customer" : "Unlock the full game";
+  const list = `<ul class="lines">
+      <li><span>${c.regions} more regions and ${c.routes} more routes</span><b>✓</b></li>
+      <li><span>${c.orders} Special Orders from ${c.regions} customers</span><b>✓</b></li>
+      <li><span>${c.trucks.map((t) => t.name).join(", ")}. The Bread Van is yours straight away</span><b>✓</b></li>
+      <li><span>Long Haul in every region</span><b>✓</b></li>
+      <li><span>Future regions included</span><b>✓</b></li>
+    </ul>`;
+  if (!nativeApp) {
+    sheet.innerHTML = `<h2>${esc(title)}</h2>${regionStrip()}${list}
+      <div class="row" style="margin-top:10px"><button class="btn primary" data-act="play">Get it on Google Play</button><button class="btn" data-act="unlock-close">Not now</button></div>
+      <p class="note">This web demo has the free part of the game. The full game is on Google Play: one payment, no ads.</p>`;
     return;
   }
   const unavailable = !billing.ready && billing.waited;
   const buy = billing.busy ? "Waiting for Google Play…" : unavailable ? "Try again" : !billing.ready ? "Loading the store…" : "Unlock" + (price ? " for " + price : "");
   sheet.innerHTML = `${artUrl("unlock_hero") ? `<div class="unlock-hero" style="background-image:url('${artUrl("unlock_hero")}')"><span class="badge-one">One-time</span></div>` : ""}
-    <h2>Unlock the full game</h2>
-    <ul class="lines">
-      <li><span>5 more regions and 40 routes</span><b>✓</b></li>
-      <li><span>25 Special Orders from 5 customers</span><b>✓</b></li>
-      <li><span>Bread Van, Dune Buggy, Long Hauler, Big Muncher</span><b>✓</b></li>
-      <li><span>Long Haul in every region</span><b>✓</b></li>
-      <li><span>Future regions included</span><b>✓</b></li>
-    </ul>
+    <h2>${esc(title)}</h2>${regionStrip()}${list}
     ${billing.note ? `<p class="challenge">${esc(billing.note)}</p>` : unavailable ? `<p class="challenge">The store price isn't available right now. You can keep playing and try again later.</p>` : ""}
     <div class="row" style="margin-top:10px">
       <button class="btn primary" ${unavailable ? "data-retry" : "data-buy"}${billing.busy || (!billing.ready && !unavailable) ? " disabled" : ""}>${esc(buy)}</button>
       <button class="btn" data-restore${billing.busy ? " disabled" : ""}>Restore purchase</button>
       <button class="btn" data-act="unlock-close">Not now</button>
     </div>
-    <p class="note">One purchase unlocks the full game in Snack Haul. No subscription, no ads.</p>`;
+    <p class="note">One payment. No ads. Every future road included.</p>`;
 }
 // Ask the app for the price; if it hasn't come within 6 s, say so and offer Try again.
 function askForPrice() {
@@ -880,9 +1008,9 @@ function askForPrice() {
 }
 function showUnlock(from) {
   if (!paywalled()) return;
-  state.unlockOpen = true; state.unlockFrom = from;
+  state.unlockOpen = true; state.unlockFrom = from; state.offerShown = true;
   billing.note = "";
-  if (!billing.ready) askForPrice();
+  if (nativeApp && !billing.ready) askForPrice();
   unlockSheet();
   veil.classList.add("on");
 }
@@ -896,8 +1024,11 @@ window.SnackHaulBilling = (b) => {
   const wasPro = !!save.pro;
   Object.assign(billing, b);
   if (typeof b.pro === "boolean" && b.pro !== wasPro) {
-    save.pro = b.pro; persist();
-    if (b.pro) { toast("Full game unlocked!", 2200); play("unlock", 0.8) || play("goal", 0.7); }
+    save.pro = b.pro;
+    // The owner's gift: the Bread Van, so the garage changes the moment the game is bought.
+    if (b.pro && !save.gifts.van) { save.gifts.van = true; if (!save.trucks.includes("van")) save.trucks.push("van"); }
+    persist();
+    if (b.pro) { toast("Full game unlocked! The Bread Van is in your garage.", 2600); play("unlock", 0.8) || play("goal", 0.7); }
   }
   if (state.unlockOpen) unlockSheet();
   else if (state.mode === "menu") renderScreen();
@@ -910,7 +1041,11 @@ function pause() {
   if (state.mode !== "drive") return;
   state.mode = "paused";
   engineSound(null, false);
-  sheet.innerHTML = '<h2>Paused</h2><div class="row" style="margin-top:12px"><button class="btn primary" data-act="resume">Keep driving</button><button class="btn" data-act="retry">Restart</button><button class="btn" data-act="garage">Garage</button></div>';
+  const d = state.delivery, ch = d && !d.long && !d.daily && !d.winter ? SH.challengeFor(d.id) : null;
+  const what = d.order ? SH.orderText(d) : ch ? "Challenge: " + SH.challengeText(ch) + (save.challenge[d.id] ? " ✓" : "") : "";
+  const m = state.game.medals;
+  sheet.innerHTML = `<h2>Paused</h2>${what ? `<p class="challenge">${esc(what)}</p>` : ""}${d.long || d.winter ? "" : `<p>Gold ${m.gold}s with the whole load, silver ${m.silver}s, bronze ${m.bronze}s.</p>`}
+    <div class="row" style="margin-top:12px"><button class="btn primary" data-act="resume">Keep driving</button><button class="btn" data-act="retry">Restart</button><button class="btn" data-act="home">Home</button><button class="btn" data-act="settings">Settings</button></div>`;
   veil.classList.add("on");
 }
 sheet.addEventListener("click", (e) => {
@@ -926,7 +1061,13 @@ sheet.addEventListener("click", (e) => {
   if (a === "winter") return toMenu(currentEvent() ? "winter" : "home");
   if (a === "winter-next") return startDelivery(SH.WINTER_ROUTES[state.delivery.index+1]);
   if (a === "garage") { state.unlockOpen = false; toMenu("garage"); }
-  if (a === "retry") startDelivery(state.delivery.long ? SH.longHaul(state.delivery.region, Date.now().toString(36)) : state.delivery);
+  if (a === "home") { state.unlockOpen = false; toMenu("home"); }
+  if (a === "settings") { state.unlockOpen = false; toMenu("settings"); }
+  if (a === "play") { state.unlockOpen = false; return location.assign(PLAY_URL); }
+  if (a === "skip") return startDelivery(SH.findDelivery("bakery-3"));
+  // Long Haul: the same road again, or a new one.
+  if (a === "retry") startDelivery(state.delivery);
+  if (a === "newroad") startDelivery(SH.longHaul(state.delivery.region, Date.now().toString(36)));
   if (a === "next") startDelivery(following(state.delivery));
   if (a === "resume") { veil.classList.remove("on"); state.mode = "drive"; kick(); }
   // An empty save with a newer timestamp, so an older copy held by the app can never win.
@@ -934,6 +1075,8 @@ sheet.addEventListener("click", (e) => {
   if (a === "close") veil.classList.remove("on");
 });
 $("pause").addEventListener("click", pause);
+// Restart at once in the first seconds of a run; after that, through the pause sheet.
+$("restart").addEventListener("click", () => { if (state.mode !== "drive") return; if (state.game.time < 5) startDelivery(state.delivery); else pause(); });
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) pause();
   else if (state.mode==="menu" && world) renderScreen();
@@ -999,11 +1142,14 @@ const panelHead = (title) => `<div class="phead"><button class="back" data-nav="
 
 function homeScreen() {
   const n = nextRoute(), today = localDate(), doneToday = save.daily.last === today;
+  // Every free road driven: the Drive button becomes the road ahead.
+  const freeDone = paywalled() && !SH.FREE_ROUTES.some((id) => !save.stars[id]) && SH.DELIVERIES.some((d) => routePaid(d) && SH.isOpen(d.id, save.stars));
   ui.innerHTML = `<div class="home">
     <div class="topbar"><div class="brand"><h1>${artUrl("logo") ? `<img class="logo" src="${artUrl("logo")}" alt="Snack Haul">` : "Snack Haul"}</h1><p>Get the load there in one piece.</p></div>${purse()}</div>
     <div class="menu">
-      <button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}</small></button>
-      <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "Daily delivery +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
+      ${freeDone ? `<button class="btn primary mapcard" data-unlock="map"${artUrl("map") ? ` style="background-image:linear-gradient(90deg,#ffc94dee 45%,#ffc94d44),url('${artUrl("map")}')"` : ""}>The road ahead<small>${SH.FREE_ROUTES.length} free roads done. Honey Harbour, Frosty Pass and more are next</small></button>` :
+      `<button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}: ${esc(n.name)}</small></button>`}
+      <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "World Tour: " + esc(SH.REGIONS[SH.dailyRegion(today)].name) + " +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
       <button class="btn" data-nav="long">${ico("long_haul")} Long Haul<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
       ${currentEvent() ? `<button class="btn winter-entry" data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
@@ -1017,12 +1163,12 @@ function homeScreen() {
 }
 
 // ════ Customers and Special Orders ════════════════════════════════
-function orderOpen(o) { return regionOpen(o.region) && SH.repLevel(o.region, save.stars) > o.slot; }
+function orderOpen(o) { return regionFull(o.region) && SH.repLevel(o.region, save.stars) > o.slot; }
 function ordersReady() { return SH.ORDERS.some((o) => orderOpen(o) && !save.orders[o.id]); }
 function ordersScreen() {
   const cards = SH.CUSTOMERS.map((c, r) => {
     const region = SH.REGIONS[r];
-    if (regionPaid(r)) return `<button class="customer locked" data-unlock="orders"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Unlock the full game to meet ${esc(c.name)} and their 5 Special Orders.</small></button>`;
+    if (r > 0 && paywalled()) return `<button class="customer locked" data-unlock="orders"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Unlock the full game to meet ${esc(c.name)} and their 5 Special Orders.</small></button>`;
     if (!regionOpen(r)) return `<div class="customer locked"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Reach ${esc(region.name)} to meet ${esc(c.name)}.</small></div>`;
     const lvl = SH.repLevel(r, save.stars), stars = regionStars(r), next = SH.REP_STARS[lvl];
     const list = SH.ORDERS.filter((o) => o.region === r).map((o) => {
@@ -1041,8 +1187,8 @@ function ordersScreen() {
 // ════ Long Haul: one road per region, milestones every 250 m ══════
 function longScreen() {
   const rows = SH.REGIONS.map((r, i) => {
-    const open = regionOpen(i), best = save.longBest[i] || 0, mile = save.longMile[i] || 0;
-    if (regionPaid(i)) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
+    const open = regionFull(i), best = save.longBest[i] || 0, mile = save.longMile[i] || 0;
+    if (i > 0 && paywalled()) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-long="${i}"${open ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${open ? (best ? "Best " + best + " m. " : "") + "Next milestone " + (mile + 1) * 250 + " m, +" + Math.round(20 * (mile + 1) * r.pay) : "Not reached yet"}</small></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}<p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
@@ -1061,8 +1207,8 @@ function eventsScreen() {
   const job = (c2, got, paid, when) => `<div class="goal${paid ? " done" : ""}"><span class="ic">${ico("contracts", "📋", "ico badge")}</span><b>${esc(c2.text)}${paid ? " ✓" : ""}</b><small>${Math.min(c2.goal, Math.floor(got))} of ${c2.goal} ${when}</small><em>+${c2.pay}</em></div>`;
   const w = weekJob();
   ui.innerHTML = `<section class="panel">${panelHead("Daily and weekly")}
-    <h3 class="small">${ico("daily")} Daily delivery</h3>
-    <p class="sub">One shared route a day. Do it every day: day 7 of a streak pays 150 more.</p>
+    <h3 class="small">${ico("daily")} World Tour Daily</h3>
+    <p class="sub">Today: ${esc(SH.REGIONS[SH.dailyRegion(today)].name)} in the ${esc(SH.truckSpec(SH.dailyDelivery(today).truck).name)}. The same road and the same loaner truck for everyone, in a different region each day. Day 7 of a streak pays 150 more.</p>
     <div class="cal">${cal}</div>
     <button class="btn${doneToday ? "" : " primary"}" data-nav="daily">${doneToday ? "Drive it again" : "Drive today's delivery +" + SH.BALANCE.dailyPay}</button>
     <h3 class="small">${ico("medal_gold", "🏆")} Weekly Cup</h3>
@@ -1080,13 +1226,14 @@ function routesScreen() {
   const cells = SH.DELIVERIES.filter((d) => d.region === state.regionTab).map((d) => {
     const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3;
     const ch = SH.challengeFor(d.id), chDone = !!save.challenge[d.id];
+    if (routePaid(d)) return `<button class="route paid" data-unlock="routes" aria-label="${esc(d.name)}, full game"><b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i><small>${ico("lock", "🔒")}</small><em>Full game</em></button>`;
     return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(region.name)} route ${d.index + 1}, ${esc(d.name || "")}, ${st} stars${ch ? ", challenge " + (chDone ? "done" : "not done") : ""}">
-      <b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i>${ch ? `<span class="ch${chDone ? " on" : ""}" title="${esc(SH.challengeText(ch))}">${ico("challenge", "🎯")}${chDone ? " ✓" : ""}</span>` : ""}<small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small><em>${md ? ico("medal_" + ["", "bronze", "silver", "gold"][md]) + " " + ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
+      <b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i>${ch ? `<span class="ch${chDone ? " on" : ""}" title="${esc(SH.challengeText(ch))}">${ico("challenge", "🎯")}${chDone ? " ✓" : ""}</span>` : ""}<small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small>${ch && st && !chDone ? `<i class="chtext">${esc(SH.challengeText(ch))}</i>` : ""}<em>${md ? ico("medal_" + ["", "bronze", "silver", "gold"][md]) + " " + ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
-    ${nativeApp ? "" : '<p class="note">Playtest build: every region is free. In the Play Store version, Bakery Hills is free and the rest is a one-time unlock.</p>'}</section>`;
+    ${paywalled() ? `<p class="note">Free: all of Bakery Hills and the first two Dairy Dunes roads. ${nativeApp ? "The rest is one payment." : "The rest is in the full game on Google Play."}</p>` : ""}</section>`;
 }
 
 function winterScreen() {
@@ -1127,9 +1274,10 @@ function garageScreen() {
     return `<button class="truck" data-truck="${t.id}" aria-pressed="${selected}"${!owned && save.coins < t.cost ? " disabled" : ""}>
       ${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small>${owned ? `<small class="mastery">Mastery ${masteryLevel(t.id)}${masteryLevel(t.id) < 10 ? " · " + (MASTERY_KM[masteryLevel(t.id)] - (save.mastery[t.id] || 0) / 1000).toFixed(1) + " km to " + (masteryLevel(t.id) + 1) : ""}</small>` : ""}<span class="price">${selected ? "Driving" : owned ? "Owned" : ico("coin", "🪙") + " " + t.cost}</span></button>`;
   }).join("");
+  const best = bestNext();
   const ups = SH.UPGRADES.map((u) => {
     const lv = level(u.id), cost = SH.upgradeCost(lv);
-    return `<div class="up"><b>${ico("up_" + u.id, u.icon)} ${esc(u.name)}</b><span class="pips">${"●".repeat(lv)}${"○".repeat(SH.MAX_LEVEL - lv)}</span><small>${esc(u.desc)}</small>
+    return `<div class="up"><b>${ico("up_" + u.id, u.icon)} ${esc(u.name)}${best && best.id === u.id ? '<span class="best">Best next</span>' : ""}</b><span class="pips">${"●".repeat(lv)}${"○".repeat(SH.MAX_LEVEL - lv)}</span><small>${esc(u.desc)}${cost != null ? `<span class="next">${esc(UPGRADE_NEXT[u.id](lv))}</span>` : ""}</small>
       ${cost == null ? '<button class="btn" disabled>Max</button>' : `<button class="btn" data-up="${u.id}"${save.coins < cost ? " disabled" : ""}>${ico("coin", "🪙")} ${cost}</button>`}</div>`;
   }).join("");
   // Drivers and roof toppers appear once their models are delivered.
@@ -1140,8 +1288,8 @@ function garageScreen() {
   };
   const paintRow = `<div class="set paintset"><b>${ico("paint", "🎨")} Paint for the ${esc(SH.truckSpec(save.truck).name)}</b><div class="swatches">
     <button class="swatch" data-paint="" aria-pressed="${!save.paint[save.truck]}" title="Factory"><i style="background:#888"></i>Factory</button>
-    ${PAINTS.concat(WINTER_PAINTS.filter((p)=>save.winterRewards[p.id])).map((p) => { const own = save.winterRewards[p.id] || paintOwned(p); return `<button class="swatch" data-paint="${p.id}" aria-pressed="${save.paint[save.truck] === p.id}"${own ? "" : " disabled"} title="${esc(own ? p.name : paintHow(p))}"><i style="background:linear-gradient(135deg, ${p.colors[0]} 60%, ${p.colors[1]} 60%)"></i>${own ? esc(p.name) : ico("lock", "🔒")}</button>`; }).join("")}
-    </div><small class="sub">${PAINTS.filter(paintOwned).length} of ${PAINTS.length} paints earned. Locked ones say how on hover.</small></div>`;
+    ${PAINTS.concat(WINTER_PAINTS.filter((p)=>save.winterRewards[p.id])).map((p) => { const own = save.winterRewards[p.id] || paintOwned(p); return `<button class="swatch" data-paint="${p.id}" aria-pressed="${save.paint[save.truck] === p.id}"${own ? "" : " disabled"} title="${esc(own ? p.name : paintHow(p))}"><i style="background:linear-gradient(135deg, ${p.colors[0]} 60%, ${p.colors[1]} 60%)"></i>${own ? esc(p.name) : ico("lock", "🔒") + `<span class="how">${esc(paintHow(p))}</span>`}</button>`; }).join("")}
+    </div><small class="sub">${PAINTS.filter(paintOwned).length} of ${PAINTS.length} paints earned.</small></div>`;
   const style = paintRow + pick("driver", DRIVERS, "driver/", "_driver") + pick("topper", TOPPERS.concat(WINTER_TOPPERS.filter(([id])=>save.winterRewards[id])), "toppers/topper_", "");
   const stage = depotStage(), nextParts = DEPOT_PARTS[stage];
   const depot = `<h3 class="small">Depot</h3><p class="sub">Stage ${stage} of 5: ${esc(DEPOT_STAGES[stage - 1])}. ${nextParts != null ? (nextParts - save.parts) + " more depot part" + (nextParts - save.parts === 1 ? "" : "s") + " from Special Orders for the next stage." : "Fully built."}</p>
@@ -1149,6 +1297,14 @@ function garageScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Garage")}<h3 class="small">Trucks</h3><div class="tiles">${trucks}</div>${style ? '<h3 class="small">Style</h3>' + style : ""}<h3 class="small">Upgrades</h3><p class="sub">These apply to every truck.</p>${ups}${depot}</section>`;
 }
 
+// What the next level of each upgrade does, in numbers from the engine.
+const UPGRADE_NEXT = {
+  engine: (lv) => "Level " + (lv + 1) + ": " + Math.round(20 * (lv + 1)) + "% more pull. More speed throws more cargo",
+  suspension: (lv) => "Level " + (lv + 1) + ": eggs " + Math.round(16 * (lv + 1)) + "% tougher, softer landings",
+  tyres: (lv) => "Level " + (lv + 1) + ": " + Math.round(25 * (lv + 1)) + "% more grip",
+  straps: (lv) => "Level " + (lv + 1) + ": rails " + Math.round((0.2 + 0.14 * (lv + 1)) * 100) + " cm, loads held down harder",
+  tank: (lv) => "Level " + (lv + 1) + ": " + (SH.BALANCE.tankSeconds + 9 * (lv + 1)) + " s of fuel (now " + (SH.BALANCE.tankSeconds + 9 * lv) + ")"
+};
 function goalsScreen() {
   const s = save.stats;
   const stats = [[s.deliveries, "Deliveries"], [s.crates, "Loads delivered"], [(s.metres / 1000).toFixed(1) + " km", "Distance"], [s.bestAir.toFixed(1) + "s", "Best air"], [(s.topSpeed * 3.6).toFixed(0) + " km/h", "Top speed"], [s.earned, "Coins earned"]]
@@ -1186,7 +1342,7 @@ ui.addEventListener("click", (e) => {
     const nav = b.dataset.nav;
     if (nav === "play") return startDelivery(nextRoute());
     if (nav === "daily") {
-      const d = SH.dailyDelivery(localDate(), maxRegion());
+      const d = SH.dailyDelivery(localDate());
       d.paid = save.daily.last === localDate();
       return startDelivery(d);
     }
@@ -1262,6 +1418,8 @@ if (!world) {
     if (has("ui/brake.webp") && !$("brake").querySelector("img")) $("brake").insertAdjacentHTML("afterbegin", ico("brake", "", "ico pedal-ico"));
     if (has("ui/pause.webp")) $("pause").innerHTML = ico("pause", "II");
     world.assetStamp = a.version || String(a.files.size);
+    // First launch: straight onto the first road once the trucks are in. The home screen comes after it.
+    if (!save.stats.deliveries && !save.stats.failed && !Object.keys(save.stars).length && state.mode === "menu" && state.screen === "home" && !veil.classList.contains("on")) return startDelivery(SH.findDelivery("bakery-1"));
     if (a.files.size && state.mode === "menu") renderScreen();
   });
 }
