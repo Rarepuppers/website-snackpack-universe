@@ -83,6 +83,7 @@
     if (d.games[slug]) return; // first completion of the day stands
     d.games[slug] = headline || "";
     write(DONE, d);
+    if (window.SnackPack && window.SnackPack.countDaily) window.SnackPack.countDaily();
 
     var s = read(STREAK, { last: null, count: 0, best: 0 });
     if (s.last !== t) {

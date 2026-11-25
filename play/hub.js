@@ -1,6 +1,12 @@
 (function () {
   "use strict";
 
+  // Anonymous hub tile counts. See game-events.js and /privacy/arcade/.
+  var events = document.createElement("script");
+  events.src = "/play/game-events.js";
+  events.async = true;
+  document.head.appendChild(events);
+
   var grid = document.querySelector("#games .game-grid");
   if (!grid) return;
 

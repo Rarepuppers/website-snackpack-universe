@@ -108,6 +108,7 @@
     var same = speaking && speaking.card === card;
     stop();
     if (same) return;
+    document.dispatchEvent(new CustomEvent("snackpack:read-aloud"));
     var copy = card.querySelector(".story-page-copy");
     var data = prepare(copy);
     var u = new SpeechSynthesisUtterance(data.text);

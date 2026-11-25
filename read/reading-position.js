@@ -59,12 +59,19 @@
   var cards = Array.prototype.slice.call(document.querySelectorAll(".story-page-card"));
   var route = location.pathname.match(/^\/read\/([a-z0-9-]+)\/$/);
   if (!cards.length || !route) return;
+  // Anonymous book counts. See read-events.js and /privacy/arcade/.
+  var events = document.createElement("script");
+  events.src = "/read/read-events.js"; events.async = true;
+  document.head.appendChild(events);
   var slug = route[1], finished = false, timer = null;
   function record(index, complete) {
     if (index < 0 || index >= cards.length) return;
     if (finished && !complete) return;
     if (complete) finished = true;
     write(KEY, JSON.stringify({ version: 1, slug: slug, page: index + 1, total: cards.length, completed: !!complete }));
+    // read-events.js loads async, so it also replays this list on arrival.
+    (window.__spReadProgress = window.__spReadProgress || []).push(!!complete);
+    document.dispatchEvent(new CustomEvent("snackpack:reading-progress", { detail: { completed: !!complete } }));
   }
   function go(index) {
     if (index < 0 || index >= cards.length) return;
