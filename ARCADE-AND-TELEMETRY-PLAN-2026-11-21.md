@@ -169,3 +169,14 @@ August still applies).
 
 Measure Cloudflare by **visits**, split out HN and LK, and exclude
 ChromeHeadless. Measure search with GSC only.
+
+## Progress — 26 November 2026
+
+| Step | Result |
+| --- | --- |
+| 1 | **Live** (e8a7afc0). GoatCounter events extended; privacy page covers /read/. |
+| 2 | **Done.** Featured order Thirteen, 2048, Connect 4, Snacky Worm, Pinball. "Play with a friend" row (Connect 4, Checkers, Reversi, Thirteen invite link) and a "With a friend" category. Chess left out: it is computer-only. Homepage hero has "Read a story → / Play a game →". Hub clicks from the row count as `hub-position/together`. |
+| 3 | **Partly, on purpose.** Thirteen already leads with "Play with friends", and its title (and 2048's) changed on 6 Nov with a read due ~4 Dec, so neither was touched. Rules guide retitled "13 Card Game Rules: How to Play Thirteen (Tiến Lên)" for its top query `13 rules` (41 impressions, position 7.9, 0 clicks, 90 days). Mahjong has one query in 90 days, so no rewrite. |
+| 4 | **Done, as a time rule.** The tip popup no longer opens Mon–Fri 08:00–15:00 in the player's time zone, and isn't stamped as shown then. `/read/` never had a tip prompt. |
+| Hub baselines | The six `hub-*` screenshots change; adopt them from CI's `arcade-visual-diff` artifact. |
+| Pre-existing | `reads-final.spec.mjs` "short viewport controls 740x360" was already failing on main before these pushes. |

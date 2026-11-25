@@ -1964,7 +1964,7 @@ button.th-card.is-selected {
 .arcade-recent-head { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-bottom: 12px; }
 .arcade-recent-head h3 { margin: 5px 0 0; font-family: var(--serif); font-size: clamp(1.35rem, 3vw, 1.8rem); }
 .arcade-recent-head a { color: var(--accent); font-weight: 750; }
-.arcade-recent-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.arcade-recent-grid, .arcade-together-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .arcade-recent-card { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface-strong); color: var(--ink); text-decoration: none; }
 .arcade-recent-card img { width: 44px; height: 44px; flex: 0 0 auto; object-fit: contain; }
 .arcade-recent-card span { display: grid; gap: 2px; min-width: 0; flex: 1; }
@@ -2006,7 +2006,7 @@ button.th-card.is-selected {
 .sp-deck-picker select { min-height: 40px; max-width: 150px; padding: 7px 28px 7px 10px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: .84rem; font-weight: 700; }
 
 @media (max-width: 800px) {
-  .arcade-recent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .arcade-recent-grid, .arcade-together-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
@@ -2022,7 +2022,7 @@ button.th-card.is-selected {
   .game-controls > .seg:has(> button:nth-child(3):last-child) > button { flex-basis: calc(33.333% - 6px); }
   .arcade-tools { padding: 14px; }
   .arcade-search-row > * { flex-basis: 100%; width: 100%; }
-  .arcade-recent-grid { grid-template-columns: 1fr; }
+  .arcade-recent-grid, .arcade-together-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: no-preference) {

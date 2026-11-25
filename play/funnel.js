@@ -95,8 +95,18 @@
     return modal;
   }
 
+  // Classes play here (Nov 2026: a Honduran school, weekdays around 9 am).
+  // Children in a lesson should not be asked for a tip, so the prompt waits
+  // for evenings and weekends in the player's own time zone. Not stamped as
+  // shown, so a later home session can still see it.
+  function schoolHours() {
+    var d = new Date();
+    var day = d.getDay(), hour = d.getHours();
+    return day >= 1 && day <= 5 && hour >= 8 && hour < 15;
+  }
+
   function openModal(title, body) {
-    if (shownToday()) return;
+    if (shownToday() || schoolHours()) return;
     markShown();
     var m = buildModal();
     m.querySelector(".sp-modal-title").textContent = title;

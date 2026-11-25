@@ -17,13 +17,15 @@
     board: ["mahjong", "checkers", "chess", "connect-4", "reversi", "snakes-and-ladders", "five-dice", "backgammon"],
     arcade: ["table-tennis", "asteroid-destroyer", "brick-breaker", "flappy-snacky", "snacky-worm"],
     soccer: ["flag-frenzy", "soccer-trivia-sprint", "keepy-uppy", "target-shooting-arena", "free-kick-curl", "crossbar-challenge", "goalkeeper-hero", "penalty-shootout", "dribble-rush", "header-hero"],
+    together: ["connect-4", "checkers", "reversi", "table-tennis", "backgammon", "snakes-and-ladders", "five-dice", "thirteen"],
     daily: ["sudoku", "killer-sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "rummy-500", "backgammon", "block-puzzle"]
   };
-  // Featured leads with the games people actually search for (Search Console,
-  // 20 Sep – 17 Oct 2026: Thirteen 1,287 impressions, 2048 141, Minesweeper 80,
-  // Snacky Worm 73; Solitaire is the biggest search term the arcade targets).
-  // Everything else keeps page order.
-  var featuredFirst = ["thirteen", "2048", "minesweeper", "snacky-worm", "solitaire"];
+  // Featured leads with what people actually play (21 Nov 2026): Thirteen and
+  // 2048 are the two games found from search (Search Console 22 Oct – 19 Nov:
+  // 139 and 9 clicks), and Connect 4, Snacky Worm and Pinball are what classes
+  // open from this page. Solitaire's Cloudflare views were a headless bot, so
+  // it no longer leads. Everything else keeps page order.
+  var featuredFirst = ["thirteen", "2048", "connect-4", "snacky-worm", "pinball"];
   function featuredRank(record) { var i = featuredFirst.indexOf(record.slug); return i < 0 ? featuredFirst.length : i; }
   var recentAdded = ["big-two", "chess", "killer-sudoku", "brick-breaker", "block-puzzle", "rummy-500", "backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));
@@ -78,8 +80,9 @@
       '<button class="btn-game arcade-clear" type="button">Clear filters</button>' +
     '</div>' +
     '<div class="arcade-categories" role="group" aria-label="Game categories">' +
-      ['all', 'cards', 'puzzles', 'word', 'board', 'arcade', 'soccer', 'daily'].map(function (cat) {
-        return '<button type="button" data-category="' + cat + '" aria-pressed="' + (cat === 'all') + '">' + (cat === 'all' ? 'All games' : cat.charAt(0).toUpperCase() + cat.slice(1)) + '</button>';
+      ['all', 'cards', 'puzzles', 'word', 'board', 'arcade', 'together', 'soccer', 'daily'].map(function (cat) {
+        var name = cat === 'all' ? 'All games' : cat === 'together' ? 'With a friend' : cat.charAt(0).toUpperCase() + cat.slice(1);
+        return '<button type="button" data-category="' + cat + '" aria-pressed="' + (cat === 'all') + '">' + name + '</button>';
       }).join("") +
     '</div>' +
     '<p class="arcade-result-count" aria-live="polite"></p>' +
@@ -91,6 +94,32 @@
   recentPanel.hidden = true;
   recentPanel.innerHTML = '<div class="arcade-recent-head"><div><span class="eyebrow">On this device</span><h3>Jump back in</h3></div><a href="./stats/">Your stats →</a></div><div class="arcade-recent-grid"></div>';
   panel.parentNode.insertBefore(recentPanel, panel);
+
+  // Two players on one screen is how classes use the arcade (Honduras, Nov
+  // 2026: Connect 4 was the most-opened game). Built from the hub's own tiles,
+  // so a missing game simply drops out of the row.
+  var together = [
+    ["connect-4", "Two players, one screen"],
+    ["checkers", "Two players, one screen"],
+    ["reversi", "Two players, one screen"],
+    ["thirteen", "Invite friends with a link"]
+  ];
+  var togetherPanel = document.createElement("section");
+  togetherPanel.className = "arcade-recent arcade-together";
+  togetherPanel.setAttribute("aria-labelledby", "arcade-together-title");
+  togetherPanel.innerHTML = '<div class="arcade-recent-head"><div><span class="eyebrow">Two players</span><h3 id="arcade-together-title">Play with a friend</h3></div></div><div class="arcade-together-grid"></div>';
+  var togetherGrid = togetherPanel.querySelector(".arcade-together-grid");
+  together.forEach(function (pair) {
+    var record = records.filter(function (r) { return r.slug === pair[0]; })[0];
+    if (!record) return;
+    var link = document.createElement("a");
+    link.className = "arcade-recent-card";
+    link.href = record.tile.href;
+    var img = record.tile.querySelector("img");
+    link.innerHTML = (img ? img.outerHTML : "") + '<span><strong>' + record.title + '</strong><small>' + pair[1] + '</small></span><b aria-hidden="true">→</b>';
+    togetherGrid.appendChild(link);
+  });
+  if (togetherGrid.children.length) panel.parentNode.insertBefore(togetherPanel, panel);
 
   var input = panel.querySelector("input");
   var select = panel.querySelector("select");

@@ -13,7 +13,7 @@
  *                     when the page is hidden: under-1m, 1-5m, 5-15m, 15m-plus
  * On the /play/ hub (loaded by hub.js):
  *   hub/<slug>        a game tile was opened
- *   hub-position/<p>  where that tile sat: 1-5, 6-12, 13-plus, or recent
+ *   hub-position/<p>  where that tile sat: 1-5, 6-12, 13-plus, recent, or together
  *
  * Browsers that send Global Privacy Control or Do Not Track, and automated
  * browsers, send nothing. Keep /privacy/arcade/ in step with anything sent here.
@@ -111,12 +111,13 @@
       return m ? m[1] : "";
     }
     document.addEventListener("click", function (event) {
-      var tile = event.target && event.target.closest && event.target.closest(".arcade-recent-grid a, a.game-tile");
+      var tile = event.target && event.target.closest && event.target.closest(".arcade-recent-grid a, .arcade-together-grid a, a.game-tile");
       if (!tile) return;
       var slug = slugOf(tile.href);
       if (!slug) return;
       var place;
       if (tile.closest(".arcade-recent-grid")) place = "recent";
+      else if (tile.closest(".arcade-together-grid")) place = "together";
       else {
         var shown = Array.prototype.filter.call(document.querySelectorAll("#games .game-grid a.game-tile"), function (t) {
           return t.offsetParent !== null;

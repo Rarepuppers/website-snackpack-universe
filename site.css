@@ -393,6 +393,24 @@ a {
   margin-top: 24px;
 }
 
+/* Classes land on the homepage first: the browser story and game links. */
+.hero-quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.hero-quick a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  font-weight: 750;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

@@ -123,3 +123,29 @@ test("the book shelf sends nothing", async ({ page }) => {
   expect(await page.evaluate(() => window.__spReadEvents)).toBeUndefined();
   expect(await events(page)).toEqual([]);
 });
+
+test("the hub leads with the played games and offers a friend row", async ({ page }) => {
+  await debugPage(page);
+  await page.goto("/play/");
+  await page.waitForFunction(() => window.__spGameEvents === true);
+  const featured = await page.locator("#games .game-grid a.game-tile").evaluateAll((tiles) =>
+    tiles.slice(0, 5).map((t) => new URL(t.href).pathname));
+  expect(featured).toEqual(["/play/thirteen/", "/play/2048/", "/play/connect-4/", "/play/snacky-worm/", "/play/pinball/"]);
+
+  const row = page.locator(".arcade-together-grid a");
+  await expect(row).toHaveCount(4);
+  await page.evaluate(() => window.addEventListener("click", (e) => e.preventDefault()));
+  await row.first().click();
+  expect(await events(page)).toEqual(["/arcade/hub/connect-4", "/arcade/hub-position/together"]);
+
+  await page.locator('[data-category="together"]').click();
+  const shown = await page.locator("#games .game-grid .game-tile-wrap:not([hidden]) a.game-tile").evaluateAll((t) => t.map((a) => new URL(a.href).pathname));
+  expect(shown).toContain("/play/connect-4/");
+  expect(shown).not.toContain("/play/chess/");
+});
+
+test("the homepage links straight to a story and a game", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('.hero-quick a[href="/read/"]')).toBeVisible();
+  await expect(page.locator('.hero-quick a[href="/play/"]')).toBeVisible();
+});
