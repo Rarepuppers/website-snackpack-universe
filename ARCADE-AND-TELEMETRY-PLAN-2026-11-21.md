@@ -165,6 +165,11 @@ Each has the evidence, the work, when it is done, and how we will know it worked
   then passes for both.
 - **Done when:** the tally survives a reload; a spec plays a quick game.
 
+**Update 26 Nov: R11 is already done.** Both pages already show a "Record"
+chip (`#ck-record`, `#rv-record`) saved per opponent on the device. The
+September quality plan was stale on this; only penalty-shootout keeps no
+result. Nothing to build. Lesson: re-check a carried-over gap before planning it.
+
 ### R12. Fix or quarantine the red visual checks on main
 - **Evidence:** `reads-final.spec.mjs` "short viewport controls 740x360" has
   failed on every main run since at least 24 Nov; `last-bastion-polish-review`
@@ -224,8 +229,7 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 - **Saved progress is deliberately skipped** for reflex games (flappy-snacky,
   snacky-worm, table-tennis, keepy-uppy, dribble-rush, asteroid-destroyer) and
   short soccer sessions. Revisit only if one gets a longer mode.
-- **No match record** in checkers, reversi, penalty-shootout: R11 covers the
-  first two; penalty-shootout stays as is.
+- **No match record:** only penalty-shootout (checkers and reversi already have one, see R11).
 - **TriPeaks has no app funnel** (it is in no Android app). Leave the gap honest.
 - **`play/shared-assets/game-ui/` is ~57 MB with no WebP.** An asset job for the
   derivative pipeline, not a code one.
