@@ -9,6 +9,11 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "**/*.pdf"
+      - "characters/**"
+      - "animals/**"
+      - "guides/**"
+      - "for-teachers/**"
       - "read/**"
       - "scripts/**/*.py"
       - "assets/**"
@@ -28,6 +33,11 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "**/*.pdf"
+      - "characters/**"
+      - "animals/**"
+      - "guides/**"
+      - "for-teachers/**"
       - "read/**"
       - "scripts/**/*.py"
       - "assets/**"
@@ -44,16 +54,8 @@ permissions:
   contents: read
 
 jobs:
-  # Decides which heavy lanes a change can affect, so a /read/ or docs change
-  # does not pay for the Last Bastion suite or every arcade screenshot. Mark,
-  # 26 Nov 2026: cut testing that gives little or no value for the change.
-  #   last_bastion: true when the game, its Playwright configs/specs, the root
-  #                 test dependencies or this workflow changed.
-  #   visual: all   -> shared pages/CSS/JS, the arcade, tests or test config
-  #           reads -> only /read/, guides, teachers or characters pages
-  #           none  -> nothing the screenshot specs render (scripts, data,
-  #                    PDFs, other pages)
-  # Manual runs and pushes with no usable base run everything.
+  # Site integrity runs for every site change. Browser and game suites
+  # run only for the surfaces their inputs can affect.
   changes:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -74,15 +76,27 @@ jobs:
           PUSH_BEFORE: ${{ github.event.before }}
           SHA: ${{ github.sha }}
         run: |
-          if [ "$EVENT" = pull_request ]; then range="$PR_BASE...$PR_HEAD"
-          elif [ "$EVENT" = push ] && [ -n "$PUSH_BEFORE" ] && ! echo "$PUSH_BEFORE" | grep -qx '0*' && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then range="$PUSH_BEFORE...$SHA"
-          else echo "last_bastion=true" >> "$GITHUB_OUTPUT"; echo "visual=all" >> "$GITHUB_OUTPUT"; exit 0; fi
-          files=$(git diff --name-only "$range")
+          if [ "$EVENT" = pull_request ]; then
+            files=$(git diff --name-only "$PR_BASE...$PR_HEAD")
+          elif [ "$EVENT" = push ] && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then
+            files=$(git diff --name-only "$PUSH_BEFORE" "$SHA")
+          else
+            echo "last_bastion=true" >> "$GITHUB_OUTPUT"
+            echo "visual=all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           printf '%s\n' "$files"
-          lb=false; visual=none
-          if printf '%s\n' "$files" | grep -Eq '^(play/last-bastion/|playwright\.last-bastion|tests/visual/last-bastion|package(-lock)?\.json$|\.github/workflows/site-check\.yml$)'; then lb=true; fi
-          if printf '%s\n' "$files" | grep -v '^play/last-bastion/' | grep -v '^tests/visual/last-bastion' | grep -Eq '^(play/|assets/|tests/|[^/]+\.(html|css|js|mjs)$|package(-lock)?\.json$|scripts/serve-static\.mjs$|\.github/workflows/site-check\.yml$)'; then visual=all
-          elif printf '%s\n' "$files" | grep -Eq '^(read|guides|for-teachers|characters)/.*\.(html|css|js|json)$'; then visual=reads; fi
+          lb=false
+          visual=none
+          if grep -Eq '^(play/last-bastion/|playwright\.last-bastion|tests/visual/last-bastion|tests/visual/helpers/|package(-lock)?\.json$|scripts/serve-static\.mjs$)' <<< "$files"; then
+            lb=true
+          fi
+          if grep -vE '^(play/last-bastion/|tests/visual/last-bastion|tests/visual/(character-board|reads[^/]*|teachers-links|homepage-events|site-events)\.spec\.mjs$)' <<< "$files" |
+              grep -Eq '^(play/|assets/|tests/|[^/]+\.(css|js|mjs)$|package(-lock)?\.json$|scripts/serve-static\.mjs$)'; then
+            visual=all
+          elif grep -Eq '^(index\.html$|read/|guides/|for-teachers/|characters/|animals/|data/(character-|read-|web-books|web-originals)|tests/visual/(character-board|reads[^/]*|teachers-links|homepage-events|site-events)\.spec\.mjs$)' <<< "$files"; then
+            visual=reads
+          fi
           echo "last_bastion=$lb visual=$visual"
           echo "last_bastion=$lb" >> "$GITHUB_OUTPUT"
           echo "visual=$visual" >> "$GITHUB_OUTPUT"
@@ -276,9 +290,9 @@ jobs:
       - name: Compare arcade and site screenshots
         if: needs.changes.outputs.visual == 'all'
         run: npm run test:visual
-      - name: Compare /read/ screenshots only
+      - name: Check Reads and character journeys
         if: needs.changes.outputs.visual == 'reads'
-        run: npx playwright test tests/visual/reads
+        run: npx playwright test 'tests/visual/(reads[^/]*|character-board|teachers-links|homepage-events|site-events)\.spec\.mjs$'
       - name: Exercise Last Bastion browser journeys
         if: needs.changes.outputs.last_bastion == 'true'
         run: npx playwright test --config playwright.last-bastion.config.mjs
