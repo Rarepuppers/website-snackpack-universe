@@ -256,7 +256,7 @@ function nextBlock(i) {
   if (!selection.length && entries.length) selection.push(entries[0]);
   const escapeName = name => name.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const castLinks = selection.map(({ id }) => `<a href="/characters/${id}/">${escapeName(castNames.get(id))}</a>`).join(" · ");
-  const cast = castLinks ? `\n<p class="story-event-link"><strong>Meet the cast</strong> · ${castLinks}</p>` : "";
+  const cast = castLinks ? `\n<p class="story-cast"><strong>Meet the cast</strong> · ${castLinks}</p>` : "";
   return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + cast + `\n${share}`;
 }
 
