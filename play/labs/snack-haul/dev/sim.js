@@ -421,15 +421,16 @@ function lasso() {
 }
 
 // Side roads (Back Roads, Extra Mile) and Old Crust's orders. A player reaches
-// Back Roads with about 8 Bakery stars, so drivers use level 1 upgrades there and
-// level 2 on the Extra Mile. Targets: learners 2 stars on most roads, careful
+// Back Roads with about 8 Bakery stars; drivers use level 1 upgrades on every side
+// road, the floor once the farm hands over Straps after Bakery 3. Targets: learners 2 stars on most roads, careful
 // drivers 2 stars, no flips for either, gas-only no clean 3 stars, and
 // every road with ducks, hay or a seesaw replays exactly from its recording.
 function side() {
   let bad = 0;
   const roads = SH.SIDE.concat(SH.ORDERS.filter((o) => o.track));
   for (const d of roads) {
-    const L = d.track === "extra" ? 2 : 1, up = SH.rivalUpgrades(L);
+    // Level 1 everywhere: the farm's free Straps after Bakery 3 make it the floor.
+    const L = 1, up = SH.rivalUpgrades(L);
     const learn = LEARNERS.map(([c, w]) => play(d, learner(c, w), up, d.truck || "pickup"));
     const calm = [4.5, 5.5, 6.5].map((v) => play(d, careful(v), up, d.truck || "pickup"));
     const gas = play(d, gasOnly(), up, d.truck || "pickup");

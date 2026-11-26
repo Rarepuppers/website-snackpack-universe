@@ -50,6 +50,17 @@ function migrateRoads() {
 const FIRST_MILE = ["bakery-1", "bakery-2", "bakery-3", "bakery-4", "bakery-5", "bakery-6", "bakery-7", "bakery-8", "dunes-1", "dunes-2"];
 migrateRoads();
 if (save.bigText) document.documentElement.classList.add("big-text");
+// Motion follows the phone's reduce-motion setting until the player picks (Q18).
+if (save.motionPicked == null && typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches) save.shake = false;
+// Pedals: size, see-through and layout (Q11).
+function applyPedals() {
+  const c = document.documentElement.classList;
+  c.toggle("pedals-large", save.pedalSize === "large");
+  c.toggle("pedals-clear", save.pedalClear === true);
+  c.toggle("pedals-swap", save.pedalLayout === "swap");
+  c.toggle("pedals-one", save.pedalLayout === "one");
+}
+applyPedals();
 save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
 function persist() {
   save.savedAt = Date.now();
@@ -541,9 +552,9 @@ function drainEvents(g) {
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
     else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
-    else if (ev.type === "honk") { play("duck_honk", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
+    else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
     else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
-    else if (ev.type === "hay") { play("hay_crunch", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
+    else if (ev.type === "hay") { play("hay_crash", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
       const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle" }[ev.feature];
@@ -672,6 +683,7 @@ function hud(g) {
   const loadText = g.delivery.winter ? g.homes + "/" + g.delivery.dropoffs + " porches" :
     live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
   if (state.hudLoad !== loadText) { state.hudLoad = loadText; $("load").innerHTML = ico("load", "📦") + " " + loadText; }
+  // Warnings carry a shape as well as a colour (Q19).
   $("load").className = !g.delivery.winter && live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
   if (state.hudCoins !== g.coinsTaken) { state.hudCoins = g.coinsTaken; $("coins").innerHTML = ico("coin", "🪙") + " " + g.coinsTaken; }
   if (g.delivery.topup) {
@@ -787,6 +799,8 @@ function finishDelivery(g) {
       }
     } else {
       if (r.stars > (save.stars[d.id] || 0)) save.stars[d.id] = r.stars;
+      // Best time per truck, for the route sheet (Q17).
+      if (r.stars >= 2) { save.truckBest = save.truckBest || {}; const tb = (save.truckBest[d.id] ||= {}), tt = Math.round(r.time * 10) / 10; if (!tb[r.truck] || tt < tb[r.truck]) tb[r.truck] = tt; }
       if (!save.best[d.id] || r.time < save.best[d.id]) { if (save.best[d.id] && r.stars >= 2) setTimeout(() => play("saved", 0.6), 2000); save.best[d.id] = Math.round(r.time * 10) / 10; }
       if (r.express) save.express[d.id] = true;
       if (r.medal > (save.medal[d.id] || 0)) save.medal[d.id] = r.medal;
@@ -1148,6 +1162,25 @@ sheet.addEventListener("click", (e) => {
   // An empty save with a newer timestamp, so an older copy held by the app can never win.
   if (a === "reset-yes") { try { localStorage.setItem(KEY, JSON.stringify({ savedAt: Date.now() })); } catch (x) { /* ignore */ } tellApp({ type: "reset" }); setTimeout(() => location.reload(), 150); }
   if (a === "close") veil.classList.remove("on");
+  if (a === "copycode") {
+    const box = sheet.querySelector(".savecode"); box.select();
+    try { (navigator.clipboard ? navigator.clipboard.writeText(box.value) : Promise.reject()).then(() => toast("Copied", 900), () => document.execCommand("copy")); } catch (x) { /* the code stays selected to copy by hand */ }
+    return;
+  }
+  if (a === "loadcode") {
+    const raw = sheet.querySelector(".savecode").value.trim(), msg = sheet.querySelector(".savemsg");
+    try {
+      if (!raw.startsWith("SH1.")) throw new Error("code");
+      const data = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+      if (!data || typeof data !== "object" || !data.stars) throw new Error("code");
+      data.savedAt = Date.now();
+      localStorage.setItem(KEY, JSON.stringify(data));
+      tellApp({ type: "save", data: JSON.stringify(data) });
+      setTimeout(() => location.reload(), 150);
+    } catch (x) { msg.textContent = "That code doesn't look right. Copy the whole code, starting SH1."; }
+    return;
+  }
+  if (a === "drive") { veil.classList.remove("on"); return startDelivery(SH.findDelivery(b.dataset.id)); }
 });
 $("pause").addEventListener("click", pause);
 // The horn on screen, for phones (the H key does the same on a keyboard).
@@ -1271,10 +1304,10 @@ function sideCustomer(c, r) {
   if (!SH.isOpen(SH.sideTrack(c.track)[0].id, save.stars)) return `<div class="customer locked"><b>${ico("lock", "🔒")} Back Roads</b><small>Earn ${SH.SIDE_OPEN[c.track]} Bakery Hills stars to open the Back Roads and meet ${esc(c.name)}.</small></div>`;
   const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
     const open = orderOpen(o), done = !!save.orders[o.id];
-    const why = !open ? o.at + " Back Roads stars" : done ? "Done ✓" : SH.orderText(o);
+    const why = !open ? o.at + (o.track === "extra" ? " Extra Mile stars" : " Back Roads stars") : done ? "Done ✓" : SH.orderText(o);
     return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
   }).join("");
-  const next = SH.ORDERS.filter((o) => o.customer === r && got < o.at)[0];
+  const next = SH.ORDERS.filter((o) => o.customer === r && o.track === c.track && got < o.at)[0];
   return `<div class="customer"><div class="who"><span class="face" aria-hidden="true">${c.icon}</span><div><b>${esc(c.name)}</b><small>${esc(c.role)}, Back Roads</small></div>
     <div class="rep" aria-label="${got} of ${total} Back Roads stars">${got}/${total} ★<small>${next ? next.at - got + " more Back Roads stars for the next order" : "Every order open"}</small></div></div>
     <div class="orders">${list}</div></div>`;
@@ -1337,8 +1370,30 @@ function routesScreen() {
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
     ${state.regionTab === 0 ? sideSection("back", "Back Roads", "Six free country roads at different times of day, for Old Crust the miller. Ducks, hay and a seesaw bridge.") : ""}
+    ${state.regionTab === 0 ? sideSection("extra", "The Extra Mile: the Village Fair", "Four more roads to the harvest fair, with baguettes and the windmill's sails. These stars count in your total, not towards new regions.") : ""}
     ${paywalled() && SH.TEST_DRIVES.length ? `<h3 class="small">Test Drives</h3><p class="sub">A free taste of each region in a truck from the full game. One opens every 6 Bakery Hills stars.</p><div class="customer"><div class="orders">${SH.TEST_DRIVES.map((t) => `<button class="order" data-test="${t.id}"${testOpen(t) ? "" : " disabled"}><b>${esc(t.name)}</b><small>${esc(SH.REGIONS[t.region].name)} · ${esc(SH.truckSpec(t.truck).name)} · ${testOpen(t) ? ((save.testDrives || {})[t.id] ? "★".repeat(save.testDrives[t.id]) : "Ready") : t.at + " Bakery stars"}</small></button>`).join("")}</div></div>` : ""}
     ${paywalled() ? `<p class="note">Free: all of Bakery Hills and the first two Dairy Dunes roads. ${nativeApp ? "The rest is one payment." : "The rest is in the full game on Google Play."}</p>` : ""}</section>`;
+}
+
+// ════ Route sheet (Q2): what's ahead, the targets, and your times, then Drive ═
+const CARGO_EMOJI = { crate: "📦", eggs: "🥚", milk: "🥛", jelly: "🍮", melon: "🍉", cake: "🎂", popcorn: "🍿", icecream: "🍦", baguette: "🥖", cheese: "🧀", pizza: "🍕", soda: "🥤" };
+const AHEAD_NAMES = { ramp: "ramps", bridge: "plank bridges", ford: "a ford", slick: "ice", wind: "gusts", bump: "speed bumps", pickup: "a pickup stop", ducks: "a duck crossing",
+  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip" };
+function routeSheet(d) {
+  if (!d) return;
+  const p = SH.routePreview(d), m = p.medals, ch = SH.challengeFor(d.id), rival = SH.rivalFor(d.id), best = save.best[d.id];
+  const ahead = p.ahead.map((k) => (k === "slick" && d.region === 5 ? "wet cobbles" : AHEAD_NAMES[k] || k));
+  const loads = p.load.map((k, i) => `<span class="ld${i >= p.load.length - p.pickup ? " later" : ""}">${ico("cargo_" + k, CARGO_EMOJI[k] || "📦")}</span>`).join("");
+  const trucks = Object.entries((save.truckBest || {})[d.id] || {}).sort((a, b) => a[1] - b[1]).map(([id, t]) => esc(SH.truckSpec(id).name) + " " + t + "s").join(" · ");
+  sheet.innerHTML = `<h2>${esc(d.name || "")}</h2>
+    <p class="sub">${p.len} m${ahead.length ? ". Ahead: " + esc(ahead.join(", ")) : ""}.</p>
+    <div class="loads" aria-label="${p.load.length} loads">${loads}${p.pickup ? `<small> last ${p.pickup} at the pickup stop</small>` : ""}</div>
+    <p>${ico("medal_gold", "🥇")} Gold ${m.gold}s with the whole load · silver ${m.silver}s · bronze ${m.bronze}s</p>
+    ${ch ? `<p class="challenge">${ico("challenge", "🎯")} ${esc(SH.challengeText(ch))}${save.challenge[d.id] ? " ✓" : ""}</p>` : ""}
+    <p class="sub">${best ? "Your best " + best + "s" : "Not driven yet"}${rival ? " · Dash Dalloway " + rival.t + "s" : ""}</p>
+    ${trucks ? `<p class="sub">By truck: ${trucks}</p>` : ""}
+    <div class="row" style="margin-top:10px"><button class="btn primary" data-act="drive" data-id="${d.id}">Drive</button><button class="btn" data-act="close">Close</button></div>`;
+  veil.classList.add("on");
 }
 
 // Back Roads and the Extra Mile: free side tracks on the Bakery Hills tab. Their stars
@@ -1448,7 +1503,10 @@ function settingsScreen() {
     ${nativeApp ? `<div class="set"><b>Vibration</b><div class="opts">${opt("haptics", 1, "On", save.haptics !== false)}${opt("haptics", 0, "Off", save.haptics === false)}</div></div>` : ""}
     <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1), save.quality === q)).join("")}</div></div>
     <div class="set"><b>Ghost and rival</b><div class="opts">${opt("ghost", 1, "On", save.ghostOn !== false)}${opt("ghost", 0, "Off", save.ghostOn === false)}</div></div>
-    <div class="set"><b>Camera shake</b><div class="opts">${opt("shake", 1, "On", save.shake)}${opt("shake", 0, "Off", !save.shake)}</div></div>
+    <div class="set"><b>Motion</b><div class="opts">${opt("shake", 1, "Full", save.shake)}${opt("shake", 0, "Reduced", !save.shake)}</div><small class="sub">Reduced turns off camera shake and bobbing. It follows your phone's setting until you choose.</small></div>
+    <div class="set"><b>Pedals</b><div class="opts">${opt("pedalSize", "normal", "Normal", save.pedalSize !== "large")}${opt("pedalSize", "large", "Large", save.pedalSize === "large")}${opt("pedalClear", 0, "Solid", save.pedalClear !== true)}${opt("pedalClear", 1, "See-through", save.pedalClear === true)}</div>
+      <div class="opts">${opt("pedalLayout", "std", "Brake left", !save.pedalLayout || save.pedalLayout === "std")}${opt("pedalLayout", "swap", "Brake right", save.pedalLayout === "swap")}${opt("pedalLayout", "one", "One thumb", save.pedalLayout === "one")}</div></div>
+    <div class="set"><b>Save code</b><div class="opts"><button class="tab" data-savecode="copy">Copy my save</button><button class="tab" data-savecode="paste">Load a save</button></div><small class="sub">Move your progress to another phone or browser.</small></div>
     <div class="set"><b>Progress</b><div class="opts"><button class="tab" data-reset>Reset game</button></div></div>
     ${nativeApp ? `<div class="set"><b>Full game</b><div class="opts">${save.pro ? '<span class="tab" aria-pressed="true">Unlocked ✓</span>' : '<button class="tab" data-unlock="settings">Unlock</button>'}<button class="tab" data-restore>Restore purchase</button></div></div>${billing.note ? `<p class="note">${esc(billing.note)}</p>` : ""}` : '<p class="note">Playtest build: your progress stays on this device. Turn your phone sideways for the best view. Arrow keys drive on a computer.</p>'}
     ${nativeApp ? "" : `<p class="note">Enjoying Snack Haul? <a href="${TIP_URL}" target="_blank" rel="noopener" style="color:inherit;font-weight:700">Tip the studio</a></p>`}
@@ -1478,7 +1536,7 @@ ui.addEventListener("click", (e) => {
   }
   if ((b = t("[data-test]")) && !b.disabled) return startDelivery(SH.findTestDrive(b.dataset.test));
   if ((b = t("[data-winter]")) && !b.disabled) return startDelivery(SH.winterDelivery(b.dataset.winter));
-  if ((b = t("[data-go]")) && !b.disabled) return startDelivery(SH.findDelivery(b.dataset.go));
+  if ((b = t("[data-go]")) && !b.disabled) return routeSheet(SH.findDelivery(b.dataset.go));
   if ((b = t("[data-extra]")) && !b.disabled) {
     const e = EXTRAS.find((x) => x[0] === b.dataset.extra);
     if (e && save.coins >= e[2] && !save.extras.includes(e[0])) { save.coins -= e[2]; save.extras.push(e[0]); play("upgrade", 0.7); persist(); refreshShowcase(); checkGoals(null); persist(); }
@@ -1516,7 +1574,11 @@ ui.addEventListener("click", (e) => {
     if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || menuMusic()); } else { setMusic(""); audio.wantMusic = keep; } }
     if (group === "haptics") { save.haptics = v === "1"; if (save.haptics) buzz("light"); }
     if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || menuMusic()); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
-    if (group === "shake") save.shake = v === "1";
+    if (group === "shake") { save.shake = v === "1"; save.motionPicked = true; }
+    if (group === "pedalSize") save.pedalSize = v;
+    if (group === "pedalClear") save.pedalClear = v === "1";
+    if (group === "pedalLayout") save.pedalLayout = v;
+    if (group.startsWith("pedal")) applyPedals();
     if (group === "horn") save.hornButton = v === "1";
     if (group === "lasso") save.lassoAuto = v === "1";
     if (group === "text") { save.bigText = v === "1"; document.documentElement.classList.toggle("big-text", save.bigText); }
@@ -1524,6 +1586,19 @@ ui.addEventListener("click", (e) => {
     if (group === "quality") { save.quality = v; world && world.setQuality(v); }
     persist();
     return renderScreen();
+  }
+  if ((b = t("[data-savecode]"))) {
+    if (b.dataset.savecode === "copy") {
+      persist();
+      const code = "SH1." + btoa(unescape(encodeURIComponent(JSON.stringify(save))));
+      sheet.innerHTML = `<h2>Your save code</h2><p class="sub">Copy all of it and keep it somewhere safe. Load it on another phone or browser with Load a save.</p>
+        <textarea class="savecode" readonly rows="5">${esc(code)}</textarea><div class="row" style="margin-top:10px"><button class="btn primary" data-act="copycode">Copy</button><button class="btn" data-act="close">Done</button></div>`;
+    } else {
+      sheet.innerHTML = `<h2>Load a save</h2><p class="sub">Paste a save code. It replaces the progress on this device.</p>
+        <textarea class="savecode" rows="5" placeholder="SH1..."></textarea><p class="sub savemsg"></p><div class="row" style="margin-top:10px"><button class="btn primary" data-act="loadcode">Load</button><button class="btn" data-act="close">Cancel</button></div>`;
+    }
+    veil.classList.add("on");
+    return;
   }
   if (t("[data-reset]")) {
     sheet.innerHTML = '<h2>Reset the game?</h2><p>This deletes your coins, trucks and stars on this device.</p><div class="row" style="margin-top:12px"><button class="btn" data-act="close">Keep playing</button><button class="btn primary" data-act="reset-yes">Reset</button></div>';

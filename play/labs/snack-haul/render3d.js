@@ -1286,9 +1286,31 @@ export class World3D {
   // Code-built stand-ins until authored models arrive (Codex brief, Back Roads).
   // Bales and planks follow their physics bodies; ducks follow SH.duckState.
   buildSideActors(game, kit, post) {
-    const t = game.terrain, actors = { ducks: [], bales: [], planks: [] }, shadows = this.quality.shadows;
+    const t = game.terrain, actors = { ducks: [], bales: [], planks: [], sails: [] }, shadows = this.quality.shadows;
     const solid = (geo) => { const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 })); mesh.castShadow = shadows; this.scene.add(mesh); return mesh; };
-    (game.crossings || []).forEach((f) => {
+    (game.crossings || []).filter((f) => f.type === "sails").forEach((f) => {
+      // A windmill behind the road whose sails sweep down over it: a blade points
+      // straight down in the middle of each closed spell of the gate's clock.
+      const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx), tower = new Kit();
+      // The tower stands well back and slim, so it frames the road rather than hiding it.
+      tower.add(cyl(1.1, 1.7, 7.5, 8), "#efe3cc", m(cx, y + 3.75, -9));
+      tower.add(new THREE.ConeGeometry(1.45, 1.8, 8), "#a8553a", m(cx, y + 8.4, -9));
+      tower.add(box(0.3, 0.3, 7.6), "#6b4a2c", m(cx, y + 5.6, -5.3));
+      kit.add(box(0.8, 1.3, 0.1), "#7a4a2c", m(cx, y + 0.65, -8));
+      this.scene.add(solid(tower.build()));
+      const hub = new THREE.Group(), blades = new Kit();
+      for (let k = 0; k < 4; k++) {
+        const a = k * Math.PI / 2, c = Math.cos(a), sn = Math.sin(a);
+        blades.add(box(0.18, 5.2, 0.1), "#6b4a2c", m(c * 0 - sn * 2.6, c * 2.6, 0, 0, 0, a));
+        blades.add(box(1.1, 4.2, 0.05), k % 2 ? "#f4efe4" : "#e9dcc4", m(-sn * 3.0 + c * 0.6, c * 3.0 + sn * 0.6, 0.04, 0, 0, a));
+      }
+      blades.add(blob(0.4, 1), "#6b4a2c");
+      hub.add(solid(blades.build()));
+      hub.position.set(cx, y + 5.6, -1.5);
+      this.scene.add(hub);
+      actors.sails.push({ f, hub });
+    });
+    (game.crossings || []).filter((f) => f.type !== "sails").forEach((f) => {
       // A yellow diamond sign on each side, and a mother duck with five ducklings.
       [f.x0 - 3.5, f.x1 + 3.5].forEach((x) => { post(x, 1.6, "#e8e0cc", -3.1); kit.add(box(0.62, 0.62, 0.06), "#f4c430", m(x, SH.heightAt(t, x) + 1.85, -3.06, 0, 0, Math.PI / 4)); });
       const y = SH.heightAt(t, (f.x0 + f.x1) / 2), list = [];
@@ -1333,6 +1355,11 @@ export class World3D {
       b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a;
     });
     a.planks.forEach((b) => { const p = this.pose(b.body); b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a; });
+    a.sails.forEach(({ f, hub }) => {
+      // Blade 0 hangs straight down at the middle of each closed spell.
+      const turns = ((game.clock || 0) + (f.phase || 0)) / f.period - f.cross / (2 * f.period);
+      hub.rotation.z = Math.PI - turns * Math.PI / 2;
+    });
     a.ducks.forEach(({ f, list }) => {
       const st = SH.duckState(f, game.clock || 0), wob = Math.sin(this.time * 14);
       list.forEach((d) => {

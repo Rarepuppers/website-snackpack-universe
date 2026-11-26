@@ -26,6 +26,8 @@
     passShare: 0.5,
     coinValue: 1,
     cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12, baguette: 9, cheese: 12, pizza: 7, soda: 9 },
+    baguetteDensity: 0.45,         // light, long loaves
+    baguetteGrip: 0.55,            // crust on crate: steep climbs slide them off; Straps 1 (the farm gift) holds a start
     fizzPop: 1,                    // soda fizz that pops the crate; shake adds it, smooth driving bleeds it
     fizzBleed: 0.12,               // fizz lost per second
     fizzFrom: 0.35,                // contact impulse a soda crate shrugs off
@@ -544,7 +546,7 @@
     // The Extra Mile: "The Village Fair" (REGION_EXPANSION_PLAN 3.1). Opens at 18 Bakery stars.
     { id: "bakery-9", track: "extra", name: "Hay Bale Hop", light: "morning", rev: 1, seed: "bakery-9-A1", len: 220, heat: 0.66, load: "cccac", shapes: [{type: "hill", at: 52, w: 46, h: -3.2}], feats: [{type: "hay", at: 74, rows: 3}, {type: "hay", at: 150, rows: 2}], feat: 0 },
     { id: "bakery-10", track: "extra", name: "Baguette Brae", light: "midday", rev: 1, seed: "bakery-10-A1", len: 260, heat: 0.62, load: "ccccggg", shapes: [{type: "hill", at: 60, w: 90, h: 11}, {type: "drop", at: 160, w: 30, h: 6}], feat: 0 },
-    { id: "bakery-11", track: "extra", name: "Windmill Sails", light: "golden", rev: 1, seed: "bakery-11-A1", len: 300, heat: 0.7, load: "zccacc", feats: [{type: "sails", at: 70, period: 4, cross: 1.2, phase: 0.4}, {type: "sails", at: 170, period: 4, cross: 1.3, phase: 1.9}], ramps: [{at: 120, h: 0.42, arc: true}], feat: 0 },
+    { id: "bakery-11", track: "extra", name: "Windmill Sails", light: "golden", rev: 1, seed: "bakery-11-A1", len: 300, heat: 0.6, load: "zccac", feats: [{type: "sails", at: 70, period: 4, cross: 1.2, phase: 0.4}, {type: "sails", at: 170, period: 4, cross: 1.3, phase: 1.9}], ramps: [{at: 120, h: 0.42, arc: true}], feat: 0 },
     { id: "bakery-12", track: "extra", name: "The Harvest Fair", light: "golden", rev: 1, seed: "bakery-12-A1", len: 380, heat: 0.66, load: "ccaccggg", pickup: 3, pickupAt: 150, feats: [{type: "ducks", at: 44, period: 6.5, cross: 2.6, phase: 1}, {type: "hay", at: 110, rows: 2}, {type: "seesaw", at: 200}, {type: "sails", at: 300, period: 4, cross: 1.2, phase: 0.8}], feat: 0 }
   ];
   // SIDE-END
@@ -726,8 +728,17 @@
   // clean bot run at the upgrade level expected there, and never looser than the old
   // time. A route missing here keeps the length-based time.
   // MEDALS-BEGIN
-  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38};
+  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38, "bakery-9": 30, "bakery-10": 34, "bakery-11": 42, "bakery-12": 54};
   // MEDALS-END
+  // What the route sheet shows before a drive: the features in road order (each
+  // kind once), the authored shapes, and the medal times.
+  function routePreview(d) {
+    var t = buildTerrain(d), seen = {}, ahead = [];
+    t.features.concat((d.shapes || []).map(function (s) { return { type: s.type === "hill" && s.h < 0 ? "dip" : s.type, x0: START_FLAT + s.at }; }))
+      .sort(function (a, b) { return a.x0 - b.x0; })
+      .forEach(function (f) { if (!seen[f.type] && f.type !== "dropoff") { seen[f.type] = true; ahead.push(f.type); } });
+    return { ahead: ahead, medals: medalTimes(d), len: d.len, load: d.load, pickup: d.pickup || 0 };
+  }
   function medalTimes(d) {
     var best = d.daily || d.long || d.order ? 0 : MEDALS[d.id];
     if (best) return { gold: best, silver: Math.round(best * BALANCE.careerSilver), bronze: Math.round(best * BALANCE.careerBronze) };
@@ -832,8 +843,8 @@
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? 0.45 : type === "icecream" ? 1.2 : 0.9,
-        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? 0.4 : 0.5) + 0.1 * up.straps,
+        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
+        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? BALANCE.baguetteGrip : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
       });
@@ -1389,7 +1400,11 @@
     "back-3": {"v":10,"L":1,"t":32.9},
     "back-4": {"v":9,"L":1,"t":36.7},
     "back-5": {"v":10,"L":1,"t":43.5},
-    "back-6": {"v":6.5,"L":1,"t":69.6}
+    "back-6": {"v":6.5,"L":1,"t":69.6},
+    "bakery-9": {"v":10,"L":2,"t":35.8},
+    "bakery-10": {"v":10,"L":2,"t":38.5},
+    "bakery-11": {"v":10,"L":2,"t":57.5},
+    "bakery-12": {"v":10,"L":2,"t":65.2}
   };
   // RIVALS-END
   function rivalFor(id) { return RIVALS[id] || null; }
@@ -1496,7 +1511,11 @@
     "back-3": {"kind":"calm","feature":"seesaw","n":4.5},
     "back-4": {"kind":"flat","n":0.4},
     "back-5": {"kind":"coins","n":24},
-    "back-6": {"kind":"fuel","n":0.8}
+    "back-6": {"kind":"fuel","n":0.8},
+    "bakery-9": {"kind":"coins","n":24},
+    "bakery-10": {"kind":"coins","n":25},
+    "bakery-11": {"kind":"coins","n":29},
+    "bakery-12": {"kind":"coins","n":41}
   };
   // CHALLENGES-END
   function challengeFor(id) { return CHALLENGES[id] || null; }
@@ -1609,6 +1628,7 @@
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
     heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng,
+    routePreview: routePreview, medalTimes: medalTimes,
     SIDE: SIDE, SIDE_ROADS: SIDE_ROADS, SIDE_OPEN: SIDE_OPEN, sideTrack: sideTrack, sideStars: sideStars, duckState: duckState, SEESAW: SEESAW
   };
 });
