@@ -83,6 +83,15 @@ R1's re-check and R16 cannot be read before their dates. Search Console (to
 4 Dec; its details are recorded under R7 and R17 for the reads. One CI flake
 came back and was fixed (R12, item 4).
 
+**26 Nov verification and data check:** The 26 Nov GoatCounter window had
+one book start (`everybody-brought-potatoes`, outside Honduras), no
+finishes, and no game or hub events. The new counts are too sparse for
+R1, R6 and R16. Cloudflare Web Analytics for 21–25 Nov UTC counted 132
+Honduras visits and 890 visits from outside Honduras after excluding
+ChromeHeadless. This describes site traffic before the rollout. Use
+GoatCounter to measure reading and play. The full Search Console title
+window is pending (R7), and the R5 tile PNGs have yet to be delivered.
+
 ### R1. Re-pick the featured row — **done early, 26 Nov**
 - **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
   by adults; Snacky Worm and Pinball are in the row for the class.
@@ -90,7 +99,7 @@ came back and was fixed (R12, item 4).
   more starts from outside HN than Pinball has in total, swap it in for Pinball
   in `featuredFirst` (`play/hub.js`) and update `arcade-thirteen.spec.mjs`'s
   featured-order test and the six hub baselines from CI.
-- **Done when:** the row reflects the 14-school-day read.
+- **Done when:** the row reflects the ~10 Dec event read.
 - **Measure:** `hub-position/1-5` share of hub clicks before and after.
 - **Decision (6–26 Nov data):** Hearts had 10 starts, all from outside
   Honduras, against Pinball's 7 in total, so the rule swaps Hearts in for
@@ -135,6 +144,9 @@ came back and was fixed (R12, item 4).
   page and related-games references from `typing.svg` / `math-facts.svg` to
   the PNGs (run `build-related-games.mjs` and `build-webp.mjs`).
 - **Prompt:** `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md` (paste as is).
+  The delivery checklist now matches the file list (11 PNGs and 11 WebPs).
+  The two tile PNGs are absent from main as of the 26 Nov verification.
+  Switch the references and regenerate related games and WebP after delivery.
 - **Corrections found writing it:** (1) Pyramid and TriPeaks are **not**
   placeholders: Codex delivered them on 18 Oct, but their pages still shared
   the generic studio card. Both pages now use their own cards (26 Nov).
@@ -153,6 +165,13 @@ came back and was fixed (R12, item 4).
   3. Where do hub clicks come from? If `together` beats `1-5`, the friend row
      earns a place above the featured row.
   4. Typing and math: do classes come back for the daily?
+- **Reporting fix, 26 Nov:** The reader previously looked up Honduras for
+  book starts only. It now looks up the start and finish event paths
+  separately and prints the Honduras counts, per-book ratios and overall
+  finishes ÷ starts. Game time bands and dailies also show Honduras
+  counts alongside the worldwide counts. Hub positions remain worldwide,
+  including `together`. Checked against the live read-only API and a
+  synthetic report with different start and finish country splits.
 - **Done when:** findings and decisions are written into this file.
 
 ### R7. Thirteen and 2048 title read — **read early, 26 Nov: keep both**
@@ -161,6 +180,9 @@ came back and was fixed (R12, item 4).
   over 90 days.
 - **Work:** Search Console 28 days after the change vs the 28 days before.
   Revert a title only if CTR fell at the same position.
+- **Full comparison:** 9 Oct–5 Nov vs 7 Nov–4 Dec (28 days each).
+  Wait until Search Console finalizes 4 Dec. Use the URL-prefix property
+  `https://www.snackpackuniverse.com/`.
 - **Then:** if Thirteen holds, its next lever is position: a "How to play in
   60 seconds" box above the game and links to Big Two and Rummy 500 under it.
 - **Read (Search Console to 23 Nov; 17 Oct–5 Nov vs 7–24 Nov):**
@@ -173,6 +195,17 @@ came back and was fixed (R12, item 4).
   Thirteen per day: 3.95 → 5.3 clicks (+34%) at a slightly worse position, so
   the title helps. 2048 is too small to call but not worse. **Keep both.**
   Re-confirm at a full 28 days (~4 Dec) before the Thirteen "how to play" box.
+- **Equal-length interim check (18 days each, finalized through 24 Nov):**
+  | Page | 19 Oct–5 Nov clicks / impressions | CTR / position | 7–24 Nov clicks / impressions | CTR / position |
+  | --- | --- | --- | --- | --- |
+  | Thirteen | 73 / 3,442 | 2.12% / 6.25 | 96 / 4,460 | 2.15% / 6.54 |
+  | 2048 | 5 / 119 | 4.20% / 7.82 | 7 / 117 | 5.98% / 8.45 |
+  | Thirteen rules guide | 0 / 58 | 0% / 8.41 | 3 / 1,094 | 0.27% / 9.02 |
+  Thirteen clicks rose ~32% with CTR nearly flat and more impressions.
+  2048 still has too few clicks to judge. The guide row is a baseline
+  from before its 26 Nov retitle. The same search read showed no new
+  Pusoy Dos, typing practice or math facts practice query. Keep both game
+  titles in place pending the full read.
 - **Per-query view for the 4 Dec read (Search Console 27 Oct–23 Nov, 28
   days, 139 clicks / 6,493 impressions / position 6.3).** The clicks come from
   `13 card game online` (20 clicks, 7.3% CTR, pos 4.2), `tien len online`
@@ -280,6 +313,15 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
      the 1920 cases keep 30 s and nothing the test checks changed. If a 3840
      case still times out at 90 s, that is a real performance regression for
      Last Bastion's owner, not a flake.
+- **Verified:** `8ef16cdd` run [45740674851](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45740674851)
+  failed only the six 2048 screenshots. The hub baselines all passed.
+  All six `ff0c14b0` files match the CI artifact byte for byte. Its run
+  [45741727192](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45741727192)
+  exposed the 4K timeout above. After `9689fe37`, all three jobs passed in
+  [45768097321](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45768097321),
+  and [Pages deployed](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45768096567).
+  The public homepage, hub script, 2048, Daily, Snack Typer, Fact Sprint,
+  Pyramid and TriPeaks pages, and both share images matched Git byte for byte.
 - **Local note:** `arcade-mobile` and `arcade-header` load every game in turn
   and can time out when run alongside other suites on a laptop; they pass on
   their own and on CI.
@@ -311,10 +353,15 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
 
 ### R16. Watch the daily links from teachers
 - **Evidence:** the class-links box makes daily links easy to share.
-- **Work:** none now. At the ~16 Dec read, compare `arcade/typing/daily` and
-  `arcade/math-facts/daily` with their starts; a high daily share means
-  teachers are using the box. If so, add a weekly "class pack" (five days of
-  dailies) to `/for-teachers/`.
+- **Work:** At the ~16 Dec read, compare Honduras daily completions with
+  Honduras starts for Snack Typer and Fact Sprint, alongside the worldwide
+  totals. A high daily share is evidence of demand for dailies. The
+  teacher links use the same game URLs as the Daily page, so these counts
+  cannot identify which entry point pupils used. If class use is supported
+  by teacher feedback or source evidence, add a weekly "class pack" (five
+  days of dailies) to `/for-teachers/`. If attribution matters to that
+  decision, consider counting visits from a fixed, non-identifying
+  classroom-link label.
 
 ### R17. Say "no ads" where schools search for it
 - **Evidence:** R7's 2048 queries: "2048 no ads", "2048 without ads"
@@ -366,10 +413,10 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 
 | Date | What | Tool |
 | --- | --- | --- |
-| ~4 Dec | Thirteen and 2048 titles (R7), incl. the five top-4 zero-click queries and the rules guide | Search Console |
+| Once 4 Dec is finalized | Thirteen and 2048 titles (R7), incl. the five top-4 zero-click queries and the rules guide | Search Console |
 | ~10 Dec | First read of the new events (R6), featured row (R1) | `scripts/read-site-events.mjs` |
 | ~11 Dec | Sokoban + Chess Puzzles day 28 (separate plan) | Search Console |
-| ~16 Dec | Snack Typer and Fact Sprint at 14 school days | GoatCounter |
+| ~16 Dec | Snack Typer and Fact Sprint at 14 school days, including class daily uptake (R16) | GoatCounter |
 | ~24 Dec | Snack Typer at 28 days in search | Search Console |
 
 ---

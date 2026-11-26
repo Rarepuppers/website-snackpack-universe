@@ -20,7 +20,7 @@ wires the files in after you hand back.
   sessions have uncommitted edits there.
 - Stage only the files listed below. Never `git add -A`, never `git checkout -- .`.
 - Hand back by pushing the branch and opening a pull request titled
-  "Arcade art: Snack Typer, Fact Sprint and six social cards". Do not merge it.
+  "Arcade art: Snack Typer, Fact Sprint and five interim social cards". Do not merge it.
 
 ## House style (from the standing brief — follow it exactly)
 
@@ -106,7 +106,7 @@ All five: landscape, left third quiet, no text.
 
 ## Check before handing back
 
-- [ ] 16 PNGs and 16 WebPs: typing tile ×2 + card, math-facts tile ×2 + card,
+- [ ] 11 PNGs and 11 WebPs: typing tile ×2 + card, math-facts tile ×2 + card,
       five social cards. Exact names, exact sizes (`sips -g pixelWidth -g pixelHeight` or `identify`).
 - [ ] Zero letters, digits or words in any image. Zoom in and look.
 - [ ] Tiles have transparent corners; cards are opaque.
