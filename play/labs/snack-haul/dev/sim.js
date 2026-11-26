@@ -8,6 +8,7 @@
 // node play/labs/snack-haul/dev/sim.js daily      the World Tour Daily pool (--write)
 // node play/labs/snack-haul/dev/sim.js testdrives every Test Drive with learners and careful drivers
 // node play/labs/snack-haul/dev/sim.js topup      the Top-Up Run reaches its target stops
+// node play/labs/snack-haul/dev/sim.js lasso      the Lucky Lasso fires once and ghosts replay it
 const SH = require("../engine.js");
 
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
@@ -401,6 +402,21 @@ function topup() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// Lucky Lasso: it fires once on a run that drops a load, and a recorded run
+// with a lasso armed replays exactly (ghosts store the lasso).
+function lasso() {
+  let bad = 0;
+  for (const id of ["bakery-4", "bakery-6", "bakery-8", "dunes-2", "harbour-3"]) {
+    const opts = { id, upgrades: SH.rivalUpgrades(1), lasso: true }, g = SH.createGame(opts);
+    for (let n = 0; g.status === "driving" && n < 12000; n++) g.step(gasOnly()()(g));
+    const a = SH.report(g), b = SH.ghostPath(opts, g.rec).report;
+    const ok = a.lassoUsed && a.kept === b.kept && Math.abs(a.time - b.time) < 1e-9 && b.lassoUsed;
+    if (!ok) bad++;
+    console.log(id.padEnd(11), ok ? "fired, replays exactly" : "FAILED", a.status, a.kept + "/" + a.total);
+  }
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -416,6 +432,7 @@ else if (mode === "medals") medals();
 else if (mode === "daily") dailyPool();
 else if (mode === "testdrives") testDrives();
 else if (mode === "topup") topup();
+else if (mode === "lasso") lasso();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }

@@ -781,7 +781,7 @@ export class World3D {
       if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((mat) => { if (mat.map && !Object.values(texCache).includes(mat.map)) mat.map.dispose(); if (mat !== texCache.crateMat) mat.dispose(); });
     });
     this.scene.clear();
-    this.cargo = []; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
+    this.cargo = []; this.rope = null; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
   }
 
   // ─── Sky, light, ground and scenery for one region ──────────────
@@ -1429,6 +1429,16 @@ export class World3D {
     });
     model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
     if (this.headlight) this.headlight.position.set(p.x + 5, p.y + 2.2, 1.5);
+    if (this.rope) {
+      // A sagging rope from the cab roof to the roped load, fading out.
+      const r = this.rope, cab = { x: p.x + Math.cos(p.a) * game.dim.cabX - Math.sin(p.a) * 1.2, y: p.y + Math.sin(p.a) * game.dim.cabX + Math.cos(p.a) * 1.2 };
+      const end = r.cargo ? r.cargo.group.position : { x: cab.x - 2, y: cab.y };
+      const pos = r.line.geometry.attributes.position;
+      for (let i = 0; i < 12; i++) { const u = i / 11; pos.setXYZ(i, cab.x + (end.x - cab.x) * u, cab.y + (end.y - cab.y) * u - Math.sin(Math.PI * u) * 0.4 * (r.life / 0.7), 0.3); }
+      pos.needsUpdate = true;
+      r.life -= dt;
+      if (r.life <= 0) { this.scene.remove(r.line); r.line.geometry.dispose(); r.line.material.dispose(); this.rope = null; }
+    }
 
     this.cargo.forEach((c) => {
       c.group.visible = !c.info.delivered;
@@ -1436,6 +1446,13 @@ export class World3D {
       const b = c.info.body, cp = this.pose(b);
       c.group.position.set(cp.x, cp.y, 0);
       c.group.rotation.z = cp.a;
+      if (c.tween) {
+        // Ease from where it fell to where it now sits, lifted on an arc.
+        c.tween.t = Math.min(1, c.tween.t + dt / 0.35);
+        const k = 1 - Math.pow(1 - c.tween.t, 3);
+        c.group.position.set(c.tween.x + (cp.x - c.tween.x) * k, c.tween.y + (cp.y - c.tween.y) * k + Math.sin(Math.PI * c.tween.t) * 1.2, 0);
+        if (c.tween.t >= 1) c.tween = null;
+      }
       if (c.group.userData.wobble) {
         c.wob += dt * 9;
         const v = b.getLinearVelocity().length();
@@ -1516,6 +1533,16 @@ export class World3D {
   // Turns game events into effects.
   react(ev) {
     const z = () => (Math.random() - 0.5) * 1.8;
+    if (ev.type === "lasso") {
+      // The roped load flies back in a short arc, with a rope from the cab to it.
+      const c = this.cargo.find((k) => k.info.id === ev.id);
+      if (c) c.tween = { x: ev.x, y: ev.y, t: 0 };
+      const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 12 }, () => new THREE.Vector3())), new THREE.LineBasicMaterial({ color: "#c8955a" }));
+      rope.frustumCulled = false;
+      this.scene.add(rope);
+      this.rope = { line: rope, cargo: c, life: 0.7 };
+      return;
+    }
     if (ev.type === "pickup") {
       ev.items.forEach((c) => { const g = buildCargo(c.type, this.quality, c.id); this.scene.add(g); this.cargo.push({ info: c, group: g, age: 0, wob: 0 }); });
       const green = col("#6fe08f");

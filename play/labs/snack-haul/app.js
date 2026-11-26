@@ -24,7 +24,7 @@ function load() {
   if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
   return local || {};
 }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, crumb: {}, sfxVol: 1, musicVol: 1, hornButton: true, bigText: false, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, crumb: {}, sfxVol: 1, musicVol: 1, hornButton: true, bigText: false, lassos: 0, lassoAuto: true, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 migrateWinterSave(save);
 // 1.0.2 rebuilt the first roads. Stars, medals and challenges stay; best times,
@@ -524,6 +524,7 @@ function drainEvents(g) {
     buzzFor(ev);
     if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
+    else if (ev.type === "lasso") { play("saved", 0.8) || beep(520, 0.2, "triangle", 0.08); toast("Lassoed! Load saved", 1200); $("lasso").hidden = true; buzz("medium"); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); markLoss(g, ev); }
     else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); markLoss(g, ev); }
     else if (ev.type === "land") {
@@ -560,7 +561,7 @@ function makeGhost(delivery) {
     if (rival && save.stars[delivery.id] && !save.rival[delivery.id]) {
       return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup" }) };
     }
-    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
+    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, lasso: !!saved.lasso, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
   } catch (e) { /* the run goes on without a ghost */ }
   return null;
 }
@@ -598,7 +599,10 @@ function startDelivery(delivery) {
   // A Special Order can name its truck; it must be owned to start.
   const truckId = delivery.truck || drivingTruck();
   // The daily is driven in a loaner truck with set upgrades, the same for everyone.
-  const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId });
+  // The lasso: armed on any run that allows it while one is in the Pantry. Never in the
+  // Daily, the Weekly Cup, Test Drives or Winter Haul, where everyone drives the same setup.
+  const lasso = lassoAllowed(delivery) && save.lassoAuto !== false && (save.lassos || 0) > 0;
+  const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId, lasso });
   state.logs = null; state.melted = false; state.losses = [];
   document.querySelectorAll(".progress b").forEach((el) => el.remove());
   state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0; state.slow = 0;
@@ -619,6 +623,7 @@ function startDelivery(delivery) {
   state.hudGap = null;
   $("gap").hidden = !state.gap;
   $("horn").hidden = save.hornButton === false;
+  $("lasso").hidden = !game.lassoLeft;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
@@ -788,7 +793,7 @@ function finishDelivery(g) {
           }
         });
       } else if (d.cup) cupLine = "Cup legs count with two stars and a clean stop.";
-      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
+      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, lasso: !!g.lassoLeft || !!g.lassoUsed, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
     }
     // Bakery Hills 4 is the first route where a bare truck loses its load, so the farm hands over spare straps first.
     if (d.id === "bakery-3" && !save.gifts.straps) gift = giveStraps();
@@ -801,6 +806,14 @@ function finishDelivery(g) {
   // The golden crumb: three stars, gold and the route challenge, all in one run.
   const crumbNew = !!ch && !d.order && !d.cup && r.stars === 3 && r.medal === 3 && SH.challengeMet(ch, r) && !save.crumb[d.id];
   if (crumbNew) { save.crumb[d.id] = true; save.coins += 25; s.earned += 25; }
+  // Lassos: one is used up when it saves a load; new ones come from rare milestones.
+  const lassoLines = [];
+  if (r.lassoUsed) { save.lassos = Math.max(0, (save.lassos || 0) - 1); lassoLines.push("Your lasso saved a load. " + save.lassos + " left"); }
+  const earnLasso = (key, why) => { if (save.gifts[key]) return; const line = giveLasso(why); if (line) { save.gifts[key] = true; lassoLines.push(line); } };
+  if (crumbNew && Object.keys(save.crumb).length % 5 === 0) earnLasso("lasso-crumb-" + Object.keys(save.crumb).length, Object.keys(save.crumb).length + " golden crumbs");
+  if (d.id === "bakery-8" && r.stars === 3) earnLasso("lasso-bigbake", "Three stars on The Big Bake");
+  if (d.topup && r.stops >= 10) earnLasso("lasso-topup10", "Top-Up Run stop 10");
+  if (d.order && r.stars === 3 && Object.keys(save.orders).length >= 10) earnLasso("lasso-orders10", "Ten Special Orders");
   if (ch && !save.challenge[d.id] && SH.challengeMet(ch, r)) {
     save.challenge[d.id] = true;
     chPay = Math.round(20 * SH.REGIONS[d.region].pay);
@@ -837,6 +850,7 @@ function finishDelivery(g) {
   s.contracts += done.length;
   const goals = checkGoals(r);
   const newRegion = maxRegion() > beforeRegion ? SH.REGIONS[maxRegion()].name : null;
+  if (newRegion && maxRegion() === 1) earnLasso("lasso-dunes", "Welcome to Dairy Dunes");
   persist();
 
   const why = { load: "Too much of the load is gone. You need " + g.need + " of " + r.total + " to make the delivery.", flip: "The truck ended up on its roof.", fuel: "You ran out of fuel." }[r.reason] || "";
@@ -873,6 +887,7 @@ function finishDelivery(g) {
     ${gift ? `<div class="unlocked">${ico("up_straps", "🪢")} ${esc(gift)}</div>` : ""}
     ${streakLine ? `<div class="unlocked">${ico("daily", "📅")} ${esc(streakLine)}</div>` : ""}
     ${newRegion ? `<div class="unlocked">${ico("map", "🗺️")} New region: ${esc(newRegion)}</div>` : ""}
+    ${lassoLines.map((l) => `<div class="unlocked">${ico("lasso", "🪢")} ${esc(l)}</div>`).join("")}
     ${done.map((c) => `<div class="unlocked">${ico("contracts", "📋")} ${esc(c.text)} +${c.pay}</div>`).join("")}
     ${goals.map((g2) => `<div class="unlocked">${ico("goal_" + g2.id, g2.icon)} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
     ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
@@ -922,6 +937,14 @@ function finishWinterRun(report, delivery) {
   else play("failed",.6);
 }
 
+const LASSO_MAX = 3;
+function lassoAllowed(d) { return !d.daily && !d.cup && !d.testDrive && !d.winter; }
+// Lassos are rare and earned, never bought and never random. Returns a results line, or "".
+function giveLasso(why) {
+  if ((save.lassos || 0) >= LASSO_MAX) return "";
+  save.lassos = (save.lassos || 0) + 1;
+  return why + ": a Lucky Lasso (" + save.lassos + " in the Pantry)";
+}
 function giveStraps() {
   save.gifts.straps = true;
   if (level("straps") >= 1) return "";
@@ -1372,6 +1395,7 @@ function settingsScreen() {
     <div class="set"><b>Music</b><div class="opts">${opt("music", 1, "On", save.music !== false)}${opt("music", 0, "Off", save.music === false)}</div></div>
     <div class="set"><b>Volume</b><div class="opts vol"><label>Sound <input type="range" min="0" max="100" step="5" value="${Math.round((save.sfxVol ?? 1) * 100)}" data-vol="sfxVol" aria-label="Sound volume"></label><label>Music <input type="range" min="0" max="100" step="5" value="${Math.round((save.musicVol ?? 1) * 100)}" data-vol="musicVol" aria-label="Music volume"></label></div></div>
     <div class="set"><b>Text size</b><div class="opts">${opt("text", 0, "Normal", !save.bigText)}${opt("text", 1, "Large", !!save.bigText)}</div></div>
+    <div class="set"><b>Lucky Lasso</b><div class="opts">${opt("lasso", 1, "Use automatically", save.lassoAuto !== false)}${opt("lasso", 0, "Save them", save.lassoAuto === false)}</div><small class="sub">${save.lassos || 0} of ${LASSO_MAX} in the Pantry. Each one ropes the first load that falls off, once. Not used in the Daily, the Weekly Cup or Test Drives.</small></div>
     <div class="set"><b>Horn button</b><div class="opts">${opt("horn", 1, "Show", save.hornButton !== false)}${opt("horn", 0, "Hide", save.hornButton === false)}</div></div>
     ${nativeApp ? `<div class="set"><b>Vibration</b><div class="opts">${opt("haptics", 1, "On", save.haptics !== false)}${opt("haptics", 0, "Off", save.haptics === false)}</div></div>` : ""}
     <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1), save.quality === q)).join("")}</div></div>
@@ -1446,6 +1470,7 @@ ui.addEventListener("click", (e) => {
     if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || menuMusic()); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
     if (group === "shake") save.shake = v === "1";
     if (group === "horn") save.hornButton = v === "1";
+    if (group === "lasso") save.lassoAuto = v === "1";
     if (group === "text") { save.bigText = v === "1"; document.documentElement.classList.toggle("big-text", save.bigText); }
     if (group === "ghost") save.ghostOn = v === "1";
     if (group === "quality") { save.quality = v; world && world.setQuality(v); }

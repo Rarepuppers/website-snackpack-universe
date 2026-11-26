@@ -735,7 +735,7 @@
       dropoffs: deliveries, homes: 0, given: {},
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
       total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
-      brakeUsed: false, featMax: {}
+      brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false
     };
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
@@ -754,7 +754,11 @@
     world.on("begin-contact", function (c) {
       var hit = tagged(c, "cargo");
       if (hit && hit.other && hit.other.kind === "ground" && !hit.self.lost && !hit.self.broken) {
-        if (g.settle <= 0) {
+        if (g.settle <= 0 && g.lassoLeft > 0 && !d.dropoffs) {
+          // The lasso: the first load to hit the ground is roped back onto the bed
+          // after this step (a body can't be moved inside a contact callback).
+          g.lassoLeft -= 1; g.lassoUsed = true; hit.self.rescue = true;
+        } else if (g.settle <= 0) {
           hit.self.lost = true;
           var cp = hit.self.body.getPosition();
           g.events.push({ type: "lost", cargo: hit.self.type, x: cp.x, y: cp.y });
@@ -941,6 +945,20 @@
       });
       world.step(STEP);
 
+      // Lasso: put a roped load back on top of the stack, moving with the truck.
+      cargo.forEach(function (c) {
+        if (!c.rescue) return;
+        c.rescue = false;
+        var from = c.body.getPosition(), top = D.bedHeight;
+        cargo.forEach(function (o) { var l = o !== c && !o.lost && !o.broken && !o.delivered && onBed(o); if (l) top = Math.max(top, l.y + o.h / 2); });
+        var at = truck.getWorldPoint({ x: (D.bedLeft + D.bedRight) / 2, y: top + c.h / 2 + 0.08 });
+        g.events.push({ type: "lasso", id: c.id, cargo: c.type, x: from.x, y: from.y, toX: at.x, toY: at.y });
+        c.body.setTransform(at, truck.getAngle());
+        c.body.setLinearVelocity(truck.getLinearVelocity());
+        c.body.setAngularVelocity(0);
+        g.settle = Math.max(g.settle, 0.4);
+      });
+
       // How much the rear tyre is spinning against the road: drives the dust.
       var rearSurface = -wheels[0].getAngularVelocity() * D.wheelR;
       g.slipRear = wheels[0].getUserData().touching > 0 ? Math.abs(rearSurface - truck.getLinearVelocity().x) : 0;
@@ -1060,7 +1078,7 @@
     }
     if (coins) lines.push({ label: "Coins on the road", coins: coins });
     return {
-      status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, topup: !!d.topup, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
+      status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, lassoUsed: !!g.lassoUsed, topup: !!d.topup, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
       long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
       coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
