@@ -33,6 +33,13 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
   spotlight tests now match the launched page.
 - Generator catch-up: breadcrumbs on 79 pages that had none (characters,
   animals and others) and WebP for 181 images on 66 pages, ~3 MB lighter.
+- 2048 gains 3×3 and 5×5 boards, a best per size and a daily 4×4 (no undo);
+  tiles now line up exactly with their cells (they sat 7.5 px short).
+- Snack Typer and Fact Sprint are on the Daily page (29 dailies) and the
+  homepage hero; Hearts replaces Pinball in the featured row.
+- Pyramid and TriPeaks now share their own painted cards (delivered 18 Oct,
+  never switched on). Codex prompt for the next art batch:
+  `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md`.
 
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 

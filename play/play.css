@@ -483,6 +483,9 @@
   transition: transform 0.12s ease;
 }
 
+/* 3×3 and 5×5 boards (sizes set from JS); these beat the per-value sizes. */
+.g2048-board[data-n="3"] .g2048-tile { font-size: 2rem; }
+.g2048-board[data-n="5"] .g2048-tile { font-size: 1.2rem; border-radius: 10px; }
 .g2048-tile[data-v="2"]    { background: #fbf3e6; color: #201713; }
 .g2048-tile[data-v="4"]    { background: #f7ebd4; color: #201713; }
 .g2048-tile[data-v="8"]    { background: #efb54d; color: #2b1d08; }

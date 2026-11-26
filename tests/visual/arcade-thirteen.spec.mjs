@@ -137,9 +137,9 @@ test("the rules table's Classic claims match the engine", () => {
   expect(html).toContain("the 2 is the <em>lowest</em>");
 });
 
-// 21 Nov 2026: search leaders first (Thirteen, 2048), then what classes open.
+// Search leaders first (Thirteen, 2048), then what classes open, then Hearts (R1, 26 Nov).
 test("the hub's Featured order leads with the games people search for and play", async ({ page }) => {
   await page.goto("/play/");
   const first = await page.locator(".game-grid .game-tile").evaluateAll((ts) => ts.filter((t) => !t.closest("[hidden]")).slice(0, 5).map((t) => t.getAttribute("href")));
-  expect(first.map((h) => h.replace(/^\.?\/?(play\/)?|\/$/g, ""))).toEqual(["thirteen", "2048", "connect-4", "snacky-worm", "pinball"]);
+  expect(first.map((h) => h.replace(/^\.?\/?(play\/)?|\/$/g, ""))).toEqual(["thirteen", "2048", "connect-4", "snacky-worm", "hearts"]);
 });

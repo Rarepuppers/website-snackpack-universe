@@ -69,11 +69,13 @@ clicks and book events only exist from 26 Nov.
 
 Each has the evidence, the work, when it is done, and how we will know it worked.
 
-**Status on 26 Nov:** R9, R11, R12 and R13 are done. Everything else is waiting
-on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
-~3 Dec), R3/R15/R16 (~16 Dec), R8 (after R7), R10 (after R6), R5 (Codex).
+**Status on 26 Nov (afternoon):** Mark asked to do everything now rather than
+wait for dates. Done: R1, R2, R7 (early read), R8, R9, R11, R12, R13, R15, and
+R5's prompt. Still waiting, because the data does not exist yet: R6 (class
+behaviour over school days; new events began 26 Nov), R16 (needs the daily
+counts), R10 (depends on R6). R5 waits on Codex.
 
-### R1. Re-pick the featured row on ~10 December
+### R1. Re-pick the featured row — **done early, 26 Nov**
 - **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
   by adults; Snacky Worm and Pinball are in the row for the class.
 - **Work:** run the reader for 26 Nov – 10 Dec. If Water Sort or Hearts has
@@ -82,8 +84,13 @@ on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
   featured-order test and the six hub baselines from CI.
 - **Done when:** the row reflects the 14-school-day read.
 - **Measure:** `hub-position/1-5` share of hub clicks before and after.
+- **Decision (6–26 Nov data):** Hearts had 10 starts, all from outside
+  Honduras, against Pinball's 7 in total, so the rule swaps Hearts in for
+  Pinball. Water Sort (11 starts, ~8 outside Honduras) also cleared the bar;
+  Hearts wins on the bigger margin. Pinball stays in the grid and in the
+  class's reach. Re-check on ~10 Dec with hub-click data.
 
-### R2. Put Snack Typer and Fact Sprint on the Daily page
+### R2. Put Snack Typer and Fact Sprint on the Daily page — **done 26 Nov**
 - **Evidence:** both have a daily; `/play/daily/` is where the daily habit
   lives, and the hub's Daily filter already lists Snack Typer.
 - **Work:** add a `daily-challenge-card` for each to `play/daily/index.html`
@@ -91,6 +98,8 @@ on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
   `arcade-daily.spec.mjs` checks every card reaches a working daily.
 - **Done when:** both cards are live and the spec passes.
 - **Measure:** `arcade/typing/daily` and `arcade/math-facts/daily` counts.
+- **Done:** both cards on `/play/daily/` (29 dailies now, counts updated
+  across the site); `arcade-daily.spec.mjs` plays every card's daily.
 
 ### R3. Fact Sprint (step 6)
 - **Evidence:** the class is on desktops in lesson time; math facts are the
@@ -107,14 +116,23 @@ on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
 - **Work:** none to build. Do not port more. Keep them working; no new art.
 - **Revisit:** only if a World Cup or a search query appears for one.
 
-### R5. Codex art for the two new games, plus the old placeholders
+### R5. Codex art for the two new games and five interim social cards — **prompt ready**
 - **Evidence:** Snack Typer and Fact Sprint ship with interim generated art;
   Pyramid and TriPeaks still use placeholder social cards; brief items 12–16
   are interim cards.
 - **Work:** add items 17 (Snack Typer: painted keycap tile and card) and 18
   (Fact Sprint) to `CODEX-ASSET-BRIEF-2026-10-17.md`. Same sizes as the other
   tiles: 144×144 and 288×288 PNG, 1200×630 PNG, WebP siblings.
-- **Done when:** files land under the same names; no code change needed.
+- **Done when:** files land under the same names, then switch the hub, Daily
+  page and related-games references from `typing.svg` / `math-facts.svg` to
+  the PNGs (run `build-related-games.mjs` and `build-webp.mjs`).
+- **Prompt:** `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md` (paste as is).
+- **Corrections found writing it:** (1) Pyramid and TriPeaks are **not**
+  placeholders: Codex delivered them on 18 Oct, but their pages still shared
+  the generic studio card. Both pages now use their own cards (26 Nov).
+  (2) The brief's house rule bans rendered letters and digits, and my first
+  items 17–18 asked for lettered keys and "7 × 8 = 56". Rewritten: blank
+  finger-coloured keys with the F/J bumps; a dot array with a × and a stopwatch.
 
 ### R6. The 10 December read, with decision rules
 - **Work:** `node scripts/read-site-events.mjs --from 2026-11-26 --to 2026-12-10`.
@@ -129,7 +147,7 @@ on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
   4. Typing and math: do classes come back for the daily?
 - **Done when:** findings and decisions are written into this file.
 
-### R7. Thirteen and 2048 title read on ~4 December
+### R7. Thirteen and 2048 title read — **read early, 26 Nov: keep both**
 - **Evidence:** both retitled 6 Nov. Baselines: `free thirteen` 265 impressions
   / 0 clicks and `play thirteen` 219 / 0; 2048 285 impressions at position 17.4
   over 90 days.
@@ -137,13 +155,37 @@ on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
   Revert a title only if CTR fell at the same position.
 - **Then:** if Thirteen holds, its next lever is position: a "How to play in
   60 seconds" box above the game and links to Big Two and Rummy 500 under it.
+- **Read (Search Console to 23 Nov; 17 Oct–5 Nov vs 7–24 Nov):**
+  | Page | Clicks | Impressions | CTR | Position |
+  | --- | --- | --- | --- | --- |
+  | Thirteen before | 79 | 3,759 | 2.10% | 6.3 |
+  | Thirteen after | 95 | 4,222 | 2.25% | 6.5 |
+  | 2048 before | 5 | 126 | 3.97% | 8.2 |
+  | 2048 after | 6 | 107 | 5.61% | 8.5 |
+  Thirteen per day: 3.95 → 5.3 clicks (+34%) at a slightly worse position, so
+  the title helps. 2048 is too small to call but not worse. **Keep both.**
+  Re-confirm at a full 28 days (~4 Dec) before the Thirteen "how to play" box.
+- **New finding:** 2048's queries include "2048 no ads", "2048 without ads"
+  (position 1.2), "2048 google classroom" and "ezclasswork". Schools look for
+  ad-free 2048. See R17.
 
-### R8. 2048 variants
+### R8. 2048 variants — **done 26 Nov**
 - **Evidence:** 2048 is the second search page and 44% of its starts are the
   class.
 - **Work:** 3×3 and 5×5 boards and a daily seed, after R7's read. Records per
   size; the shared resume key gets the size as its variant.
 - **Measure:** 2048 impressions and starts at 28 days.
+- **Done:** 3×3, 4×4 and 5×5 (switch on its own row, remembered), a best per
+  size (4×4 keeps `sp_2048_best` and the "default" resume variant, so nobody
+  loses a record or saved run), and a daily 4×4 whose tile drops are seeded by
+  the UTC date. Undo is off in the daily so scores are fair; the daily counts
+  on `/play/daily/` when the board fills. FAQ (page and JSON-LD) updated.
+  `tests/visual/arcade-2048-sizes.spec.mjs`.
+- **Bug found and fixed on the way:** tiles were placed at `column × 25%`,
+  but a tile is a quarter of the board *minus the gaps*, so the right column
+  and bottom row sat 7.5 px short of their cells (225 + 67.5 = 292.5 of
+  300 px). Tiles now use `calc()` with the gap, on every size; a test checks
+  the bottom-right tile lines up with its cell.
 
 ### R9. A classroom links block and a way for teachers to reach us — **done 26 Nov**
 - **Evidence:** the Honduran teacher has no channel to us; `/for-teachers/`
@@ -218,13 +260,15 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   generators should be a no-op unless a page or image is added, so **run them
   as part of adding any page** and commit their output with it.
 
-### R15. Classroom shortcuts on the homepage
+### R15. Classroom shortcuts on the homepage — **done 26 Nov**
 - **Evidence:** the class lands on the homepage first (direct visits, desktop);
   the hero now links "Read a story" and "Play a game".
 - **Work:** once the ~16 Dec read shows the class uses Snack Typer or Fact
   Sprint, add "Practise typing →" and "Practise maths →" to the same hero line.
   Cheap; the line already wraps on phones.
 - **Measure:** HN starts of `typing` and `math-facts` before and after.
+- **Done:** the hero line reads "Read a story → Play a game → Practise typing →
+  Practise maths →"; checked in `site-events.spec.mjs`.
 
 ### R16. Watch the daily links from teachers
 - **Evidence:** the class-links box makes daily links easy to share.
@@ -232,6 +276,18 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   `arcade/math-facts/daily` with their starts; a high daily share means
   teachers are using the box. If so, add a weekly "class pack" (five days of
   dailies) to `/for-teachers/`.
+
+### R17. Say "no ads" where schools search for it
+- **Evidence:** R7's 2048 queries: "2048 no ads", "2048 without ads"
+  (position 1.2), "2048 ad free", "2048 google classroom". Teachers look for
+  ad-free versions of classic games to put on class pages.
+- **Checked 26 Nov:** 2048, Connect 4, Snacky Worm, Word Search, Snack Typer,
+  Fact Sprint, Pinball and Hearts all already say "no ads" in their meta
+  descriptions. Nothing to build; measure only. The one open lever is the
+  carried-over option of a visible "No ads · no sign-in" line in every game's
+  title strip (changes every game screenshot, so do it with a baseline round).
+- **Measure:** Search Console queries containing "no ads", "ad free",
+  "unblocked" or "classroom" across `/play/` at 28 days.
 
 ### R14. Not now
 - **More solitaire variants:** big demand, never ranked (indexing limit).

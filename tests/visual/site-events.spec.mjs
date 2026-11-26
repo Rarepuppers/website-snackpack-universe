@@ -130,7 +130,7 @@ test("the hub leads with the played games and offers a friend row", async ({ pag
   await page.waitForFunction(() => window.__spGameEvents === true);
   const featured = await page.locator("#games .game-grid a.game-tile").evaluateAll((tiles) =>
     tiles.slice(0, 5).map((t) => new URL(t.href).pathname));
-  expect(featured).toEqual(["/play/thirteen/", "/play/2048/", "/play/connect-4/", "/play/snacky-worm/", "/play/pinball/"]);
+  expect(featured).toEqual(["/play/thirteen/", "/play/2048/", "/play/connect-4/", "/play/snacky-worm/", "/play/hearts/"]);
 
   const row = page.locator(".arcade-together-grid a");
   await expect(row).toHaveCount(4);
@@ -148,4 +148,6 @@ test("the homepage links straight to a story and a game", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('.hero-quick a[href="/read/"]')).toBeVisible();
   await expect(page.locator('.hero-quick a[href="/play/"]')).toBeVisible();
+  await expect(page.locator('.hero-quick a[href="/play/typing/"]')).toBeVisible();
+  await expect(page.locator('.hero-quick a[href="/play/math-facts/"]')).toBeVisible();
 });
