@@ -507,7 +507,10 @@ function drainEvents(g) {
     else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
     else if (ev.type === "land") {
       thud(Math.min(1, ev.air));
-      if (ev.air > 0.35 && g.live()) play("crate_thud", Math.min(0.7, ev.air * 0.6));
+      if (ev.air > 0.35 && g.live()) {
+        play("crate_thud", Math.min(0.7, ev.air * 0.6));
+        if (g.cargo.some((c) => c.type === "pudding" && !c.lost && !c.broken)) play("pudding_wobble", Math.min(0.5, ev.air * 0.4));
+      }
       const aboard = (type) => g.cargo.some((c) => c.type === type && !c.lost && !c.broken && !c.delivered);
       if (ev.air > 0.3 && aboard("melon")) play("melon_roll", 0.5);
       if (ev.air > 0.3 && aboard("popcorn")) play("popcorn_pop", 0.5, 0.95 + Math.random() * 0.1);
@@ -516,7 +519,7 @@ function drainEvents(g) {
     else if (ev.type === "dropoff") { play("present_drop",.75) || (beep(680,.14,"sine",.08),beep(910,.18,"triangle",.06,.05)); toast("Porch delivered!",1000); }
     else if (ev.type === "missedDrop") { beep(247,.22,"triangle",.06); toast("Passed a porch",950); }
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
-    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
+    else if (ev.type === "ruined") { (ev.cargo === "pudding" && play("pudding_wobble", 0.8)) || play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
@@ -1144,7 +1147,7 @@ function renderScreen() {
   refreshShowcase();
 }
 const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
-const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">← Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
+const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">${ico("home", "←")} Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
 
 function homeScreen() {
   const n = nextRoute(), today = localDate(), doneToday = save.daily.last === today;
@@ -1158,7 +1161,7 @@ function homeScreen() {
       <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "World Tour: " + esc(SH.REGIONS[SH.dailyRegion(today)].name) + " +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
       <button class="btn" data-nav="long">${ico("long_haul")} Long Haul<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
-      ${currentEvent() ? `<button class="btn winter-entry" data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
+      ${currentEvent() ? `<button class="btn winter-entry"${artUrl("event_winter") ? ` style="--winter-art:url('${artUrl("event_winter")}')"` : ""} data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
       <div class="dock">
         <button class="btn" data-nav="routes">${ico("routes")} Routes</button>
         <button class="btn" data-nav="garage">${ico("garage")} Garage</button>
@@ -1213,7 +1216,7 @@ function eventsScreen() {
   const job = (c2, got, paid, when) => `<div class="goal${paid ? " done" : ""}"><span class="ic">${ico("contracts", "📋", "ico badge")}</span><b>${esc(c2.text)}${paid ? " ✓" : ""}</b><small>${Math.min(c2.goal, Math.floor(got))} of ${c2.goal} ${when}</small><em>+${c2.pay}</em></div>`;
   const w = weekJob();
   ui.innerHTML = `<section class="panel">${panelHead("Daily and weekly")}
-    <h3 class="small">${ico("daily")} World Tour Daily</h3>
+    <h3 class="small">${ico("daily_tour", ico("daily"))} World Tour Daily</h3>
     <p class="sub">Today: ${esc(SH.REGIONS[SH.dailyRegion(today)].name)} in the ${esc(SH.truckSpec(SH.dailyDelivery(today).truck).name)}. The same road and the same loaner truck for everyone, in a different region each day. Day 7 of a streak pays 150 more.</p>
     <div class="cal">${cal}</div>
     <button class="btn${doneToday ? "" : " primary"}" data-nav="daily">${doneToday ? "Drive it again" : "Drive today's delivery +" + SH.BALANCE.dailyPay}</button>
@@ -1262,10 +1265,11 @@ function winterScreen() {
   }).join("");
   const goals=winterGoals(progress).map(([id,name,desc,done])=>`<div class="goal${done?" done":""}"><span class="ic">${ico("goal_"+id,"❄")}</span><b>${esc(name)}${done?" ✓":""}</b><small>${esc(desc)}</small></div>`).join("");
   ui.innerHTML=`<section class="panel winter-panel">${panelHead("Winter Haul")}
+    ${artUrl("region_northpole") ? `<div class="banner winter-banner" style="background-image:url('${artUrl("region_northpole")}')"><span>${["present","sack","pudding"].map((k) => ico("cargo_" + k)).join("")}${ico("truck_sleigh")}</span></div>` : ""}
     <div class="winter-heading"><h3>North Pole</h3><p>Stop on each doormat to deliver a load, then return to the depot.</p><small>${seasonStars(progress)} of 24 North Pole stars</small></div>
     <div class="routes">${routes}</div>
-    <h3 class="small">Advent calendar</h3><p class="sub">Missed days stay open through 6 January.</p>
-    <div class="winter-doors">${doors}</div>
+    <h3 class="small">${ico("advent")} Advent calendar</h3><p class="sub">Missed days stay open through 6 January.</p>
+    <div class="winter-doors${artUrl("advent_bg") ? " with-art" : ""}"${artUrl("advent_bg") ? ` style="background-image:url('${artUrl("advent_bg")}')"` : ""}>${doors}</div>
     <h3 class="small">Workshop Orders</h3>${orders}
     <h3 class="small">Winter goals</h3>${goals}</section>`;
 }
@@ -1357,7 +1361,10 @@ ui.addEventListener("click", (e) => {
     state.screen = nav;
     return renderScreen();
   }
-  if ((b = t("[data-winter]")) && !b.disabled) return startDelivery(SH.winterDelivery(b.dataset.winter));
+  if ((b = t("[data-winter]")) && !b.disabled) {
+    if (b.closest(".winter-doors")) play("door_open", 0.7);
+    return startDelivery(SH.winterDelivery(b.dataset.winter));
+  }
   if ((b = t("[data-go]")) && !b.disabled) return startDelivery(SH.findDelivery(b.dataset.go));
   if ((b = t("[data-extra]")) && !b.disabled) {
     const e = EXTRAS.find((x) => x[0] === b.dataset.extra);
@@ -1423,6 +1430,7 @@ if (!world) {
     if (has("ui/gas.webp") && !$("gas").querySelector("img")) $("gas").insertAdjacentHTML("afterbegin", ico("gas", "", "ico pedal-ico"));
     if (has("ui/brake.webp") && !$("brake").querySelector("img")) $("brake").insertAdjacentHTML("afterbegin", ico("brake", "", "ico pedal-ico"));
     if (has("ui/pause.webp")) $("pause").innerHTML = ico("pause", "II");
+    if (has("ui/restart.webp")) $("restart").innerHTML = ico("restart", "↻");
     world.assetStamp = a.version || String(a.files.size);
     // First launch: straight onto the first road once the trucks are in. The home screen comes after it.
     if (!save.stats.deliveries && !save.stats.failed && !Object.keys(save.stars).length && state.mode === "menu" && state.screen === "home" && !veil.classList.contains("on")) return startDelivery(SH.findDelivery("bakery-1"));

@@ -288,3 +288,22 @@ Paths below are relative to this assets directory, except app/ paths which refer
 | models/trucks/truck_sleigh.glb, models/trucks/reindeer_team.glb | Original procedural geometry and vertex colors for Snack Haul. Editable build scripts in shared-assets/art-source/snack-haul/blender/winter. |
 | models/cargo/cargo_present_red.glb, models/cargo/cargo_present_green.glb, models/cargo/cargo_present_blue.glb | Original procedural geometry and vertex colors. Same source folder. |
 | models/winter/house_a.glb, models/winter/workshop.glb | Original procedural geometry and vertex colors. Same source folder. |
+
+## Winter Haul W2 and W3, 26 November 2026
+
+| File or group | Source / method |
+| --- | --- |
+| W2 Winter cargo, scenery, depot decorations and toppers | Original geometry built with the Snack Haul toy kit. Geometry and CPU ray-baked vertex AO sources in `shared-assets/art-source/snack-haul/w2/`. |
+| `art/ridge_northpole.webp`, `art/advent_bg.webp` | Original OpenAI ImageGen scene plates and mechanical export. Masters and prompts in `shared-assets/art-source/snack-haul/w3/masters/`. |
+| `art/customer_santa.webp`, `art/customer_tinsel.webp` | Original OpenAI ImageGen folklore character art, with matching crops and exports. Same masters folder. |
+| `art/region_northpole.webp`, `art/event_winter.webp`, Winter Play Store graphics | Original OpenAI ImageGen scenery plates composed with renders of the Snack Haul game models. The feature graphic uses the existing Snack Haul logo. Same masters folder and `w3/compose_art.py`. |
+| `art/portrait_sleigh.webp` | Rendered from the W1 sleigh, reindeer, driver and present GLBs using `w3/compose_art.py`. |
+| Winter icons, goal badges and particle textures | Original SVG icon masters and procedural particle masks in `shared-assets/art-source/snack-haul/w3/`. |
+| `audio/music/music_carol_jingle_bells.ogg` | A new instrumental arrangement and synth recording of the chorus melody of *The One Horse Open Sleigh*, James Lord Pierpont, 1857, Boston, Oliver Ditson & Co., first edition, printed pp. 4–5. Public-domain composition. Score consulted 26 November 2026. Credit Line: Library of Congress, Music Division. [Library of Congress catalogue](https://www.loc.gov/item/2023812429/) · [1857 facsimile](https://ualrexhibits.org/primarysources/files/2019/05/The-One-Horse-Open-Sleigh.pdf). |
+| Remaining W3 music, sleigh loops and sound effects | Original compositions and synthesis in `shared-assets/art-source/snack-haul/w3/audio/synth_winter.py`, with lossless FLAC masters alongside. |
+
+## First Mile F1, 26 November 2026
+
+| File or group | Source / method |
+| --- | --- |
+| `ui/medal_crumb.webp`, `ui/goal_crumbs.webp`, `ui/restart.webp`, `ui/home.webp`, `ui/daily_tour.webp` | Original Snack Haul interface drawings. Editable SVGs and the exporter are in `shared-assets/art-source/snack-haul/f1/`. |

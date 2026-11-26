@@ -249,6 +249,9 @@ exists(path.join(A, "CREDITS.md"));
 if (WINTER) {
   const W = (sub, name) => path.join(A, "models", sub, `${name}.glb`);
   const groundedW = (m, bad) => { if (!near(m.min[1], 0, 0.12)) bad(`base sits at y ${m.min[1].toFixed(2)}, expected 0`); };
+  // Buildings may carry a 1 m foundation below ground (asked for in W2), so they
+  // never float over a slope; the floor still has to be at y = 0 or above.
+  const plinthW = (m, bad) => { if (!near(m.min[1], 0, 0.12) && !near(m.min[1], -1, 0.12)) bad(`base sits at y ${m.min[1].toFixed(2)}, expected 0 or a 1 m plinth at -1`); };
   const centredX = (m, bad) => { if (!near(m.min[0] + m.max[0], 0, 0.2)) bad("not centred on x"); };
   const facesCamera = (m, bad) => { if (!near(m.min[2] + m.max[2], 0, 0.6)) bad("not centred on z"); };
 
@@ -305,11 +308,12 @@ if (WINTER) {
   winterProp("house_a", 2500, 250, groundedW, centredX, facesCamera);
   winterProp("workshop", 8000, 250, groundedW, centredX);
   stage = 2;
-  winterProp("house_b", 2500, 250, groundedW, centredX, facesCamera);
-  winterProp("house_c", 2500, 250, groundedW, centredX, facesCamera);
+  winterProp("house_b", 2500, 250, plinthW, centredX, facesCamera);
+  winterProp("house_c", 2500, 250, plinthW, centredX, facesCamera);
   winterProp("big_tree", 6000, 250, groundedW);
   winterProp("cane_arch", 1200, 80, groundedW, (m, bad) => { if (m.max[1] < 4.5) bad(`only ${m.max[1].toFixed(2)} m tall; the opening needs 4.5 m`); });
-  for (const [name, tris] of [["pine_snow", 600], ["snowman", 400], ["igloo", 700], ["lamp_garland", 500], ["present_pile", 600], ["ice_rock", 200], ["fence_candy", 250]]) winterProp(name, tris, 80, groundedW);
+  for (const [name, tris] of [["pine_snow", 600], ["snowman", 400], ["lamp_garland", 500], ["present_pile", 600], ["ice_rock", 200], ["fence_candy", 250]]) winterProp(name, tris, 80, groundedW);
+  winterProp("igloo", 700, 80, plinthW);
   winterProp("drift", 300, 80, groundedW, (m, bad) => {
     if (!near(m.max[0] - m.min[0], 8, 0.3)) bad(`length along x ${(m.max[0] - m.min[0]).toFixed(2)}, expected 8`);
     if (!near(m.max[1], 0.6, 0.1)) bad(`height ${m.max[1].toFixed(2)}, expected 0.6`);

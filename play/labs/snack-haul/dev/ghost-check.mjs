@@ -20,7 +20,7 @@ const out = path.resolve(process.argv[2] || "ghost-shots");
 const W = Number(process.argv[3] || 996), H = Number(process.argv[4] || 448);
 fs.mkdirSync(out, { recursive: true });
 
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".glb": "model/gltf-binary", ".ogg": "audio/ogg", ".png": "image/png", ".webp": "image/webp" };
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".glb": "model/gltf-binary", ".ogg": "audio/ogg", ".png": "image/png", ".webp": "image/webp" };
 const server = http.createServer((req, res) => {
   const file = path.join(site, decodeURIComponent(req.url.split("?")[0]));
   if (!file.startsWith(site) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); res.end(); return; }

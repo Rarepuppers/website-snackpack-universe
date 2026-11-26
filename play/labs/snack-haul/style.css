@@ -223,3 +223,11 @@ button.customer.locked { display: block; width: 100%; text-align: left; color: i
 .strip i { flex: 0 0 31%; aspect-ratio: 16 / 9; border-radius: 9px; background-size: cover; background-position: center; scroll-snap-align: start; position: relative; }
 .strip i span { position: absolute; left: 6px; bottom: 4px; font-size: .66rem; font-style: normal; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000a; }
 .mapcard { text-align: left; background-size: cover; background-position: center; min-height: 92px; }
+/* Winter Haul art (W3): the home banner, the North Pole card and the advent backdrop. */
+.menu .winter-entry[style*="--winter-art"] { background: linear-gradient(90deg, #263653f0 0 45%, #26365300 80%), var(--winter-art) center / cover; }
+.winter-banner { height: 96px; background-position: center 55%; }
+.winter-doors.with-art { background-size: cover; background-position: center; padding: 8px; border-radius: 12px; }
+.winter-doors.with-art .route:not(:disabled) { background: #3a2618e0; }
+.winter-doors.with-art .route:disabled { background: #2b1d14b3; }
+.back .ico { width: 18px; height: 18px; vertical-align: -3px; }
+.customer h4 .ico { width: 46px; height: 46px; vertical-align: middle; margin-right: 6px; }
