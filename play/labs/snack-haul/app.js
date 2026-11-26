@@ -24,7 +24,7 @@ function load() {
   if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
   return local || {};
 }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, crumb: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 migrateWinterSave(save);
 // 1.0.2 rebuilt the first roads. Stars, medals and challenges stay; best times,
@@ -83,7 +83,7 @@ const FREE_TRUCKS = ["pickup", "tuktuk"];
 // place of the purchase. ?full=1 (unlisted) and saves that already went further keep everything.
 const fullWeb = !nativeApp && (params.get("full") === "1" || SH.DELIVERIES.some((d) => !SH.isFree(d.id) && save.stars[d.id]) || save.webFull);
 if (fullWeb && !nativeApp) save.webFull = true;
-const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&utm_source=website&utm_medium=web-demo";
+const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&referrer=utm_source%3Dwebsite%26utm_medium%3Dweb-demo%26utm_campaign%3Dsnack-haul";
 const paywalled = () => !fullWeb && !save.pro;
 const routePaid = (d) => paywalled() && !d.daily && !d.winter && !SH.isFree(d.id);
 // A region is paid when none of its roads are free.
@@ -141,6 +141,7 @@ const GOALS = [
   { id: "depot5", icon: "🌟", name: "Bright Lights", desc: "Grow the depot to stage 5.", coins: 300, test: () => depotStage() >= 5 },
   { id: "streak7", icon: "🗓️", name: "Full Week", desc: "Do the daily delivery 7 days in a row.", coins: 150, test: () => save.daily.streak >= 7 },
   { id: "cupgold", icon: "🏆", name: "Cup Winner", desc: "Win a gold Weekly Cup.", coins: 250, test: () => (save.stats.cupGolds || 0) >= 1 },
+  { id: "crumbs", icon: "✨", name: "Golden Crumbs", desc: "Win 10 golden crumbs: three stars, gold and the challenge in one run.", coins: 200, test: () => Object.keys(save.crumb || {}).length >= 10 },
   { id: "done", icon: "🏆", name: "Haulage Legend", desc: "Finish every route.", coins: 300, test: () => SH.DELIVERIES.every((d) => save.stars[d.id] > 0) }
 ];
 function regionStars(r) { return SH.regionStars(r, save.stars); }
@@ -763,6 +764,9 @@ function finishDelivery(g) {
   // Route challenge: paid once, the first time it is met.
   const ch = !d.long && !d.daily ? SH.challengeFor(d.id) : null;
   let chPay = 0;
+  // The golden crumb: three stars, gold and the route challenge, all in one run.
+  const crumbNew = !!ch && !d.order && !d.cup && r.stars === 3 && r.medal === 3 && SH.challengeMet(ch, r) && !save.crumb[d.id];
+  if (crumbNew) { save.crumb[d.id] = true; save.coins += 25; s.earned += 25; }
   if (ch && !save.challenge[d.id] && SH.challengeMet(ch, r)) {
     save.challenge[d.id] = true;
     chPay = Math.round(20 * SH.REGIONS[d.region].pay);
@@ -828,6 +832,7 @@ function finishDelivery(g) {
     ${d.order && r.status === "done" && r.stars < 2 && !save.orders[d.id] ? `<p class="challenge">${esc(SH.CUSTOMERS[d.customer].name)} needs at least two stars.</p>` : ""}
     ${rivalLine ? `<div class="${rivalPay ? "unlocked" : "challenge"}">${ico("ghost", "🏁")} ${esc(rivalLine)}</div>` : ""}
     ${ghostLine ? `<div class="${beatGhost ? "unlocked" : "challenge"}">${ico("ghost", "👻")} ${esc(ghostLine)}</div>` : ""}
+    ${crumbNew ? `<div class="unlocked">${ico("medal_crumb", "✨")} Golden crumb! Three stars, gold and the challenge in one run +25</div>` : ""}
     ${chPay ? `<div class="unlocked">${ico("challenge", "🎯")} Challenge done: ${esc(SH.challengeText(ch))} +${chPay}</div>` : ""}
     ${ch && !save.challenge[d.id] && r.status === "done" ? `<p class="challenge">${ico("challenge", "🎯")} Challenge: ${esc(SH.challengeText(ch))}</p>` : ""}
     ${gift ? `<div class="unlocked">${ico("up_straps", "🪢")} ${esc(gift)}</div>` : ""}
@@ -1224,11 +1229,11 @@ function routesScreen() {
   const tabs = SH.REGIONS.map((r, i) => `<button class="tab" ${regionPaid(i) ? 'data-unlock="routes"' : `data-region="${i}"`} aria-pressed="${state.regionTab === i}"${regionOpen(i) || regionPaid(i) ? "" : " disabled"}>${ico("region_" + r.id)} ${esc(r.name)}${regionOpen(i) ? "" : " " + ico("lock", "🔒")}</button>`).join("");
   const region = SH.REGIONS[state.regionTab];
   const cells = SH.DELIVERIES.filter((d) => d.region === state.regionTab).map((d) => {
-    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3;
+    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, md = save.medal[d.id] || 0, exp = md === 3, crumb = save.crumb[d.id];
     const ch = SH.challengeFor(d.id), chDone = !!save.challenge[d.id];
     if (routePaid(d)) return `<button class="route paid" data-unlock="routes" aria-label="${esc(d.name)}, full game"><b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i><small>${ico("lock", "🔒")}</small><em>Full game</em></button>`;
     return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(region.name)} route ${d.index + 1}, ${esc(d.name || "")}, ${st} stars${ch ? ", challenge " + (chDone ? "done" : "not done") : ""}">
-      <b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i>${ch ? `<span class="ch${chDone ? " on" : ""}" title="${esc(SH.challengeText(ch))}">${ico("challenge", "🎯")}${chDone ? " ✓" : ""}</span>` : ""}<small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small>${ch && st && !chDone ? `<i class="chtext">${esc(SH.challengeText(ch))}</i>` : ""}<em>${md ? ico("medal_" + ["", "bronze", "silver", "gold"][md]) + " " + ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
+      <b>${d.index + 1}</b><i class="rname">${esc(d.name || "")}</i>${ch ? `<span class="ch${chDone ? " on" : ""}" title="${esc(SH.challengeText(ch))}">${ico("challenge", "🎯")}${chDone ? " ✓" : ""}</span>` : ""}<small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small>${ch && st && !chDone ? `<i class="chtext">${esc(SH.challengeText(ch))}</i>` : ""}<em>${crumb ? ico("medal_crumb", "✨") + " Golden crumb" : md ? ico("medal_" + ["", "bronze", "silver", "gold"][md]) + " " + ["", "Bronze", "Silver", "Gold"][md] + " medal" : d.load.length + " loads · " + d.len + "m" + (d.pickup ? " · pickup" : "")}</em></button>`;
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}

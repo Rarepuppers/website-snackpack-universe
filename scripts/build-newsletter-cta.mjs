@@ -40,13 +40,9 @@ const ACTION =
 
 // Brevo-hosted double opt-in forms for product launch announcements. Use a
 // dedicated contact list for each release so signups match the email promised.
-const releaseAlerts = {
-  "snack-haul": {
-    name: "Snack Haul",
-    privacy: "/privacy/snack-haul/#launch-alerts",
-    form: "https://c8e915bf.sibforms.com/serve/MUIFAOu-KUA_U069pC1vk1KQq3yCfcIysm_IcXvD9ngdbahu70Q3W9K2izlb7f-eSPfsJPoWMAMURGmi2tQejmS_hNMfx2CIVrN6aje7CM50Rbvi0uAO3Jz3B7tzADnDE1p_ADFMugVIWXLjkE2ulpWos9EAnBVJJ2DCJUzeUh_rm0xb_ttHTMNzEgB5Bj6Iq8T05fme8ctxhj3cdw==",
-  },
-};
+// Snack Haul's launch list closed when the game went live on 26 Nov 2026; its page
+// now has the general newsletter block like every other app.
+const releaseAlerts = {};
 
 function releaseBlock({name, form, privacy}) {
   return `${OPEN}
