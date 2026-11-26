@@ -180,3 +180,57 @@ ChromeHeadless. Measure search with GSC only.
 | 4 | **Done, as a time rule.** The tip popup no longer opens Mon–Fri 08:00–15:00 in the player's time zone, and isn't stamped as shown then. `/read/` never had a tip prompt. |
 | Hub baselines | The six `hub-*` screenshots change; adopt them from CI's `arcade-visual-diff` artifact. |
 | Pre-existing | `reads-final.spec.mjs` "short viewport controls 740x360" was already failing on main before these pushes. |
+
+## GoatCounter read — 6 to 25 November 2026 (`node scripts/read-site-events.mjs`)
+
+First read with the API key (`~/billing/goatcounter.txt`, read-access section).
+About 195 game starts across 42 games in 19 days. Small numbers: treat 1–3 as noise.
+
+| Finding | Evidence | What it means |
+| --- | --- | --- |
+| **Solitaire's popularity was the bot** | 1 start in 19 days, against 290 Cloudflare views in 30 | Confirmed. Never feature it on Cloudflare numbers. |
+| **Thirteen is a third of all real play, none of it from the class** | 71 starts (37%), 0% Honduras, 31 wins, 4 friend tables | Search players. Keep it first; friend tables get real use. |
+| **The class plays quick, no-reading games** | Honduras share of starts: Connect 4 75%, Snacky Worm 73%, Word Search 60%, Table Tennis 60%, Pinball 57%, 2048 44%, Cascade 4/4 | Matches the new featured order and friend row. |
+| **Water Sort and Hearts are quiet performers** | Water Sort 10 starts / 6 wins, mostly not Honduras; Hearts 9 starts / 9 wins, 0% Honduras | Adults finishing games. Candidates for the featured row if they hold up. |
+| **23 games had 1–2 starts in 19 days** | the long tail, incl. most of the 10 soccer games | Don't add more reflex soccer games; spend effort on depth in the top 10. |
+| Stray event | `arcade/deploy-check/start` (1) | A manual test. Ignore. |
+
+Caveat in the reader: "start" counts once per page visit and a player can win
+several games in one visit, so wins ÷ starts is not a win rate.
+
+**Next reads:** time bands, dailies, hub clicks and books only began on 26 Nov.
+Read them on ~10 Dec (14 school days). Questions to answer then: do Honduras
+students finish books; do they stay over 5 minutes in a game; do hub clicks
+come from the first five tiles or the friend row.
+
+## Step 5 — typing game (started 26 Nov)
+
+**Snack Typer** at `/play/typing/`. Lessons by keyboard row (home, top, bottom,
+all letters), story words and sentences taken from `/read/` books (each links
+back to its book), a daily set, a finger-coloured on-screen keyboard, WPM and
+accuracy with stars, best per lesson. Funnel: Snackpack 3 Sentences & Spelling.
+Name search 26 Nov: no game called "Snack Typer". Competitors KidzType,
+TypingBird, Dance Mat Typing, Kodable; most carry ads or need accounts.
+
+### Step 5 progress — 26 November
+
+| Item | Result |
+| --- | --- |
+| Game | **Built.** `/play/typing/`: six lessons (home, top, bottom row, all letters, story sentences, longer sentences), stop-on-error typing into a real text box (phones and IMEs work), finger-coloured keyboard with the next key outlined and named ("“s” — left ring finger"), stars for accuracy (90/95/98%), live speed after 5 s, best per lesson, daily (8 words + 1 story sentence), resume, Escape restarts. |
+| Books link | 35 sentences from 10 `/read/` books, each run says which book(s) it came from and links there. The spec fails if a book is renamed or its sentence changes. |
+| Found by its own test | "garden" was in the Top row lesson but needs N (bottom row). Swapped for "puppet". |
+| Found on the way | `/for-teachers/` told schools we only use Cloudflare page counts; it now mentions the GoatCounter counts and links the policy. It also lists Snack Typer under ways to use the site in class. |
+| Funnel | Snackpack 3 Sentences & Spelling (`/go/arcade/typing/sentencesspelling/`), not Brain Games. |
+| Art | Interim SVG keycap tile and a rendered social card. Codex can paint a tile later. |
+| Generators | `build-breadcrumbs` and `build-webp` rewrite ~80 unrelated pages that other sessions never regenerated. Only this game's files were kept; that drift is someone else's to land. |
+| Hub baselines | Change again (new tile); adopt from CI as before. |
+| Also red on main | `last-bastion-polish-review` "dense kit review" failed once on 348713d2 (not touched here); `reads-final` short viewport still pre-existing. |
+
+## New recommendations (26 Nov)
+
+1. **Put Water Sort or Hearts in the featured row if the ~10 Dec read holds.** Both are finished by adults far more than they are opened by the class.
+2. **Add Snack Typer to `/play/daily/`** once it has a week of plays (the hub's Daily filter already lists it).
+3. **Math facts sprint (step 6) should copy Snack Typer's shape:** accuracy-first stars, a daily, book links where a number story fits, and the Basic Math app as the funnel.
+4. **Stop adding soccer reflex games** (10 exist; 1–2 starts each in 19 days).
+5. **Ask Codex for painted Snack Typer art** (tile 144×144, card 1200×630) using the keycap layout.
+6. **Read the new events on ~10 Dec** with `node scripts/read-site-events.mjs --from 2026-11-26`.

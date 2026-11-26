@@ -13,12 +13,12 @@
   var categories = {
     cards: ["solitaire", "spider-solitaire", "freecell", "tripeaks", "pyramid", "golf-solitaire", "thirteen", "big-two", "hearts", "spades", "rummy-500"],
     puzzles: ["atlas-quest", "sudoku", "killer-sudoku", "minesweeper", "kakuro", "picross", "water-sort", "2048", "cascade", "block-puzzle", "memory-match"],
-    word: ["snackwords", "crossword", "word-search"],
+    word: ["snackwords", "crossword", "word-search", "typing"],
     board: ["mahjong", "checkers", "chess", "connect-4", "reversi", "snakes-and-ladders", "five-dice", "backgammon"],
     arcade: ["table-tennis", "asteroid-destroyer", "brick-breaker", "flappy-snacky", "snacky-worm"],
     soccer: ["flag-frenzy", "soccer-trivia-sprint", "keepy-uppy", "target-shooting-arena", "free-kick-curl", "crossbar-challenge", "goalkeeper-hero", "penalty-shootout", "dribble-rush", "header-hero"],
     together: ["connect-4", "checkers", "reversi", "table-tennis", "backgammon", "snakes-and-ladders", "five-dice", "thirteen"],
-    daily: ["sudoku", "killer-sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "rummy-500", "backgammon", "block-puzzle"]
+    daily: ["sudoku", "killer-sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "rummy-500", "backgammon", "block-puzzle", "typing"]
   };
   // Featured leads with what people actually play (21 Nov 2026): Thirteen and
   // 2048 are the two games found from search (Search Console 22 Oct – 19 Nov:
@@ -27,7 +27,7 @@
   // it no longer leads. Everything else keeps page order.
   var featuredFirst = ["thirteen", "2048", "connect-4", "snacky-worm", "pinball"];
   function featuredRank(record) { var i = featuredFirst.indexOf(record.slug); return i < 0 ? featuredFirst.length : i; }
-  var recentAdded = ["big-two", "chess", "killer-sudoku", "brick-breaker", "block-puzzle", "rummy-500", "backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
+  var recentAdded = ["typing", "big-two", "chess", "killer-sudoku", "brick-breaker", "block-puzzle", "rummy-500", "backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));
   var records = [];
 
