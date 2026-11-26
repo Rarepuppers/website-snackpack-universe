@@ -915,6 +915,9 @@ export class World3D {
       this.scene.add(mesh);
     };
     const span = x1 - x0;
+    // The menu keeps the ground around the parked truck clear, so no rock or
+    // building sits in front of it or right behind its cab.
+    const keep = this.keepClear, blocked = (x, z) => !!keep && x > keep.x0 && x < keep.x1 && z > keep.z;
     // Buildings stand on the lowest corner of their footprint, so none floats over
     // a slope, and a spot steeper than 0.35 is skipped.
     const BUILT = new Set(["cottage", "hut", "townhouse", "stall", "barn", "silo", "cabin", "ski_lodge", "honey_shop", "lighthouse", "clock_tower", "windmill", "chilli_stall", "chilli_shrine", "crate_stack", "planter", "boat"]);
@@ -930,15 +933,16 @@ export class World3D {
       const list = [], n = Math.round((span / 100) * per100 * q.density);
       for (let i = 0; i < n; i++) {
         const x = x0 + r() * span, z = -5.5 - Math.pow(r(), 1.5) * 66, s = 0.8 + r() * 0.8, turn = r() * 6.3, y = footing(kind, x, z, s, 0.08);
-        if (y != null) list.push(m(x, y, z, 0, turn, 0, s));
+        if (y != null && !blocked(x, z)) list.push(m(x, y, z, 0, turn, 0, s));
       }
       place(kind, list, true);
     });
     scenery.front.forEach((kind) => {
       const list = [], n = Math.round((span / 100) * 5 * q.density);
       for (let i = 0; i < n; i++) {
-        const x = x0 + r() * span, z = 4.2 + r() * 4.5, s = kind === "pine" ? 0.55 + r() * 0.3 : 0.4 + r() * 0.5;
-        list.push(m(x, surface(x, z) - 0.05, z, 0, r() * 6.3, 0, s));
+        const x = x0 + r() * span, z = 4.2 + r() * 4.5, s = kind === "pine" ? 0.55 + r() * 0.3 : 0.4 + r() * 0.5, turn = r() * 6.3;
+        // Front rocks sit between the camera and the road, so they stay small.
+        if (!blocked(x, z)) list.push(m(x, surface(x, z) - 0.05, z, 0, turn, 0, kind === "rock" ? s * 0.6 : s));
       }
       place(kind, list, true);
     });
@@ -946,7 +950,7 @@ export class World3D {
       const list = [];
       for (let x = 34 + r() * 30 + nth * 45; x < terrain.total + 30; x += (60 + r() * 50) * all.length) {
         const z = -13 - r() * 14, turn = (r() - 0.5) * 0.7, s = 1 + r() * 0.3, y = footing(kind, x, z, s, 0.2);
-        if (y != null) list.push(m(x, y, z, 0, turn, 0, s));
+        if (y != null && !blocked(x, z)) list.push(m(x, y, z, 0, turn, 0, s));
       }
       place(kind, list, true);
     });
@@ -1233,7 +1237,9 @@ export class World3D {
     const d = { id, region: regionIndex, index: 0, len: 60, heat: 0.2, load: [] };
     const pts = [];
     for (let x = 0; x <= 110; x += SH.SAMPLE) pts.push({ x, y: Math.sin(x * 0.04) * 0.5 * Math.min(1, x / 30) });
+    this.keepClear = { x0: 38, x1: 64, z: -11 };
     this.setStage({ pts, total: 110 }, regionIndex, id, this.depot && this.depot.winter);
+    this.keepClear = null;
     const spec = SH.truckSpec(truckId), model = buildTruck(spec, rail, this.quality, this.look), D = SH.dimsFor(spec);
     const ground = SH.heightAt({ pts }, 50);
     const y = ground + spec.wheelR - D.axleY;
