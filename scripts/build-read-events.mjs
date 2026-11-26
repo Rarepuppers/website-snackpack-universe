@@ -20,7 +20,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { READ_EVENTS, eventDates, eventBooks, eventEntries, publishedEvents, eventIconPath, eventIcon } from "./lib/read-events.mjs";
+import { READ_EVENTS, eventDates, eventBooks, eventEntries, publishedEvents, eventIconPath, eventIcon, readAdvent } from "./lib/read-events.mjs";
 
 import { renderReadEventActivity } from "./lib/read-event-activities.mjs";
 import { aboutPath, isPublishedAbout, renderEventAbout } from "./lib/read-event-about.mjs";
@@ -58,6 +58,7 @@ if (!CARDS.size) throw new Error("read/index.html: no shelf cards found — run 
 // ---------------------------------------------------------------- checks
 const problems = [];
 const seen = new Map();
+const calendars = new Map();
 const todayIso = new Date().toISOString().slice(0, 10);
 const horizon = new Date(Date.now() + 730 * 86400000).toISOString().slice(0, 10);
 for (const e of READ_EVENTS) {
@@ -71,6 +72,12 @@ for (const e of READ_EVENTS) {
   for (const slug of eventBooks(e)) {
     if (seen.has(slug)) problems.push(`${slug} belongs to both ${seen.get(slug)} and ${e.id}; a book has one event`);
     seen.set(slug, e.id);
+    const advent = readAdvent(slug);
+    if (advent) {
+      const banner = `/read/${slug}/pages/calendar-banner.webp`;
+      if (!fs.existsSync(path.join(ROOT, banner))) problems.push(`${slug}: missing ${banner}`);
+      calendars.set(slug, { advent, banner });
+    }
   }
   for (const slug of e.tonight ?? []) if (!eventBooks(e).includes(slug)) problems.push(`${e.id}: tonight pick ${slug} is not one of its books`);
   const specialDates = new Set();
@@ -182,16 +189,44 @@ function eventPage(e) {
   const sources = bannerPaths(e);
   const banner = sources ? `<picture class="read-event-banner"><source srcset="${sources.small} 720w, ${sources.medium} 1200w, ${sources.primary} 1800w" sizes="(max-width: 1180px) 100vw, 1180px"><img src="${sources.primary}" alt="" width="1800" height="600" loading="eager" fetchpriority="high"></picture>` : "";
   const activity = e.activity ? renderReadEventActivity(e.activity) : "";
+  const advent = eventBooks(e).filter(slug => calendars.has(slug)).map(renderAdvent).join("\n");
   const about = publishedAbout.find(entry => entry.id === e.id);
   const aboutLink = about ? `<p><a class="text-link" href="${aboutPath(about.id)}">About ${esc(about.title)}</a></p>` : "";
+  const byAge = e.id === "christmas" ? renderAgeChoices(e) : "";
   const body = `<section class="read-event-hero" ${dataAttrs(e)}><div class="shell"><p class="read-event-crumbs"><a href="/read/">Reads</a> › <a href="/read/events/">Holidays and events</a> › ${esc(e.title)}</p>${banner}<span class="eyebrow">${eventIcon(e)}<span data-event-countdown>Free ${esc(e.title)} picture books</span></span><h1>${esc(e.heading)}</h1><p class="lead">${esc(e.intro ?? e.tagline)}${summer ? " Find a summer Christmas by the sea in its own section." : ""}</p>${aboutLink}${tonight ? `<div class="read-event-tonight" data-read-tonight>${tonight}</div>` : ""}</div></section>${e.id === "christmas" ? `\n${renderChristmasGuide(Boolean(summer))}` : ""}
+${advent ? advent + "\n" : ""}\
 <section><div class="shell"><h2 class="read-shelf-heading">Read them in order</h2><p class="read-shelf-intro">Each story happens a little later in the season than the one before. Every book stands on its own, so start anywhere.</p><ol class="read-event-books">
 ${books}
 </ol>${also || extras ? `<h2 class="read-shelf-heading read-event-sub">Also good this season</h2><ul class="read-event-also">${also}${extras}</ul>` : ""}<p class="read-event-note">Every book is free to read online, read aloud with your device’s voice, save for offline or print as a PDF. They stay on the shelf all year.</p><p><a class="text-link" href="/read/events/">All holiday and event stories</a> · <a class="text-link" href="/read/">The whole bookshelf</a></p></div></section>
-${summer ? `${summer}\n` : ""}${activity}
+${summer ? `${summer}\n` : ""}${byAge}${activity}
 ${printables ? `<section><div class="shell"><h2 class="read-shelf-heading">Printables</h2><ul class="read-event-also">${printables}</ul></div></section>` : ""}
-<script src="../../events.js"></script>`;
+<script src="../../events.js"></script>${advent ? '\n<script defer src="../../advent.js"></script>' : ""}`;
   return page({ title: `${e.heading}: free illustrated picture books`, desc, url: `/read/events/${e.id}/`, image: socialImage(e), body, jsonld, activity: e.activity });
+}
+
+function renderAgeChoices(event) {
+  const bands = new Map();
+  const cards = eventBooks(event).map(slug => CARDS.get(slug));
+  cards.sort((a, b) => a.age[0] - b.age[0] || a.age[1] - b.age[1]);
+  for (const card of cards) {
+    const band = ages(card);
+    if (!bands.has(band)) bands.set(band, []);
+    bands.get(band).push(`<a href="../../${card.slug}/">${card.title}</a>`);
+  }
+  const rows = [...bands].map(([band, books]) => `<li><strong>${band}</strong> · ${books.join(" · ")}</li>`).join("");
+  return `<section aria-labelledby="read-by-age"><div class="shell"><h2 class="read-shelf-heading" id="read-by-age">Choose by age</h2><ul class="read-event-also">${rows}</ul></div></section>`;
+}
+
+function renderAdvent(slug) {
+  const { advent, banner } = calendars.get(slug);
+  const cards = Array.from({ length: advent.lastDay - advent.firstDay + 1 }, (_, i) =>
+    `<li><a href="../../${slug}/#page-${i + 1}" data-advent-tile aria-label="Day ${i + 1}">${i + 1}</a></li>`).join("");
+  const title = CARDS.get(slug).title;
+  return `<section aria-labelledby="advent-${slug}" class="read-advent-calendar"><div class="shell">
+<h2 class="read-shelf-heading" id="advent-${slug}">${title}</h2>
+<div class="read-advent-board" data-advent-calendar data-read-advent="${esc(JSON.stringify(advent))}">
+<img src="${banner}" alt="" width="1536" height="1024" loading="lazy"><ol aria-label="Advent reading calendar">${cards}</ol>
+</div></div></section>`;
 }
 
 function renderChristmasGuide(hasSummer) {

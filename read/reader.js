@@ -17,6 +17,12 @@
 
   var cards = Array.prototype.slice.call(document.querySelectorAll(".story-page-card"));
   if (!cards.length) return;
+  var advent = window.SnackPackAdvent;
+  var defaultIndex = advent ? advent.defaultIndex : 0;
+  var resumeIndex = window.SnackPackReading && window.SnackPackReading.resumeIndex;
+  if (advent && Number.isInteger(resumeIndex) && !cards[resumeIndex].hasAttribute("data-advent-locked")) {
+    defaultIndex = resumeIndex;
+  }
 
   // ── Read to me ───────────────────────────────────────────────────────────
   var synth = window.speechSynthesis;
@@ -235,7 +241,8 @@
     cards.forEach(function (c, ci) { c.classList.toggle("is-current", ci === current); });
     label.textContent = "Page " + (current + 1) + " of " + cards.length;
     prevBtn.disabled = current === 0;
-    nextBtn.textContent = current === cards.length - 1 ? "The end" : "Next";
+    var isLocked = cards[current].hasAttribute("data-advent-locked");
+    nextBtn.textContent = current === cards.length - 1 ? (isLocked ? "Close" : "The end") : "Next";
     if ((oldFocus === prevBtn && prevBtn.disabled) || cards.some(function (c) { return c.contains(oldFocus); })) nextBtn.focus();
     window.scrollTo(0, 0);
     if (history.replaceState) history.replaceState(null, "", "#" + cards[current].id);
@@ -257,7 +264,7 @@
     close.setAttribute("aria-label", "Close one-page mode");
     prevBtn.addEventListener("click", function () { show(current - 1); });
     nextBtn.addEventListener("click", function () {
-      if (current === cards.length - 1) { exit(true); return; }
+      if (current === cards.length - 1) { exit(!cards[current].hasAttribute("data-advent-locked")); return; }
       show(current + 1);
     });
     close.addEventListener("click", function () { exit(false); });
@@ -300,7 +307,7 @@
     document.body.classList.add("reader-mode");
     bar.hidden = false;
     fitBar();
-    show(fromHash > -1 ? fromHash : 0);
+    show(fromHash > -1 ? fromHash : defaultIndex);
     document.addEventListener("keydown", onKey);
     document.addEventListener("touchstart", onTouchStart, { passive: true });
     document.addEventListener("touchend", onTouchEnd);
@@ -335,6 +342,7 @@
 
   var begin = document.querySelector('.story-title-section a[href="#page-1"]');
   if (begin) {
+    if (advent) begin.href = "#" + cards[defaultIndex].id;
     var modeBtn = document.createElement("button");
     modeBtn.type = "button";
     modeBtn.className = "btn btn-secondary read-mode-btn";
