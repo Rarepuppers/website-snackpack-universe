@@ -7,7 +7,15 @@ Shipped changes are in [release notes](docs/RELEASE-NOTES.md).
 
 ## Current delivery
 
-**54 books, 307 story pages, 54 printable PDFs (379 printed pages).** All page texts match current
+**26 November 2026: 69 books, 627 story pages, 69 printable PDFs (714 printed
+pages).** The 15 web-only books (Reading Trail 7–8, the Copán pair and the
+Thanksgiving, Christmas and New Year event books) source from
+`data/web-books.json`; their publication records are in
+`docs/CHRISTMAS-READS-PUBLICATION.md` and the book briefs under `docs/`. The
+paragraph and group table below are the 20 October app-book audit
+(then 54 books, 307 story pages, 379 printed pages).
+
+**20 October audit:** All page texts match current
 exported app data, allowing importer quote/dash typography. Both app
 quizzes used by all 29 published Spelling books match the website. Every PDF contains
 its story prose. The full current shelf and both new music/flight books are covered by
@@ -36,6 +44,22 @@ App source completion does not prove an installed Play build includes it.
 Claude owns release preparation/build/submission for the changed ABCs,
 Counting, Spelling, Basic Math and Zoo apps. Confirm the next release's
 source commit contains the relevant changes; no new build was run here.
+
+## Printable credit footer - 26 November
+
+- Every page of the 63 `build-read-pdfs.mjs` printables carries a small credit
+  line: book title · © 2026 SnackPack Studios · Free at
+  snackpackuniverse.com/read. The cover adds "Free to copy for home and
+  classroom use. Not for resale." No book gained a printed page; Ted-E-Bear's
+  Lantern PDF label moved 1.6 → 1.7 MB.
+- 12 older PDFs also picked up the current questions-page instruction wording
+  (they predated that edit). The three collections were rebuilt from the new
+  PDFs; evidence `pdf_sha256` values updated after `check-read-pdf-text.py`.
+- Not changed: the five event books built by the monorepo packager
+  (`docs/reads-events-bookshelf/package-event-book.py`: both Thanksgiving, both
+  New Year and Bark-B-Q) print page numbers; only Bark-B-Q also prints the
+  site address, and none carry the © line. The hand-compacted Captain
+  Beakon's Bell PDF has no footer. See "Work remaining now".
 
 ## Quality and offline batch - 20 October
 
@@ -100,6 +124,10 @@ See [current delivery](docs/archive/READS-DISCOVERY-DELIVERY-2026-10-20.md). The
 | Other Spelling books held back on quality | Source repairs completed across 27 books including the four above; four additional Deep Glow/Metamorphosis pictures repaired | Keep off shelf until each book's full art and publication review passes | Further per-book art review; no blanket approval for remaining books |
 | Safari Morning | All nine source pages repaired, display/TTS aligned, factual references registered | Not published; original-art decision remains deferred | Claude app release handoff; Zoo expansion decision after re-measure |
 | Read to me | No source defect demonstrated; real Android/iOS voice and boundary check lacks recorded evidence | Check actual audio, highlighting, pause and speed on devices | Mark/device tester |
+
+| Event-book printable credit | Add the © 2026 SnackPack Studios line and the cover licence line to `package-event-book.py` | Repackage the five event books through that workflow; footer Captain Beakon's Bell while keeping its compacted images | Next event-book release (New Year books are due by 18 Dec) |
+| Full-shelf PDF rebuild trap | `build-read-pdfs.mjs` with no `--slug` rebuilds the event books from full-size JPEGs (2–3× larger, Captain Beakon's 13 MB becomes 26 MB) | Always pass `--slug`; skip the six event books | Standing rule until the generator learns to skip them |
+| Copán pair Honduran read-through | Published 9 Nov before review; Spanish text unpublished | Apply any corrections the reviewer asks for | Mark to find a Honduran reader |
 
 Source repairs completed on 19 October. Monorepo delivery evidence is in
 `docs/SHORT-READS-CONTENT-HANDOFF-2026-10-19.md` and

@@ -5,6 +5,17 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-11-26 - Credit footer on every printed book page
+
+Plan: [`READ-PLAN-2026-10.md`](../READ-PLAN-2026-10.md) "Printable credit footer".
+
+- This release: 63 book PDFs print "title · © 2026 SnackPack Studios · Free at
+  snackpackuniverse.com/read" on every page, and the cover adds "Free to copy
+  for home and classroom use. Not for resale." The three collections were
+  rebuilt from them. Page counts are unchanged. The five packager-built event
+  books and Captain Beakon's Bell are unchanged and listed as remaining work.
+  `docs/ART-BRIEF-WEB-BOOKS-2026-11-06.md` archived (all delivered).
+
 ## 2026-11-26 - Classroom arcade: event counts, Snack Typer and Fact Sprint
 
 Plan of record: [`ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md`](../ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md).
