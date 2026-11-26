@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Pre-launch page (live 2026-11-21): trailers public, no store link yet. At launch: add the Play badge
-     with a /go/app-page/snack-haul/ redirect, unwrap the snack-haul-play-qr template, change "Coming soon" copy,
-     and move the /apps/ card. -->
+<!-- Launched on Google Play 2026-11-26 (1.0.1). Store links are tagged by build-play-links.mjs and routed
+     through /go/ by build-go-links.mjs; re-run both after changing them. -->
 <title>Snack Haul | Physics Truck Driving Game for Android</title>
 <meta name="description" content="Snack Haul is a physics truck-driving game for Android. Drive six trucks across six regions and 48 routes, keep eggs, jelly, cakes and ice cream on board, race the rival and beat the ghost of your best run. Bakery Hills is free to play; one purchase unlocks the full game. No ads.">
 <link rel="canonical" href="https://www.snackpackuniverse.com/apps/snack-haul/">
@@ -84,6 +83,8 @@
   "operatingSystem": "Android",
   "gamePlatform": "Android",
   "genre": ["Driving", "Physics"],
+  "downloadUrl": "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul",
+  "url": "https://www.snackpackuniverse.com/apps/snack-haul/",
   "description": "A physics truck-driving game: drive six trucks across six regions and 48 routes, keep fragile snacks on board, race the rival and beat the ghost of your best run. Bakery Hills is free; one in-app purchase unlocks the full game. No ads.",
   "publisher": { "@type": "Organization", "name": "SnackPack Studios", "url": "https://www.snackpackuniverse.com/" }
 }
@@ -93,7 +94,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Is Snack Haul out yet?", "acceptedAnswer": { "@type": "Answer", "text": "Not yet. Snack Haul is coming soon to Google Play for Android." } },
+    { "@type": "Question", "name": "Is Snack Haul out yet?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Snack Haul is out now on Google Play for Android. Bakery Hills is free to play, and one purchase unlocks the full game." } },
     { "@type": "Question", "name": "Is Snack Haul free?", "acceptedAnswer": { "@type": "Answer", "text": "Snack Haul is free to download. Bakery Hills, the daily delivery, the Weekly Cup, the Rusty Pickup and the Tart Tuk-Tuk are free. A single one-time in-app purchase unlocks the other five regions and the rest of the trucks. There are no ads and no subscriptions." } },
     { "@type": "Question", "name": "What is the ghost?", "acceptedAnswer": { "@type": "Answer", "text": "Every route remembers your fastest run and replays it as a see-through ghost truck beside you. A live chip shows how far ahead or behind you are, and the results tell you by how much you beat it. Until you beat the rival on a route, Dash Dalloway races you instead." } },
     { "@type": "Question", "name": "Does it need an account or an internet connection?", "acceptedAnswer": { "@type": "Answer", "text": "No account is needed and the game plays offline. Your progress is saved on your phone. The store is only contacted when you buy or restore the full-game unlock." } }
@@ -176,20 +177,20 @@
       <div class="sh-banner">
         <picture class="sh-banner-art"><source srcset="./assets/hero-panorama-1600.webp 1600w, ./assets/hero-panorama-2400.webp 2400w" sizes="(max-width: 1240px) 100vw, 1200px" type="image/webp"><img src="./assets/hero-panorama-1600.jpg" width="1600" height="667" alt="The six Snack Haul regions in one panorama, from Bakery Hills by day to the Midnight Market at night, with trucks on the road." decoding="async" fetchpriority="high"></picture>
         <div class="sh-copy">
-          <span class="eyebrow">Coming soon to Google Play</span>
+          <span class="eyebrow">Now live on Google Play</span>
           <h1>Snack Haul</h1>
           <p class="lead">Load up the truck, take the hills, and get the load there in one piece. Snack Haul is a physics driving game where every egg tray, wobbling jelly and stacked cake rides loose in the back. Drive six trucks across six regions and 48 routes, race the rival, and beat the ghost of your own best run.</p>
           <div class="stack-inline">
-            <!-- launch: Google Play badge linking to /go/app-page/snack-haul/snackhaul/ goes here -->
-            <a class="btn btn-primary" href="#trailers">Watch the trailers</a>
-            <a class="btn btn-secondary" href="#signup">Get the launch email</a>
+            <a class="store-badge-link" href="/go/app-page/snack-haul/snackhaul/" target="_blank" rel="noopener" aria-label="Get Snack Haul on Google Play">
+              <img class="store-badge store-badge--google-play" src="../../assets/google-play-badge.png" alt="Get it on Google Play" width="646" height="250" loading="lazy" decoding="async">
+            </a>
+            <a class="btn btn-primary" href="/play/labs/snack-haul/">Play the free demo</a>
+            <a class="btn btn-secondary" href="#trailers">Watch the trailers</a>
           </div>
-          <template id="snack-haul-play-qr">
-            <div class="featured-qr">
-              <img src="../../assets/qrcodes/qr-code-snack-haul.png" alt="QR code for the Snack Haul Google Play listing" width="128" height="128" loading="lazy" decoding="async">
-              <span>Scan to get Snack Haul on Android</span>
-            </div>
-          </template>
+          <div class="featured-qr">
+            <img src="../../assets/qrcodes/qr-code-snack-haul.png" alt="QR code for the Snack Haul Google Play listing" width="128" height="128" loading="lazy" decoding="async">
+            <span>Scan to get Snack Haul on Android</span>
+          </div>
           <p class="ios-note" style="margin-top:14px;">Android first. Bakery Hills is free to play; one purchase unlocks the full game. No ads, no subscriptions, no account.</p>
         </div>
       </div>
@@ -337,7 +338,7 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>Is Snack Haul out yet?</summary>
-          <p>Not yet. Snack Haul is coming soon to Google Play for Android. Leave your email below and we'll tell you the day it lands.</p>
+          <p>Yes. Snack Haul is out now on <a class="text-link" href="/go/app-page/snack-haul/snackhaul/" target="_blank" rel="noopener">Google Play</a> for Android. Bakery Hills is free to play, and one purchase unlocks the full game.</p>
         </details>
         <details class="faq-item">
           <summary>Is Snack Haul free?</summary>
@@ -355,22 +356,31 @@
     </div>
   </section>
 
-  <div id="signup">
   <!-- newsletter:generated -->
   <section>
     <div class="shell">
       <div class="signup-card">
-        <h2 class="section-title">Get the Snack Haul launch email</h2>
-        <p class="section-copy">For adults. Sign up for one email when Snack Haul is available on Google Play. Brevo will ask you to confirm your address first.</p>
-        <div class="stack-inline">
-          <a class="btn btn-primary" href="https://c8e915bf.sibforms.com/serve/MUIFAOu-KUA_U069pC1vk1KQq3yCfcIysm_IcXvD9ngdbahu70Q3W9K2izlb7f-eSPfsJPoWMAMURGmi2tQejmS_hNMfx2CIVrN6aje7CM50Rbvi0uAO3Jz3B7tzADnDE1p_ADFMugVIWXLjkE2ulpWos9EAnBVJJ2DCJUzeUh_rm0xb_ttHTMNzEgB5Bj6Iq8T05fme8ctxhj3cdw==">Sign up for the launch email</a>
-          <a class="text-link" href="/privacy/snack-haul/#launch-alerts">Privacy policy</a>
-        </div>
+        <span class="eyebrow">Stay in the loop</span>
+        <h2 class="section-title" style="margin:6px 0 10px;">Hear when the next one lands.</h2>
+        <p class="section-copy">New SnackPack apps, updates to Snack Haul, and the occasional behind-the-scenes note. No spam, and you can unsubscribe in one click.</p>
+        <form class="signup-form" method="POST" action="https://c8e915bf.sibforms.com/serve/MUIFADVt4ZlXsiMM8wqiXqcGeRGBU0WF59M6fHpCegIo6lKDBIizhj4EybwGYQygjM8s619mIdox-2D8mik7upF-_5x30R9bApxbcK16bM2mPFLFTDokgMBnqtOdTY4r7u9TKTorSiC2MPn5mwOTncBTtrQAx2W58RDmqLLtC5OLxrFrNmZH7As9WjK4krNNglwOtxjzbYH3k9qc4Q==" data-type="subscription">
+          <div class="signup-row">
+            <label class="signup-hp" for="EMAIL-cta">Your email address</label>
+            <input class="signup-input" type="email" id="EMAIL-cta" name="EMAIL" autocomplete="email" placeholder="you@example.com" required>
+            <button class="btn btn-primary" type="submit">Keep me posted</button>
+          </div>
+          <label class="signup-consent">
+            <input type="checkbox" name="GDPR_CONSENT" value="1" required>
+            <span>I agree to receive SnackPack Universe updates by email and accept the <a href="/privacy/">privacy policy</a>. Unsubscribe anytime.</span>
+          </label>
+          <!-- Brevo contract: honeypot must be present and empty; locale must be set. -->
+          <input class="signup-hp" type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="locale" value="en">
+        </form>
       </div>
     </div>
   </section>
   <!-- /newsletter:generated -->
-  </div>
 </main>
 
 <footer class="foot">
@@ -381,7 +391,7 @@
     <span class="foot-support-copy"><strong>Enjoying SnackPack?</strong><span>We're a small studio — tips and donations help us keep building calm, ad-free games.</span></span>
   </div>
   <div class="shell foot-wrap">
-    <p class="foot-note">Snack Haul — coming soon to Google Play.</p>
+    <p class="foot-note">Snack Haul — out now on Google Play.</p>
     <div class="footer-links">
       <a class="text-link" href="../">Apps</a>
       <a class="text-link" href="../../play/">Play</a>

@@ -3,6 +3,9 @@
 // node play/labs/snack-haul/dev/sim.js career     one player from start to finish
 // node play/labs/snack-haul/dev/sim.js late       upgrades must keep helping
 // node play/labs/snack-haul/dev/sim.js trucks     every truck on sample routes
+// node play/labs/snack-haul/dev/sim.js opening    gas-only and learner drivers on the designed openers
+// node play/labs/snack-haul/dev/sim.js medals     gold times (--write)
+// node play/labs/snack-haul/dev/sim.js daily      the World Tour Daily pool (--write)
 const SH = require("../engine.js");
 
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
@@ -268,6 +271,101 @@ function orders() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// ════ The opening: gas-only and learner drivers on the roads built for new players ═
+const stopAt = (g) => { const t = g.terrain, x = g.truck.getPosition().x; return g.pickupState === "ahead" ? (g.pickup.x0 + g.pickup.x1) / 2 - x : (t.zoneStart + t.zoneEnd) / 2 - x; };
+// Holds GAS, and brakes only for a stop.
+const gasOnly = (k = 1) => () => (g) => { const s = stopAt(g), v = g.speed(), need = (v * v / 10 + 2) * k; return s < need ? { gas: v < 0.5 && s > 1.5, brake: v > 0.3 } : { gas: true, brake: false }; };
+// Lifts off when the road ahead drops away, `delay` steps late, and does nothing in the air.
+const learner = (cap, delay) => () => {
+  const q = [];
+  return (g) => {
+    const t = g.terrain, p = g.truck.getPosition(), v = g.speed(), h = (x) => SH.heightAt(t, x);
+    const s1 = (h(p.x + 2) - h(p.x)) / 2, ah = 3 + v * 0.8, s2 = (h(p.x + ah + 2) - h(p.x + ah)) / 2, s = stopAt(g);
+    let i = { gas: true, brake: false };
+    if (s < v * v / 10 + 3) i = { gas: v < 0.5 && s > 1.5, brake: v > 0.3 };
+    else if (!g.grounded()) i = { gas: false, brake: false };
+    else if (s2 - s1 < -0.22 && v > cap) i = { gas: false, brake: v > cap + 2 };
+    q.push(i);
+    return q.length > delay ? q.shift() : { gas: true, brake: false };
+  };
+};
+const careful = (v) => () => (g) => SH.botInput(g, v);
+const LEARNERS = [[6.5, 12], [6, 10], [5, 8]];
+function play(delivery, driver, upgrades, truck, seconds = 200) {
+  const g = SH.createGame({ delivery, upgrades, truck }), f = driver(g);
+  for (let n = 0; g.status === "driving" && n < seconds * 60; n++) g.step(f(g));
+  if (g.status === "driving") { g.status = "failed"; g.reason = "timeout"; }
+  return SH.report(g);
+}
+function opening() {
+  let bad = 0;
+  const straps1 = Object.assign({}, base, { straps: 1 }), straps2 = Object.assign({}, base, { straps: 2 });
+  for (const d of SH.DELIVERIES.filter((x) => SH.ROADS[x.id])) {
+    const n = d.index + 1, bakery = d.region === 0;
+    const up = !bakery ? SH.rivalUpgrades(1) : n < 4 ? base : n < 8 ? straps1 : straps2;
+    const gas = [gasOnly(), gasOnly(0.85)].map((f) => play(d, f, up)), learn = LEARNERS.map(([c, w]) => play(d, learner(c, w), up)), calm = [4.5, 5.5, 6.5].map((v) => play(d, careful(v), up));
+    const two = (list) => list.filter((r) => r.stars >= 2).length, air = Math.max(...learn.map((r) => r.bestAir)), fails = [];
+    if (gas.some((r) => r.stars > (bakery && n === 1 ? 2 : 1))) fails.push("gas only too good");
+    if (gas.some((r) => r.medal === 3)) fails.push("gas only wins gold");
+    if (two(learn) < 2) fails.push("learners");
+    if (two(calm) < 2) fails.push("careful");
+    if (air < 0.4) fails.push("no air");
+    if (SH.createGame({ delivery: d }).terrain.features.filter((f) => f.set).length !== (d.ramps || []).length) fails.push("a ramp was dropped");
+    if (fails.length) bad++;
+    const c = (r) => cell(r, 11);
+    console.log(d.id.padEnd(10), "gas", gas.map(c).join(""), "learner", learn.map(c).join(""), "careful", calm.map(c).join(""), "air " + air.toFixed(1), fails.join(", "));
+  }
+  console.log("openers failing", bad);
+  process.exitCode = bad ? 1 : 0;
+}
+
+// Gold times from the bots, see MEDALS in engine.js.
+function medals() {
+  const table = {};
+  for (const d of SH.DELIVERIES) {
+    const up = d.region === 0 ? Object.assign({}, base, { straps: d.index < 3 ? 0 : d.index < 5 ? 1 : 2 }) : SH.rivalUpgrades(Math.min(5, 1 + d.region));
+    const runs = [];
+    for (let v = 4; v <= 12; v += 0.5) runs.push(play(d, careful(v), up));
+    for (const [c, w] of LEARNERS.concat([[7.5, 8], [8.5, 8], [10, 8]])) runs.push(play(d, learner(c, w), up));
+    const clean = runs.filter((r) => r.status === "done" && r.stars === 3 && !r.dockHit), best = Math.min(...clean.map((r) => r.time)), par = SH.parTime(d);
+    const gold = clean.length ? Math.ceil(best * 1.08) : 0;
+    if (gold && gold < par) table[d.id] = gold;
+    console.log(d.id.padEnd(12), "old", String(par).padStart(3), "clean best", clean.length ? best.toFixed(1) : "none", table[d.id] ? "gold " + table[d.id] : "keeps " + par);
+  }
+  console.log("new gold times", Object.keys(table).length, "of", SH.DELIVERIES.length);
+  if (process.argv.includes("--write")) writeBlock("MEDALS", "  var MEDALS = " + JSON.stringify(table).replace(/,/g, ", ").replace(/:/g, ": ") + ";");
+}
+function writeBlock(name, body) {
+  const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
+  fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace(new RegExp("(// " + name + "-BEGIN\\n)[\\s\\S]*?(\\n  // " + name + "-END)"), (_, a, b) => a + body + b));
+  console.log("written to engine.js");
+}
+
+// The World Tour Daily pool: per region, the truck with the most roads every driver
+// can manage, and the roads themselves. A road passes when two learners and two
+// careful runs get two stars, and nobody flips.
+function dailyPool() {
+  const want = Number(process.env.POOL || 24), trucks = [], pool = [];
+  SH.REGIONS.forEach((region, r) => {
+    const up = SH.rivalUpgrades(SH.DAILY_LEVEL[r]);
+    const passes = (k, truck) => {
+      const d = Object.assign(SH.dailyRoad(r, k), { id: "daily-test", truck });
+      if (d.len === 300 && k % 6 === 5) return false;
+      const calm = [4.5, 5.5, 6.5].map((v) => play(d, careful(v), up, truck, 150));
+      if (calm.filter((x) => x.stars >= 2).length < 2) return false;
+      const learn = LEARNERS.map(([c, w]) => play(d, learner(c, w), up, truck, 150));
+      return learn.filter((x) => x.stars >= 2).length >= 2 && !calm.concat(learn).some((x) => x.reason === "flip");
+    };
+    const options = r === 0 ? ["pickup", "tuktuk"] : SH.TRUCKS.map((t) => t.id).filter((id) => id !== "pickup" && id !== "tuktuk");
+    const scores = options.map((id) => { let n = 0; for (let k = 0; k < 12; k++) if (passes(k, id)) n++; return { id, n }; }).sort((a, b) => b.n - a.n);
+    const truck = process.env["TRUCK" + r] || scores[0].id, list = [];
+    for (let k = 0; k < 400 && list.length < want; k++) if (passes(k, truck)) list.push(k);
+    trucks.push(truck); pool.push(list);
+    console.log(region.id.padEnd(9), scores.map((s) => s.id + " " + s.n).join(", "), "->", truck, list.length, "roads");
+  });
+  if (process.argv.includes("--write")) writeBlock("DAILY", "  var DAILY_TRUCK = " + JSON.stringify(trucks) + ",\n    DAILY_POOL = " + JSON.stringify(pool) + ";");
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -278,6 +376,9 @@ else if (mode === "trace") trace();
 else if (mode === "challenges") challenges();
 else if (mode === "rivals") rivals();
 else if (mode === "orders") orders();
+else if (mode === "opening") opening();
+else if (mode === "medals") medals();
+else if (mode === "daily") dailyPool();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }

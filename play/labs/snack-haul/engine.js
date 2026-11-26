@@ -39,6 +39,8 @@
     parSpeed: 5.5,                 // metres a second for the gold medal
     silver: 1.25,                  // medal times, as multiples of the gold time
     bronze: 1.6,
+    careerSilver: 1.25,            // the same for routes with a gold time of their own
+    careerBronze: 1.7,
     expressPay: 12,
     dailyPay: 40,
     regionStars: 14,               // stars in a region that open the next one
@@ -48,7 +50,7 @@
     popLiftFrom: 6.5,              // popcorn starts to lift above this speed
     popLift: 0.35,
     cakeTilt: 0.6,                 // radians off upright before a cake is ruined
-    meltFloor: 1 / 3,              // ice cream pay at 1.5 times the gold time
+    meltFloor: 1 / 3,              // ice cream pay at 1.5 times the length-based par time
     longLen: 2500,                 // long enough that nobody reaches the end; heat keeps climbing
     longClimb: 1.6,                // extra heat per kilometre of a Long Haul
     longSteep: 1.5,                // a Long Haul may grow this much steeper than the region's routes
@@ -113,13 +115,36 @@
     return code.split("").map(function (ch) { return ch === "a" ? a : ch === "b" ? b : "crate"; });
   }
 
+  // Roads with their own design, for the routes a new player meets first. heat is
+  // the final value. seed picks the base hills. shapes are authored pieces of road
+  // (metres along the road): hill, drop, rollers. ramps are placed exactly; arc adds
+  // coins only a clean jump reaches. feat is how many more features the seed places.
+  // rev is the road's version: a ghost or best time from another version is dropped.
+  // `node dev/sim.js opening` proves the targets these roads were built for.
+  var ROADS = {
+    "bakery-1": { rev: 2, seed: "bakery-1-r2-A350", len: 120, heat: 0.6, load: "cccc", ramps: [{ at: 33, h: 0.44 }, { at: 69, h: 0.48 }], feat: 0 },
+    "bakery-2": { rev: 2, seed: "bakery-2-r2-A102", len: 160, heat: 0.52, load: "ccccc", ramps: [{ at: 57, h: 0.45, arc: true }], shapes: [{ type: "drop", at: 78, w: 34, h: 3 }], feat: 1 },
+    "bakery-3": { rev: 2, seed: "bakery-3-r2-A2", len: 200, heat: 0.64, load: "cacac", ramps: [{ at: 147, h: 0.36 }], shapes: [{ type: "drop", at: 81, w: 51, h: 11.7 }], feat: 1 },
+    "bakery-4": { rev: 2, seed: "bakery-4-r2-A54", len: 230, heat: 0.75, load: "ccacca", ramps: [{ at: 105, h: 0.4 }, { at: 124, h: 0.42 }], feat: 1 },
+    "bakery-5": { rev: 2, seed: "bakery-5-r2-A142", len: 270, heat: 0.764, load: "ccccaa", pickup: 2, pickupAt: 149, shapes: [{ type: "rollers", at: 74, w: 36, n: 3, h: 1.5 }], feat: 2 },
+    "bakery-6": { rev: 2, seed: "bakery-6-r2-K72", len: 310, heat: 0.797, load: "ccabcac", shapes: [{ type: "hill", at: 115, w: 96, h: 11.1 }], feat: 2 },
+    "bakery-7": { rev: 2, seed: "bakery-7-r2-A53", len: 380, heat: 0.743, load: "cbcacac", shapes: [{ type: "hill", at: 96, w: 80, h: 7.5 }, { type: "rollers", at: 244, w: 48, n: 4, h: 1.7 }], feat: 1 },
+    "bakery-8": { rev: 2, seed: "bakery-8-r2-A104", len: 340, heat: 0.825, load: "cacbcaca", pickup: 3, pickupAt: 153, ramps: [{ at: 223, h: 0.4 }], shapes: [{ type: "rollers", at: 72, w: 36, n: 3, h: 1.5 }, { type: "drop", at: 253, w: 44, h: 8.5 }], feat: 2 },
+    "dunes-1": { rev: 2, seed: "dunes-1-r2-E540", len: 140, heat: 0.64, load: "cccac", ramps: [{ at: 90, h: 0.6 }], shapes: [{ type: "rollers", at: 31, w: 48, n: 2, h: 3 }], feat: 1 },
+    "dunes-2": { rev: 2, seed: "dunes-2-r2-F489", len: 180, heat: 0.73, load: "ccaca", ramps: [{ at: 126, h: 0.57 }], shapes: [{ type: "hill", at: 60, w: 47, h: -4 }], feat: 1 }
+  };
   var DELIVERIES = [];
   REGIONS.forEach(function (region, r) {
     ROUTES.forEach(function (route, i) {
-      DELIVERIES.push({
-        id: region.id + "-" + (i + 1), name: ROUTE_NAMES[r][i], region: r, index: i, len: route.len, heat: regionHeat(route.heat, r),
+      var id = region.id + "-" + (i + 1), d = {
+        id: id, name: ROUTE_NAMES[r][i], region: r, index: i, len: route.len, heat: regionHeat(route.heat, r),
         load: loadFor(region, r, i, route.load), pickup: r > 0 ? route.pickup || 0 : 0
-      });
+      }, road = ROADS[id];
+      if (road) {
+        Object.assign(d, road);
+        if (road.load) d.load = loadFor(region, r, i, road.load);
+      }
+      DELIVERIES.push(d);
     });
   });
 
@@ -234,7 +259,7 @@
       }
     }
     var lo = START_FLAT + 34, hi = START_FLAT + d.len - 30;
-    function free(x0, x1) { return list.every(function (f) { return x1 + 16 < f.x0 || x0 - 16 > f.x1; }); }
+    function free(x0, x1) { return list.concat(shapes).every(function (f) { return x1 + 16 < f.x0 || x0 - 16 > f.x1; }); }
     if (d.pickup) {
       var px = Math.round((START_FLAT + d.len * (0.45 + r() * 0.1)) / SAMPLE) * SAMPLE;
       if (d.winter) {
@@ -244,8 +269,14 @@
         var gap=gaps[Math.floor(gaps.length/2)];
         if (gap) px=(gap[0]+gap[1])/2;
       }
+      if (d.pickupAt) px = Math.round((START_FLAT + d.pickupAt) / SAMPLE) * SAMPLE;
       list.push({ type: "pickup", x0: px - (d.winter ? 5.25 : 7.5), x1: px + (d.winter ? 5.25 : 7.5) });
     }
+    (d.ramps || []).forEach(function (a) {
+      var ax = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE;
+      list.push({ type: "ramp", x0: ax, x1: ax + FEATURE_LEN.ramp, h: a.h, arc: !!a.arc, set: true });
+    });
+    var shapes = (d.shapes || []).map(function (s) { return { x0: START_FLAT + s.at, x1: START_FLAT + s.at + s.w }; });
     var kinds = d.winter ? (d.twist === "blizzard" ? ["slick","drift"] : ["drift","slick"]) : region.features, i = d.index;
     if (d.winter) {
       // Road features fit between stops rather than displacing a doormat.
@@ -259,8 +290,8 @@
       }
       return list.sort(function (a,b) { return a.x0-b.x0; });
     }
-    if (kinds.length && (d.long || d.region > 0 || i >= 3)) {
-      var count = d.long ? Math.floor(d.len / 85) : 1 + Math.floor(i / 2);
+    if (kinds.length && (d.long || d.daily || d.region > 0 || i >= 3 || d.feat != null)) {
+      var count = d.long ? Math.floor(d.len / 85) : d.feat != null ? d.feat : 1 + Math.floor(i / 2);
       for (var n = 0; n < count; n++) {
         var type = kinds[n % kinds.length], len = FEATURE_LEN[type];
         for (var tries = 0; tries < 14; tries++) {
@@ -296,6 +327,15 @@
       var y = 0;
       layers.forEach(function (l) { y += l.amp * Math.sin((x / l.len) * Math.PI * 2 + l.ph); });
       y *= env * region.amp * heatAt(d, x);
+      // Authored shapes: the seed's hills fade out inside one, so it reads clearly.
+      (d.shapes || []).forEach(function (s) {
+        var u = (x - START_FLAT - s.at) / s.w;
+        if (u > -0.2 && u < 1.2) y *= 1 - 0.8 * Math.min(1, Math.max(0, Math.min((u + 0.2) / 0.25, (1.2 - u) / 0.25)));
+        if (u <= 0) return;
+        if (s.type === "hill" && u < 1) y += s.h * Math.pow(Math.sin(Math.PI * u), 2);
+        if (s.type === "drop") { var k = Math.min(1, u); y -= s.h * k * k * (3 - 2 * k); }
+        if (s.type === "rollers" && u < 1) y += s.h * (0.5 - 0.5 * Math.cos(Math.PI * 2 * u * s.n));
+      });
       // Keep every slope driveable, then ease back to level at the far end.
       var step = slopeAt(x) * SAMPLE;
       y = Math.max(last - step, Math.min(last + step, y));
@@ -362,7 +402,7 @@
       for (var j = 1; j <= 3; j++) pts[found + j].y += f.h * (j / 3) * (j / 3);
     });
     features = features.filter(function (f) { return !f.dead; });
-    return { pts: pts, total: total, zoneStart: total - 16, zoneEnd: total - 1.5, features: features };
+    return { pts: pts, total: total, zoneStart: total - 16, zoneEnd: total - 1.5, features: features, shapes: d.shapes || [] };
   }
   function heightAt(terrain, x) {
     var p = terrain.pts, i = Math.max(0, Math.min(p.length - 2, Math.floor(x / SAMPLE)));
@@ -377,13 +417,26 @@
 
   function buildPickups(d, terrain) {
     var r = rng(hash((d.seed || d.id) + "coins")), coins = [], cans = [], rocks = [], ridges = [];
-    var clear = function (x) { return !terrain.features.some(function (f) { return x > f.x0 - 4 && x < f.x1 + 4 && f.type !== "wind"; }); };
+    var clear = function (x) {
+      return !terrain.features.some(function (f) { return x > f.x0 - 4 && x < f.x1 + 4 && f.type !== "wind"; }) &&
+        !terrain.shapes.some(function (s) { return x > START_FLAT + s.at - 4 && x < START_FLAT + s.at + s.w + 4; });
+    };
+    // A coin arc over an authored ramp: only a clean jump reaches the top of it.
+    var arcs = terrain.features.filter(function (f) { return f.type === "ramp" && f.arc; });
+    arcs.forEach(function (f) {
+      for (var a = 0; a < 7; a++) {
+        var ax = f.x1 + 1 + a * 1.4, u = a / 6;
+        coins.push({ x: ax, y: heightAt(terrain, f.x1 - 1) + 2 + 2.4 * 4 * u * (1 - u) - 0.9 * u, taken: false });
+      }
+    });
+    function underArc(x) { return arcs.some(function (f) { return x > f.x0 - 3 && x < f.x1 + 13; }); }
     for (var x = START_FLAT + 22; x < terrain.total - END_FLAT - 12; x += 26 + r() * 16) {
       var count = 3 + Math.floor(r() * 3);
       // Coins over a ramp sit higher, as a reward for taking it at speed.
       var ramp = featureAt(terrain, x + 3, "ramp") || featureAt(terrain, x - 3, "ramp");
       for (var c = 0; c < count; c++) {
         var cx = x + c * 1.5;
+        if (underArc(cx)) continue;
         coins.push({ x: cx, y: heightAt(terrain, cx) + (ramp ? 3.1 : 2.1), taken: false });
       }
     }
@@ -414,6 +467,9 @@
   }
 
   // ════ Deliveries ═════════════════════════════════════════════════
+  // The free game: all of Bakery Hills and the first roads of Dairy Dunes.
+  var FREE_ROUTES = DELIVERIES.filter(function (d) { return d.region === 0 || d.id === "dunes-1" || d.id === "dunes-2"; }).map(function (d) { return d.id; });
+  function isFree(id) { return FREE_ROUTES.indexOf(id) >= 0; }
   function findDelivery(id) {
     return DELIVERIES.filter(function (x) { return x.id === id; })[0] || null;
   }
@@ -472,14 +528,44 @@
     })[o.twist] || "";
   }
 
-  // One shared route a day. maxRegion keeps it inside what a player has reached.
-  function dailyDelivery(date, maxRegion) {
-    var h = hash("daily" + date), region = h % (Math.max(0, maxRegion) + 1), index = 1 + (h >>> 8) % 6;
-    var route = ROUTES[index];
+  // World Tour Daily: one road a day, the same for everyone, in a loaner truck with
+  // set upgrades, so a player's own garage and regions make no difference. Regions
+  // take turns (a fresh order every six days). The roads come from a pool the bots
+  // have driven, written by `node dev/sim.js daily --write`.
+  // DAILY-BEGIN
+  var DAILY_TRUCK = ["pickup","van","hauler","monster","hauler","hauler"],
+    DAILY_POOL = [[0,1,2,3,6,7,8,12,13,14,16,18,19,20,21,22,24,25,26,27,30,31,32,33],[0,1,3,4,6,7,8,9,12,13,14,16,18,19,21,22,24,25,27,30,31,32,36,37],[0,1,4,6,7,8,10,12,13,14,16,18,19,20,24,25,26,30,31,32,36,37,38,39],[0,1,3,6,12,18,20,24,27,30,36,42,43,48,54,60,61,66,67,70,72,73,78,80],[0,6,8,12,18,20,24,30,32,42,45,66,72,78,90,96,102,114,138,144,150,156,168,176],[0,6,12,18,24,26,30,32,36,44,48,54,55,60,66,72,78,84,90,96,97,102,104,108]];
+  // DAILY-END
+  var DAILY_LEVEL = [2, 2, 3, 3, 4, 4];
+  function dayNumber(date) { var p = String(date).split("-"); return Math.round(Date.UTC(+p[0], +p[1] - 1, +p[2]) / 864e5); }
+  function dailyRegion(date) {
+    var day = dayNumber(date), turn = Math.floor(day / 6), n = REGIONS.length;
+    function order(t) {
+      var r = rng(hash("tour" + t)), list = REGIONS.map(function (_, i) { return i; });
+      for (var i = n - 1; i > 0; i--) { var k = Math.floor(r() * (i + 1)), x = list[i]; list[i] = list[k]; list[k] = x; }
+      return list;
+    }
+    var list = order(turn);
+    // Two turns never meet on the same region.
+    if (list[0] === order(turn - 1)[n - 1] && day % 6 < 2) return list[1 - day % 6];
+    return list[day % 6];
+  }
+  // One candidate road: the pool holds the numbers the bots have passed.
+  function dailyRoad(region, k) {
+    var index = 1 + k % 6, route = ROUTES[index], level = DAILY_LEVEL[region];
     return {
-      id: "daily-" + date, daily: true, region: region, index: index, len: route.len, heat: regionHeat(route.heat, region),
-      load: loadFor(REGIONS[region], region, index, route.load), pickup: region > 0 ? route.pickup || 0 : 0
+      daily: true, seed: "tour-" + REGIONS[region].id + "-" + k, region: region, index: index, len: Math.min(300, route.len), heat: regionHeat(route.heat, region),
+      load: loadFor(REGIONS[region], region, index, route.load), pickup: region > 0 ? route.pickup || 0 : 0,
+      loan: true, truck: DAILY_TRUCK[region], level: level
     };
+  }
+  function dailyDelivery(date) {
+    var region = dailyRegion(date), pool = DAILY_POOL[region];
+    // Each region comes round once every six days and steps through its own pool,
+    // so no road repeats until the whole pool has been driven.
+    var turn = Math.floor(dayNumber(date) / 6), d = dailyRoad(region, pool.length ? pool[(turn % pool.length + pool.length) % pool.length] : 0);
+    d.id = "daily-" + date;
+    return d;
   }
   // Long Haul: one long road that keeps getting steeper. Score is how far you get.
   function longHaul(region, seed) {
@@ -490,7 +576,18 @@
     };
   }
   function parTime(d) { return Math.round((START_FLAT + d.len + END_FLAT) / BALANCE.parSpeed) + (d.pickup ? 4 : 0); }
-  function medalTimes(d) { var p = parTime(d); return { gold: p, silver: Math.round(p * BALANCE.silver), bronze: Math.round(p * BALANCE.bronze) }; }
+  // Career gold times, written by `node dev/sim.js medals --write`: 1.08 times the best
+  // clean bot run at the upgrade level expected there, and never looser than the old
+  // time. A route missing here keeps the length-based time.
+  // MEDALS-BEGIN
+  var MEDALS = {"bakery-1": 24, "bakery-2": 29, "bakery-3": 40, "bakery-4": 41, "bakery-5": 51, "bakery-6": 51, "bakery-7": 63, "dunes-1": 24, "dunes-2": 30, "dunes-3": 32, "harbour-1": 25, "harbour-2": 28, "harbour-3": 43, "harbour-5": 58, "harbour-6": 63, "frost-1": 21, "frost-2": 26, "frost-3": 39, "frost-5": 57, "chilli-1": 26, "chilli-2": 34, "market-1": 27, "market-2": 33, "market-3": 43, "market-4": 47, "market-7": 76};
+  // MEDALS-END
+  function medalTimes(d) {
+    var best = d.daily || d.long || d.order ? 0 : MEDALS[d.id];
+    if (best) return { gold: best, silver: Math.round(best * BALANCE.careerSilver), bronze: Math.round(best * BALANCE.careerBronze) };
+    var p = parTime(d);
+    return { gold: p, silver: Math.round(p * BALANCE.silver), bronze: Math.round(p * BALANCE.bronze) };
+  }
 
   // ════ A delivery in progress ═════════════════════════════════════
   function createGame(opts) {
@@ -867,7 +964,7 @@
     var total = g.delivery.dropoffs || g.total, kept = g.delivery.dropoffs ? g.homes : g.live();
     var region = g.region, pay = 0, kinds = {}, d = g.delivery;
     CARGO_TYPES.forEach(function (t) { kinds[t] = 0; });
-    // Ice cream melts: full pay inside the gold time, a third by 1.5 times it.
+    // Ice cream melts: full pay inside the par time, a third by 1.5 times it.
     var melt = g.time <= g.par ? 1 : Math.max(BALANCE.meltFloor, 1 - ((g.time / g.par - 1) / 0.5) * (1 - BALANCE.meltFloor));
     g.cargo.forEach(function (c) {
       if (d.dropoffs ? c.delivered : !c.lost && !c.broken) {
@@ -879,7 +976,7 @@
     var share = kept / total, done = g.status === "done";
     var metres = Math.max(0, Math.round(g.truck.getPosition().x - 8));
     var stars = !done || d.long ? 0 : share >= 1 ? 3 : share >= 0.75 ? 2 : 1;
-    var medal = !done || stars < 2 || d.long || g.dockHit ? 0 : g.time <= g.medals.gold ? 3 : g.time <= g.medals.silver ? 2 : g.time <= g.medals.bronze ? 1 : 0;
+    var medal = !done || stars < 2 || d.long || g.dockHit ? 0 : g.time <= g.medals.gold && stars === 3 ? 3 : g.time <= g.medals.silver ? 2 : g.time <= g.medals.bronze ? 1 : 0;
     var lines = [];
     var coins = Math.round(g.coinsTaken * BALANCE.coinValue);
     var score = 0;
@@ -936,52 +1033,52 @@
   // route, written by `node dev/sim.js rivals --write`. t is Dash's time.
   // RIVALS-BEGIN
   var RIVALS = {
-    "bakery-1": {"v":5.5,"L":1,"t":36},
-    "bakery-2": {"v":6,"L":1,"t":44.1},
-    "bakery-3": {"v":6,"L":1,"t":52.4},
-    "bakery-4": {"v":6.5,"L":1,"t":60},
-    "bakery-5": {"v":6.5,"L":1,"t":67.7},
-    "bakery-6": {"v":7,"L":1,"t":71.7},
-    "bakery-7": {"v":7,"L":1,"t":95.3},
-    "bakery-8": {"v":7.5,"L":1,"t":74.5},
-    "dunes-1": {"v":6,"L":2,"t":34.5},
-    "dunes-2": {"v":6,"L":2,"t":43.8},
-    "dunes-3": {"v":6.5,"L":2,"t":49},
+    "bakery-1": {"v":8,"L":1,"t":28.1},
+    "bakery-2": {"v":8,"L":1,"t":32.4},
+    "bakery-3": {"v":6.5,"L":1,"t":46.1},
+    "bakery-4": {"v":8,"L":1,"t":48.6},
+    "bakery-5": {"v":8,"L":1,"t":59.1},
+    "bakery-6": {"v":8,"L":1,"t":60.4},
+    "bakery-7": {"v":7,"L":1,"t":83.8},
+    "bakery-8": {"v":4.5,"L":1,"t":114.3},
+    "dunes-1": {"v":10,"L":2,"t":28.8},
+    "dunes-2": {"v":9,"L":2,"t":34.5},
+    "dunes-3": {"v":9,"L":2,"t":35.9},
     "dunes-4": {"v":7,"L":2,"t":57.3},
     "dunes-5": {"v":7,"L":3,"t":68.2},
     "dunes-6": {"v":6.5,"L":3,"t":81.7},
     "dunes-7": {"v":7,"L":4,"t":95.9},
     "dunes-8": {"v":7,"L":3,"t":84.5},
-    "harbour-1": {"v":6.5,"L":3,"t":36.6},
-    "harbour-2": {"v":6.5,"L":3,"t":44.9},
+    "harbour-1": {"v":9,"L":3,"t":27.6},
+    "harbour-2": {"v":10,"L":3,"t":33},
     "harbour-3": {"v":8,"L":3,"t":48.4},
     "harbour-4": {"v":6.5,"L":3,"t":62.8},
     "harbour-5": {"v":4,"L":3,"t":110.8},
     "harbour-6": {"v":7.5,"L":3,"t":72.9},
     "harbour-7": {"v":4,"L":3,"t":162.1},
     "harbour-8": {"v":4,"L":5,"t":137.9},
-    "frost-1": {"v":7,"L":4,"t":35.6},
-    "frost-2": {"v":7,"L":4,"t":45.2},
-    "frost-3": {"v":7.5,"L":4,"t":49.1},
+    "frost-1": {"v":10,"L":4,"t":26.2},
+    "frost-2": {"v":10,"L":4,"t":33},
+    "frost-3": {"v":8,"L":4,"t":46.3},
     "frost-4": {"v":6.5,"L":4,"t":64.8},
-    "frost-5": {"v":7,"L":4,"t":70.9},
+    "frost-5": {"v":8,"L":4,"t":64},
     "frost-6": {"v":7.5,"L":5,"t":72},
     "frost-7": {"v":7,"L":4,"t":100.3},
     "frost-8": {"v":8,"L":4,"t":80},
-    "chilli-1": {"v":7,"L":5,"t":36.3},
-    "chilli-2": {"v":7,"L":5,"t":45.8},
+    "chilli-1": {"v":9,"L":5,"t":29.3},
+    "chilli-2": {"v":9,"L":5,"t":38.2},
     "chilli-3": {"v":6.5,"L":5,"t":57.2},
     "chilli-4": {"v":8,"L":5,"t":57.3},
     "chilli-5": {"v":7,"L":5,"t":70.7},
     "chilli-6": {"v":5.5,"L":5,"t":92.5},
     "chilli-7": {"v":6,"L":5,"t":119},
     "chilli-8": {"v":5,"L":5,"t":113.5},
-    "market-1": {"v":7,"L":5,"t":35.9},
-    "market-2": {"v":7,"L":5,"t":44.4},
+    "market-1": {"v":9,"L":5,"t":30},
+    "market-2": {"v":9,"L":5,"t":36.4},
     "market-3": {"v":7.5,"L":5,"t":49.2},
-    "market-4": {"v":6.5,"L":5,"t":64.5},
+    "market-4": {"v":9,"L":5,"t":50.6},
     "market-6": {"v":7.5,"L":5,"t":72},
-    "market-7": {"v":7.5,"L":5,"t":95.3},
+    "market-7": {"v":9,"L":5,"t":83},
     "market-8": {"v":8,"L":5,"t":85.3}
   };
   // RIVALS-END
@@ -1036,16 +1133,16 @@
   var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps" };
   // CHALLENGES-BEGIN
   var CHALLENGES = {
-    "bakery-1": {"kind":"coins","n":12},
-    "bakery-2": {"kind":"speed","n":11},
+    "bakery-1": {"kind":"coins","n":9},
+    "bakery-2": {"kind":"speed","n":12},
     "bakery-3": {"kind":"fuel","n":0.8},
-    "bakery-4": {"kind":"air","n":0.6},
+    "bakery-4": {"kind":"air","n":0.7},
     "bakery-5": {"kind":"truck","truck":"tuktuk"},
     "bakery-6": {"kind":"flat","n":0.4},
-    "bakery-7": {"kind":"fuel","n":0.75},
-    "bakery-8": {"kind":"coins","n":37},
-    "dunes-1": {"kind":"speed","n":11},
-    "dunes-2": {"kind":"coins","n":14},
+    "bakery-7": {"kind":"fuel","n":0.8},
+    "bakery-8": {"kind":"coins","n":32},
+    "dunes-1": {"kind":"speed","n":12},
+    "dunes-2": {"kind":"coins","n":20},
     "dunes-3": {"kind":"flat","n":0.4},
     "dunes-4": {"kind":"truck","truck":"buggy"},
     "dunes-5": {"kind":"flat","n":0.4},
@@ -1152,8 +1249,9 @@
   // ════ Weekly Cup: five career routes a week, best times added up ═══
   // The legs come from the week and the regions a player has reached, so
   // everyone at the same point gets the same cup.
-  function cupFor(week, maxRegion) {
-    var r = rng(hash("cup" + week + ":" + maxRegion)), pool = DELIVERIES.filter(function (d) { return d.region <= maxRegion && d.index !== 6; }), legs = [];
+  function cupFor(week, maxRegion, freeOnly) {
+    var r = rng(hash("cup" + week + ":" + maxRegion)), legs = [];
+    var pool = DELIVERIES.filter(function (d) { return d.region <= maxRegion && d.index !== 6 && (!freeOnly || isFree(d.id)); });
     while (legs.length < 5 && pool.length) legs.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
     legs.sort(function (a, b) { return a.region - b.region || a.index - b.index; });
     var sum = function (k) { return legs.reduce(function (n, d) { return n + medalTimes(d)[k]; }, 0); };
@@ -1185,10 +1283,10 @@
     EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
     TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
-    findDelivery: findDelivery, dailyDelivery: dailyDelivery, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
+    findDelivery: findDelivery, dailyDelivery: dailyDelivery, dailyRoad: dailyRoad, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
-    botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
+    botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
     heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng
   };
 });

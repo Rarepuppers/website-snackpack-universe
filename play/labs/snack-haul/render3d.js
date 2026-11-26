@@ -772,6 +772,9 @@ export class World3D {
   }
 
   clear() {
+    // The sky gradient is a canvas texture of its own; the painted sky is cached.
+    const bg = this.scene.background;
+    if (bg && bg.isTexture && bg.isCanvasTexture) bg.dispose();
     this.scene.traverse((o) => {
       if (o.isInstancedMesh) o.dispose();
       if (o.geometry && o.geometry !== BOX) o.geometry.dispose();
@@ -912,12 +915,22 @@ export class World3D {
       this.scene.add(mesh);
     };
     const span = x1 - x0;
+    // Buildings stand on the lowest corner of their footprint, so none floats over
+    // a slope, and a spot steeper than 0.35 is skipped.
+    const BUILT = new Set(["cottage", "hut", "townhouse", "stall", "barn", "silo", "cabin", "ski_lodge", "honey_shop", "lighthouse", "clock_tower", "windmill", "chilli_stall", "chilli_shrine", "crate_stack", "planter", "boat"]);
+    const footing = (kind, x, z, s, sink) => {
+      if (!BUILT.has(kind)) return surface(x, z) - sink;
+      const f = (kind === "clock_tower" || kind === "lighthouse" || kind === "windmill" || kind === "barn" ? 2.4 : 1.6) * s;
+      const ys = [surface(x - f, z - f), surface(x + f, z - f), surface(x - f, z + f), surface(x + f, z + f), surface(x, z)];
+      const lo = Math.min(...ys), hi = Math.max(...ys);
+      return hi - lo > 0.35 * 2 * f ? null : lo - 0.05;
+    };
     scenery.fills.forEach(([kind, per100]) => {
       if (!usable(kind, theme.id)) return;
       const list = [], n = Math.round((span / 100) * per100 * q.density);
       for (let i = 0; i < n; i++) {
-        const x = x0 + r() * span, z = -5.5 - Math.pow(r(), 1.5) * 66, s = 0.8 + r() * 0.8;
-        list.push(m(x, surface(x, z) - 0.08, z, 0, r() * 6.3, 0, s));
+        const x = x0 + r() * span, z = -5.5 - Math.pow(r(), 1.5) * 66, s = 0.8 + r() * 0.8, turn = r() * 6.3, y = footing(kind, x, z, s, 0.08);
+        if (y != null) list.push(m(x, y, z, 0, turn, 0, s));
       }
       place(kind, list, true);
     });
@@ -932,8 +945,8 @@ export class World3D {
     scenery.landmarks.filter((kind) => usable(kind, theme.id)).forEach((kind, nth, all) => {
       const list = [];
       for (let x = 34 + r() * 30 + nth * 45; x < terrain.total + 30; x += (60 + r() * 50) * all.length) {
-        const z = -13 - r() * 14;
-        list.push(m(x, surface(x, z) - 0.2, z, 0, (r() - 0.5) * 0.7, 0, 1 + r() * 0.3));
+        const z = -13 - r() * 14, turn = (r() - 0.5) * 0.7, s = 1 + r() * 0.3, y = footing(kind, x, z, s, 0.2);
+        if (y != null) list.push(m(x, y, z, 0, turn, 0, s));
       }
       place(kind, list, true);
     });
@@ -961,7 +974,13 @@ export class World3D {
   // ─── Pooled effects ─────────────────────────────────────────────
   buildParticles(theme) {
     const n = this.quality.particles;
-    const mesh = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ roughness: 1, flatShading: true }), n);
+    // Soft round puffs facing the camera: smoke, dust and sparkles, all one draw call.
+    const soft = texCache.soft || (texCache.soft = canvasTex(64, 64, (x, w, h) => {
+      const g = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+      g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.45, "rgba(255,255,255,.75)"); g.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = g; x.fillRect(0, 0, w, h);
+    }));
+    const mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(2.4, 2.4), new THREE.MeshLambertMaterial({ map: soft, transparent: true, depthWrite: false }), n);
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     mesh.frustumCulled = false;
     this.fx = { mesh, list: [], next: 0, dummy: new THREE.Object3D(), dustColor: col(theme.dust) };
@@ -992,7 +1011,7 @@ export class World3D {
       p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
       const t = sat(p.life / p.max);
       fx.dummy.position.set(p.x, p.y, p.z);
-      fx.dummy.rotation.set(p.life * 3, p.life * 2, 0);
+      fx.dummy.rotation.set(0, 0, p.life * 2);
       fx.dummy.scale.setScalar(p.s * (0.35 + (p.g ? t : Math.sin(t * Math.PI)) * 0.8));
       fx.dummy.updateMatrix();
       fx.mesh.setMatrixAt(i, fx.dummy.matrix);
@@ -1032,6 +1051,7 @@ export class World3D {
     coin.add(box(0.07, 0.24, 0.12), "#e29a1e", m(0, 0, 0));
     this.coinMesh = new THREE.InstancedMesh(instanceGeometry("road/coin") || coin.build(), new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.35, roughness: 0.3, emissive: "#c98a10", emissiveIntensity: 0.75 }), Math.max(1, game.coins.length));
     this.coinMesh.frustumCulled = false;
+    game.coins.forEach((c) => { c.drawn = c.hidden = false; });
     this.coinMesh.castShadow = q.shadows;
     scene.add(this.coinMesh);
 
@@ -1374,23 +1394,32 @@ export class World3D {
     this.ghostModel = gm;
   }
 
+  // Where a body is drawn: between its last two physics steps, by alpha, so motion
+  // is even on 90 and 120 Hz screens. Bodies app.js has not snapped draw as they are.
+  pose(b) {
+    const p = b.getPosition(), a = b.getAngle(), t = this.alpha == null ? 1 : this.alpha;
+    if (b.px == null || t >= 1) return { x: p.x, y: p.y, a };
+    let da = a - b.pa;
+    if (da > Math.PI) da -= Math.PI * 2; else if (da < -Math.PI) da += Math.PI * 2;
+    return { x: b.px + (p.x - b.px) * t, y: b.py + (p.y - b.py) * t, a: b.pa + da * t };
+  }
   syncActors(game, dt) {
     const gm = this.ghostModel, gg = this.ghostGame;
     if (gm && gg) {
-      const gp = gg.truck.getPosition();
+      const gp = this.pose(gg.truck);
       gm.root.position.set(gp.x, gp.y, GHOST_Z);
-      gm.root.rotation.z = gg.truck.getAngle();
+      gm.root.rotation.z = gp.a;
       if (gm.tag) gm.tag.position.set(gp.x, gp.y + 2.5, GHOST_Z);
-      gg.wheels.forEach((w, i) => { const wp = w.getPosition(); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = w.getAngle(); });
+      gg.wheels.forEach((w, i) => { const wp = this.pose(w); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = wp.a; });
     }
-    const model = this.truckModel, truck = game.truck, p = truck.getPosition();
+    const model = this.truckModel, truck = game.truck, p = this.pose(truck);
     model.root.position.set(p.x, p.y, 0);
-    model.root.rotation.z = truck.getAngle();
+    model.root.rotation.z = p.a;
     paceTeam(model,game.speed(),dt,this.reduceMotion);
     game.wheels.forEach((w, i) => {
-      const wp = w.getPosition(), g = model.wheels[i];
+      const wp = this.pose(w), g = model.wheels[i];
       g.position.set(wp.x, wp.y, 0);
-      g.rotation.z = w.getAngle();
+      g.rotation.z = wp.a;
     });
     model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
     if (this.headlight) this.headlight.position.set(p.x + 5, p.y + 2.2, 1.5);
@@ -1398,9 +1427,9 @@ export class World3D {
     this.cargo.forEach((c) => {
       c.group.visible = !c.info.delivered;
       if (!c.group.visible) return;
-      const b = c.info.body, cp = b.getPosition();
+      const b = c.info.body, cp = this.pose(b);
       c.group.position.set(cp.x, cp.y, 0);
-      c.group.rotation.z = b.getAngle();
+      c.group.rotation.z = cp.a;
       if (c.group.userData.wobble) {
         c.wob += dt * 9;
         const v = b.getLinearVelocity().length();
@@ -1420,8 +1449,15 @@ export class World3D {
 
     const hide = new THREE.Matrix4().makeScale(0, 0, 0), spin = this.time * 3.2;
     if (this.coinMesh) {
+      // Only coins near the camera spin; the rest keep the matrix they last had.
+      const near = this.camX || p.x, dummy = this.coinDummy || (this.coinDummy = new THREE.Object3D());
       game.coins.forEach((c, i) => {
-        this.coinMesh.setMatrixAt(i, c.taken ? hide : m(c.x, c.y + Math.sin(spin + c.x) * 0.08, 0, 0, spin + c.x * 0.3));
+        if (c.hidden) return;
+        if (c.taken) { c.hidden = true; this.coinMesh.setMatrixAt(i, hide); return; }
+        if (Math.abs(c.x - near) > 34 && c.drawn) return;
+        c.drawn = true;
+        dummy.position.set(c.x, c.y + Math.sin(spin + c.x) * 0.08, 0); dummy.rotation.set(0, spin + c.x * 0.3, 0); dummy.updateMatrix();
+        this.coinMesh.setMatrixAt(i, dummy.matrix);
       });
       this.coinMesh.instanceMatrix.needsUpdate = true;
     }
@@ -1459,7 +1495,7 @@ export class World3D {
   }
 
   updateCamera(game, blend) {
-    const p = game.truck.getPosition(), v = game.truck.getLinearVelocity();
+    const p = this.pose(game.truck), v = game.truck.getLinearVelocity();
     const speed = v.length();
     const tx = p.x + 1.4 + v.x * 0.24, ty = p.y + 0.9;
     this.camX += (tx - this.camX) * blend;
@@ -1515,7 +1551,7 @@ export class World3D {
     this.updateCamera(game, 1 - Math.exp(-dt * 4.2));
     this.shake = Math.max(0, this.shake - dt * 1.2);
 
-    const p = game.truck.getPosition(), angle = game.truck.getAngle();
+    const pp = this.pose(game.truck), p = pp, angle = pp.a;
     this.sun.position.set(p.x - 16, p.y + 26, 20);
     this.sun.target.position.set(p.x + 3, p.y, 0);
 

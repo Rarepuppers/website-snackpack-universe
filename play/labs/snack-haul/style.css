@@ -94,6 +94,8 @@ h3.small { font-size: 1.02rem; margin: 12px 0 2px; }
 .fuel { flex: 1; max-width: 220px; min-width: 40px; height: 16px; background: #fff8ebe6; border-radius: 8px; overflow: hidden; padding: 2px; }
 .fuel i { display: block; height: 100%; background: var(--go); border-radius: 6px; }
 .fuel i.low { background: var(--bad); }
+.pause.restart { margin-left: auto; font-size: 1.2rem; }
+.pause.restart + .pause { margin-left: 0; }
 .pause { margin-left: auto; background: #fff8ebe6; color: #2d1b0c; border: 0; border-radius: 10px; min-width: 44px; min-height: 40px; font-weight: 800; }
 .progress { position: absolute; top: max(54px, calc(env(safe-area-inset-top) + 48px)); left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); height: 6px; background: #00000038; border-radius: 3px; }
 .progress i { display: block; height: 100%; width: 0; background: #fff; border-radius: 3px; }
@@ -203,3 +205,21 @@ button.customer.locked { display: block; width: 100%; text-align: left; color: i
 @media (max-width: 430px) {
   .winter-doors { grid-template-columns: repeat(4,minmax(0,1fr)); }
 }
+
+/* 1.0.2: the clock shows the medal you are on; locked items say how to earn them */
+.chip.m3 { background: #ffe7a3; color: #5a3d00; }
+.chip.m2 { background: #e9eef3; color: #34404c; }
+.chip.m1 { background: #f3d6bf; color: #5a3215; }
+.chip.m0 { opacity: .85; }
+.route .chtext { display: block; font-size: .68rem; line-height: 1.2; opacity: .85; margin-top: 2px; font-style: normal; }
+.route.paid { opacity: .8; }
+.swatch .how { display: block; font-size: .62rem; line-height: 1.15; opacity: .8; max-width: 9em; }
+.up .best { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 8px; background: var(--sun); color: #33210a; font-size: .7rem; font-weight: 800; vertical-align: middle; }
+.up .next { display: block; font-size: .72rem; opacity: .8; }
+.offer { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: #fff3d6; color: #33210a; }
+.offer b { display: block; margin-bottom: 2px; }
+.offer .btn { margin-top: 8px; }
+.strip { display: flex; gap: 6px; overflow-x: auto; margin: 6px 0 4px; scroll-snap-type: x mandatory; }
+.strip i { flex: 0 0 31%; aspect-ratio: 16 / 9; border-radius: 9px; background-size: cover; background-position: center; scroll-snap-align: start; position: relative; }
+.strip i span { position: absolute; left: 6px; bottom: 4px; font-size: .66rem; font-style: normal; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000a; }
+.mapcard { text-align: left; background-size: cover; background-position: center; min-height: 92px; }
