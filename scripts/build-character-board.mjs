@@ -90,7 +90,9 @@ const characters = publicRecords.map(record => ({
     .map(appearance => pick(appearance, ["kind", "id", "role"]))}),
 }));
 const animals = data.animals.map(animal => pick(animal, ["id", "name", "fact", "sourceName", "source"]));
-const rounds = data.rounds;
+const seasonal = new Map((data.seasonalRounds ?? [])
+  .filter(round => !round.draft).map(round => [round.answer, round]));
+const rounds = data.rounds.map(round => seasonal.get(round.answer) ?? round);
 assert(rounds.length > 0, "Publish at least one complete clue round");
 assert.equal(new Set(rounds.map(round => round.answer)).size, rounds.length);
 assert.equal(rounds.length, characters.length);

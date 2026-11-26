@@ -345,18 +345,18 @@
     "answer": "honey-beats",
     "candidates": [
       "honey-beats",
+      "candy-nut",
       "ted-e-bear",
-      "foxy-lox",
-      "quill-berry",
-      "pork-ulele",
-      "flutter-butter"
+      "booklava",
+      "nutmeg",
+      "hen-berry"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “bear”.",
-      "I help find the numbers next to each other."
+      "I have a part in the story about the angel.",
+      "I am one of the two children decorating the small tree.",
+      "I think with my drumsticks."
     ],
-    "explanation": "Rhythms and number neighbours.",
+    "explanation": "Honey-Beats is the baby bear with the drumsticks.",
     "name": "Honey-Beats"
   },
   {
@@ -722,19 +722,19 @@
   {
     "answer": "candy-nut",
     "candidates": [
+      "honey-beats",
       "candy-nut",
+      "ted-e-bear",
+      "booklava",
       "nutmeg",
-      "stripe-scout",
-      "pita-pan",
-      "fe-line-mignon",
-      "cynthia-book-smart"
+      "hen-berry"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “squirrel”.",
-      "My name has two snack words, “candy” and “nut”."
+      "I have a part in the story about the angel.",
+      "I am one of the two children decorating the small tree.",
+      "I am a small squirrel wearing a green scarf."
     ],
-    "explanation": "Exploring with the crew.",
+    "explanation": "Candy-Nut wears a green knitted scarf.",
     "name": "Candy-Nut"
   },
   {
@@ -916,5 +916,23 @@
     ],
     "explanation": "A spelling-app character.",
     "name": "Shepherd’s Pie-thon"
+  },
+  {
+    "answer": "dune-anna",
+    "candidates": [
+      "dune-anna",
+      "foxy-lox",
+      "corgi-on-the-cob",
+      "biscuit-bouncer",
+      "hop-tart",
+      "candy-nut"
+    ],
+    "clues": [
+      "I am one of these friends with pointed or upright ears.",
+      "I am a fox.",
+      "I brought a map of the Ténéré desert."
+    ],
+    "explanation": "Dune-Anna is the fennec fox who explores the Ténéré story with Professor Hooten.",
+    "name": "Dune-Anna"
   }
 ]

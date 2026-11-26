@@ -101,6 +101,11 @@
           "kind": "book",
           "id": "wise-owls-library-day",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -188,6 +193,11 @@
           "kind": "book",
           "id": "one-more-story-before-santa",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -270,6 +280,11 @@
         {
           "kind": "book",
           "id": "the-last-parcel-under-the-tree",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
           "role": "support"
         }
       ]
@@ -512,6 +527,11 @@
           "kind": "book",
           "id": "vincent-van-mouse-and-the-christmas-shadow-show",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "support"
         }
       ]
     },
@@ -606,6 +626,16 @@
           "kind": "book",
           "id": "the-last-parcel-under-the-tree",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "the-angel-on-the-small-tree",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "lead"
         }
       ]
     },
@@ -681,6 +711,11 @@
           "kind": "book",
           "id": "ted-e-bear-and-the-jar-of-good-things",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -734,6 +769,11 @@
           "kind": "book",
           "id": "shelly-pops-slow-and-steady",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -787,6 +827,11 @@
           "kind": "book",
           "id": "sub-zero-and-the-great-snowball-truce",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -835,6 +880,11 @@
           "kind": "book",
           "id": "everybody-brought-potatoes",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -894,6 +944,11 @@
           "kind": "book",
           "id": "sub-zeros-magic-e-lantern",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -987,6 +1042,11 @@
           "kind": "book",
           "id": "vincent-van-mouse-and-the-mural",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1076,6 +1136,11 @@
           "kind": "book",
           "id": "everybody-brought-potatoes",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1243,19 +1308,25 @@
       "name": "Honey-Beats",
       "kind": "Bear",
       "greeting": "Hello! Can you tap a beat while we count?",
-      "moment": "Rhythms and number neighbours",
+      "moment": "Honey-Beats uses her drumsticks while she and Candy-Nut work out how to decorate Ted-E-Bear’s little tree.",
       "book": [
-        "honey-beats-and-the-number-neighbours",
-        "Honey-Beats and the Number Neighbours"
+        "the-angel-on-the-small-tree",
+        "The Angel on the Small Tree"
       ],
       "alt": "The SnackPack portrait of Honey-Beats, bear",
+      "animal": "brown-bear",
       "fact": "I help find the numbers next to each other.",
+      "colouring": true,
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
         "Hello! Can you tap a beat while we count?"
       ],
       "group": "mammals",
+      "art": {
+        "page": "p14",
+        "caption": "Honey-Beats taps her drumsticks while she thinks."
+      },
       "variant": {
         "caption": "Honey-Beats in the helper version of the shared character art."
       },
@@ -1281,6 +1352,16 @@
           "kind": "book",
           "id": "ted-e-bear-and-the-lantern-that-needed-a-half",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "the-angel-on-the-small-tree",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1295,7 +1376,9 @@
         "Foxy-Lox’s Mystery Trail"
       ],
       "alt": "The SnackPack portrait of Foxy-Lox, fox",
+      "animal": "red-foxes",
       "fact": "I follow clues on a mystery trail.",
+      "colouring": true,
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
@@ -1321,6 +1404,11 @@
           "kind": "book",
           "id": "foxy-loxs-mystery-trail",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1335,6 +1423,7 @@
         "Quill-Berry’s Ending Clues"
       ],
       "alt": "The SnackPack portrait of Quill-Berry, hedgehog",
+      "animal": "hedgehogs",
       "fact": "My story has clues in the ends of words.",
       "status": "public",
       "pronouns": "she/her",
@@ -1390,6 +1479,7 @@
         "Pork-ulele and the Clockwork Concert"
       ],
       "alt": "The SnackPack portrait of Pork-ulele, pig",
+      "animal": "pigs",
       "fact": "I help with the clockwork concert.",
       "status": "public",
       "pronouns": "he/him",
@@ -1426,6 +1516,11 @@
           "kind": "book",
           "id": "pork-uleles-picnic-song",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1440,6 +1535,7 @@
         "Honey-Beats and the Number Neighbours"
       ],
       "alt": "The SnackPack portrait of Flutter-Butter, butterfly",
+      "animal": "butterflies",
       "fact": "I appear with Honey-Beats by the stepping-stone numbers.",
       "status": "public",
       "pronouns": null,
@@ -1498,6 +1594,7 @@
       "alt": "The SnackPack portrait of Biscuit-Bouncer, puppy",
       "animal": "dogs",
       "fact": "I have parcels to deliver along a route.",
+      "colouring": true,
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
@@ -1527,6 +1624,11 @@
           "kind": "book",
           "id": "sub-zero-and-the-great-snowball-truce",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1543,6 +1645,7 @@
       "alt": "The SnackPack portrait of Booklava, owl",
       "animal": "owls",
       "fact": "My number story has a zero that runs away.",
+      "colouring": true,
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
@@ -1639,6 +1742,7 @@
         "Captain Beakon and the Bell Across the Bay"
       ],
       "alt": "The SnackPack portrait of Captain Beakon, eagle",
+      "animal": "bald-eagles",
       "fact": "My name is in the mystery about the bell across the bay.",
       "status": "public",
       "pronouns": "he/him",
@@ -1696,6 +1800,7 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "colouring": true,
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
@@ -1716,7 +1821,13 @@
         "snackpack-11-prehistoric-pals",
         "snackpack-9-space-math"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "snack-spector",
@@ -1725,11 +1836,13 @@
       "greeting": "Welcome in! What would you put in the shop window?",
       "moment": "Shopkeeper roles",
       "alt": "The SnackPack portrait of Snack-Spector, raccoon",
+      "animal": "raccoons",
       "fact": "You can find a shopkeeper outfit in my portrait collection.",
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "colouring": true,
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
@@ -1755,6 +1868,11 @@
           "kind": "book",
           "id": "stripe-scouts-trail-clues",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -1840,6 +1958,7 @@
       "greeting": "Hello! Shall we make room for an extra guest?",
       "moment": "The pony in the crew",
       "alt": "The SnackPack portrait of Horse d’Oeuvre, pony",
+      "animal": "horses-and-ponies",
       "fact": "My name sounds like “hors d’oeuvre”, a little bite served before a meal.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -1873,6 +1992,7 @@
       "greeting": "Hello from down below! What do you think is under your feet?",
       "moment": "Life underground",
       "alt": "The SnackPack portrait of Jimmy Apple-Core, earthworm",
+      "animal": "earthworms",
       "fact": "In the SnackPack stories I look after what happens underground.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -1911,6 +2031,7 @@
         "Everybody Brought Potatoes"
       ],
       "alt": "The SnackPack portrait of Leo-Lemonade, leopard",
+      "animal": "leopards",
       "fact": "I brought one giant potato in a wheelbarrow.",
       "status": "public",
       "pronouns": "he/him",
@@ -1955,6 +2076,7 @@
         "Luckybug’s Pairing Parade"
       ],
       "alt": "The SnackPack portrait of Luckybug, ladybug",
+      "animal": "ladybirds",
       "fact": "I help marchers find partners in the pairing parade.",
       "status": "public",
       "pronouns": "she/her",
@@ -2002,6 +2124,11 @@
           "kind": "book",
           "id": "luckybugs-pairing-parade",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -2016,6 +2143,7 @@
         "Lionnaise and the Dragon"
       ],
       "alt": "The SnackPack portrait of Lionnaise, lioness",
+      "animal": "lions",
       "fact": "My story begins with a lioness and a dragon.",
       "status": "public",
       "pronouns": "she/her",
@@ -2109,6 +2237,7 @@
       "greeting": "Welcome! Shall we set out and see what we find?",
       "moment": "Explorer and teacher art",
       "alt": "The SnackPack portrait of Ginger-Deer, deer",
+      "animal": "deer",
       "fact": "I have an explorer outfit and a teacher outfit in the character collection.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -2158,6 +2287,7 @@
       "greeting": "Hello! Can you find the little word hiding in my name?",
       "moment": "A name about spinning",
       "alt": "The SnackPack portrait of Spinnerella, spider",
+      "animal": "spiders",
       "fact": "Listen to the word “spin” tucked inside my name.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -2183,14 +2313,24 @@
         "snackpack-11-prehistoric-pals",
         "snackpack-9-space-math"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "candy-nut",
       "name": "Candy-Nut",
       "kind": "Squirrel",
       "greeting": "Hi! Have you ever found a nut under a tree?",
-      "moment": "Exploring with the crew",
+      "moment": "Candy-Nut makes salt-dough acorns to decorate the little tree with Honey-Beats.",
+      "book": [
+        "the-angel-on-the-small-tree",
+        "The Angel on the Small Tree"
+      ],
       "alt": "The SnackPack portrait of Candy-Nut, squirrel",
       "animal": "tree-squirrels",
       "fact": "My name has two snack words, “candy” and “nut”.",
@@ -2198,12 +2338,17 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "colouring": true,
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
         "Hi! Have you ever found a nut under a tree?"
       ],
       "group": "mammals",
+      "art": {
+        "page": "p08",
+        "caption": "Candy-Nut and Honey-Beats take turns hanging painted acorns."
+      },
       "variant": {
         "caption": "Candy-Nut in the explorer version of the shared character art."
       },
@@ -2217,7 +2362,13 @@
         "snackpack-8-earth-science",
         "snackpack-11-prehistoric-pals"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "the-angel-on-the-small-tree",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "stripe-scout",
@@ -2286,6 +2437,7 @@
         "Corgi-on-the-Cob and the Harvest Table"
       ],
       "alt": "The SnackPack portrait of Pita-Pan, goat",
+      "animal": "goats",
       "fact": "I helped carry the basket up the hill.",
       "status": "public",
       "pronouns": "he/him",
@@ -2331,6 +2483,7 @@
         "Fe-Line-Mignon’s Moonlit Café"
       ],
       "alt": "The SnackPack portrait of Fe-Line-Mignon, cat",
+      "animal": "domestic-cats",
       "fact": "I have a café story that takes place by moonlight.",
       "status": "public",
       "pronouns": "she/her",
@@ -2354,6 +2507,11 @@
           "kind": "book",
           "id": "fe-line-mignons-moonlit-cafe",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -2364,6 +2522,7 @@
       "greeting": "Hello, reader. Shall we choose a book together?",
       "moment": "Library and word clues",
       "alt": "The SnackPack portrait of Cynthia Book-Smart, snake",
+      "animal": "snakes",
       "fact": "You may see my name shortened to Cynthia in the spelling app.",
       "aliases": [
         "Cynthia"
@@ -2404,6 +2563,7 @@
         "Ham-and-Cheese’s Big Maze"
       ],
       "alt": "The SnackPack portrait of Ham-and-Cheese, hamster",
+      "animal": "hamsters",
       "fact": "I look for a route through a maze in my story.",
       "status": "public",
       "pronouns": "he/him",
@@ -2443,6 +2603,7 @@
         "Everybody Brought Potatoes"
       ],
       "alt": "The SnackPack portrait of Meow-inara, cat",
+      "animal": "domestic-cats",
       "fact": "I pulled a sack of potatoes to the garden gate.",
       "status": "public",
       "pronouns": "she/her",
@@ -2503,6 +2664,7 @@
         "Captain Beakon and the Bell Across the Bay"
       ],
       "alt": "The SnackPack portrait of Polly Roger, parrot",
+      "animal": "parrots",
       "fact": "I follow the sound of a bell across the bay.",
       "status": "public",
       "pronouns": "she/her",
@@ -2536,6 +2698,11 @@
           "kind": "book",
           "id": "polly-rogers-pirate-cove",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
         }
       ]
     },
@@ -2546,11 +2713,13 @@
       "greeting": "Hello! Let’s put these tiles in a row and see what comes next.",
       "moment": "Patterns and dominoes",
       "alt": "The SnackPack portrait of Dough Mino, dinosaur",
+      "animal": "sauropods",
       "fact": "My name sounds like “domino”. Try hearing it in two parts.",
       "app": [
         "snackpack-1-abcs-alphabet",
         "Explore SnackPack ABC"
       ],
+      "colouring": true,
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
@@ -2566,7 +2735,13 @@
         "snackpack-11-prehistoric-pals",
         "snackpack-9-space-math"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "marmalade-whiskers",
@@ -2575,6 +2750,7 @@
       "greeting": "Hello there. Would you help me think of a word for my story?",
       "moment": "Stories and wordplay",
       "alt": "The SnackPack portrait of Marmalade Whiskers, cat",
+      "animal": "domestic-cats",
       "fact": "My name combines a sweet spread and a cat’s whiskers.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -2603,6 +2779,7 @@
       "greeting": "Hello! Ready for a word with layers?",
       "moment": "A spelling-app character",
       "alt": "The SnackPack portrait of Shepherd’s Pie-thon, python",
+      "animal": "ball-pythons",
       "fact": "My name combines “shepherd’s pie” and “python”.",
       "app": [
         "snackpack-3-spelling-sentences",
@@ -2617,6 +2794,30 @@
       "relationships": [],
       "webApps": [
         "snackpack-3-spelling-sentences"
+      ],
+      "appearances": []
+    },
+    {
+      "id": "dune-anna",
+      "name": "Dune-Anna",
+      "kind": "Fennec fox",
+      "greeting": "Hello! Come look at my map. Have you ever wondered how a tree can live all by itself?",
+      "moment": "Dune-Anna follows her grandmother’s story about the single tree that grew in the Ténéré desert.",
+      "alt": "A sand-coloured fennec fox with large pointed ears, a dark tail tip and a folded map",
+      "animal": "fennec-fox",
+      "app": [
+        "snackpack-8-earth-science",
+        "Earth Science"
+      ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Come look at my map. Have you ever wondered how a tree can live all by itself?"
+      ],
+      "group": "mammals",
+      "relationships": [],
+      "webApps": [
+        "snackpack-8-earth-science"
       ],
       "appearances": []
     }
@@ -2747,6 +2948,153 @@
       "fact": "A turtle’s shell is part of its body. It is joined to its spine and ribs.",
       "sourceName": "San Diego Zoo Wildlife Explorers",
       "source": "https://sdzwildlifeexplorers.org/animals/turtles-and-tortoises"
+    },
+    {
+      "id": "pigs",
+      "name": "Pigs",
+      "fact": "Pigs use their strong snouts to dig for food such as roots and insects.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/wild-swine-pig-and-hog"
+    },
+    {
+      "id": "red-foxes",
+      "name": "Red foxes",
+      "fact": "Red foxes can live in towns and cities. They use sheltered places for dens.",
+      "sourceName": "Natural History Museum",
+      "source": "https://www.nhm.ac.uk/discover/the-secret-life-of-urban-foxes.html"
+    },
+    {
+      "id": "hedgehogs",
+      "name": "Hedgehogs",
+      "fact": "A hedgehog can curl into a ball so its spines face outwards.",
+      "sourceName": "Devon Wildlife Trust",
+      "source": "https://www.devonwildlifetrust.org/sites/default/files/2022-03/Species%20of%20the%20month%20-%20April%20-%20Hedgehog.pdf"
+    },
+    {
+      "id": "butterflies",
+      "name": "Butterflies",
+      "fact": "A butterfly starts as an egg. It hatches into a caterpillar and changes into an adult inside a pupa.",
+      "sourceName": "Australian Museum",
+      "source": "https://australian.museum/learn/animals/insects/metamorphosis-a-remarkable-change/"
+    },
+    {
+      "id": "bald-eagles",
+      "name": "Bald eagles",
+      "fact": "Adult bald eagles have white feathers on their heads and tails. Young bald eagles start out mostly brown.",
+      "sourceName": "Smithsonian’s National Zoo",
+      "source": "https://nationalzoo.si.edu/animals/bald-eagle"
+    },
+    {
+      "id": "raccoons",
+      "name": "Raccoons",
+      "fact": "A raccoon can sleep in a hollow tree, under a log or in an old burrow.",
+      "sourceName": "San Diego Zoo Wildlife Explorers",
+      "source": "https://sdzwildlifeexplorers.org/animals/north-american-raccoon"
+    },
+    {
+      "id": "horses-and-ponies",
+      "name": "Horses and ponies",
+      "fact": "A horse’s hooves keep growing, so a horse in human care needs regular hoof checks and trimming.",
+      "sourceName": "University of Minnesota Extension",
+      "source": "https://extension.umn.edu/agriculture/animals-and-livestock/horse/caring-for-your-horses-hooves"
+    },
+    {
+      "id": "earthworms",
+      "name": "Earthworms",
+      "fact": "Many earthworms live in soil and shelter in burrows. Some come up to the surface to move around.",
+      "sourceName": "Australian Museum",
+      "source": "https://australian.museum/learn/animals/worms/australian-earthworms/"
+    },
+    {
+      "id": "leopards",
+      "name": "Leopards",
+      "fact": "A leopard’s long tail helps it balance on narrow branches.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/leopard"
+    },
+    {
+      "id": "ladybirds",
+      "name": "Ladybirds",
+      "fact": "Ladybirds are beetles. Many eat tiny plant-feeding insects called aphids.",
+      "sourceName": "Natural History Museum",
+      "source": "https://www.nhm.ac.uk/discover/how-to-make-insect-hotel-ladybird-lodge.html"
+    },
+    {
+      "id": "lions",
+      "name": "Lions",
+      "fact": "Lions can live in groups called prides. Lionesses in a pride often raise their cubs together.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/lion"
+    },
+    {
+      "id": "deer",
+      "name": "Deer",
+      "fact": "Deer that grow antlers shed them and grow a new set.",
+      "sourceName": "U.S. National Park Service",
+      "source": "https://www.nps.gov/articles/hornsvantlers.htm"
+    },
+    {
+      "id": "spiders",
+      "name": "Spiders",
+      "fact": "A spider’s eight legs attach to the front part of its body.",
+      "sourceName": "Australian Museum",
+      "source": "https://australian.museum/learn/species-identification/ask-an-expert/what-is-a-spiders/"
+    },
+    {
+      "id": "goats",
+      "name": "Goats",
+      "fact": "Goats chew their food again after first swallowing it. This helps them break down tough plants.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/goat-and-sheep"
+    },
+    {
+      "id": "snakes",
+      "name": "Snakes",
+      "fact": "A snake can flick its tongue to pick up tiny scent particles from around it.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://sandiegozoowildlifealliance.org/story-hub/zoonooz/super-sensors"
+    },
+    {
+      "id": "ball-pythons",
+      "name": "Ball pythons",
+      "fact": "A ball python may curl into a tight ball and hide its head when it feels threatened.",
+      "sourceName": "Seneca Park Zoo",
+      "source": "https://senecaparkzoo.org/ball-python/"
+    },
+    {
+      "id": "hamsters",
+      "name": "Hamsters",
+      "fact": "A golden hamster can carry food in pouches inside its cheeks.",
+      "sourceName": "Animal Diversity Web",
+      "source": "https://animaldiversity.org/accounts/Mesocricetus_auratus/"
+    },
+    {
+      "id": "parrots",
+      "name": "Parrots",
+      "fact": "Parrots have two toes pointing forwards and two pointing backwards. These feet help them grip branches.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/parrot"
+    },
+    {
+      "id": "fennec-fox",
+      "name": "Fennec foxes",
+      "fact": "A fennec fox’s large ears help it hear and release heat in the desert.",
+      "sourceName": "San Diego Zoo Wildlife Alliance",
+      "source": "https://animals.sandiegozoo.org/animals/fennec-fox"
+    },
+    {
+      "id": "sauropods",
+      "name": "Long-necked dinosaurs",
+      "fact": "Sauropods were plant-eating dinosaurs with long necks. Dough Mino is an imaginary dinosaur inspired by them.",
+      "sourceName": "Natural History Museum",
+      "source": "https://www.nhm.ac.uk/discover/dino-directory/body-shape/sauropod/gallery.html?selectedBodyShape=Sauropod"
+    },
+    {
+      "id": "domestic-cats",
+      "name": "Domestic cats",
+      "fact": "A cat’s whiskers sense nearby objects and movement in the air.",
+      "sourceName": "VCA Animal Hospitals",
+      "source": "https://vcahospitals.com/resources/behavior-cat/communication/how-well-do-you-know-your-cat"
     }
   ],
   "rounds": [
@@ -3314,31 +3662,31 @@
       "answer": "honey-beats",
       "clues": [
         [
-          "I’m one of the faces on the SnackPack character board.",
+          "I have a part in the story about the angel.",
           [
             "honey-beats",
+            "candy-nut",
             "ted-e-bear",
-            "foxy-lox",
-            "quill-berry",
-            "pork-ulele",
-            "flutter-butter"
+            "booklava",
+            "nutmeg",
+            "hen-berry"
           ]
         ],
         [
-          "My card describes me as “bear”.",
+          "I am one of the two children decorating the small tree.",
           [
             "honey-beats",
-            "ted-e-bear"
+            "candy-nut"
           ]
         ],
         [
-          "I help find the numbers next to each other.",
+          "I think with my drumsticks.",
           [
             "honey-beats"
           ]
         ]
       ],
-      "explanation": "Rhythms and number neighbours."
+      "explanation": "Honey-Beats is the baby bear with the drumsticks."
     },
     {
       "answer": "foxy-lox",
@@ -3927,31 +4275,31 @@
       "answer": "candy-nut",
       "clues": [
         [
-          "I’m one of the faces on the SnackPack character board.",
+          "I have a part in the story about the angel.",
           [
+            "honey-beats",
             "candy-nut",
+            "ted-e-bear",
+            "booklava",
             "nutmeg",
-            "stripe-scout",
-            "pita-pan",
-            "fe-line-mignon",
-            "cynthia-book-smart"
+            "hen-berry"
           ]
         ],
         [
-          "My card describes me as “squirrel”.",
+          "I am one of the two children decorating the small tree.",
           [
-            "candy-nut",
-            "nutmeg"
+            "honey-beats",
+            "candy-nut"
           ]
         ],
         [
-          "My name has two snack words, “candy” and “nut”.",
+          "I am a small squirrel wearing a green scarf.",
           [
             "candy-nut"
           ]
         ]
       ],
-      "explanation": "Exploring with the crew."
+      "explanation": "Candy-Nut wears a green knitted scarf."
     },
     {
       "answer": "stripe-scout",
@@ -4248,6 +4596,36 @@
         ]
       ],
       "explanation": "A spelling-app character."
+    },
+    {
+      "answer": "dune-anna",
+      "clues": [
+        [
+          "I am one of these friends with pointed or upright ears.",
+          [
+            "dune-anna",
+            "foxy-lox",
+            "corgi-on-the-cob",
+            "biscuit-bouncer",
+            "hop-tart",
+            "candy-nut"
+          ]
+        ],
+        [
+          "I am a fox.",
+          [
+            "dune-anna",
+            "foxy-lox"
+          ]
+        ],
+        [
+          "I brought a map of the Ténéré desert.",
+          [
+            "dune-anna"
+          ]
+        ]
+      ],
+      "explanation": "Dune-Anna is the fennec fox who explores the Ténéré story with Professor Hooten."
     }
   ]
 }
