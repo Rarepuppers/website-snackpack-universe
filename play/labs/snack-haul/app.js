@@ -90,6 +90,10 @@ const currentEvent = () => SH.activeEvent(eventDate());
 const decemberDressing = () => eventDate().getMonth() === 11;
 const sleighOwned = () => save.trucks.includes("sleigh");
 const drivingTruck = () => save.truck === "sleigh" && (!sleighOwned() || !currentEvent()) ? "pickup" : save.truck;
+// The Billy Cart drives Downhill Dash only; anywhere else the pickup stands in.
+const DASH_GOLDS_FOR_BILLY = 4;
+const dashGolds = () => SH.DOWNHILL.filter((d) => d.dash && !d.event && (save.medal[d.id] || 0) === 3).length;
+const truckFor = (d) => d.truck || (drivingTruck() === "billy" && !d.dash ? "pickup" : drivingTruck());
 const menuMusic = () => decemberDressing() ? "music_winter_menu" : "music_menu";
 function weekKey() { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return localDate(d); }
 const level = (id) => save.upgrades[id] || 0;
@@ -107,7 +111,7 @@ if (fullWeb && !nativeApp) save.webFull = true;
 const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&referrer=utm_source%3Dwebsite%26utm_medium%3Dweb-demo%26utm_campaign%3Dsnack-haul";
 const paywalled = () => !fullWeb && !save.pro;
 // All of Bakery Hills is free (routes, Special Orders, Long Haul, Top-Up); elsewhere only the free routes.
-const routePaid = (d) => paywalled() && d.region > 0 && !d.daily && !d.winter && !d.testDrive && !SH.isFree(d.id);
+const routePaid = (d) => paywalled() && d.region > 0 && !d.daily && !d.winter && !d.event && !d.testDrive && !SH.isFree(d.id);
 // A Test Drive opens at a number of Bakery Hills stars, and is for players without the full game.
 const testOpen = (t) => regionStars(0) >= t.at;
 // A region is paid when none of its roads are free.
@@ -483,12 +487,13 @@ function tick(now) {
   if (state.slow > 0) { state.slow -= dt; state.acc += dt * 0.4; } else state.acc += dt;
   while (state.acc >= SH.STEP) {
     // Recording builds only: the bots' driver works the pedals (see SnackHaulDebug below).
-    if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; }
+    if (state.autopilot && g.status === "driving") { const b = SH.botInput(g, state.autopilot); state.input.gas = b.gas; state.input.brake = b.brake; state.input.eat = !!b.eat; }
     const driving = g.status === "driving";
     // The picture is drawn between the last two physics steps (see World3D.pose).
     snapBodies(g);
     if (state.ghost) snapBodies(state.ghost.game);
     g.step(state.input);
+    state.input.eat = false;   // Eat is a tap: one step only
     if (driving) { stepGhost(); if (state.gap) state.gap.push(g.truck.getPosition().x, state.ghost.game.truck.getPosition().x, state.ghost.game.status === "driving"); }
     state.acc -= SH.STEP;
   }
@@ -556,6 +561,8 @@ function drainEvents(g) {
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
     else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
+    else if (ev.type === "snack") { play("pickup_load", 0.7) || beep(880, 0.12, "triangle", 0.06); toast((ev.stop ? "Truck Stop special: " : "") + SNACKS[ev.kind].name + ". Tap it to eat", 1300); }
+    else if (ev.type === "eat") { play("snack_eat", 0.8) || beep(660, 0.14, "triangle", 0.07, 0, 990); toast(SNACKS[ev.kind].say, 1100); buzz("light"); }
     else if (ev.type === "fade") { play("brake_hiss", 0.8) || beep(220, 0.3, "sawtooth", 0.05); toast("Brakes fading! Ease off", 1300); buzz("warning"); }
     else if (ev.type === "surge") play("turbo_surge", 0.6) || beep(160, 0.18, "sawtooth", 0.05);
     else if (ev.type === "gate") { if (ev.ok) { play("coin", 0.7) || beep(1180, 0.1, "triangle", 0.06); toast("Speed gate ✓ +3", 900); } else toast("Gate missed: " + ev.lo + " to " + ev.hi + " m/s", 1100); }
@@ -563,7 +570,7 @@ function drainEvents(g) {
     else if (ev.type === "hay") { play("hay_crash", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
-      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle", gravel: "Gravel bed: slow down before it", gate: "Speed gate ahead" }[ev.feature];
+      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle", gravel: "Gravel bed: slow down before it", gate: "Speed gate ahead", truckstop: g.slot ? "" : "Truck Stop: pull up for the special" }[ev.feature];
       if (say) hint(say, 2600);
       const sound = { drift:"snow_drift", bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
       if (sound) play(sound, 0.6);
@@ -593,7 +600,7 @@ function stepGhost() {
   else {
     if (gh.i >= gh.rec.length) return;
     const bits = gh.rec[gh.i];
-    gh.game.step({ gas: !!(bits & 1), brake: !!(bits & 2) });
+    gh.game.step({ gas: !!(bits & 1), brake: !!(bits & 2), eat: !!(bits & 4) });
     if (++gh.k >= gh.rec[gh.i + 1]) { gh.i += 2; gh.k = 0; }
   }
   gh.game.events.length = 0;
@@ -618,7 +625,7 @@ function startDelivery(delivery) {
   ensureAudio();
   state.delivery = delivery;
   // A Special Order can name its truck; it must be owned to start.
-  const truckId = delivery.truck || drivingTruck();
+  const truckId = truckFor(delivery);
   // The daily is driven in a loaner truck with set upgrades, the same for everyone.
   // The lasso: armed on any run that allows it while one is in the Pantry. Never in the
   // Daily, the Weekly Cup, Test Drives or Winter Haul, where everyone drives the same setup.
@@ -644,6 +651,7 @@ function startDelivery(delivery) {
   state.hudGap = null;
   $("gap").hidden = !state.gap;
   $("horn").hidden = save.hornButton === false;
+  $("snack").hidden = true; state.hudSlot = "";
   $("lasso").hidden = !game.lassoLeft;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
@@ -715,6 +723,13 @@ function hud(g) {
       el.className = "chip gap " + (gap < 0 ? "ahead" : gap > 0 ? "behind" : "");
       el.setAttribute("aria-label", gap < 0 ? Math.abs(gap).toFixed(1) + " seconds ahead of the ghost" : gap > 0 ? gap.toFixed(1) + " seconds behind the ghost" : "Level with the ghost");
     }
+  }
+  // Snack slot: its icon while it holds something.
+  const slotKey = g.slot || "";
+  if (state.hudSlot !== slotKey) {
+    state.hudSlot = slotKey;
+    $("snack").hidden = !g.slot;
+    if (g.slot) { $("snack").innerHTML = ico("snack_" + g.slot, SNACKS[g.slot].icon, "ico"); $("snack").setAttribute("aria-label", "Eat the " + SNACKS[g.slot].name); }
   }
   // Soda fizz: a gauge that fills with every knock and pops the crate when full.
   const hasSoda = g.cargo.some((c) => c.type === "soda" && !c.lost && !c.broken && !c.delivered);
@@ -811,6 +826,7 @@ function finishDelivery(g) {
       if (!save.best[d.id] || r.time < save.best[d.id]) { if (save.best[d.id] && r.stars >= 2) setTimeout(() => play("saved", 0.6), 2000); save.best[d.id] = Math.round(r.time * 10) / 10; }
       if (r.express) save.express[d.id] = true;
       if (r.medal > (save.medal[d.id] || 0)) save.medal[d.id] = r.medal;
+      if (d.dash && !save.trucks.includes("billy") && dashGolds() >= DASH_GOLDS_FOR_BILLY) { save.trucks.push("billy"); setTimeout(() => toast("The Billy Cart is yours! Downhill Dash only", 2400), 1200); }
       // Keep the pedals of the fastest run, for the ghost.
       // The ghost replays these pedals through the same physics, so it needs the upgrades too.
       if (d.cup && d.cup === save.cup.week && r.stars >= 2 && !r.dockHit) {
@@ -1192,6 +1208,8 @@ sheet.addEventListener("click", (e) => {
 $("pause").addEventListener("click", pause);
 // The horn on screen, for phones (the H key does the same on a keyboard).
 $("horn").addEventListener("pointerdown", (e) => { e.preventDefault(); ensureAudio(); horn(); });
+// The snack slot (ROADMAP 4.1): shown only when it holds a snack; tap to eat it.
+$("snack").addEventListener("pointerdown", (e) => { e.preventDefault(); if (state.mode === "drive") state.input.eat = true; });
 // Restart at once in the first seconds of a run; after that, through the pause sheet.
 $("restart").addEventListener("click", () => { if (state.mode !== "drive") return; if (state.game.time < 5) startDelivery(state.delivery); else pause(); });
 document.addEventListener("visibilitychange", () => {
@@ -1306,17 +1324,19 @@ function ordersScreen() {
 }
 
 // Old Crust: a free customer whose orders open on Back Roads stars.
+const TRACK_NAMES = { back: "Back Roads", extra: "Extra Mile", runaway: "Runaway Rig" };
 function sideCustomer(c, r) {
-  const total = SH.sideTrack(c.track).length * 3, got = SH.sideStars(c.track, save.stars);
-  if (!SH.isOpen(SH.sideTrack(c.track)[0].id, save.stars)) return `<div class="customer locked"><b>${ico("lock", "🔒")} Back Roads</b><small>Earn ${SH.SIDE_OPEN[c.track]} Bakery Hills stars to open the Back Roads and meet ${esc(c.name)}.</small></div>`;
+  const total = SH.sideTrack(c.track).length * 3, got = SH.sideStars(c.track, save.stars), where = TRACK_NAMES[c.track];
+  if (SH.SIDE_OPEN[c.track] != null && !SH.isOpen(SH.sideTrack(c.track)[0].id, save.stars)) return `<div class="customer locked"><b>${ico("lock", "🔒")} Back Roads</b><small>Earn ${SH.SIDE_OPEN[c.track]} Bakery Hills stars to open the Back Roads and meet ${esc(c.name)}.</small></div>`;
   const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
     const open = orderOpen(o), done = !!save.orders[o.id];
-    const why = !open ? o.at + (o.track === "extra" ? " Extra Mile stars" : " Back Roads stars") : done ? "Done ✓" : SH.orderText(o);
+    const why = !open ? o.at + " " + TRACK_NAMES[o.track] + " stars" : done ? "Done ✓" : SH.orderText(o);
     return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
   }).join("");
   const next = SH.ORDERS.filter((o) => o.customer === r && o.track === c.track && got < o.at)[0];
-  return `<div class="customer"><div class="who"><span class="face" aria-hidden="true">${c.icon}</span><div><b>${esc(c.name)}</b><small>${esc(c.role)}, Back Roads</small></div>
-    <div class="rep" aria-label="${got} of ${total} Back Roads stars">${got}/${total} ★<small>${next ? next.at - got + " more Back Roads stars for the next order" : "Every order open"}</small></div></div>
+  const face = artUrl("customer_" + c.id) ? `<img class="face" src="${artUrl("customer_" + c.id)}" alt="">` : `<span class="face" aria-hidden="true">${c.icon}</span>`;
+  return `<div class="customer"><div class="who">${face}<div><b>${esc(c.name)}</b><small>${esc(c.role)}, ${where}</small></div>
+    <div class="rep" aria-label="${got} of ${total} ${where} stars">${got}/${total} ★<small>${next ? next.at - got + " more " + where + " stars for the next order" : "Every order open"}</small></div></div>
     <div class="orders">${list}</div></div>`;
 }
 
@@ -1334,13 +1354,13 @@ function longScreen() {
     return `<button class="order" data-long="${i}"${open ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${open ? (best ? "Best " + best + " m. " : "") + "Next milestone " + (mile + 1) * 250 + " m, +" + Math.round(20 * (mile + 1) * r.pay) : "Not reached yet"}</small></button>`;
   }).join("");
   // Downhill (1.3): Downhill Dash and Runaway Rig, one course per region.
-  const hill = (mode) => SH.DOWNHILL.filter((d) => !!d[mode]).map((d) => {
+  const hill = (mode) => SH.DOWNHILL.filter((d) => !!d[mode] && !d.event).map((d) => {
     const r = SH.REGIONS[d.region], best = save.best[d.id], md = save.medal[d.id] || 0;
     if (routePaid(d)) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-go="${d.id}"${regionOpen(d.region) ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${best ? "Best " + best + "s" + (md ? " · " + ["", "bronze", "silver", "gold"][md] : "") : regionOpen(d.region) ? esc(r.name) : "Reach " + esc(r.name)}</small></button>`;
   }).join("");
-  const downhill = `<h3 class="small">Downhill Dash</h3><p class="sub">A race to the valley with one mail sack. Lift off the gas to tuck: you go faster. The clock stops at the line; then pull up before the wall.</p><div class="customer"><div class="orders">${hill("dash")}</div></div>
-    <h3 class="small">Runaway Rig</h3><p class="sub">The throttle's jammed and Gus Gasket is waiting at the bottom with an extinguisher. Brake in short bursts: hold it and the brakes fade. Gas is a surge that slides the load back off the cab. Hit the speed gates inside their window.</p><div class="customer"><div class="orders">${hill("runaway")}</div></div>`;
+  const downhill = `<h3 class="small">Downhill Dash</h3><p class="sub">${save.trucks.includes("billy") ? "The Billy Cart is yours: pick it in the garage. " : "Gold on " + DASH_GOLDS_FOR_BILLY + " courses wins the Billy Cart (" + dashGolds() + " so far). "}A race to the valley with one mail sack. Snacks on the road: tap the slot to eat. Mind the potholes. Lift off the gas to tuck: you go faster. The clock stops at the line; then pull up before the wall.</p><div class="customer"><div class="orders">${hill("dash")}</div></div>
+    <h3 class="small">Runaway Rig</h3>${artUrl("runaway_bg") ? `<div class="banner" style="background-image:url('${artUrl("runaway_bg")}')"></div>` : ""}<p class="sub">The throttle's jammed and Gus Gasket is waiting at the bottom with an extinguisher. Brake in short bursts: hold it and the brakes fade. Gas is a surge that slides the load back off the cab. Hit the speed gates inside their window.</p><div class="customer"><div class="orders">${hill("runaway")}</div></div>`;
   ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}${downhill}<h3 class="small">Top-Up Run</h3><p class="sub">Start with two crates. Every stop on the way adds one more, and the road keeps climbing. Three loads lost ends the run.</p><div class="customer"><div class="orders">${tops}</div></div>
     <h3 class="small">Long Haul</h3><p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
 }
@@ -1392,8 +1412,9 @@ function routesScreen() {
 
 // ════ Route sheet (Q2): what's ahead, the targets, and your times, then Drive ═
 const CARGO_EMOJI = { mail: "✉️", tyre: "🛞", toolbox: "🧰", coolant: "🛢️", crate: "📦", eggs: "🥚", milk: "🥛", jelly: "🍮", melon: "🍉", cake: "🎂", popcorn: "🍿", icecream: "🍦", baguette: "🥖", cheese: "🧀", pizza: "🍕", soda: "🥤" };
+const SNACKS = { rocket: { name: "Choc Rocket", icon: "🍫", say: "Choc Rocket! Top speed up" }, cloud: { name: "Sugar Cloud", icon: "🍭", say: "Sugar Cloud! Light as air" } };
 const AHEAD_NAMES = { ramp: "ramps", bridge: "plank bridges", ford: "a ford", slick: "ice", wind: "gusts", bump: "speed bumps", pickup: "a pickup stop", ducks: "a duck crossing",
-  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip", gravel: "a gravel bed", gate: "speed gates" };
+  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip", gravel: "a gravel bed", gate: "speed gates", pothole: "potholes", bump: "bumps", truckstop: "a Truck Stop" };
 function routeSheet(d) {
   if (!d) return;
   const p = SH.routePreview(d), m = p.medals, ch = SH.challengeFor(d.id), rival = SH.rivalFor(d.id), best = save.best[d.id];
@@ -1448,6 +1469,7 @@ function winterScreen() {
   ui.innerHTML=`<section class="panel winter-panel">${panelHead("Winter Haul")}
     <div class="winter-heading"><h3>North Pole</h3><p>Stop on each doormat to deliver a load, then return to the depot.</p><small>${seasonStars(progress)} of 24 North Pole stars</small></div>
     <div class="routes">${routes}</div>
+    ${SH.DOWNHILL.filter((d) => d.event === "winter").map((d) => `<h3 class="small">${esc(d.name)}</h3><p class="sub">A Downhill Dash down the North Pole, for the season only.${save.best[d.id] ? " Your best " + save.best[d.id] + "s." : ""}</p><button class="btn" data-go="${d.id}">Ride the ${esc(d.name)}</button>`).join("")}
     <h3 class="small">Advent calendar</h3><p class="sub">Missed days stay open through 6 January.</p>
     <div class="winter-doors">${doors}</div>
     <h3 class="small">Workshop Orders</h3>${orders}
@@ -1456,9 +1478,10 @@ function winterScreen() {
 
 function garageScreen() {
   const event=currentEvent();
-  const fleet = event || sleighOwned() ? SH.TRUCKS.concat(SH.EVENT_TRUCKS) : SH.TRUCKS;
+  const fleet = SH.TRUCKS.concat(SH.EVENT_TRUCKS.filter((t) => t.downhillOnly || event || sleighOwned()));
   const trucks = fleet.map((t) => {
     const owned = save.trucks.includes(t.id), selected = save.truck === t.id;
+    if (t.downhillOnly && !owned) return `<button class="truck" disabled><b>${esc(t.name)}</b><small>Gold on ${DASH_GOLDS_FOR_BILLY} Downhill Dash courses: ${dashGolds()} of ${DASH_GOLDS_FOR_BILLY}</small></button>`;
     if (t.id==="sleigh" && (!owned || !event)) return `<button class="truck" disabled><b>Jingle Sleigh</b><small>${owned?"Back next winter":"Earn it at Advent door 3"}</small></button>`;
     if (truckPaid(t.id) && !owned) return `<button class="truck" data-unlock="truck">${artUrl("portrait_" + t.id) ? `<img class="portrait" src="${artUrl("portrait_" + t.id)}" alt="">` : ""}<b>${esc(t.name)}</b><small>${esc(t.desc)}</small><span class="price">${ico("lock", "🔒")} Full game</span></button>`;
     return `<button class="truck" data-truck="${t.id}" aria-pressed="${selected}"${!owned && save.coins < t.cost ? " disabled" : ""}>

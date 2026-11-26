@@ -58,6 +58,10 @@
     heatUp: 0.25,                  // brake heat gained per second of braking (1 = fade)
     heatDown: 0.35,                // and lost per second off the brake
     fadeSeconds: 1.5,              // brakes at half strength for this long after overheating
+    snackRocket: { top: 1.35, torque: 1.5, secs: 2.5 },   // Choc Rocket (ROADMAP 4.1)
+    snackCloud: { lift: 0.6, secs: 2.5 },                 // Sugar Cloud: everything weighs 40%
+    mailDensity: 0.7,              // Downhill Dash's mail sack: light, so bumps and landings can shake it loose
+    potholeDepth: 0.6, // a pothole: one sharp dip in the road
     downhillFrontBrake: 0.25,      // share of brake on the front wheels downhill
     gravelDrag: 0.09,              // gravel beds: drag rises with the square of speed
     hayDrag: 0.9,                  // drag while ploughing through a smashed hay stack
@@ -121,7 +125,7 @@
     ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
     ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
   ];
-  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21, gravel: 12, gate: 2 };
+  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21, gravel: 12, gate: 2, pothole: 1.5, truckstop: 14 };
   // The seesaw bridge: a plank this long tips this far either way on a hinge.
   var SEESAW = { half: 4.5, tilt: 0.16, thick: 0.15, damp: 2 };
 
@@ -239,6 +243,9 @@
   // The event garage controls ownership and season access; physics still uses two hidden wheels.
   // Runner bottoms correspond to axleY - wheelR and the region changes the sleigh's grip.
   var EVENT_TRUCKS = [
+    // The Billy Cart (ROADMAP 4.7): a soapbox racer for Downhill Dash only. Almost no
+    // engine, very fast downhill, one sack. Earned with gold on four Dash courses.
+    { id: "billy", downhillOnly: true, name: "Billy Cart", cost: 0, desc: "A soapbox racer for Downhill Dash. Almost no engine; gravity does the rest.", bedHalf: 1.35, perRow: 2, wheelR: 0.38, rearX: -0.9, frontX: 1.0, torque: 0.3, top: 3.5, weight: 0.6, rail: 0.16, soft: 0.2, pay: 1, stats: { speed: 5, grip: 2, load: 1 } },
     { id: "sleigh", event: "winter", name: "Jingle Sleigh", cost: 0, desc: "Glides fast on snow and ice. Slow and twitchy on dry roads.", bedHalf: 1.6, perRow: 4, wheelR: 0.32, rearX: -1.0, frontX: 1.1, torque: 1.1, top: 1.0, weight: 0.9, rail: 0.2, soft: 0.3, pay: 1, runners: true, snowGrip: 1.35, dryGrip: 0.8, snowRegions: ["frost", "northpole"], hitchX: 2.25, hitchY: 0.1, stats: { speed: 3, grip: 3, load: 2 } }
   ];
 
@@ -334,6 +341,7 @@
       if (a.type === "ducks" || a.type === "sails") { f.period = a.period || 7; f.cross = a.cross || 3; f.phase = a.phase || 0; }
       if (a.type === "hay") f.rows = a.rows || 2;
       if (a.type === "gate") { f.lo = a.lo; f.hi = a.hi; }
+      if (a.type === "truckstop") f.special = rng(hash((d.seed || d.id) + "stop" + a.at))() < 0.5 ? "rocket" : "cloud";
       if (a.type === "seesaw") f.xc = Math.round((fx + f.x1) / 2 / SAMPLE) * SAMPLE;
       list.push(f);
     });
@@ -415,7 +423,7 @@
     function at(px) { return pts[Math.max(0, Math.min(pts.length - 1, Math.round(px / SAMPLE)))]; }
     // Pickup stops are level, and bridges and fords sag in the middle.
     features.forEach(function (f) {
-      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "sails" || f.type === "seesaw" || f.type === "hay") {
+      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "sails" || f.type === "seesaw" || f.type === "hay" || f.type === "truckstop") {
         // Hay gets a few metres of level run-up too: on a climb it stalls the truck.
         var level = at(f.x0).y, pad = f.type === "hay" ? 6 : 0;
         pts.forEach(function (p) {
@@ -466,6 +474,12 @@
         else if (off < SEESAW.half + 0.1) p.y = level - 0.45;
       });
       f.level = level;
+    });
+    // Potholes: one sharp dip, cut after smoothing so it stays sharp.
+    features.forEach(function (f) {
+      if (f.type !== "pothole") return;
+      var k = Math.round((f.x0 + f.x1) / 2 / SAMPLE);
+      if (pts[k]) pts[k].y -= BALANCE.potholeDepth;
     });
     // Ramps go on last, because they are meant to be steeper than the road allows.
     // A ramp on a climb would end in a wall, so each one slides to the nearest
@@ -548,7 +562,9 @@
         for (var px = ft.x0 + 0.75; px < ft.x1; px += 0.75) ridges.push({ x: px, r: 0.07, y: heightAt(terrain, px) + 0.012 });
       }
     });
-    return { coins: coins, cans: cans, rocks: rocks, ridges: ridges };
+    // Road snacks (Downhill Dash): floating pickups at set places.
+    var snacks = (d.snacks || []).map(function (sn) { var sx = START_FLAT + sn.at; return { x: sx, y: heightAt(terrain, sx) + 1.8, kind: sn.kind, taken: false }; });
+    return { coins: coins, cans: cans, rocks: rocks, ridges: ridges, snacks: snacks };
   }
 
   // ════ Side roads: Back Roads and the Extra Mile ═════════════════
@@ -581,7 +597,7 @@
     d.load = loadFor(region, 0, d.index, s.load);
     return d;
   });
-  function sideTrack(track) { return SIDE.filter(function (d) { return d.track === track; }); }
+  function sideTrack(track) { return SIDE.concat(DOWNHILL).filter(function (d) { return d.track === track; }); }
   function sideStars(track, stars) { return sideTrack(track).reduce(function (n, d) { return n + (stars[d.id] || 0); }, 0); }
   // The ducks: on the road for `cross` seconds of every `period`, waddling up for two
   // seconds before. A clock, not physics, so every run and ghost sees the same ducks.
@@ -592,34 +608,54 @@
 
   // ════ Downhill: Downhill Dash and Runaway Rig (1.3; ROADMAP 4.5 and 4.5a) ═
   // One course per region, falling all the way (`trend`, metres of drop per metre).
-  // Dash: one mail sack, the clock stops at the finish line, coasting is the fast
+  // Dash: three mail sacks (all three is three stars), the clock stops at the finish line, coasting is the fast
   // line. Runaway Rig: the same course with the throttle jammed, so Brake is the
   // game: brakes heat and fade, Gas is a surge, gravel beds and speed gates.
   // Both pull up on the flat run-out after the line. `node dev/sim.js downhill`.
   // DOWNHILL-BEGIN
   var DOWNHILL_COURSES = [
-    { region: 0, name: "Butter Slide", len: 620, trend: 0.12, heat: 0.25, seed: "dash-bakery-A1", ramps: [{at: 190, h: 0.4}, {at: 430, h: 0.42}], shapes: [{type: "rollers", at: 280, w: 60, n: 3, h: 1.2}],
+    { region: 0, name: "Butter Slide", len: 620, trend: 0.12, heat: 0.25, dash: { style: "the learner: rollers and two kickers", holes: 120, bumps: 1, add: 0.03, heat: 0.3 }, seed: "dash-bakery-A1", ramps: [{at: 190, h: 0.4}, {at: 430, h: 0.42}], shapes: [{type: "rollers", at: 280, w: 60, n: 3, h: 1.2}],
       runaway: { load: "trtcr", feats: [{type: "gate", at: 120, lo: 6, hi: 10}, {type: "gravel", at: 330}, {type: "gate", at: 520, lo: 7, hi: 11}] } },
-    { region: 1, name: "Whey Down", len: 680, trend: 0.15, heat: 0.25, seed: "dash-dunes-A1", ramps: [{at: 210, h: 0.45}, {at: 470, h: 0.45}], shapes: [{type: "rollers", at: 300, w: 70, n: 3, h: 1.6}],
+    { region: 1, name: "Whey Down", len: 680, trend: 0.15, heat: 0.25, dash: { style: "big rolling hills and air", kickers: [{at: 250, h: 0.6}, {at: 600, h: 0.6}], holes: 170, bumps: 0, add: 0.06, heat: 0.6, shapes: [{type: "hill", at: 110, w: 80, h: 5.5}, {type: "hill", at: 450, w: 80, h: 6}] }, seed: "dash-dunes-A1", ramps: [{at: 210, h: 0.45}, {at: 470, h: 0.45}], shapes: [{type: "rollers", at: 300, w: 70, n: 3, h: 1.6}],
       runaway: { load: "trtcr", feats: [{type: "gate", at: 140, lo: 6, hi: 10}, {type: "gravel", at: 360}, {type: "slick", at: 560, len: 20}] } },
-    { region: 2, name: "Pier Pressure", len: 700, trend: 0.16, heat: 0.25, seed: "dash-harbour-A1", ramps: [{at: 220, h: 0.45}, {at: 500, h: 0.48}], shapes: [{type: "rollers", at: 320, w: 60, n: 3, h: 1.5}],
+    { region: 2, name: "Pier Pressure", len: 700, trend: 0.16, heat: 0.25, dash: { style: "bumpy: plank bridges, bumps and potholes", kickers: [{at: 330, h: 0.55}], holes: 40, bumps: 6, add: 0.05, heat: 0.3, feats: [{type: "bridge", at: 160}, {type: "bridge", at: 580}] }, seed: "dash-harbour-A1", ramps: [{at: 220, h: 0.45}, {at: 500, h: 0.48}], shapes: [{type: "rollers", at: 320, w: 60, n: 3, h: 1.5}],
       runaway: { load: "ttocr", feats: [{type: "gate", at: 150, lo: 7, hi: 11}, {type: "gravel", at: 400}, {type: "gate", at: 600, lo: 7, hi: 11}] } },
-    { region: 3, name: "Avalanche Express", len: 760, trend: 0.18, heat: 0.25, seed: "dash-frost-A1", ramps: [{at: 240, h: 0.45}, {at: 540, h: 0.5}], shapes: [{type: "rollers", at: 360, w: 60, n: 3, h: 1.5}],
+    { region: 3, name: "Avalanche Express", len: 760, trend: 0.18, heat: 0.25, dash: { style: "steep ice and one cliff", kickers: [{at: 380, h: 0.6}], holes: 100, bumps: 2, add: 0.05, heat: 0.35, feats: [{type: "slick", at: 300, len: 36}, {type: "slick", at: 620, len: 30}], shapes: [{type: "drop", at: 450, w: 18, h: 12}] }, seed: "dash-frost-A1", ramps: [{at: 240, h: 0.45}, {at: 540, h: 0.5}], shapes: [{type: "rollers", at: 360, w: 60, n: 3, h: 1.5}],
       runaway: { load: "otrtr", feats: [{type: "slick", at: 170, len: 22}, {type: "gravel", at: 420}, {type: "gate", at: 640, lo: 7, hi: 11}] } },
-    { region: 4, name: "Brake-Burn Canyon", len: 820, trend: 0.22, heat: 0.25, seed: "dash-chilli-A1", ramps: [{at: 250, h: 0.5}, {at: 600, h: 0.55}], shapes: [{type: "rollers", at: 380, w: 70, n: 3, h: 1.8}],
+    { region: 4, name: "Brake-Burn Canyon", len: 820, trend: 0.22, heat: 0.25, dash: { style: "cliffs and the biggest kickers", kickers: [{at: 330, h: 0.7}, {at: 700, h: 0.7}], holes: 110, bumps: 1, add: 0.06, heat: 0.35, shapes: [{type: "drop", at: 170, w: 22, h: 10}, {type: "drop", at: 520, w: 20, h: 12}] }, seed: "dash-chilli-A1", ramps: [{at: 250, h: 0.5}, {at: 600, h: 0.55}], shapes: [{type: "rollers", at: 380, w: 70, n: 3, h: 1.8}],
       runaway: { load: "totrrc", feats: [{type: "gate", at: 160, lo: 7, hi: 11}, {type: "gravel", at: 450}, {type: "slick", at: 560, len: 18}, {type: "gate", at: 700, lo: 8, hi: 12}] } },
-    { region: 5, name: "Last Tram Down", len: 860, trend: 0.17, heat: 0.25, seed: "dash-market-A1", ramps: [{at: 260, h: 0.45}, {at: 620, h: 0.5}], shapes: [{type: "rollers", at: 400, w: 70, n: 4, h: 1.4}],
-      runaway: { load: "trotcr", feats: [{type: "gate", at: 170, lo: 7, hi: 11}, {type: "slick", at: 330, len: 22}, {type: "gravel", at: 560}, {type: "gate", at: 720, lo: 8, hi: 12}] } }
+    { region: 5, name: "Last Tram Down", len: 860, trend: 0.17, heat: 0.25, dash: { style: "long and rattly: speed bumps, wet cobbles, potholes", kickers: [{at: 520, h: 0.55}], holes: 50, bumps: 7, add: 0.05, heat: 0.3, feats: [{type: "slick", at: 420, len: 30}] }, seed: "dash-market-A1", ramps: [{at: 260, h: 0.45}, {at: 620, h: 0.5}], shapes: [{type: "rollers", at: 400, w: 70, n: 4, h: 1.4}],
+      runaway: { load: "trotcr", feats: [{type: "gate", at: 170, lo: 7, hi: 11}, {type: "slick", at: 330, len: 22}, {type: "gravel", at: 560}, {type: "gate", at: 720, lo: 8, hi: 12}] } },
+    // The North Pole sled run: Winter Haul only (event courses are free and hidden out of season).
+    { region: 6, event: "winter", name: "Sled Run", len: 640, trend: 0.14, heat: 0.25, dash: { style: "ice and rollers", holes: 0, bumps: 2, add: 0.07, heat: 0.4, feats: [{type: "slick", at: 380, len: 30}] }, seed: "dash-northpole-A1", ramps: [{at: 200, h: 0.42}, {at: 450, h: 0.45}], shapes: [{type: "rollers", at: 300, w: 60, n: 3, h: 1.2}], feats: [{type: "slick", at: 120, len: 24}] }
   ];
   // DOWNHILL-END
   // Load letters: t tyre, o toolbox, c coolant, r crate. The first four ride on the bed;
   // keep round and tall cargo there, with crates or coolant on top.
   var RUNAWAY_CARGO = { t: "tyre", o: "toolbox", c: "coolant", r: "crate" };
+  // Dash extras, placed by course length: potholes and bumps so a flat-out run can
+  // still lose the sack; road snacks (Choc Rocket, Sugar Cloud); and on the longer
+  // courses a Truck Stop halfway whose special comes from the seed.
+  // Each course has its own character (`dash.style`), so the skill changes from road to
+  // road: potholes every `holes` metres, `bumps` speed-bump sets, `add` more slope,
+  // its own hill height, and extra shapes (hills, cliff drops) and features (bridges, ice).
+  function dashExtras(c) {
+    var feats = (c.dash.feats || []).slice(), L = c.len, rr = rng(hash(c.seed + "dash"));
+    var holes = c.dash.holes ? Math.round(L / c.dash.holes) : 0;
+    for (var k = 0; k < holes; k++) feats.push({ type: "pothole", at: Math.round(L * (0.1 + 0.85 * (k + 0.5) / holes) + rr() * 8 - 4) });
+    for (var b = 0; b < c.dash.bumps; b++) feats.push({ type: "bump", at: Math.round(L * (0.15 + 0.75 * (b + 0.5) / c.dash.bumps) + rr() * 10) });
+    if (L >= 700) feats.push({ type: "truckstop", at: Math.round(L * 0.5) });
+    return { feats: feats, snacks: [{ at: Math.round(L * 0.3), kind: rr() < 0.5 ? "rocket" : "cloud" }, { at: Math.round(L * 0.72), kind: rr() < 0.5 ? "rocket" : "cloud" }] };
+  }
   var DOWNHILL = [];
   DOWNHILL_COURSES.forEach(function (c) {
-    var r = REGIONS[c.region], base = { region: c.region, index: 3, len: c.len, trend: c.trend, heat: c.heat, seed: c.seed, ramps: c.ramps, shapes: c.shapes, pickup: 0, downhill: true, feat: 0, rev: 1 };
-    DOWNHILL.push(Object.assign({}, base, { id: "dash-" + r.id, name: c.name, dash: true, load: ["mail"] }));
-    DOWNHILL.push(Object.assign({}, base, { id: "runaway-" + r.id, name: c.name, runaway: true, feats: c.runaway.feats,
+    var r = regionFor(c.region), base = { region: c.region, index: 3, len: c.len, trend: c.trend, heat: c.heat, seed: c.seed, ramps: c.ramps, shapes: c.shapes, pickup: 0, downhill: true, feat: 0, rev: c.rev || 2, event: c.event || null };
+    var x = dashExtras(c);
+    // Dash runs steeper and bumpier than the Runaway version of the same course: without
+    // that, no flat-out run ever lost the sack (27 Nov).
+    DOWNHILL.push(Object.assign({}, base, { id: "dash-" + r.id, name: c.name, dash: true, track: "dash", style: c.dash.style, trend: c.trend + c.dash.add, heat: c.dash.heat,
+      shapes: (c.shapes || []).concat(c.dash.shapes || []), ramps: (c.ramps || []).concat(c.dash.kickers || []), load: ["mail", "mail", "mail"], feats: (c.feats || []).concat(x.feats), snacks: x.snacks }));
+    if (c.runaway) DOWNHILL.push(Object.assign({}, base, { id: "runaway-" + r.id, name: c.name, runaway: true, track: "runaway", feats: c.runaway.feats,
       load: c.runaway.load.split("").map(function (ch) { return RUNAWAY_CARGO[ch]; }) }));
   });
 
@@ -642,7 +678,9 @@
     { id: "pepper", name: "Pepper Pete", role: "the popcorn seller", icon: "\ud83c\udf36\ufe0f" },
     { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" },
     // Free customer on the Back Roads: his orders open on Back Roads stars, not reputation.
-    { id: "crust", name: "Old Crust", role: "the miller", icon: "\ud83c\udf3e", region: 0, track: "back" }
+    { id: "crust", name: "Old Crust", role: "the miller", icon: "\ud83c\udf3e", region: 0, track: "back" },
+    // Runaway Rig's customer: his orders open on Runaway Rig stars.
+    { id: "gus", name: "Gus Gasket", role: "the mechanic", icon: "\ud83e\uddef", region: 0, track: "runaway" }
   ];
   var REP_STARS = [3, 8, 13, 18, 22];      // region stars for reputation levels 1 to 5
   // Twist per order slot. `fragile` is the region's delicate cargo; `truck` the truck it suits.
@@ -693,6 +731,16 @@
       region: 0, index: 2 + n, len: o.len, heat: 0.55 + n * 0.04, load: o.load, pickup: 0, grip: 1, truck: null, feats: o.feats, shapes: o.shapes, feat: 0,
       seed: track + "-order-" + (k + 1) + "-A1"
     });
+  });
+  // Gus Gasket's orders: short Runaway Rig runs to his garage.
+  [
+    { name: "Spare Tyre Sprint", twist: "rush", at: 3, len: 420, trend: 0.12, load: ["tyre", "crate", "tyre", "crate"], feats: [{type: "gate", at: 120, lo: 6, hi: 10}, {type: "gravel", at: 280}] },
+    { name: "Coolant Crisis", twist: "fragile", at: 8, len: 480, trend: 0.13, load: ["coolant", "crate", "coolant", "crate", "coolant"], feats: [{type: "gravel", at: 150}, {type: "gate", at: 330, lo: 6, hi: 10}] },
+    { name: "The Big Service", twist: "big", at: 13, len: 560, trend: 0.15, load: ["tyre", "toolbox", "tyre", "toolbox", "crate", "coolant"], feats: [{type: "gate", at: 120, lo: 7, hi: 11}, {type: "gravel", at: 300}, {type: "slick", at: 420, len: 18}] }
+  ].forEach(function (o, n) {
+    ORDERS.push({ id: "runaway-order-" + (n + 1), order: true, slot: n, name: o.name, customer: 7, twist: o.twist, track: "runaway", at: o.at,
+      region: 0, index: 3, len: o.len, trend: o.trend, heat: 0.25, load: o.load, pickup: 0, grip: 1, truck: null, feats: o.feats, feat: 0,
+      downhill: true, runaway: true, seed: "runaway-order-" + (n + 1) + "-A1" });
   });
   function findOrder(id) { return ORDERS.filter(function (o) { return o.id === id; })[0] || null; }
   function repLevel(r, stars) { var n = regionStars(r, stars); return REP_STARS.filter(function (x) { return n >= x; }).length; }
@@ -785,7 +833,7 @@
   // clean bot run at the upgrade level expected there, and never looser than the old
   // time. A route missing here keeps the length-based time.
   // MEDALS-BEGIN
-  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38, "bakery-9": 30, "bakery-10": 34, "bakery-11": 42, "bakery-12": 54, "dash-bakery": 63, "runaway-bakery": 96, "dash-dunes": 69, "runaway-dunes": 108, "dash-harbour": 71, "runaway-harbour": 67, "dash-frost": 76, "dash-chilli": 83, "dash-market": 87, "runaway-market": 110};
+  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38, "bakery-9": 30, "bakery-10": 34, "bakery-11": 42, "bakery-12": 54, "dash-bakery": 64, "runaway-bakery": 96, "dash-dunes": 68, "runaway-dunes": 108, "dash-harbour": 73, "runaway-harbour": 67, "dash-frost": 76, "dash-chilli": 84, "dash-market": 90, "runaway-market": 110, "dash-northpole": 65};
   // MEDALS-END
   // What the route sheet shows before a drive: the features in road order (each
   // kind once), the authored shapes, and the medal times.
@@ -900,7 +948,7 @@
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "sack" || type === "mail" ? 2.0 : type === "tyre" ? 1.4 : type === "toolbox" ? 1.5 : type === "coolant" ? 1.6 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
+        density: type === "sack" ? 2.0 : type === "mail" ? BALANCE.mailDensity : type === "tyre" ? 1.4 : type === "toolbox" ? 1.5 : type === "coolant" ? 1.6 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
         friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? BALANCE.baguetteGrip : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
@@ -910,7 +958,9 @@
     }
     // Stack the load on the bed, front of the bed first. Each column keeps its
     // own height, because cakes are taller than crates.
-    var onBoard = d.load.slice(0, d.load.length - (d.pickup || 0)), pending = d.load.slice(onBoard.length);
+    // The Billy Cart carries one sack only.
+    var dLoad = spec.downhillOnly ? d.load.slice(0, 1) : d.load;
+    var onBoard = dLoad.slice(0, dLoad.length - (d.pickup || 0)), pending = dLoad.slice(onBoard.length);
     var columns = [], slot = 0, pizzaCol = -1, laid = [];
     onBoard.forEach(function (type) {
       // Baguettes go on last, lying on top at the back, sticking out past the rail.
@@ -940,10 +990,11 @@
       fuel: BALANCE.tankSeconds + 9 * up.tank, maxFuel: BALANCE.tankSeconds + 9 * up.tank,
       dropoffs: deliveries, homes: 0, given: {},
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
-      total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
+      total: dLoad.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
       brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false,
       clock: 0, hay: hay, seesaws: seesaws, crossings: crossings, honks: 0,
-      lineTime: null, heat: 0, fadeUntil: -1, surges: 0, gates: 0
+      lineTime: null, heat: 0, fadeUntil: -1, surges: 0, gates: 0,
+      snacks: pick.snacks || [], slot: null, effects: [], eaten: 0
     };
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
@@ -1095,10 +1146,18 @@
     g.step = function (input) {
       if (g.status !== "driving") { world.step(STEP); return; }
       g.time += STEP; g.clock += STEP;
+      // Snacks: Eat empties the slot into a timed effect; ghosts record the press.
+      if (input.eat && g.slot) {
+        var sk = g.slot, cfg = sk === "rocket" ? BALANCE.snackRocket : BALANCE.snackCloud;
+        g.effects.push({ kind: sk, until: g.clock + cfg.secs }); g.slot = null; g.eaten += 1;
+        g.events.push({ type: "eat", kind: sk, x: truck.getPosition().x, y: truck.getPosition().y });
+      }
+      g.effects = g.effects.filter(function (e) { return e.until > g.clock; });
+      var rocket = g.effects.some(function (e) { return e.kind === "rocket"; }), cloud = g.effects.some(function (e) { return e.kind === "cloud"; });
       if (g.settle > 0) g.settle -= STEP;
       var gas = !!input.gas && g.fuel > 0, brake = !!input.brake;
       // Record the pedals, run-length encoded, so a ghost can replay this run.
-      var bits = (input.gas ? 1 : 0) | (brake ? 2 : 0), rec = g.rec;
+      var bits = (input.gas ? 1 : 0) | (brake ? 2 : 0) | (input.eat ? 4 : 0), rec = g.rec;
       if (rec.length && rec[rec.length - 2] === bits) rec[rec.length - 1] += 1; else rec.push(bits, 1);
       g.gasOn = gas && !brake; g.brakeOn = brake;
       if (brake) g.brakeUsed = true;
@@ -1126,8 +1185,9 @@
         }
         lastGas = !!input.gas;
       } else if (gas && !brake) {
-        rearJoint.setMotorSpeed(-topSpeed); rearJoint.setMaxMotorTorque(torque);
-        frontJoint.setMotorSpeed(-topSpeed); frontJoint.setMaxMotorTorque(torque * 0.5);
+        var ts = rocket ? topSpeed * BALANCE.snackRocket.top : topSpeed, tq = rocket ? torque * BALANCE.snackRocket.torque : torque;
+        rearJoint.setMotorSpeed(-ts); rearJoint.setMaxMotorTorque(tq);
+        frontJoint.setMotorSpeed(-ts); frontJoint.setMaxMotorTorque(tq * 0.5);
         g.fuel = Math.max(0, g.fuel - STEP * thirst);
       } else if (brake) {
         // Brakes while rolling forward, then a gentle reverse.
@@ -1201,6 +1261,12 @@
           }
         }
       });
+      // Sugar Cloud: everything aboard weighs 40% while it lasts.
+      if (cloud) {
+        var lift = BALANCE.snackCloud.lift * BALANCE.gravity;
+        [truck].concat(wheels).forEach(function (b) { b.applyForceToCenter({ x: 0, y: b.getMass() * lift }, true); });
+        cargo.forEach(function (c) { if (!c.lost && !c.delivered) c.body.applyForceToCenter({ x: 0, y: c.body.getMass() * lift }, true); });
+      }
       // Speed gates: through inside the window, the brakes cool and three coins pay.
       terrain.features.forEach(function (f) {
         if (f.type !== "gate" || f.passed || pos.x < f.x0) return;
@@ -1261,6 +1327,17 @@
 
       // Pickups
       pos = truck.getPosition();
+      g.snacks.forEach(function (sn) {
+        if (!sn.taken && !g.slot && Math.abs(sn.x - pos.x) < 2.1 && Math.abs(sn.y - pos.y) < 2.8) {
+          sn.taken = true; g.slot = sn.kind; g.events.push({ type: "snack", kind: sn.kind, x: sn.x, y: sn.y });
+        }
+      });
+      // A Truck Stop: pull up on its mat for the special.
+      var stopF = featureAt(terrain, pos.x, "truckstop");
+      if (stopF && !stopF.used && !g.slot) {
+        stopF.wait = truck.getLinearVelocity().length() < BALANCE.stopSpeed ? (stopF.wait || 0) + STEP : 0;
+        if (stopF.wait > BALANCE.stopSeconds) { stopF.used = true; g.slot = stopF.special; g.events.push({ type: "snack", kind: stopF.special, stop: true, x: pos.x, y: pos.y }); }
+      }
       g.coins.forEach(function (c) {
         if (!c.taken && Math.abs(c.x - pos.x) < 2.1 && Math.abs(c.y - pos.y) < 2.6 + (spec.lift || 0)) {
           c.taken = true; g.coinsTaken += 1; g.events.push({ type: "coin", x: c.x, y: c.y });
@@ -1397,7 +1474,7 @@
     if (coins) lines.push({ label: "Coins on the road", coins: coins });
     return {
       status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, lassoUsed: !!g.lassoUsed, topup: !!d.topup, total: total, stars: stars, time: clockTime,
-      surges: g.surges || 0, gates: g.gates || 0, express: medal === 3, medal: medal,
+      surges: g.surges || 0, gates: g.gates || 0, eaten: g.eaten || 0, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
       long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
       honks: g.honks || 0, coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
@@ -1431,6 +1508,10 @@
   }
   function botInput(g, target) {
     if (g.delivery.runaway) return runawayInput(g, target);
+    if (g.slot) { var e = careBot(g, target); e.eat = true; return e; }
+    return careBot(g, target);
+  }
+  function careBot(g, target) {
     var t = g.terrain, pos = g.truck.getPosition(), vx = g.truck.getLinearVelocity().x;
     var angle = normalAngle(g.truck.getAngle());
     var ahead = 5 + vx;
@@ -1526,14 +1607,15 @@
     "bakery-10": {"v":10,"L":2,"t":38.5},
     "bakery-11": {"v":10,"L":2,"t":57.5},
     "bakery-12": {"v":10,"L":2,"t":65.2},
-    "dash-bakery": {"v":9,"L":2,"t":73.1},
-    "dash-dunes": {"v":9,"L":2,"t":77.9},
-    "dash-harbour": {"v":9,"L":2,"t":83.3},
+    "dash-bakery": {"v":9,"L":2,"t":74.8},
+    "dash-dunes": {"v":10,"L":2,"t":73.6},
+    "dash-harbour": {"v":10,"L":2,"t":78.6},
     "runaway-harbour": {"v":10,"L":2,"t":75.4},
-    "dash-frost": {"v":10,"L":2,"t":82},
-    "dash-chilli": {"v":10,"L":2,"t":89.4},
-    "dash-market": {"v":10,"L":2,"t":96.1},
-    "runaway-market": {"v":7,"L":2,"t":131}
+    "dash-frost": {"v":10,"L":2,"t":85.9},
+    "dash-chilli": {"v":9,"L":2,"t":98.5},
+    "dash-market": {"v":10,"L":2,"t":100},
+    "runaway-market": {"v":7,"L":2,"t":131},
+    "dash-northpole": {"v":9,"L":2,"t":70.9}
   };
   // RIVALS-END
   function rivalFor(id) { return RIVALS[id] || null; }
@@ -1545,7 +1627,7 @@
     var g = createGame(opts), path = [], n = 0;
     every = every || 4;
     for (var i = 0; i < rec.length && g.status === "driving"; i += 2) {
-      var input = { gas: !!(rec[i] & 1), brake: !!(rec[i] & 2) };
+      var input = { gas: !!(rec[i] & 1), brake: !!(rec[i] & 2), eat: !!(rec[i] & 4) };
       for (var k = 0; k < rec[i + 1] && g.status === "driving"; k++) {
         g.step(input);
         if (n++ % every === 0) { var p = g.truck.getPosition(); path.push(p.x, p.y, g.truck.getAngle()); }

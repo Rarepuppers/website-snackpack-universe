@@ -429,7 +429,7 @@ function lasso() {
 // every road with ducks, hay or a seesaw replays exactly from its recording.
 function side() {
   let bad = 0;
-  const roads = SH.SIDE.concat(SH.ORDERS.filter((o) => o.track));
+  const roads = SH.SIDE.concat(SH.ORDERS.filter((o) => o.track && !o.runaway));   // Gus's Runaway orders: sim.js downhill
   for (const d of roads) {
     // Level 1 everywhere: the farm's free Straps after Bakery 3 make it the floor.
     const L = 1, up = SH.rivalUpgrades(L);
@@ -464,21 +464,43 @@ function side() {
 function downhill() {
   let bad = 0;
   const up = SH.rivalUpgrades(2);
-  for (const d of SH.DOWNHILL) {
+  // Dash is fair but not easy. Bots land perfectly, so they can't show difficulty;
+  // two sloppy drivers stand in for a careless player: one holds gas, one never
+  // brakes until the line. Rules: a careful driver at 8 m/s keeps all three sacks
+  // at level 1, and the sloppy drivers drop a sack on at least four of six courses.
+  let sloppyLosses = 0;
+  const holdGas = () => () => (g) => { const s = stopAt(g), v = g.speed(); return s < v * v / 10 + 2 ? { gas: false, brake: v > 0.3 } : { gas: true, brake: false }; };
+  const noBrake = () => () => (g) => { const s = stopAt(g), v = g.speed(); return s < v * v / 10 + 2 ? { gas: false, brake: v > 0.3 } : { gas: v < 6, brake: false }; };
+  for (const d of SH.DOWNHILL.filter((x) => x.dash && !x.event)) {
+    const fair = play(d, careful(8), SH.rivalUpgrades(1), "pickup", 240);
+    const sloppy = [holdGas, noBrake].map((f) => play(d, f(), up, "pickup", 240));
+    if (fair.stars !== 3) { bad++; console.log(d.id.padEnd(16), "UNFAIR: a careful driver at level 1 drops a sack"); }
+    if (sloppy.some((r) => r.status !== "done" || r.stars < 3)) sloppyLosses++;
+  }
+  if (sloppyLosses < 4) { bad++; console.log("Dash too easy: sloppy drivers keep every sack on", 6 - sloppyLosses, "courses"); }
+  else console.log("Dash: sloppy drivers drop a sack on", sloppyLosses, "of 6 courses; careful level-1 drivers keep all three");
+  for (const d of SH.DOWNHILL.concat(SH.ORDERS.filter((o) => o.track === "runaway"))) {
     const speeds = d.dash ? [8, 11, 14, 18] : [7, 9, 11];
     const runs = speeds.map((v) => play(d, careful(v), up, "pickup", 240));
     const best = runs.filter((r) => r.status === "done").sort((a, b) => b.stars - a.stars || a.time - b.time)[0];
-    const ok = best && best.stars >= 2;
+    const ok = best && best.stars >= 2 && (!d.dash || runs[0].stars === 3);
     if (!ok) bad++;
     console.log(d.id.padEnd(16), runs.map((r) => cell(r, 12)).join(""), ok ? "best " + best.time.toFixed(1) + "s" : "FAIL");
+  }
+  // The Billy Cart (one sack) finishes every Dash course at some cruising speed, faster than the pickup.
+  for (const d of SH.DOWNHILL.filter((x) => x.dash)) {
+    const p = [11, 14].map((v) => play(d, careful(v), up, "pickup", 240)).filter((r) => r.status === "done").sort((a, b) => a.time - b.time)[0];
+    const b = [11, 14].map((v) => play(d, careful(v), up, "billy", 240)).filter((r) => r.status === "done").sort((a, b) => a.time - b.time)[0];
+    if (!b) { bad++; console.log(d.id.padEnd(16), "BILLY CART FAILED"); }
+    else console.log(d.id.padEnd(16), "billy", b.time.toFixed(1) + "s", "pickup", p ? p.time.toFixed(1) + "s" : "lost");
   }
   for (const id of ["dash-chilli", "runaway-chilli"]) {
     const g = SH.createGame({ id, upgrades: up });
     for (let n = 0; g.status === "driving" && n < 240 * 60; n++) g.step(SH.botInput(g, 9));
     const a = SH.report(g), b = SH.ghostPath({ id, upgrades: up }, g.rec).report;
-    const same = a.status === b.status && a.kept === b.kept && Math.abs(a.time - b.time) < 1e-9 && a.surges === b.surges && a.gates === b.gates;
+    const same = a.status === b.status && a.kept === b.kept && Math.abs(a.time - b.time) < 1e-9 && a.surges === b.surges && a.gates === b.gates && a.eaten === b.eaten;
     if (!same) bad++;
-    console.log(id.padEnd(16), same ? "ghost replays exactly" : "GHOST DIFFERS");
+    console.log(id.padEnd(16), same ? "ghost replays exactly" : "GHOST DIFFERS", "snacks eaten " + a.eaten);
   }
   console.log("downhill failing", bad);
   process.exitCode = bad ? 1 : 0;

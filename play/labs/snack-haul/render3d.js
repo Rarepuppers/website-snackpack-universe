@@ -122,7 +122,7 @@ function canvasTex(w, h, paint) {
 }
 
 // ════ Trucks ══════════════════════════════════════════════════════
-const PAINT = { sleigh: ["#d6342c", "#f2c14e"], tuktuk: ["#3fb7a6", "#fff3d6"], monster: ["#7a3fb8", "#f4c21f"], pickup: ["#d8452e", "#f2e2c4"], van: ["#f2ead8", "#e7a23c"], buggy: ["#f4c21f", "#2d2d33"], hauler: ["#2f6fb8", "#f2f2ee"] };
+const PAINT = { billy: ["#2f6fd0", "#f4efe4"], sleigh: ["#d6342c", "#f2c14e"], tuktuk: ["#3fb7a6", "#fff3d6"], monster: ["#7a3fb8", "#f4c21f"], pickup: ["#d8452e", "#f2e2c4"], van: ["#f2ead8", "#e7a23c"], buggy: ["#f4c21f", "#2d2d33"], hauler: ["#2f6fb8", "#f2f2ee"] };
 
 // Body widths the asset plan gives Codex. Code-built trucks keep their own.
 const AUTHORED_WIDTH = { pickup: 1.8, tuktuk: 1.6, van: 1.8, buggy: 1.8, hauler: 1.95, monster: 2.0 };
@@ -1376,6 +1376,26 @@ export class World3D {
       const py = body.getPosition().y;
       [-1.9, 1.9].forEach((z) => kit.add(box(0.3, py - (f.level - 1.6) + 0.2, 0.3), "#6b4a2c", m(f.xc, (py + f.level - 1.6) / 2, z)));
     });
+    // Road snacks: a bobbing treat in a ring; the Truck Stop: a kiosk and a mat.
+    actors.snacks = (game.snacks || []).map((sn) => {
+      const k = new Kit(), c = sn.kind === "rocket" ? "#6b3a1e" : "#ff9fd0";
+      k.add(new THREE.TorusGeometry(0.42, 0.06, 6, 18), "#ffc94d");
+      k.add(sn.kind === "rocket" ? box(0.32, 0.46, 0.2) : blob(0.24, 1), c);
+      const mesh = solid(k.build()); mesh.position.set(sn.x, sn.y, 0);
+      return { sn, mesh, y: sn.y };
+    });
+    t.features.forEach((f) => {
+      if (f.type === "pothole") {
+        const x = (f.x0 + f.x1) / 2;
+        kit.add(new THREE.CylinderGeometry(0.75, 0.75, 0.04, 12), "#3a2a20", m(x, SH.heightAt(t, x) + 0.02, 0, 0, 0, 0, 1, 1, 2.2));
+      } else if (f.type === "truckstop") {
+        const y = SH.heightAt(t, f.x0), cx = (f.x0 + f.x1) / 2;
+        kit.add(box(f.x1 - f.x0, 0.04, 3.4), "#c94a3a", m(cx, y + 0.03, 0));
+        kit.add(box(4.2, 2.6, 2.6), "#f2e2c4", m(cx, y + 1.3, -5.2));
+        kit.add(box(4.6, 0.3, 3), "#d6342c", m(cx, y + 2.75, -5.0));
+        kit.add(box(1.6, 1, 0.1), f.special === "rocket" ? "#6b3a1e" : "#ff9fd0", m(cx, y + 3.5, -3.6));
+      }
+    });
     this.sideActors = actors;
   }
   syncSideActors(game) {
@@ -1388,6 +1408,7 @@ export class World3D {
       b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a;
     });
     a.planks.forEach((b) => { const p = this.pose(b.body); b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a; });
+    (a.snacks || []).forEach((s) => { s.mesh.visible = !s.sn.taken; if (s.mesh.visible) { s.mesh.position.y = s.y + Math.sin(this.time * 3 + s.sn.x) * 0.12; s.mesh.rotation.y = this.time * 2; } });
     a.sails.forEach(({ f, hub }) => {
       // Blade 0 hangs straight down at the middle of each closed spell.
       const turns = ((game.clock || 0) + (f.phase || 0)) / f.period - f.cross / (2 * f.period);
