@@ -60,7 +60,7 @@ clicks and book events only exist from 26 Nov.
 | 3 | Thirteen and 2048 titles left alone (6 Nov change, read due ~4 Dec). Rules guide retitled "13 Card Game Rules: How to Play Thirteen (Tiến Lên)" for its top query `13 rules`. Mahjong: no query data, no change. | **Live** 26 Nov | 1401b2e3 |
 | 4 | Tip popup waits until after school: never Mon–Fri 08:00–15:00 local. `/read/` never had one. | **Live** 26 Nov | 1401b2e3 |
 | 5 | **Snack Typer** `/play/typing/`: six lessons, sentences from 10 books with links back, finger-coloured keyboard, accuracy stars, daily, resume; funnel Sentences & Spelling | **Live** 26 Nov | 5d5fd62f |
-| 6 | **Fact Sprint** `/play/math-facts/`: six lessons, Practice (missed facts come back) or 60-second Sprint, number pad, counting dots, a number story per lesson, daily, resume; funnel Basic Math | **Pushed** 26 Nov | see section 7 |
+| 6 | **Fact Sprint** `/play/math-facts/`: six lessons, Practice (missed facts come back) or 60-second Sprint, number pad, counting dots, a number story per lesson, daily, resume; funnel Basic Math | **Live** 26 Nov | 95efa536, 9b24bbe3 |
 | 7 | Spanish option for buttons and instructions on `/read/` and the classroom games | **Waiting** on R6 data | — |
 
 ---
@@ -141,7 +141,7 @@ Each has the evidence, the work, when it is done, and how we will know it worked
   size; the shared resume key gets the size as its variant.
 - **Measure:** 2048 impressions and starts at 28 days.
 
-### R9. A classroom links block and a way for teachers to reach us
+### R9. A classroom links block and a way for teachers to reach us — **done 26 Nov**
 - **Evidence:** the Honduran teacher has no channel to us; `/for-teachers/`
   only has an email address.
 - **Work:** on `/for-teachers/`, a "Links for your class" block with copyable
@@ -149,6 +149,11 @@ Each has the evidence, the work, when it is done, and how we will know it worked
   each with a Copy button. Keep the email link; a form needs a backend we do
   not run (Brevo forms are for the newsletter list only).
 - **Measure:** Cloudflare views of `/for-teachers/` and any email received.
+- **Built:** "Links for your class" on `/for-teachers/`: today's Snack Typer and
+  Fact Sprint dailies (the date is filled in on the page, in UTC like the
+  games), Pip Sits, Luckybug's market story and the bookshelf, each with a
+  Copy button that copies the full URL. `tests/visual/teachers-links.spec.mjs`
+  checks the dates, the copy and that every link resolves.
 
 ### R10. Spanish option (step 7) only if R6 says so
 - **Work:** a Spanish toggle for buttons, instructions and hints (books stay
@@ -170,7 +175,7 @@ chip (`#ck-record`, `#rv-record`) saved per opponent on the device. The
 September quality plan was stale on this; only penalty-shootout keeps no
 result. Nothing to build. Lesson: re-check a carried-over gap before planning it.
 
-### R12. Fix or quarantine the red visual checks on main
+### R12. Fix or quarantine the red visual checks on main — **done 26 Nov**
 - **Evidence:** `reads-final.spec.mjs` "short viewport controls 740x360" has
   failed on every main run since at least 24 Nov; `last-bastion-polish-review`
   "dense kit review" failed on 348713d2. A permanently red check hides new
@@ -178,6 +183,21 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
 - **Work:** whoever owns `/read/` fixes the 740×360 click timeout; Last
   Bastion's owner checks the dense kit review. Until then, note it in each
   push.
+- **Found and fixed:**
+  1. `reads-final` 740×360: at that size with 200% text the **sticky header is
+     281 px of a 360 px screen** and covered the "One page at a time" button.
+     It passed on a Mac and failed on CI's Linux fonts, but a reader on a
+     landscape phone has the same problem. `site.css` now unpins the header
+     below 480 px of height (`@media (max-height: 480px)`).
+  2. `snack-haul-spotlight` (2 tests) started failing on 26 Nov when Snack Haul
+     went live (`a96d1293`): the page correctly says "Now live on Google Play"
+     with a Play link and "See the game"; the tests still expected the
+     launch-email version. Tests updated to the launched state.
+  3. The Last Bastion "dense kit review" failure did not repeat on the next
+     two runs. Treat it as flaky unless it comes back.
+- **Local note:** `arcade-mobile` and `arcade-header` load every game in turn
+  and can time out when run alongside other suites on a laptop; they pass on
+  their own and on CI.
 
 ### R13. Land the generator drift
 - **Evidence:** `build-breadcrumbs.mjs` and `build-webp.mjs` rewrite ~80 pages
@@ -185,6 +205,21 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   regenerated.
 - **Work:** one session runs both in a quiet moment, reviews and commits.
   Until then, anyone running them must keep only their own files.
+
+### R15. Classroom shortcuts on the homepage
+- **Evidence:** the class lands on the homepage first (direct visits, desktop);
+  the hero now links "Read a story" and "Play a game".
+- **Work:** once the ~16 Dec read shows the class uses Snack Typer or Fact
+  Sprint, add "Practise typing →" and "Practise maths →" to the same hero line.
+  Cheap; the line already wraps on phones.
+- **Measure:** HN starts of `typing` and `math-facts` before and after.
+
+### R16. Watch the daily links from teachers
+- **Evidence:** the class-links box makes daily links easy to share.
+- **Work:** none now. At the ~16 Dec read, compare `arcade/typing/daily` and
+  `arcade/math-facts/daily` with their starts; a high daily share means
+  teachers are using the box. If so, add a weekly "class pack" (five days of
+  dailies) to `/for-teachers/`.
 
 ### R14. Not now
 - **More solitaire variants:** big demand, never ranked (indexing limit).

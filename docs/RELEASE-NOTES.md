@@ -27,6 +27,10 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
   (add, subtract, times tables, division) with missed facts coming back and a
   60-second sprint; each lesson links a number story. `/for-teachers/` lists
   both games and names GoatCounter. Five finished arcade plans archived.
+- Follow-up: `/for-teachers/` gains "Links for your class" (today's dailies,
+  two starter books, Copy buttons); the site header no longer stays pinned on
+  screens under 480 px tall, where it covered most of the page; the Snack Haul
+  spotlight tests now match the launched page.
 
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 

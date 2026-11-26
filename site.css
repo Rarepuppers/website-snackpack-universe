@@ -239,6 +239,14 @@ a {
   border-bottom: 1px solid var(--line);
 }
 
+/* On very short screens (a phone on its side, or text enlarged) a pinned
+   header covers a third of the page and the buttons under it: the reader's
+   "One page at a time" could not be clicked at 740×360 with 200% text. Let it
+   scroll away there. */
+@media (max-height: 480px) {
+  .topbar { position: static; }
+}
+
 .topbar-inner {
   min-height: 76px;
   display: flex;
@@ -2812,3 +2820,8 @@ a.read-event-card:hover h2,a.read-event-card:focus-visible h2{text-decoration:un
   aspect-ratio: 3 / 1;
   border-radius: var(--radius-sm);
 }
+
+/* /for-teachers/ "Links for your class". */
+.class-links-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 8px; }
+.class-links-list .class-copy { min-height: 36px; padding: 6px 14px; font-size: 0.9rem; }
+.class-copy-status { min-height: 1.4em; overflow-wrap: anywhere; }
