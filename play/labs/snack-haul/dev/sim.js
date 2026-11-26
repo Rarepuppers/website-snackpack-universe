@@ -6,6 +6,8 @@
 // node play/labs/snack-haul/dev/sim.js opening    gas-only and learner drivers on the designed openers
 // node play/labs/snack-haul/dev/sim.js medals     gold times (--write)
 // node play/labs/snack-haul/dev/sim.js daily      the World Tour Daily pool (--write)
+// node play/labs/snack-haul/dev/sim.js testdrives every Test Drive with learners and careful drivers
+// node play/labs/snack-haul/dev/sim.js topup      the Top-Up Run reaches its target stops
 const SH = require("../engine.js");
 
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
@@ -282,7 +284,8 @@ const learner = (cap, delay) => () => {
     const t = g.terrain, p = g.truck.getPosition(), v = g.speed(), h = (x) => SH.heightAt(t, x);
     const s1 = (h(p.x + 2) - h(p.x)) / 2, ah = 3 + v * 0.8, s2 = (h(p.x + ah + 2) - h(p.x + ah)) / 2, s = stopAt(g);
     let i = { gas: true, brake: false };
-    if (s < v * v / 10 + 3) i = { gas: v < 0.5 && s > 1.5, brake: v > 0.3 };
+    // Pulling up: brake to a walking pace that shrinks with the distance left, then creep in.
+    if (s < v * v / 10 + 3) i = { gas: v < Math.min(2.5, 0.4 + s * 0.35) && s > 0.6, brake: v > 0.6 + s * 0.45 };
     else if (!g.grounded()) i = { gas: false, brake: false };
     else if (s2 - s1 < -0.22 && v > cap) i = { gas: false, brake: v > cap + 2 };
     q.push(i);
@@ -302,15 +305,16 @@ function opening() {
   const straps1 = Object.assign({}, base, { straps: 1 }), straps2 = Object.assign({}, base, { straps: 2 });
   for (const d of SH.DELIVERIES.filter((x) => SH.ROADS[x.id])) {
     const n = d.index + 1, bakery = d.region === 0;
-    const up = !bakery ? SH.rivalUpgrades(1) : n < 4 ? base : n < 8 ? straps1 : straps2;
+    // The upgrade level a player has on arriving in each region (deliberately low).
+    const up = !bakery ? SH.rivalUpgrades([0, 1, 2, 3, 4, 5][d.region]) : n < 4 ? base : n < 8 ? straps1 : straps2;
     const gas = [gasOnly(), gasOnly(0.85)].map((f) => play(d, f, up)), learn = LEARNERS.map(([c, w]) => play(d, learner(c, w), up)), calm = [4.5, 5.5, 6.5].map((v) => play(d, careful(v), up));
     const two = (list) => list.filter((r) => r.stars >= 2).length, air = Math.max(...learn.map((r) => r.bestAir)), fails = [];
-    if (gas.some((r) => r.stars > (bakery && n === 1 ? 2 : 1))) fails.push("gas only too good");
+    if (gas.some((r) => r.stars > (n === 1 ? 2 : 1))) fails.push("gas only too good");
     if (gas.some((r) => r.medal === 3)) fails.push("gas only wins gold");
     if (two(learn) < 2) fails.push("learners");
     if (two(calm) < 2) fails.push("careful");
     if (air < 0.4) fails.push("no air");
-    if (SH.createGame({ delivery: d }).terrain.features.filter((f) => f.set).length !== (d.ramps || []).length) fails.push("a ramp was dropped");
+    if (SH.createGame({ delivery: d }).terrain.features.filter((f) => f.set && f.type === "ramp").length !== (d.ramps || []).length) fails.push("a ramp was dropped");
     if (fails.length) bad++;
     const c = (r) => cell(r, 11);
     console.log(d.id.padEnd(10), "gas", gas.map(c).join(""), "learner", learn.map(c).join(""), "careful", calm.map(c).join(""), "air " + air.toFixed(1), fails.join(", "));
@@ -366,6 +370,37 @@ function dailyPool() {
   if (process.argv.includes("--write")) writeBlock("DAILY", "  var DAILY_TRUCK = " + JSON.stringify(trucks) + ",\n    DAILY_POOL = " + JSON.stringify(pool) + ";");
 }
 
+// Test Drives: learners get two stars on most runs, nobody flips (a bad taster
+// costs more than none), in the loaner truck at its set level.
+function testDrives() {
+  let bad = 0;
+  for (const t of SH.TEST_DRIVES) {
+    const up = SH.rivalUpgrades(t.level);
+    const learn = LEARNERS.map(([c, w]) => play(t, learner(c, w), up, t.truck)), calm = [4.5, 5.5, 6.5].map((v) => play(t, careful(v), up, t.truck));
+    const fails = [];
+    if (learn.filter((r) => r.stars >= 2).length < 2) fails.push("learners");
+    if (calm.filter((r) => r.stars >= 2).length < 2) fails.push("careful");
+    if (learn.concat(calm).some((r) => r.reason === "flip")) fails.push("a flip");
+    if (fails.length) bad++;
+    console.log(t.id.padEnd(14), t.truck.padEnd(8), "L" + t.level, "learner", learn.map((r) => cell(r, 11)).join(""), "careful", calm.map((r) => cell(r, 11)).join(""), fails.join(", "));
+  }
+  console.log("test drives failing", bad, "of", SH.TEST_DRIVES.length);
+  process.exitCode = bad ? 1 : 0;
+}
+
+// Top-Up Run: the careful bot reaches stop 5 on the bare truck and stop 10 at
+// level 5, over three days' roads, so the mode is fair every day.
+function topup() {
+  let bad = 0;
+  for (const [L, want] of [[0, 5], [5, 10]]) {
+    let best = 0;
+    for (const day of ["2026-12-01", "2026-12-02", "2026-12-03"]) for (const v of [3.5, 4, 5, 6]) best = Math.max(best, play(SH.topUpRun(0, day), careful(v), SH.rivalUpgrades(L), "pickup", 500).stops);
+    if (best < want) bad++;
+    console.log("level " + L, "best stop " + best, best >= want ? "ok" : "BELOW " + want);
+  }
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -379,6 +414,8 @@ else if (mode === "orders") orders();
 else if (mode === "opening") opening();
 else if (mode === "medals") medals();
 else if (mode === "daily") dailyPool();
+else if (mode === "testdrives") testDrives();
+else if (mode === "topup") topup();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }

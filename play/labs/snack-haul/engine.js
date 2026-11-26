@@ -131,7 +131,20 @@
     "bakery-7": { rev: 2, seed: "bakery-7-r2-A53", len: 380, heat: 0.743, load: "cbcacac", shapes: [{ type: "hill", at: 96, w: 80, h: 7.5 }, { type: "rollers", at: 244, w: 48, n: 4, h: 1.7 }], feat: 1 },
     "bakery-8": { rev: 2, seed: "bakery-8-r2-A104", len: 340, heat: 0.825, load: "cacbcaca", pickup: 3, pickupAt: 153, ramps: [{ at: 223, h: 0.4 }], shapes: [{ type: "rollers", at: 72, w: 36, n: 3, h: 1.5 }, { type: "drop", at: 253, w: 44, h: 8.5 }], feat: 2 },
     "dunes-1": { rev: 2, seed: "dunes-1-r2-E540", len: 140, heat: 0.64, load: "cccac", ramps: [{ at: 90, h: 0.6 }], shapes: [{ type: "rollers", at: 31, w: 48, n: 2, h: 3 }], feat: 1 },
-    "dunes-2": { rev: 2, seed: "dunes-2-r2-F489", len: 180, heat: 0.73, load: "ccaca", ramps: [{ at: 126, h: 0.57 }], shapes: [{ type: "hill", at: 60, w: 47, h: -4 }], feat: 1 }
+    "dunes-2": { rev: 2, seed: "dunes-2-r2-F489", len: 180, heat: 0.73, load: "ccaca", ramps: [{ at: 126, h: 0.57 }], shapes: [{ type: "hill", at: 60, w: 47, h: -4 }], feat: 1 },
+    "dunes-3": { rev: 2, seed: "dunes-3-r2-B116", len: 200, heat: 0.62, load: "cacac", ramps: [{at: 159, h: 0.55}], shapes: [{type: "rollers", at: 101, w: 41, n: 2, h: 3.9}], feats: [{type: "wind", at: 32, len: 31, power: 0.59}], feat: 0 },
+    "harbour-1": { rev: 2, seed: "harbour-1-r2-B44", len: 130, heat: 0.67, load: "cccc", ramps: [{at: 88, h: 0.36}], feats: [{type: "bridge", at: 29}], feat: 1 },
+    "harbour-2": { rev: 2, seed: "harbour-2-r2-B125", len: 170, heat: 0.69, load: "ccccc", ramps: [{at: 125, h: 0.43}], feats: [{type: "bridge", at: 34}, {type: "bridge", at: 79}], feat: 0 },
+    "harbour-3": { rev: 2, seed: "harbour-3-r2-B256", len: 200, heat: 0.69, load: "cacac", ramps: [{at: 157, h: 0.55}], shapes: [{type: "drop", at: 85, w: 41, h: 9.5}], feats: [{type: "ford", at: 29}], feat: 0 },
+    "frost-1": { rev: 2, seed: "frost-1-r2-B105", len: 130, heat: 0.73, load: "cccc", shapes: [{type: "rollers", at: 71, w: 30, n: 2, h: 1.9}], feats: [{type: "slick", at: 33, len: 27}], feat: 0 },
+    "frost-2": { rev: 2, seed: "frost-2-r2-B10", len: 170, heat: 0.82, load: "ccccc", ramps: [{at: 139, h: 0.42}], shapes: [{type: "drop", at: 85, w: 42, h: 5}], feats: [{type: "slick", at: 36, len: 20}], feat: 0 },
+    "frost-3": { rev: 2, seed: "frost-3-r2-B210", len: 200, heat: 0.75, load: "cacac", ramps: [{at: 31, h: 0.45}], feats: [{type: "slick", at: 63, len: 47}], feat: 0 },
+    "chilli-1": { rev: 2, seed: "chilli-1-r2-B57", len: 130, heat: 0.83, load: "cccc", ramps: [{at: 29, h: 0.57}, {at: 84, h: 0.62}], feat: 0 },
+    "chilli-2": { rev: 2, seed: "chilli-2-r2-B75", len: 170, heat: 0.74, load: "ccccc", ramps: [{at: 33, h: 0.67}, {at: 111, h: 0.62}], shapes: [{type: "hill", at: 63, w: 36, h: 4.1}], feat: 0 },
+    "chilli-3": { rev: 2, seed: "chilli-3-r2-B616", len: 200, heat: 1.02, load: "cacac", ramps: [{at: 28, h: 0.58}, {at: 144, h: 0.76}], shapes: [{type: "drop", at: 74, w: 52, h: 11.8}], feat: 0 },
+    "market-1": { rev: 2, seed: "market-1-r2-C261", len: 130, heat: 0.76, load: "cccc", feats: [{type: "bump", at: 31}, {type: "bump", at: 63}], ramps: [{at: 94, h: 0.45}], feat: 0 },
+    "market-2": { rev: 2, seed: "market-2-r2-B44", len: 170, heat: 0.85, load: "ccccc", feats: [{type: "bump", at: 31}, {type: "slick", at: 71, len: 23}, {type: "bump", at: 133}], feat: 0 },
+    "market-3": { rev: 2, seed: "market-3-r2-B194", len: 200, heat: 0.9, load: "cacac", ramps: [{at: 165, h: 0.41}], shapes: [{type: "hill", at: 55, w: 65, h: 6.3}], feats: [{type: "bump", at: 30}], feat: 0 }
   };
   var DELIVERIES = [];
   REGIONS.forEach(function (region, r) {
@@ -260,6 +273,13 @@
     }
     var lo = START_FLAT + 34, hi = START_FLAT + d.len - 30;
     function free(x0, x1) { return list.concat(shapes).every(function (f) { return x1 + 16 < f.x0 || x0 - 16 > f.x1; }); }
+    // Top-Up Run: a pickup stop every 70 to 90 m, each adding one load.
+    if (d.topup) {
+      for (var tx = START_FLAT + 60; tx < START_FLAT + d.len - 40; tx += 70 + r() * 20) {
+        var sx = Math.round(tx / SAMPLE) * SAMPLE;
+        list.push({ type: "pickup", x0: sx - 7.5, x1: sx + 7.5 });
+      }
+    }
     if (d.pickup) {
       var px = Math.round((START_FLAT + d.len * (0.45 + r() * 0.1)) / SAMPLE) * SAMPLE;
       if (d.winter) {
@@ -275,6 +295,12 @@
     (d.ramps || []).forEach(function (a) {
       var ax = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE;
       list.push({ type: "ramp", x0: ax, x1: ax + FEATURE_LEN.ramp, h: a.h, arc: !!a.arc, set: true });
+    });
+    // Authored region features (bridge, ford, slick, wind, bump) at a set place; len may override the usual length.
+    (d.feats || []).forEach(function (a) {
+      var fx = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE, f = { type: a.type, x0: fx, x1: fx + (a.len || FEATURE_LEN[a.type]), set: true };
+      if (a.type === "wind") { f.power = a.power || 0.42; f.phase = a.phase || 0; }
+      list.push(f);
     });
     var shapes = (d.shapes || []).map(function (s) { return { x0: START_FLAT + s.at, x1: START_FLAT + s.at + s.w }; });
     var kinds = d.winter ? (d.twist === "blizzard" ? ["slick","drift"] : ["drift","slick"]) : region.features, i = d.index;
@@ -528,6 +554,23 @@
     })[o.twist] || "";
   }
 
+  // Test Drives: one short road in each locked region, free, in a loaner truck with
+  // set upgrades. Each opens at a number of Bakery Hills stars (`at`). Roads are
+  // designed like ROADS and checked by `node dev/sim.js testdrives`.
+  // TESTDRIVES-BEGIN
+  var TEST_DRIVE_ROADS = [
+    { id: "test-harbour", name: "Pier Review", region: 2, at: 6, truck: "van", level: 2, len: 160, load: "ccacb", seed: "test-harbour-B164", feats: [{type: "bridge", at: 32}, {type: "ford", at: 80}], ramps: [], feat: 0, heat: 0.51 },
+    { id: "test-frost", name: "Ice to Meet You", region: 3, at: 12, truck: "hauler", level: 2, len: 170, load: "cccac", seed: "test-frost-A260", feats: [{type: "slick", at: 32, len: 28}], ramps: [{at: 125, h: 0.44}], feat: 0, heat: 0.68 },
+    { id: "test-chilli", name: "Hot Stuff", region: 4, at: 18, truck: "pickup", level: 3, len: 160, load: "ccacc", seed: "test-chilli-A75", ramps: [{at: 34, h: 0.51}, {at: 109, h: 0.58}], feat: 0, heat: 0.63 },
+    { id: "test-market", name: "Last Orders, First Taste", region: 5, at: 24, truck: "monster", level: 2, len: 150, load: "ccacc", seed: "test-market-A159", feats: [{type: "bump", at: 24}, {type: "slick", at: 81, len: 21}], feat: 0, heat: 0.73 }
+  ];
+  // TESTDRIVES-END
+  var TEST_DRIVES = TEST_DRIVE_ROADS.map(function (t) {
+    var region = REGIONS[t.region];
+    return Object.assign({}, t, { testDrive: true, loan: true, index: 1, load: loadFor(region, t.region, 1, t.load), pickup: 0 });
+  });
+  function findTestDrive(id) { return TEST_DRIVES.filter(function (t) { return t.id === id; })[0] || null; }
+
   // World Tour Daily: one road a day, the same for everyone, in a loaner truck with
   // set upgrades, so a player's own garage and regions make no difference. Regions
   // take turns (a fresh order every six days). The roads come from a pool the bots
@@ -575,12 +618,21 @@
       heat: regionHeat(0.5, region), climb: BALANCE.longClimb, load: loadFor(r, region, 3, "cacbca"), pickup: 0
     };
   }
+  // Top-Up Run: an endless road that starts with two crates, adds one at every stop
+  // and gets steeper. The same road all day; a new one tomorrow.
+  function topUpRun(region, date) {
+    var r = REGIONS[region];
+    return {
+      id: "topup-" + r.id + "-" + date, seed: "topup-" + r.id + "-" + date, long: true, topup: true, region: region, index: 3,
+      len: BALANCE.longLen, heat: regionHeat(0.35, region), climb: BALANCE.longClimb * 0.8, load: ["crate", "crate"], pickup: 0
+    };
+  }
   function parTime(d) { return Math.round((START_FLAT + d.len + END_FLAT) / BALANCE.parSpeed) + (d.pickup ? 4 : 0); }
   // Career gold times, written by `node dev/sim.js medals --write`: 1.08 times the best
   // clean bot run at the upgrade level expected there, and never looser than the old
   // time. A route missing here keeps the length-based time.
   // MEDALS-BEGIN
-  var MEDALS = {"bakery-1": 24, "bakery-2": 29, "bakery-3": 40, "bakery-4": 41, "bakery-5": 51, "bakery-6": 51, "bakery-7": 63, "dunes-1": 24, "dunes-2": 30, "dunes-3": 32, "harbour-1": 25, "harbour-2": 28, "harbour-3": 43, "harbour-5": 58, "harbour-6": 63, "frost-1": 21, "frost-2": 26, "frost-3": 39, "frost-5": 57, "chilli-1": 26, "chilli-2": 34, "market-1": 27, "market-2": 33, "market-3": 43, "market-4": 47, "market-7": 76};
+  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76};
   // MEDALS-END
   function medalTimes(d) {
     var best = d.daily || d.long || d.order ? 0 : MEDALS[d.id];
@@ -672,7 +724,8 @@
       columns[col] = base + size.h + 0.012;
     });
 
-    var pickupZone = terrain.features.find(function (f) { return f.type === "pickup"; }) || null;
+    var pickupZones = terrain.features.filter(function (f) { return f.type === "pickup"; }), pickupZone = pickupZones[0] || null, zoneIndex = 0;
+    if (d.topup && pickupZone) pending = [d.topupCargo || "crate"];
     var deliveries = terrain.features.filter(function (f) { return f.type === "dropoff"; });
     var g = {
       delivery: d, region: region, regionIndex: d.region, terrain: terrain, world: world, truck: truck, wheels: wheels,
@@ -753,9 +806,16 @@
       pending = g.pending = [];
       g.settle = 0.6;
       g.pickupState = "loaded";
+      if (d.topup) { g.stops = (g.stops || 0) + 1; g.topupScore = (g.topupScore || 0) + liveCargo(); nextZone(); }
       g.events.push({ type: "pickup", items: added, x: truck.getPosition().x, y: truck.getPosition().y });
     }
 
+    // Top-Up Run: the next stop comes up as soon as this one is loaded or passed.
+    function nextZone() {
+      pickupZone = pickupZones[++zoneIndex] || null;
+      g.pickup = pickupZone;
+      if (pickupZone) { pending = g.pending = [d.topupCargo || "crate"]; g.pickupState = "ahead"; }
+    }
     function finish(status, reason) {
       if (status === "done") {
         // A cake only counts if it arrives the right way up.
@@ -920,6 +980,7 @@
         if (loadTimer > BALANCE.stopSeconds) loadPickup();
         else if (pos.x > pickupZone.x1 + 5) {
           g.pickupState = "missed"; pending = g.pending = [];
+          if (d.topup) nextZone();
           g.events.push({ type: "missed", x: pos.x, y: pos.y });
         }
       }
@@ -930,7 +991,11 @@
         porch.missed=true;
         g.events.push({type:"missedDrop",x:pos.x,y:pos.y});
       }
-      if (!d.dropoffs && liveCargo() + pending.length < need) { finish("failed", "load"); return; }
+      if (d.topup) {
+        // Three loads gone in all ends the run; it always ends as a run, never a failure.
+        var gone = cargo.filter(function (c) { return c.lost || c.broken; }).length;
+        if (gone >= 3) { finish("failed", "load"); return; }
+      } else if (!d.dropoffs && liveCargo() + pending.length < need) { finish("failed", "load"); return; }
 
       flipTimer = angle > 2 && speedNow < 3 ? flipTimer + STEP : 0;
       if (flipTimer > BALANCE.flipSeconds) { finish("failed", "flip"); return; }
@@ -980,7 +1045,10 @@
     var lines = [];
     var coins = Math.round(g.coinsTaken * BALANCE.coinValue);
     var score = 0;
-    if (d.long) {
+    if (d.topup) {
+      score = g.topupScore || 0;
+      lines.push({ label: "Reached stop " + (g.stops || 0) + " with " + kept + " on board", coins: Math.round(score * 2 * region.pay) });
+    } else if (d.long) {
       score = Math.round(metres * (0.5 + 0.5 * share));
       lines.push({ label: metres + " m with " + kept + " of " + total + " loads", coins: Math.round(score / 12 * region.pay) });
     } else if (done) {
@@ -992,7 +1060,7 @@
     }
     if (coins) lines.push({ label: "Coins on the road", coins: coins });
     return {
-      status: g.status, reason: g.reason, kept: kept, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
+      status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, topup: !!d.topup, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
       long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
       coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
@@ -1033,9 +1101,9 @@
   // route, written by `node dev/sim.js rivals --write`. t is Dash's time.
   // RIVALS-BEGIN
   var RIVALS = {
-    "bakery-1": {"v":8,"L":1,"t":28.1},
+    "bakery-1": {"v":9,"L":1,"t":25.4},
     "bakery-2": {"v":8,"L":1,"t":32.4},
-    "bakery-3": {"v":6.5,"L":1,"t":46.1},
+    "bakery-3": {"v":7,"L":1,"t":42.9},
     "bakery-4": {"v":8,"L":1,"t":48.6},
     "bakery-5": {"v":8,"L":1,"t":59.1},
     "bakery-6": {"v":8,"L":1,"t":60.4},
@@ -1043,39 +1111,39 @@
     "bakery-8": {"v":4.5,"L":1,"t":114.3},
     "dunes-1": {"v":10,"L":2,"t":28.8},
     "dunes-2": {"v":9,"L":2,"t":34.5},
-    "dunes-3": {"v":9,"L":2,"t":35.9},
+    "dunes-3": {"v":9,"L":2,"t":38.3},
     "dunes-4": {"v":7,"L":2,"t":57.3},
     "dunes-5": {"v":7,"L":3,"t":68.2},
     "dunes-6": {"v":6.5,"L":3,"t":81.7},
     "dunes-7": {"v":7,"L":4,"t":95.9},
     "dunes-8": {"v":7,"L":3,"t":84.5},
-    "harbour-1": {"v":9,"L":3,"t":27.6},
-    "harbour-2": {"v":10,"L":3,"t":33},
-    "harbour-3": {"v":8,"L":3,"t":48.4},
+    "harbour-1": {"v":10,"L":3,"t":27.4},
+    "harbour-2": {"v":10,"L":3,"t":35.7},
+    "harbour-3": {"v":10,"L":3,"t":34.8},
     "harbour-4": {"v":6.5,"L":3,"t":62.8},
-    "harbour-5": {"v":4,"L":3,"t":110.8},
+    "harbour-5": {"v":10,"L":3,"t":56.2},
     "harbour-6": {"v":7.5,"L":3,"t":72.9},
     "harbour-7": {"v":4,"L":3,"t":162.1},
     "harbour-8": {"v":4,"L":5,"t":137.9},
-    "frost-1": {"v":10,"L":4,"t":26.2},
-    "frost-2": {"v":10,"L":4,"t":33},
-    "frost-3": {"v":8,"L":4,"t":46.3},
+    "frost-1": {"v":9,"L":4,"t":29.2},
+    "frost-2": {"v":10,"L":4,"t":32.5},
+    "frost-3": {"v":10,"L":4,"t":35.1},
     "frost-4": {"v":6.5,"L":4,"t":64.8},
     "frost-5": {"v":8,"L":4,"t":64},
     "frost-6": {"v":7.5,"L":5,"t":72},
     "frost-7": {"v":7,"L":4,"t":100.3},
     "frost-8": {"v":8,"L":4,"t":80},
-    "chilli-1": {"v":9,"L":5,"t":29.3},
-    "chilli-2": {"v":9,"L":5,"t":38.2},
-    "chilli-3": {"v":6.5,"L":5,"t":57.2},
+    "chilli-1": {"v":10,"L":5,"t":29.5},
+    "chilli-2": {"v":9,"L":5,"t":36.5},
+    "chilli-3": {"v":8,"L":5,"t":46.2},
     "chilli-4": {"v":8,"L":5,"t":57.3},
     "chilli-5": {"v":7,"L":5,"t":70.7},
     "chilli-6": {"v":5.5,"L":5,"t":92.5},
     "chilli-7": {"v":6,"L":5,"t":119},
     "chilli-8": {"v":5,"L":5,"t":113.5},
-    "market-1": {"v":9,"L":5,"t":30},
-    "market-2": {"v":9,"L":5,"t":36.4},
-    "market-3": {"v":7.5,"L":5,"t":49.2},
+    "market-1": {"v":10,"L":5,"t":29.6},
+    "market-2": {"v":10,"L":5,"t":36.4},
+    "market-3": {"v":10,"L":5,"t":37.7},
     "market-4": {"v":9,"L":5,"t":50.6},
     "market-6": {"v":7.5,"L":5,"t":72},
     "market-7": {"v":9,"L":5,"t":83},
@@ -1149,33 +1217,33 @@
     "dunes-6": {"kind":"air","n":0.6},
     "dunes-7": {"kind":"fuel","n":0.75},
     "dunes-8": {"kind":"coins","n":42},
-    "harbour-1": {"kind":"coins","n":13},
-    "harbour-2": {"kind":"calm","feature":"bridge","n":4},
-    "harbour-3": {"kind":"speed","n":11},
+    "harbour-1": {"kind":"coins","n":14},
+    "harbour-2": {"kind":"calm","feature":"bridge","n":5},
+    "harbour-3": {"kind":"speed","n":13},
     "harbour-4": {"kind":"calm","feature":"ford","n":4},
     "harbour-5": {"kind":"truck","truck":"van"},
     "harbour-6": {"kind":"flat","n":0.4},
     "harbour-7": {"kind":"fuel","n":0.75},
     "harbour-8": {"kind":"calm","feature":"bridge","n":4.5},
-    "frost-1": {"kind":"coins","n":9},
-    "frost-2": {"kind":"calm","feature":"slick","n":5.5},
-    "frost-3": {"kind":"nobrake"},
+    "frost-1": {"kind":"coins","n":16},
+    "frost-2": {"kind":"calm","feature":"slick","n":4},
+    "frost-3": {"kind":"coins","n":23},
     "frost-4": {"kind":"fuel","n":0.8},
     "frost-5": {"kind":"truck","truck":"hauler"},
     "frost-6": {"kind":"calm","feature":"slick","n":7.5},
     "frost-7": {"kind":"flat","n":0.4},
     "frost-8": {"kind":"coins","n":34},
-    "chilli-1": {"kind":"air","n":0.7},
-    "chilli-2": {"kind":"coins","n":17},
+    "chilli-1": {"kind":"air","n":0.9},
+    "chilli-2": {"kind":"coins","n":10},
     "chilli-3": {"kind":"flat","n":0.4},
     "chilli-4": {"kind":"coins","n":24},
     "chilli-5": {"kind":"truck","truck":"monster"},
     "chilli-6": {"kind":"coins","n":35},
     "chilli-7": {"kind":"fuel","n":0.75},
     "chilli-8": {"kind":"coins","n":38},
-    "market-1": {"kind":"coins","n":11},
-    "market-2": {"kind":"calm","feature":"bump","n":5},
-    "market-3": {"kind":"air","n":0.5},
+    "market-1": {"kind":"coins","n":14},
+    "market-2": {"kind":"calm","feature":"bump","n":5.5},
+    "market-3": {"kind":"air","n":0.9},
     "market-4": {"kind":"calm","feature":"slick","n":7.5,"wet":true},
     "market-5": {"kind":"truck","truck":"hauler"},
     "market-6": {"kind":"flat","n":0.5},
@@ -1283,7 +1351,7 @@
     EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
     TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
-    findDelivery: findDelivery, dailyDelivery: dailyDelivery, dailyRoad: dailyRoad, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
+    findDelivery: findDelivery, dailyDelivery: dailyDelivery, topUpRun: topUpRun, dailyRoad: dailyRoad, TEST_DRIVES: TEST_DRIVES, findTestDrive: findTestDrive, loadFor: loadFor, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
