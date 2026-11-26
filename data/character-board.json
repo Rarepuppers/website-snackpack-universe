@@ -18,6 +18,11 @@
         "Wise Owl"
       ],
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello, curious friend! Come and see my clock wall."
+      ],
       "art": {
         "page": "p04",
         "caption": "Professor Hooten shows the twins a wall of five clocks."
@@ -41,6 +46,11 @@
       "animal": "chickens",
       "fact": "Hen-Berry brings the twins home along the lantern path.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello, dear! Would you like to help me fold a paper hat?"
+      ],
       "art": {
         "page": "p02",
         "caption": "Hen-Berry hands Coop a green paper hat."
@@ -60,6 +70,11 @@
       "animal": "dogs",
       "fact": "Corgi carries his basket by its handle in his mouth.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! Count the cobs with me. This time, help me remember to count myself!"
+      ],
       "art": {
         "page": "p02",
         "caption": "Corgi counts the corn in his basket."
@@ -83,6 +98,11 @@
       "animal": "chickens",
       "fact": "Cluck’s watch has a fine gold chain.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! My watch is ready. Are you staying up for midnight?"
+      ],
       "art": {
         "page": "p02",
         "caption": "Cluck wears his gold paper hat while Hen-Berry folds another."
@@ -106,6 +126,11 @@
       "animal": "chickens",
       "fact": "Coop wears a bandana with a coffee-bean pattern.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hi! Let’s count down together. I’ll start at three."
+      ],
       "art": {
         "page": "p02",
         "caption": "Coop reaches up for her paper hat."
@@ -125,6 +150,11 @@
       "animal": "giant-panda",
       "fact": "Panda-Cake wears green oven mitts at the barn stove.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! Come help me count what’s in my market basket."
+      ],
       "art": {
         "page": "p13",
         "caption": "Panda-Cake works at the barn stove while Ted brings the soup."
@@ -144,6 +174,11 @@
       "animal": "brown-bear",
       "fact": "Ted brings his notes to a New Year party at Professor Hooten’s library.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! I’m keeping little reminders of good days. What would you put in your jar?"
+      ],
       "art": {
         "page": "p03",
         "caption": "Ted ties a red ribbon around his jar while Corgi waits at the door."
@@ -163,6 +198,11 @@
       "animal": "tree-squirrels",
       "fact": "At the barn, Nutmeg wears a rust-coloured apron over her green jumper.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Come into the barn! We’re just about ready to see everyone round the table."
+      ],
       "art": {
         "page": "p12",
         "caption": "Nutmeg welcomes the friends into her red barn."
@@ -182,6 +222,11 @@
       "animal": "turtles",
       "fact": "She keeps her red-and-white lollipop tucked away until after the feast.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Come and look by the stream. I spotted something bobbing past."
+      ],
       "art": {
         "page": "p05",
         "caption": "Shelly-Pop nudges two floating cobs back with her nose."
@@ -201,6 +246,11 @@
       "animal": "rabbits-and-hares",
       "fact": "Hop-Tart wears a green-and-white striped jumper in the harvest story.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! Hear that rustle? I think there’s something hiding in these leaves."
+      ],
       "art": {
         "page": "p10",
         "caption": "Hop-Tart lifts the missing cob above a pile of leaves."
@@ -220,6 +270,11 @@
       "animal": "dogs",
       "fact": "The table for his Friendsgiving meal stands beneath the apple tree in his garden.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Welcome to my garden! There’s room for you at the table."
+      ],
       "art": {
         "page": "p01",
         "caption": "Bark-B-Q wags his tail under the apple tree."
@@ -239,6 +294,11 @@
       "animal": "penguins",
       "fact": "In the snowball story, Sub-Zero’s team wears blue mittens.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi there! Come see the track I made on the snowy hill."
+      ],
       "art": {
         "page": "p01",
         "caption": "Sub-Zero slides down the hill on his tummy."
@@ -258,6 +318,11 @@
       "animal": "chickens",
       "fact": "She carries a wooden clipboard and a yellow pencil in the Friendsgiving story.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! I’ve got my pencil. Let’s make a list for the picnic."
+      ],
       "art": {
         "page": "p02",
         "caption": "Eggs-Benedict makes the sign-up sheet and timing chart."
@@ -277,6 +342,11 @@
       "animal": "mice",
       "fact": "Vincent gives his own house a crooked chimney in the painting.",
       "colouring": true,
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! Look closely at my painting. Can you find the crooked chimney?"
+      ],
       "art": {
         "page": "p01",
         "caption": "Vincent paints a snowy street with a crooked chimney."
@@ -295,6 +365,11 @@
       "alt": "The SnackPack portrait of French-Toast, bulldog",
       "animal": "dogs",
       "fact": "I brought a basket of sweet potatoes to the meal.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Welcome! Shall we see what came out of the bakery today?"
+      ],
       "art": {
         "page": "p12",
         "caption": "French-Toast shows his basket of sweet potatoes."
@@ -313,6 +388,11 @@
       "alt": "The SnackPack portrait of Belgian-Waffle, blue jay",
       "animal": "blue-jays",
       "fact": "I took the sign-up sheet over the duck pond.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello from up here! Is there a message you’d like me to carry?"
+      ],
       "art": {
         "page": "p05",
         "caption": "The wind catches the sign-up sheet over the duck pond."
@@ -331,6 +411,11 @@
       "alt": "The SnackPack portrait of Cereal-Swimmer, shark",
       "animal": "sharks",
       "fact": "I swim along the number line in the lagoon.",
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hi! Ready to swim along the counting line with me?"
+      ],
       "variant": {
         "caption": "Cereal-Swimmer in the explorer version of the shared character art."
       }
@@ -348,6 +433,11 @@
       "alt": "The SnackPack portrait of Baby Bulldogs, bulldog puppies",
       "animal": "dogs",
       "fact": "We come out of the snow to join the game.",
+      "status": "public",
+      "pronouns": "they/them",
+      "greetings": [
+        "Hi! There’s room for one more in our game."
+      ],
       "art": {
         "page": "p02",
         "caption": "The Baby Bulldogs join the friends on the snowy hill."
@@ -366,6 +456,11 @@
       "alt": "The SnackPack portrait of Centi-Peed, centipede",
       "animal": "centipedes",
       "fact": "I explore numbers below zero in a burrow.",
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Come and see what’s below zero. I’ll go first!"
+      ],
       "variant": {
         "caption": "Centi-Peed in the explorer version of the shared character art."
       }
@@ -382,6 +477,11 @@
       ],
       "alt": "The SnackPack portrait of Honey-Beats, bear",
       "fact": "I help find the numbers next to each other.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Can you tap a beat while we count?"
+      ],
       "variant": {
         "caption": "Honey-Beats in the helper version of the shared character art."
       }
@@ -398,6 +498,11 @@
       ],
       "alt": "The SnackPack portrait of Foxy-Lox, fox",
       "fact": "I follow clues on a mystery trail.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello, clue finder. Let’s see where the trail goes."
+      ],
       "variant": {
         "caption": "Foxy-Lox in the explorer version of the shared character art."
       }
@@ -414,6 +519,11 @@
       ],
       "alt": "The SnackPack portrait of Quill-Berry, hedgehog",
       "fact": "My story has clues in the ends of words.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Welcome! Listen closely to the end of this word."
+      ],
       "variant": {
         "caption": "Quill-Berry in the explorer version of the shared character art."
       }
@@ -430,6 +540,11 @@
       ],
       "alt": "The SnackPack portrait of Pork-ulele, pig",
       "fact": "I help with the clockwork concert.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! Ready to count us into the next song?"
+      ],
       "variant": {
         "caption": "Pork-ulele in the explorer version of the shared character art."
       }
@@ -446,6 +561,11 @@
       ],
       "alt": "The SnackPack portrait of Flutter-Butter, butterfly",
       "fact": "I appear with Honey-Beats by the stepping-stone numbers.",
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hi! Let’s see who’s down by the stepping stones."
+      ],
       "variant": {
         "caption": "Flutter-Butter in the helper version of the shared character art."
       }
@@ -463,6 +583,11 @@
       "alt": "The SnackPack portrait of Biscuit-Bouncer, puppy",
       "animal": "dogs",
       "fact": "I have parcels to deliver along a route.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! I have parcels to deliver. Will you help me find the way?"
+      ],
       "variant": {
         "caption": "Biscuit-Bouncer in the helper version of the shared character art."
       }
@@ -480,6 +605,11 @@
       "alt": "The SnackPack portrait of Booklava, owl",
       "animal": "owls",
       "fact": "My number story has a zero that runs away.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello, number explorer! A zero has slipped out of place."
+      ],
       "variant": {
         "caption": "Booklava in the teacher version of the shared character art."
       }
@@ -497,6 +627,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello! What can you spot out in the water?"
+      ],
       "variant": {
         "caption": "Bottle-Nose in the teacher version of the shared character art."
       }
@@ -513,6 +648,11 @@
       ],
       "alt": "The SnackPack portrait of Captain Beakon, eagle",
       "fact": "My name is in the mystery about the bell across the bay.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Ahoy! Listen for the bell from across the bay."
+      ],
       "variant": {
         "caption": "Captain Beakon in the explorer version of the shared character art."
       }
@@ -530,6 +670,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Shall we try a number trail together?"
+      ],
       "variant": {
         "caption": "Tick-Tusk in the explorer version of the shared character art."
       }
@@ -545,6 +690,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Welcome in! What would you put in the shop window?"
       ],
       "variant": {
         "caption": "Snack-Spector in the shopkeeper version of the shared character art."
@@ -563,6 +713,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hi! Look up. What can you spot from here?"
+      ],
       "variant": {
         "caption": "Sail-Affe in the explorer version of the shared character art."
       }
@@ -580,6 +735,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello! Would you give me a paw with this plate?"
+      ],
       "variant": {
         "caption": "Plate-Retriever in the helper version of the shared character art."
       }
@@ -595,6 +755,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! Shall we make room for an extra guest?"
       ],
       "variant": {
         "caption": "Horse d’Oeuvre in the helper version of the shared character art."
@@ -612,6 +777,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello from down below! What do you think is under your feet?"
+      ],
       "variant": {
         "caption": "Jimmy Apple-Core in the explorer version of the shared character art."
       }
@@ -628,6 +798,11 @@
       ],
       "alt": "The SnackPack portrait of Leo-Lemonade, leopard",
       "fact": "I brought one giant potato in a wheelbarrow.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Welcome! Can you guess what’s in my wheelbarrow?"
+      ],
       "art": {
         "page": "p11",
         "caption": "Leo-Lemonade pushes an enormous potato through the gate."
@@ -645,6 +820,11 @@
       ],
       "alt": "The SnackPack portrait of Luckybug, ladybug",
       "fact": "I help marchers find partners in the pairing parade.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hi! Ready to find who goes with whom?"
+      ],
       "variant": {
         "caption": "Luckybug in the helper version of the shared character art."
       }
@@ -661,6 +841,11 @@
       ],
       "alt": "The SnackPack portrait of Lionnaise, lioness",
       "fact": "My story begins with a lioness and a dragon.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! We can be brave together. Come and meet the dragon."
+      ],
       "variant": {
         "caption": "Lionnaise in the explorer version of the shared character art."
       }
@@ -678,6 +863,11 @@
       "alt": "The SnackPack portrait of Octo-Pop, octopus",
       "animal": "octopuses",
       "fact": "I explore the coral reef in my underwater story.",
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hi! What would you like to look for in the reef?"
+      ],
       "variant": {
         "caption": "Octo-Pop in the helper version of the shared character art."
       }
@@ -694,6 +884,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Welcome! Shall we set out and see what we find?"
+      ],
       "variant": {
         "caption": "Ginger-Deer in the explorer version of the shared character art."
       }
@@ -709,6 +904,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Can you find the little word hiding in my name?"
       ],
       "variant": {
         "caption": "Spinnerella in the helper version of the shared character art."
@@ -727,6 +927,11 @@
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
       ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hi! Have you ever found a nut under a tree?"
+      ],
       "variant": {
         "caption": "Candy-Nut in the explorer version of the shared character art."
       }
@@ -744,6 +949,11 @@
       "alt": "The SnackPack portrait of Stripe-Scout, tiger",
       "animal": "tigers",
       "fact": "I look for blends in the bridge story.",
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello! Listen for the sounds that go together."
+      ],
       "variant": {
         "caption": "Stripe-Scout in the explorer version of the shared character art."
       }
@@ -760,6 +970,11 @@
       ],
       "alt": "The SnackPack portrait of Pita-Pan, goat",
       "fact": "I helped carry the basket up the hill.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! I’ll take this end of the basket. Let’s get it up the hill."
+      ],
       "art": {
         "page": "p08",
         "caption": "Pita-Pan carries the basket up the hill."
@@ -776,7 +991,12 @@
         "Fe-Line-Mignon’s Moonlit Café"
       ],
       "alt": "The SnackPack portrait of Fe-Line-Mignon, cat",
-      "fact": "I have a café story that takes place by moonlight."
+      "fact": "I have a café story that takes place by moonlight.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Welcome to the café. Come and see what’s happening after dark."
+      ]
     },
     {
       "id": "cynthia-book-smart",
@@ -792,6 +1012,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello, reader. Shall we choose a book together?"
       ],
       "variant": {
         "caption": "Cynthia Book-Smart in the student version of the shared character art."
@@ -809,6 +1034,11 @@
       ],
       "alt": "The SnackPack portrait of Ham-and-Cheese, hamster",
       "fact": "I look for a route through a maze in my story.",
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hi! Can you help me spot a way through the maze?"
+      ],
       "variant": {
         "caption": "Ham-and-Cheese in the explorer version of the shared character art."
       }
@@ -825,6 +1055,11 @@
       ],
       "alt": "The SnackPack portrait of Meow-inara, cat",
       "fact": "I pulled a sack of potatoes to the garden gate.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Hello! Can you give my potato sack a little push?"
+      ],
       "art": {
         "page": "p10",
         "caption": "Meow-inara arrives at the gate with a sack of potatoes."
@@ -842,6 +1077,11 @@
       ],
       "alt": "The SnackPack portrait of Polly Roger, parrot",
       "fact": "I follow the sound of a bell across the bay.",
+      "status": "public",
+      "pronouns": "she/her",
+      "greetings": [
+        "Ahoy! Which shore did that sound come from?"
+      ],
       "variant": {
         "caption": "Polly Roger in the architect version of the shared character art."
       }
@@ -857,6 +1097,11 @@
       "app": [
         "snackpack-1-abcs-alphabet",
         "Explore SnackPack ABC"
+      ],
+      "status": "public",
+      "pronouns": "he/him",
+      "greetings": [
+        "Hello! Let’s put these tiles in a row and see what comes next."
       ]
     },
     {
@@ -870,6 +1115,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello there. Would you help me think of a word for my story?"
       ]
     },
     {
@@ -883,6 +1133,11 @@
       "app": [
         "snackpack-3-spelling-sentences",
         "Explore SnackPack Spelling"
+      ],
+      "status": "public",
+      "pronouns": null,
+      "greetings": [
+        "Hello! Ready for a word with layers?"
       ]
     }
   ],

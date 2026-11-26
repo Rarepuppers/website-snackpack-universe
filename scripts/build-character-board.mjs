@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { withBreadcrumbs } from "./lib/breadcrumbs.mjs";
 
 const site = new URL("../", import.meta.url);
 const check = process.argv.includes("--check");
@@ -9,7 +10,7 @@ const read = file => fs.readFileSync(file, "utf8");
 const local = file => new URL(file, site);
 const json = data => JSON.stringify(data, null, 2) + "\n";
 const snapshot = "data/character-board.json";
-const fields = ["id", "name", "kind", "greeting", "moment", "book", "alt", "family", "animal", "fact", "aliases", "app", "colouring"];
+const fields = ["id", "name", "kind", "greeting", "moment", "book", "alt", "family", "animal", "fact", "aliases", "app", "colouring", "status", "pronouns", "greetings"];
 
 function output(file, text) {
   if (/^(characters|animals)\/.*index\.html$/.test(file)) {
@@ -17,6 +18,7 @@ function output(file, text) {
     const description = text.match(/<p class="cast-lead">([^<]+)<\/p>/)?.[1];
     assert(description, `Missing page description for ${route}`);
     text = text.replace("<title>", `<link rel="canonical" href="https://www.snackpackuniverse.com${route}">\n<meta name="description" content="${description}">\n<title>`);
+    text = withBreadcrumbs(text, file);
   }
   const destination = local(file);
   if (check) {
@@ -29,15 +31,16 @@ function output(file, text) {
 
 const pick = (object, keys) => Object.fromEntries(keys.filter(key => Object.hasOwn(object, key)).map(key => [key, object[key]]));
 const data = from ? JSON.parse(read(path.join(from, "shared-assets/text/characters/catalog.json"))) : JSON.parse(read(local(snapshot)));
+const publicRecords = data.characters.filter(record => data.version === 2 ? record.status === "public" : (record.status ?? "public") === "public");
 if (from) {
-  for (const record of data.characters) {
+  for (const record of publicRecords) {
     assert(fs.existsSync(path.join(from, record.source)), record.source);
     assert(fs.existsSync(path.join(from, record.portrait)), record.portrait);
     if (record.variant) assert(fs.existsSync(path.join(from, record.variant.source)), record.variant.source);
   }
 }
 
-const characters = data.characters.map(record => ({
+const characters = publicRecords.map(record => ({
   ...pick(record, fields),
   ...(record.art && {art: pick(record.art, ["page", "caption"])}),
   ...(record.variant && {variant: pick(record.variant, ["caption"])}),
