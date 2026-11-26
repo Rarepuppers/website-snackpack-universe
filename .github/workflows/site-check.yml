@@ -44,6 +44,49 @@ permissions:
   contents: read
 
 jobs:
+  # Decides which heavy lanes a change can affect, so a /read/ or docs change
+  # does not pay for the Last Bastion suite or every arcade screenshot. Mark,
+  # 26 Nov 2026: cut testing that gives little or no value for the change.
+  #   last_bastion: true when the game, its Playwright configs/specs, the root
+  #                 test dependencies or this workflow changed.
+  #   visual: all   -> shared pages/CSS/JS, the arcade, tests or test config
+  #           reads -> only /read/, guides, teachers or characters pages
+  #           none  -> nothing the screenshot specs render (scripts, data,
+  #                    PDFs, other pages)
+  # Manual runs and pushes with no usable base run everything.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      last_bastion: ${{ steps.filter.outputs.last_bastion }}
+      visual: ${{ steps.filter.outputs.visual }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Classify changed files
+        id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then range="$PR_BASE...$PR_HEAD"
+          elif [ "$EVENT" = push ] && [ -n "$PUSH_BEFORE" ] && ! echo "$PUSH_BEFORE" | grep -qx '0*' && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then range="$PUSH_BEFORE...$SHA"
+          else echo "last_bastion=true" >> "$GITHUB_OUTPUT"; echo "visual=all" >> "$GITHUB_OUTPUT"; exit 0; fi
+          files=$(git diff --name-only "$range")
+          printf '%s\n' "$files"
+          lb=false; visual=none
+          if printf '%s\n' "$files" | grep -Eq '^(play/last-bastion/|playwright\.last-bastion|tests/visual/last-bastion|package(-lock)?\.json$|\.github/workflows/site-check\.yml$)'; then lb=true; fi
+          if printf '%s\n' "$files" | grep -v '^play/last-bastion/' | grep -v '^tests/visual/last-bastion' | grep -Eq '^(play/|assets/|tests/|[^/]+\.(html|css|js|mjs)$|package(-lock)?\.json$|scripts/serve-static\.mjs$|\.github/workflows/site-check\.yml$)'; then visual=all
+          elif printf '%s\n' "$files" | grep -Eq '^(read|guides|for-teachers|characters)/.*\.(html|css|js|json)$'; then visual=reads; fi
+          echo "last_bastion=$lb visual=$visual"
+          echo "last_bastion=$lb" >> "$GITHUB_OUTPUT"
+          echo "visual=$visual" >> "$GITHUB_OUTPUT"
+
   integrity:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -155,6 +198,8 @@ jobs:
         run: node scripts/check-contrast.mjs
 
   last-bastion:
+    needs: changes
+    if: needs.changes.outputs.last_bastion == 'true'
     # The game's 1,626 unit tests, its typechecker and its content/combat audits
     # ran only on one developer's machine until 11 September 2026: the sole
     # Last Bastion step in CI was the five-scenario browser lane below. The
@@ -212,6 +257,8 @@ jobs:
         working-directory: play/last-bastion/desktop
 
   visual-regression:
+    needs: changes
+    if: needs.changes.outputs.visual != 'none' || needs.changes.outputs.last_bastion == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -226,9 +273,14 @@ jobs:
         run: npm ci
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Compare arcade screenshots
+      - name: Compare arcade and site screenshots
+        if: needs.changes.outputs.visual == 'all'
         run: npm run test:visual
+      - name: Compare /read/ screenshots only
+        if: needs.changes.outputs.visual == 'reads'
+        run: npx playwright test tests/visual/reads
       - name: Exercise Last Bastion browser journeys
+        if: needs.changes.outputs.last_bastion == 'true'
         run: npx playwright test --config playwright.last-bastion.config.mjs
       - name: Upload visual diff on failure
         if: failure()
