@@ -1,0 +1,15 @@
+# Fact Sprint — new game scorecard
+
+- **Game and public name:** Fact Sprint (`/play/math-facts/`). The title leads with "Math Facts Practice Free | Times Tables & Addition", the generic search phrases.
+- **Independent name-search evidence and date:** 2026-11-26 web search for "Snack Sums" math game: no exact match, but "Math Snacks" (New Mexico State University's game series) and Junior Learning's "Addition Snacks" are close enough to confuse, so the plainer "Fact Sprint" was chosen. No keyword tool was available.
+- **Competition assessment:** Crowded: XtraMath, Math Playground, Hit the Button (Topmarks), Times Tables Rock Stars (paid, school accounts), Prodigy. Many need accounts, carry ads or are paid. The angle: no ads, no sign-in, missed facts come back, accuracy-first stars, a 60-second sprint for classes, a daily, and a free number story linked per lesson.
+- **Why build it (evidence):** GoatCounter and Cloudflare, Nov 2026: the site's largest real audience is a Honduran school on desktops in lesson time. Fact drills are the other everyday computer-room activity after typing. See `ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md` (R3).
+- **Source engine and test coverage:** Written for the web. Engine block between `// ════ Engine` and `// ════ UI`, run in Node by `tests/visual/arcade-math-facts.spec.mjs`: every fact's answer and range, lesson sizes, times-table filtering, no repeats in a row, the requeue position, the daily (deterministic, five of each operation), stars. Browser tests: a perfect round to three stars and a record, a wrong answer shows the fact and brings it back, a 60-second sprint with a fake clock, keyboard entry, the daily on the daily hub, resume, the book link.
+- **Web interaction and accessibility risks:** Digits, Backspace, Enter and Esc work anywhere on the page; the on-screen pad has 56 px buttons and labelled ⌫/✓. Written keyboard waiver on the stage. Wrong answers are shown in words ("7 × 8 = 56"), not by colour alone. The live region announces feedback.
+- **Existing art to reuse:** None. Board drawn in CSS.
+- **New 144×144 tile and 1200×630 social card:** Interim SVG tile (`play/tiles/math-facts.svg`) and a rendered card (`play/social/math-facts.png`). Painted versions are R5 in the plan.
+- **Maintenance cost:** Very low. Facts are generated, not stored. Book links break only if a `/read/` slug is renamed; the spec checks they exist.
+- **Naming/trademark review:** "Fact Sprint" is generic. Avoided "Rock Stars", "Hit the Button", "XtraMath", "Math Snacks".
+- **Fit with calm, ad-free, no-sign-in play:** Strong. Practice has no timer pressure; Sprint is opt-in.
+- **Daily mode:** Supported. 20 questions, five each of add, subtract, times and divide, seeded by the UTC day, recorded on the daily hub.
+- **Decision and measurement window:** Ship. Read at 14 school days (~16 Dec) and 28 days: GoatCounter `arcade/math-facts/start`, `win`, `daily`, time bands and Honduras share; `/go/arcade/math-facts/basicmath/` views; Search Console "math facts practice" queries after 28 days.

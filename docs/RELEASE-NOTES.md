@@ -5,6 +5,29 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-11-26 - Classroom arcade: event counts, Snack Typer and Fact Sprint
+
+Plan of record: [`ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md`](../ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md).
+The site's biggest real audience is a Honduran school; the top Cloudflare
+"games" (Solitaire, Last Bastion, Killer Sudoku) were a headless bot.
+
+- `e8a7afc0` Anonymous GoatCounter counts extended: play-time band, daily
+  completions, hub tile and position, and book start/finish/Read to me/PDF.
+  Nothing is sent under Global Privacy Control, Do Not Track or automation.
+  [`/privacy/arcade/`](../privacy/arcade/) now covers `/read/` too.
+- `1401b2e3` Hub featured row follows real play (Thirteen, 2048, Connect 4,
+  Snacky Worm, Pinball); a "Play with a friend" row and filter; homepage
+  "Read a story → / Play a game →"; the Thirteen rules guide retitled for
+  "13 rules"; the tip popup waits until after school hours. `348713d2`
+  adopted the hub baselines from CI.
+- `5d5fd62f` [Snack Typer](../play/typing/): typing practice by keyboard row,
+  then sentences from 10 story books that link back to each book.
+  `scripts/read-site-events.mjs` reads the GoatCounter counts.
+- This release: [Fact Sprint](../play/math-facts/): math facts practice
+  (add, subtract, times tables, division) with missed facts coming back and a
+  60-second sprint; each lesson links a number story. `/for-teachers/` lists
+  both games and names GoatCounter. Five finished arcade plans archived.
+
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 
 Homepage and book changes are in `5cc656d2` and `51b5abed`. The

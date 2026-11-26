@@ -17,6 +17,7 @@ publication evidence from a fresh comparison against the app checkout.
 | `check-live.mjs` | Asks the **deployed** origin whether every asset the repo declares actually resolves: manifest icons, the `sw.js` `SHELL` array, every `og:image`/`twitter:image` | **After every deploy.** `check-site.mjs` validates the repo against itself and so cannot catch a file that was built but never committed |
 | `notify-search-engines.mjs` | Submits `sitemap.xml` to Google via the Search Console API, and pushes URLs to Bing/Yandex via IndexNow | **After every deploy**, once `check-live.mjs` passes |
 | `report-referrals.mjs` | Reports who sends traffic here, separating **AI assistants** (ChatGPT, Claude, Perplexity, Gemini…) from search, direct and known bots. Search Console cannot see referrals at all | Monthly, and whenever deciding if more guide pages are worth building |
+| `read-site-events.mjs` | Summarises the anonymous GoatCounter counts (game starts, wins, dailies, friend tables, play-time bands, Honduras share; book starts/finishes; hub clicks). Key: the "### read access" section of `~/billing/goatcounter.txt`, or `GOATCOUNTER_TOKEN` | When reading the arcade plan's measurements, e.g. `--from 2026-11-26 --to 2026-12-10` |
 
 The `<head>` check exists because presence is not the same as parses. Fourteen
 privacy pages once shipped a canonical `<link>` with no closing bracket — which

@@ -1,236 +1,283 @@
-# Arcade + classroom traffic plan — 21 November 2026
+# Arcade + classroom plan (plan of record)
 
-Sources: Cloudflare Web Analytics (GraphQL, site tag `1c270abb…`), pulled 21 Nov
-for the last 24 h, 7 days and 30 days; Google Search Console, 22 Oct – 19 Nov.
-Cloudflare rounds older counts to the nearest 10, so treat small cells as noise.
+Started 21 November 2026, rewritten 26 November 2026. This is the live plan for
+`/play/`, the classroom audience and the site's event counts. It replaces
+`ARCADE-NEXT-PLAN-2026-10-20.md`, `ARCADE-AUDIT-2026-10-17.md` and
+`ARCADE-QUALITY-PLAN-2026-09.md` (all now in `docs/archive/`); their open items are carried
+over in section 6. Art requests stay in `CODEX-ASSET-BRIEF-2026-10-17.md`.
 
-## 1. What is actually driving traffic
+Data sources and how to read them:
+- **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.
+  Key: the "### read access" section of `~/billing/goatcounter.txt`.
+- **Search Console** for search; **Cloudflare Web Analytics** for page loads only.
+  In Cloudflare, count **visits**, split out Honduras (HN) and Sri Lanka (LK),
+  and exclude `userAgentBrowser = ChromeHeadless` (a bot, see 1.2).
 
-### The screenshot (408 views / 176 visits, last 24 h) breaks down as
+---
 
-| Source | Views | Visits | What it is |
-| --- | ---: | ---: | --- |
-| Honduras (HN) | 188 | 35 | A classroom. Weekdays only, peaks 15:00–16:00 UTC (9–10 am local), desktop. Students open the homepage directly (bookmark or typed URL), then browse inside the site, mostly `/read/`. |
-| United States | 125 | 120 | Mostly **one headless bot** (see below), not players. |
-| Sri Lanka (LK) | 49 | 23 | New. Phones, homepage → `/read/pip-sits/`, `/read/sound-cards/`. Looks like a parent or teacher sharing links. |
-| Everyone else | ~45 | ~0–25 | Scattered real visitors (AU, CA, PH, JM…). |
+## 1. What we know
 
-Honduras by day (30 d): 3 Nov 530, **4 Nov 760**, 5 Nov 310, 10 Nov 280,
-17 Nov 480, 20 Nov 230; weekends ~10. It is the same school coming back.
+### 1.1 Two audiences
 
-### The games at the top of Cloudflare are a bot
+1. **Searchers** want card and classic puzzle games. Thirteen is the proven one:
+   139 Google clicks in 28 days (to 19 Nov) at position 6.2; 2048 is a distant
+   second (9 clicks).
+2. **A Honduran school** (plus newer Sri Lankan mobile visitors) arrives by
+   bookmark on weekdays around 9 am local, reads `/read/` books first, then
+   plays short games on desktops. On 20–21 Nov it was ~45% of all page views.
 
-| Page | 7-day views | Who |
-| --- | ---: | --- |
-| `/play/solitaire/` | 168 | 165 are **ChromeHeadless on Linux**, US, no referrer, one page per visit, every hour of the day |
-| `/play/last-bastion/` | 83 | 70 ChromeHeadless/Linux (the other 13 are the Honduras class) |
-| `/play/killer-sudoku/` | 12 (90 over 30 d) | the same pattern |
+### 1.2 Cloudflare's top games are a bot
 
-Nothing in our repos or workflows calls those URLs, so it is an outside
-crawler or monitor. **Solitaire has 0 search clicks.** Strip these three out
-before reading any Cloudflare game number.
+`/play/solitaire/`, `/play/last-bastion/` and `/play/killer-sudoku/` led
+Cloudflare because of one **ChromeHeadless on Linux** visitor (US, no referrer,
+one page per visit, every hour). Nothing of ours calls those URLs. GoatCounter
+confirms it: Solitaire had **1** game started in 19 days against 290 Cloudflare
+views in 30. The site is on GitHub Pages, so Cloudflare cannot block it; filter
+it when reading.
 
-### The games people really come for
+### 1.3 GoatCounter, 6–25 November (about 195 game starts, 42 games)
 
-**From search (GSC, 28 days):**
-
-| Page | Clicks | Impressions | Position | Note |
-| --- | ---: | ---: | ---: | --- |
-| `/play/thirteen/` | **139** | 6,311 | 6.2 | The arcade's only real search page. CTR 2.2% (was 0.7% in Aug, 1.5% in Oct). Visitors are AU and US from Google. |
-| `/play/2048/` | 9 | 180 | 8.2 | Second-best; close to page-one top half. |
-| `/play/penalty-shootout/` | 3 | 59 | 8.0 | Good CTR for its size. |
-| `/play/mahjong/` | 1 | 59 | 7.3 | On page one, snippet not earning clicks. |
-| `/play/rummy-500/` | 1 | 34 | 6.9 | Young page (Oct). |
-| `/guides/thirteen-tien-len-rules/` | 1 | 150 | 8.2 | Ranks, doesn't get clicked. |
-
-**From the classroom (Honduras, 7 days):** Last Bastion 13, Connect 4 11,
-2048 8, Snacky Worm 7, Flappy Snacky 7, Pinball 6, Word Search 5,
-Brick Breaker 5, Chess 4, Cascade 4. Quick, no-reading, two-player or
-reflex games. They reach them from `/play/` (94 hub views), not from search.
-
-**Bottom line:** two audiences, two jobs.
-1. **Searchers** want card and classic puzzle games, and Thirteen is the proven one.
-2. **Classrooms** arrive by bookmark, read `/read/` books first, then play
-   short games on school desktops.
-
-## 2. What we can see about the students today, and what we can't
-
-Cloudflare Web Analytics gives page loads only: path, country, referrer,
-device, browser, hour. That is how the list above was built.
-
-It cannot tell us:
-- whether a game was **played** or just opened, how long, or whether they won;
-- how far into a book they read, or whether they finished it;
-- which hub tile or "related game" link they clicked;
-- whether a daily puzzle was completed.
-
-**Correction (same day):** the first draft of this plan said the site had no
-event telemetry. That was read from a stale local checkout. On origin,
-`play/game-events.js` (loaded by `funnel.js`) has sent anonymous GoatCounter
-counts since 6 Nov: `/arcade/<slug>/start`, `win` and `friends`, disclosed at
-`/privacy/arcade/`. `/read/` sent nothing.
-
-## 3. Step 1 as built (21 Nov): extend the GoatCounter counts
-
-One pipeline, not two. No new Worker or Analytics Engine.
-
-| Where | New event | Meaning |
+| Finding | Evidence | Meaning |
 | --- | --- | --- |
-| game page | `/arcade/<slug>/time-<band>` | once, when a played page is hidden: `under-1m`, `1-5m`, `5-15m`, `15m-plus` of time in view |
-| game page | `/arcade/<slug>/daily` | today's daily puzzle finished (`daily-state.js`) |
-| `/play/` | `/arcade/hub/<slug>` + `/arcade/hub-position/<p>` | tile opened, and whether it sat in the first 5, 6–12, further down, or "continue playing" |
-| book page | `/books/<slug>/start`, `finish`, `listen`, `pdf` | reading began (a page stayed in view or was turned), reached the end, used Read to me, opened the PDF |
+| Thirteen is a third of real play, none of it from the class | 71 starts (37%), 0% HN, 31 wins, 4 friend tables | Search players. Keep it first. |
+| The class plays quick, no-reading games | HN share of starts: Connect 4 75%, Snacky Worm 73%, Word Search 60%, Table Tennis 60%, Pinball 57%, 2048 44%, Cascade 4/4 | Matches the featured row and the friend row. |
+| Quiet performers | Water Sort 10 starts / 6 wins, Hearts 9 / 9, both mostly not HN | Adults finishing games. See R1. |
+| A long tail | 23 games had 1–2 starts, incl. most of the 10 soccer games | Depth in the top games beats more games. See R4. |
+| Stray | `arcade/deploy-check/start` (1) | A manual test. Ignore. |
 
-Rules: fixed names only, no IDs, scores, page numbers or storage; nothing sent
-when the browser sends Global Privacy Control or Do Not Track, or is automated
-(`navigator.webdriver`, HeadlessChrome), so the bot never enters this data.
-GoatCounter gives country itself, so the Honduras class can be split out.
-`/privacy/arcade/` now covers `/play/` and `/read/` and lists every event.
-Tests: `tests/visual/site-events.spec.mjs` (8 cases, via `window.SP_EVENTS_DEBUG`).
+"start" is counted once per page visit and a player can win several games in
+one visit, so wins ÷ starts is **not** a win rate. Time bands, dailies, hub
+clicks and book events only exist from 26 Nov.
 
-**Cloudflare bot:** not gated in the pages (434 hand-embedded beacon tags).
-Filter at query time instead: `userAgentBrowser != "ChromeHeadless"`.
+---
 
-**Still needed to read it:** a GoatCounter API token (read-only, "Read
-statistics") at `~/billing/goatcounter-api-token.txt`; then a small reader
-script. First useful read after ~14 school days (~10 Dec).
+## 2. Steps and status
 
-## 4. What to feature
+| Step | Work | Status | Commit |
+| --- | --- | --- | --- |
+| 1 | Anonymous counts: play-time band, daily, hub tile + position, books (start/finish/listen/pdf). GPC, DNT and automated browsers send nothing. `/privacy/arcade/` covers `/play/` and `/read/`. | **Live** 26 Nov | e8a7afc0 |
+| 2 | Featured row Thirteen, 2048, Connect 4, Snacky Worm, Pinball; "Play with a friend" row (Connect 4, Checkers, Reversi, Thirteen invite) and "With a friend" filter; homepage "Read a story → / Play a game →" | **Live** 26 Nov | 1401b2e3, 348713d2 |
+| 3 | Thirteen and 2048 titles left alone (6 Nov change, read due ~4 Dec). Rules guide retitled "13 Card Game Rules: How to Play Thirteen (Tiến Lên)" for its top query `13 rules`. Mahjong: no query data, no change. | **Live** 26 Nov | 1401b2e3 |
+| 4 | Tip popup waits until after school: never Mon–Fri 08:00–15:00 local. `/read/` never had one. | **Live** 26 Nov | 1401b2e3 |
+| 5 | **Snack Typer** `/play/typing/`: six lessons, sentences from 10 books with links back, finger-coloured keyboard, accuracy stars, daily, resume; funnel Sentences & Spelling | **Live** 26 Nov | 5d5fd62f |
+| 6 | **Fact Sprint** `/play/math-facts/`: six lessons, Practice (missed facts come back) or 60-second Sprint, number pad, counting dots, a number story per lesson, daily, resume; funnel Basic Math | **Pushed** 26 Nov | see section 7 |
+| 7 | Spanish option for buttons and instructions on `/read/` and the classroom games | **Waiting** on R6 data | — |
 
-**Hub (`hub.js` featured row).** Today: Thirteen, 2048, Minesweeper,
-Snacky Worm, Solitaire. Change to:
-1. **Thirteen** (keep first — the search page)
-2. **2048**
-3. **Connect 4** (top classroom game, two players on one screen)
-4. **Snacky Worm**
-5. **Pinball**
+---
 
-Solitaire and Minesweeper stay in the grid; their "popularity" was the bot.
+## 3. Recommendations (detailed)
 
-**New "Play with a friend" row** for classrooms: Connect 4, Checkers, Chess,
-Table Tennis, Thirteen friend rooms (the room Worker already exists and is
-not surfaced). Two kids, one desktop is exactly the Honduras pattern.
+Each has the evidence, the work, when it is done, and how we will know it worked.
 
-**Homepage:** students land on `/` first. Add a two-line "Read a story ·
-Play a game" strip at the top so the classroom path is one click, and make
-the newest book and three classroom games visible above the fold.
+### R1. Re-pick the featured row on ~10 December
+- **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
+  by adults; Snacky Worm and Pinball are in the row for the class.
+- **Work:** run the reader for 26 Nov – 10 Dec. If Water Sort or Hearts has
+  more starts from outside HN than Pinball has in total, swap it in for Pinball
+  in `featuredFirst` (`play/hub.js`) and update `arcade-thirteen.spec.mjs`'s
+  featured-order test and the six hub baselines from CI.
+- **Done when:** the row reflects the 14-school-day read.
+- **Measure:** `hub-position/1-5` share of hub clicks before and after.
 
-## 5. What to add (games)
+### R2. Put Snack Typer and Fact Sprint on the Daily page
+- **Evidence:** both have a daily; `/play/daily/` is where the daily habit
+  lives, and the hub's Daily filter already lists Snack Typer.
+- **Work:** add a `daily-challenge-card` for each to `play/daily/index.html`
+  and `play/index.html`'s daily section once each has a week of starts.
+  `arcade-daily.spec.mjs` checks every card reaches a working daily.
+- **Done when:** both cards are live and the spec passes.
+- **Measure:** `arcade/typing/daily` and `arcade/math-facts/daily` counts.
 
-Ranked by evidence, each with the usual bar (scorecard, Node engine sim,
-phone spec, daily where it makes sense, resume, tile + social art).
+### R3. Fact Sprint (step 6)
+- **Evidence:** the class is on desktops in lesson time; math facts are the
+  other everyday computer-room drill; we own two math apps and five number
+  stories on `/read/`.
+- **Work:** as built in section 4.
+- **Measure:** starts, daily, time bands and HN share at 14 school days;
+  `/go/arcade/math-facts/basicmath/` views in Cloudflare; Search Console
+  "math facts practice" style queries after 28 days.
 
-| # | Game | Why | Size |
-| ---: | --- | --- | --- |
-| 1 | **Typing game** (generic name, e.g. "Snack Typer") | The classroom audience is on school desktops; typing practice is a top school search and teachers bookmark it. Fits `/for-teachers/`. No reading level needed. Words can reuse the `/read/` decodable word lists, so it ties to the books. | M |
-| 2 | **Math facts sprint** (add/subtract/times tables, timed and untimed) | Second classroom staple; funnels to Snackpack 4 Basic Math and App7 Mathematics with real Play links. Generator, not puzzle bank, so it is cheap to keep. | S–M |
-| 3 | **More Thirteen-cluster card games** | Thirteen is the proven demand. Big Two is live; add Pusoy Dos as the Filipino name for it (alias page, same engine, separate rules copy) only if GSC shows the query. Ship Dominoes from Vol 1 as the next cheap card/tile port. | S each |
-| 4 | **Spanish UI option for `/read/` and the classroom games** | The biggest real audience is a Honduran school. A Spanish toggle on buttons and instructions (books stay English, since it looks like English class) helps them and opens Spanish search. Confirm with telemetry first (`book_finish` rate for HN). | M |
+### R4. Stop adding soccer reflex games
+- **Evidence:** 10 soccer games, most with 1–2 starts in 19 days; no search
+  demand found for them.
+- **Work:** none to build. Do not port more. Keep them working; no new art.
+- **Revisit:** only if a World Cup or a search query appears for one.
 
-Not recommended now: more reflex soccer games (6 already, near-zero traffic),
-more solitaire variants (big demand, never ranked; the indexing limit from
-August still applies).
+### R5. Codex art for the two new games, plus the old placeholders
+- **Evidence:** Snack Typer and Fact Sprint ship with interim generated art;
+  Pyramid and TriPeaks still use placeholder social cards; brief items 12–16
+  are interim cards.
+- **Work:** add items 17 (Snack Typer: painted keycap tile and card) and 18
+  (Fact Sprint) to `CODEX-ASSET-BRIEF-2026-10-17.md`. Same sizes as the other
+  tiles: 144×144 and 288×288 PNG, 1200×630 PNG, WebP siblings.
+- **Done when:** files land under the same names; no code change needed.
 
-## 6. What to improve on existing pages
+### R6. The 10 December read, with decision rules
+- **Work:** `node scripts/read-site-events.mjs --from 2026-11-26 --to 2026-12-10`.
+- **Questions and rules:**
+  1. Do HN students finish books? If HN `books/*/finish ÷ start` is under 30%,
+     do step 7 (Spanish) next; if over 50%, step 7 waits.
+  2. How long do they play? If a featured game's time bands are mostly
+     `under-1m`, look at its first screen (instructions, controls) before
+     anything else.
+  3. Where do hub clicks come from? If `together` beats `1-5`, the friend row
+     earns a place above the featured row.
+  4. Typing and math: do classes come back for the daily?
+- **Done when:** findings and decisions are written into this file.
 
-1. **Thirteen (highest value).** At position 6.2, moving to ~3 roughly
-   triples clicks. Put "Play with friends" (rooms) beside "Play vs computer"
-   on first screen; add a short "How to play in 60 seconds" above the fold;
-   cross-link Big Two and Rummy 500 under the game. Re-read GSC at +14/+28 days.
-2. **Thirteen rules guide** (150 impressions, 1 click): rewrite title and
-   description around "how to play 13 / Tiến Lên rules" phrasing.
-3. **2048** (pos 8.2): title/description refresh; add 3×3, 5×5 and daily
-   modes (cheap, gives the page new content to rank on).
-4. **Mahjong** (59 impressions, pos 7.3, 1 click): snippet rewrite.
-5. **Classroom safety pass on the funnel.** `funnel.js` shows a dwell-based
-   tip/donation modal. Children in a class should not see "tip" prompts.
-   Suppress the modal on `/read/` and on the classroom row games, or show it
-   only after several sessions on the same device; keep Play-Store links
-   behind the existing grown-up treatment.
-6. **Sound off by default during school hours?** No — simpler: make sure every
-   classroom game starts muted-safe and has a visible mute (check Pinball,
-   Flappy Snacky, Snacky Worm).
-7. **`/for-teachers/`**: add a "classroom links" block (copyable short URLs for
-   the typing game, math sprint, today's book), and a one-field "Tell us about
-   your class" form so the Honduras teacher can reach us.
+### R7. Thirteen and 2048 title read on ~4 December
+- **Evidence:** both retitled 6 Nov. Baselines: `free thirteen` 265 impressions
+  / 0 clicks and `play thirteen` 219 / 0; 2048 285 impressions at position 17.4
+  over 90 days.
+- **Work:** Search Console 28 days after the change vs the 28 days before.
+  Revert a title only if CTR fell at the same position.
+- **Then:** if Thirteen holds, its next lever is position: a "How to play in
+  60 seconds" box above the game and links to Big Two and Rummy 500 under it.
 
-## 7. Order and measurement
+### R8. 2048 variants
+- **Evidence:** 2048 is the second search page and 44% of its starts are the
+  class.
+- **Work:** 3×3 and 5×5 boards and a daily seed, after R7's read. Records per
+  size; the shared resume key gets the size as its variant.
+- **Measure:** 2048 impressions and starts at 28 days.
 
-| Step | Work | Measure |
-| --- | --- | --- |
-| 0 | `git pull` the website repo first: local is behind origin (Sokoban and Big Two are live but missing from this checkout). | — |
-| 1 | **Built 21 Nov:** GoatCounter events extended (time, daily, hub, books) + privacy copy | First read after ~14 school days (~10 Dec); needs the API token |
-| 2 | Hub featured row + "Play with a friend" row + homepage strip | `hub_click` by position, HN game_start |
-| 3 | Thirteen first-screen + guide + 2048/Mahjong snippets | GSC at +14 and +28 days; revert title if CTR drops |
-| 4 | Funnel modal off for classroom paths | `tip_click` before/after (should not matter) |
-| 5 | Typing game | HN/LK `game_start`, GSC impressions after 28 days |
-| 6 | Math facts sprint | same + `play_store_click` to the math apps |
-| 7 | Spanish toggle — only if step-1 data shows HN finishing books | `book_finish` HN before/after |
+### R9. A classroom links block and a way for teachers to reach us
+- **Evidence:** the Honduran teacher has no channel to us; `/for-teachers/`
+  only has an email address.
+- **Work:** on `/for-teachers/`, a "Links for your class" block with copyable
+  links to today's Snack Typer daily, Fact Sprint daily and a suggested book,
+  each with a Copy button. Keep the email link; a form needs a backend we do
+  not run (Brevo forms are for the newsletter list only).
+- **Measure:** Cloudflare views of `/for-teachers/` and any email received.
 
-Measure Cloudflare by **visits**, split out HN and LK, and exclude
-ChromeHeadless. Measure search with GSC only.
+### R10. Spanish option (step 7) only if R6 says so
+- **Work:** a Spanish toggle for buttons, instructions and hints (books stay
+  English, it looks like an English class). Start with the friend row games,
+  Snack Typer, Fact Sprint and the `/read/` reader controls.
+- **Measure:** HN book finish rate and game time bands before and after.
 
-## Progress — 26 November 2026
+### R11. Give checkers and reversi a match record
+- **Evidence:** both are now in the "Play with a friend" row, and both still
+  keep no result (carried over from the quality plan). Pairs of pupils want a
+  score.
+- **Work:** a W–L tally per mode (vs computer, two players) in a readout chip,
+  saved under `sp_<game>_record_<mode>`; the gate's "persisted best result"
+  then passes for both.
+- **Done when:** the tally survives a reload; a spec plays a quick game.
 
-| Step | Result |
+### R12. Fix or quarantine the red visual checks on main
+- **Evidence:** `reads-final.spec.mjs` "short viewport controls 740x360" has
+  failed on every main run since at least 24 Nov; `last-bastion-polish-review`
+  "dense kit review" failed on 348713d2. A permanently red check hides new
+  failures.
+- **Work:** whoever owns `/read/` fixes the 740×360 click timeout; Last
+  Bastion's owner checks the dense kit review. Until then, note it in each
+  push.
+
+### R13. Land the generator drift
+- **Evidence:** `build-breadcrumbs.mjs` and `build-webp.mjs` rewrite ~80 pages
+  (animals, characters, guides, apps screenshots) that other sessions never
+  regenerated.
+- **Work:** one session runs both in a quiet moment, reviews and commits.
+  Until then, anyone running them must keep only their own files.
+
+### R14. Not now
+- **More solitaire variants:** big demand, never ranked (indexing limit).
+- **Dominoes / Mancala ports** (carried over): cheap, but the long tail says
+  more games is not the lever. Revisit after R6.
+- **Pusoy Dos alias page:** only if Search Console shows the query.
+
+---
+
+## 4. Step 6 — Fact Sprint (`/play/math-facts/`)
+
+Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
+(New Mexico State's game series) and Junior Learning's "Addition Snacks".
+
+| Part | What it does |
 | --- | --- |
-| 1 | **Live** (e8a7afc0). GoatCounter events extended; privacy page covers /read/. |
-| 2 | **Done.** Featured order Thirteen, 2048, Connect 4, Snacky Worm, Pinball. "Play with a friend" row (Connect 4, Checkers, Reversi, Thirteen invite link) and a "With a friend" category. Chess left out: it is computer-only. Homepage hero has "Read a story → / Play a game →". Hub clicks from the row count as `hub-position/together`. |
-| 3 | **Partly, on purpose.** Thirteen already leads with "Play with friends", and its title (and 2048's) changed on 6 Nov with a read due ~4 Dec, so neither was touched. Rules guide retitled "13 Card Game Rules: How to Play Thirteen (Tiến Lên)" for its top query `13 rules` (41 impressions, position 7.9, 0 clicks, 90 days). Mahjong has one query in 90 days, so no rewrite. |
-| 4 | **Done, as a time rule.** The tip popup no longer opens Mon–Fri 08:00–15:00 in the player's time zone, and isn't stamped as shown then. `/read/` never had a tip prompt. |
-| Hub baselines | The six `hub-*` screenshots change; adopt them from CI's `arcade-visual-diff` artifact. |
-| Pre-existing | `reads-final.spec.mjs` "short viewport controls 740x360" was already failing on main before these pushes. |
+| Lessons | Add to 10 (45 facts, with counting dots), Add to 20, Subtract to 20, Times tables (pick 2×–12× or Mixed), Division (same tables), Mix (all four) |
+| Practice | 20 questions, untimed clock shown; a missed fact shows "7 × 8 = 56" and comes back three questions later; stars by slips (≤1, ≤3, ≤6) |
+| Sprint | 60 seconds from the first digit, pauses with the tab; best score per lesson and table |
+| Input | Number pad (56 px buttons) or keyboard; checked as soon as enough digits are typed, Enter checks early, Esc restarts |
+| Books | Each lesson links its number story: Cereal-Swimmer (number line), Luckybug (to 20), Hop-Tart (3×, 4×, 8×, division), Booklava (place value, for Mix) |
+| Daily | 20 questions, five each of +, −, ×, ÷, seeded by the UTC day |
+| Funnel | Snackpack Basic Math (`/go/arcade/math-facts/basicmath/`) |
+| Records | `sp_math_facts_best_<mode>-<lesson>[-<table>]`, daily separate |
 
-## GoatCounter read — 6 to 25 November 2026 (`node scripts/read-site-events.mjs`)
+---
 
-First read with the API key (`~/billing/goatcounter.txt`, read-access section).
-About 195 game starts across 42 games in 19 days. Small numbers: treat 1–3 as noise.
+## 5. Measurement calendar
 
-| Finding | Evidence | What it means |
+| Date | What | Tool |
 | --- | --- | --- |
-| **Solitaire's popularity was the bot** | 1 start in 19 days, against 290 Cloudflare views in 30 | Confirmed. Never feature it on Cloudflare numbers. |
-| **Thirteen is a third of all real play, none of it from the class** | 71 starts (37%), 0% Honduras, 31 wins, 4 friend tables | Search players. Keep it first; friend tables get real use. |
-| **The class plays quick, no-reading games** | Honduras share of starts: Connect 4 75%, Snacky Worm 73%, Word Search 60%, Table Tennis 60%, Pinball 57%, 2048 44%, Cascade 4/4 | Matches the new featured order and friend row. |
-| **Water Sort and Hearts are quiet performers** | Water Sort 10 starts / 6 wins, mostly not Honduras; Hearts 9 starts / 9 wins, 0% Honduras | Adults finishing games. Candidates for the featured row if they hold up. |
-| **23 games had 1–2 starts in 19 days** | the long tail, incl. most of the 10 soccer games | Don't add more reflex soccer games; spend effort on depth in the top 10. |
-| Stray event | `arcade/deploy-check/start` (1) | A manual test. Ignore. |
+| ~4 Dec | Thirteen and 2048 titles (R7) | Search Console |
+| ~10 Dec | First read of the new events (R6), featured row (R1) | `scripts/read-site-events.mjs` |
+| ~11 Dec | Sokoban + Chess Puzzles day 28 (separate plan) | Search Console |
+| ~16 Dec | Snack Typer and Fact Sprint at 14 school days | GoatCounter |
+| ~24 Dec | Snack Typer at 28 days in search | Search Console |
 
-Caveat in the reader: "start" counts once per page visit and a player can win
-several games in one visit, so wins ÷ starts is not a win rate.
+---
 
-**Next reads:** time bands, dailies, hub clicks and books only began on 26 Nov.
-Read them on ~10 Dec (14 school days). Questions to answer then: do Honduras
-students finish books; do they stay over 5 minutes in a game; do hub clicks
-come from the first five tiles or the friend row.
+## 6. Carried over from the archived arcade plans
 
-## Step 5 — typing game (started 26 Nov)
+- **Saved progress is deliberately skipped** for reflex games (flappy-snacky,
+  snacky-worm, table-tennis, keepy-uppy, dribble-rush, asteroid-destroyer) and
+  short soccer sessions. Revisit only if one gets a longer mode.
+- **No match record** in checkers, reversi, penalty-shootout: R11 covers the
+  first two; penalty-shootout stays as is.
+- **TriPeaks has no app funnel** (it is in no Android app). Leave the gap honest.
+- **`play/shared-assets/game-ui/` is ~57 MB with no WebP.** An asset job for the
+  derivative pipeline, not a code one.
+- **`arcade.spec.mjs` screenshots only 6 surfaces.** New baselines must come
+  from CI's Linux renderer.
+- **Option, not done:** a small "No ads · no sign-in" line in every game's title
+  strip (changes every game screenshot).
+- **SCORECARD.md is for new games only.** Do not write them retroactively.
 
-**Snack Typer** at `/play/typing/`. Lessons by keyboard row (home, top, bottom,
-all letters), story words and sentences taken from `/read/` books (each links
-back to its book), a daily set, a finger-coloured on-screen keyboard, WPM and
-accuracy with stars, best per lesson. Funnel: Snackpack 3 Sentences & Spelling.
-Name search 26 Nov: no game called "Snack Typer". Competitors KidzType,
-TypingBird, Dance Mat Typing, Kodable; most carry ads or need accounts.
+## 7. Build records
 
-### Step 5 progress — 26 November
+### Step 5 — Snack Typer (26 Nov, 5d5fd62f)
+- Six lessons; stop-on-error typing into a real text box (phones and IMEs
+  work); next key outlined and named ("“s” — left ring finger"); stars for
+  accuracy at 90/95/98%; live speed after 5 seconds; best per lesson; daily of
+  8 words + 1 story sentence; resume; Escape restarts.
+- 35 sentences from 10 `/read/` books link back to their book; the spec fails
+  if a book or sentence changes.
+- Found by its own test: "garden" was in the Top row lesson but needs N.
+- Found on the way: `/for-teachers/` said we only used Cloudflare; it now names
+  GoatCounter and links the policy, and lists Snack Typer.
+- Funnel: Sentences & Spelling. Art: interim SVG tile and rendered card (R5).
 
-| Item | Result |
-| --- | --- |
-| Game | **Built.** `/play/typing/`: six lessons (home, top, bottom row, all letters, story sentences, longer sentences), stop-on-error typing into a real text box (phones and IMEs work), finger-coloured keyboard with the next key outlined and named ("“s” — left ring finger"), stars for accuracy (90/95/98%), live speed after 5 s, best per lesson, daily (8 words + 1 story sentence), resume, Escape restarts. |
-| Books link | 35 sentences from 10 `/read/` books, each run says which book(s) it came from and links there. The spec fails if a book is renamed or its sentence changes. |
-| Found by its own test | "garden" was in the Top row lesson but needs N (bottom row). Swapped for "puppet". |
-| Found on the way | `/for-teachers/` told schools we only use Cloudflare page counts; it now mentions the GoatCounter counts and links the policy. It also lists Snack Typer under ways to use the site in class. |
-| Funnel | Snackpack 3 Sentences & Spelling (`/go/arcade/typing/sentencesspelling/`), not Brain Games. |
-| Art | Interim SVG keycap tile and a rendered social card. Codex can paint a tile later. |
-| Generators | `build-breadcrumbs` and `build-webp` rewrite ~80 unrelated pages that other sessions never regenerated. Only this game's files were kept; that drift is someone else's to land. |
-| Hub baselines | Change again (new tile); adopt from CI as before. |
-| Also red on main | `last-bastion-polish-review` "dense kit review" failed once on 348713d2 (not touched here); `reads-final` short viewport still pre-existing. |
+### Step 6 — Fact Sprint (26 Nov)
+- Built as in section 4. Engine block tested in Node (every answer, ranges,
+  lesson sizes, table filter, no repeat in a row, requeue position, daily
+  mix, stars); browser tests play a perfect round, a wrong answer coming back,
+  the pad, a 60-second sprint on a fake clock, the daily hub and resume.
+  The requeue test was checked to fail with the requeue removed.
+- Found on the way: the shared toolbar script folds everything in
+  `.game-controls` into "Options" on short screens, so a Practice/Sprint
+  switch there would be hidden. It sits on its own row instead. **Any new
+  game's primary mode switch belongs outside `.game-controls`.**
+- `arcade-layout.spec.mjs` keeps a list of board selectors; Snack Typer was
+  missing from it (CI failure on 5d5fd62f). Both `#ty-text` and `#mf-board`
+  are now listed. **Add the board selector there for every new game.**
+- Art: interim SVG tile and rendered card (R5, brief item 18).
 
-## New recommendations (26 Nov)
+---
 
-1. **Put Water Sort or Hearts in the featured row if the ~10 Dec read holds.** Both are finished by adults far more than they are opened by the class.
-2. **Add Snack Typer to `/play/daily/`** once it has a week of plays (the hub's Daily filter already lists it).
-3. **Math facts sprint (step 6) should copy Snack Typer's shape:** accuracy-first stars, a daily, book links where a number story fits, and the Basic Math app as the funnel.
-4. **Stop adding soccer reflex games** (10 exist; 1–2 starts each in 19 days).
-5. **Ask Codex for painted Snack Typer art** (tile 144×144, card 1200×630) using the keycap layout.
-6. **Read the new events on ~10 Dec** with `node scripts/read-site-events.mjs --from 2026-11-26`.
+## 8. Standing traps
+
+- **Work in a worktree off `origin/main`.** The local website checkout drifts
+  and carries other sessions' edits. Push with `git push origin HEAD:refs/heads/main`.
+- **Never run `build-breadcrumbs` or `build-webp` and commit everything** (R13).
+- **Hub screenshots change with any hub edit.** Push, take the six
+  `hub-*-actual.png` from CI's `arcade-visual-diff` artifact, commit them as
+  baselines. Never refresh baselines from a Mac or Windows run.
+- **`arcade-thirteen.spec.mjs` pins the featured order.** Change it with `featuredFirst`.
+- **A green board proves nothing about whether a game can be played.** Play a
+  full round; confirm a new spec fails with its fix removed.
+- **Cloudflare counts are bot-inflated and 10-bucketed.** Use GoatCounter for
+  play and Search Console for search.
+- **The tip popup is time-dependent** (school hours). Tests that open it must
+  pin the clock (see `arcade-funnel.spec.mjs`).
