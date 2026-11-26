@@ -559,6 +559,28 @@ function buildCargo(type, quality, id = 0) {
       [[-0.12, 0.05], [0.1, -0.08], [0, 0.12], [0.14, 0.1], [-0.1, -0.12]].forEach(([a, b]) => k.add(blob(0.09, 1), "#fff2b8", m(a, S * 0.33, z + b)));
     });
     group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }))));
+  } else if (type === "mail" || type === "tyre" || type === "toolbox" || type === "coolant") {
+    // Code-built stand-ins for the Downhill cargo until Codex's batch N2.
+    const k = new Kit();
+    zs.forEach((z) => {
+      if (type === "mail") {
+        k.add(blob(0.25, 2), "#c9a46a", m(0, -0.03, z, 0, 0, 0, 1.05, 0.88, 1));
+        k.add(cyl(0.08, 0.06, 0.12, 9), "#b08850", m(0, 0.2, z));
+        k.add(box(0.16, 0.12, 0.02), "#d6342c", m(0.1, 0, z + 0.24));
+      } else if (type === "tyre") {
+        k.add(new THREE.TorusGeometry(0.19, 0.08, 8, 16), "#2b2b2e", m(0, 0, z));
+        k.add(cyl(0.12, 0.12, 0.12, 12), "#9aa1a8", m(0, 0, z, Math.PI / 2));
+      } else if (type === "toolbox") {
+        k.add(box(0.48, 0.6, 0.48), "#c9302c", m(0, -0.04, z));
+        k.add(box(0.5, 0.05, 0.5), "#8f1f1c", m(0, 0.12, z));
+        k.add(box(0.26, 0.08, 0.06), "#3a3a3a", m(0, 0.3, z));
+      } else {
+        k.add(cyl(0.23, 0.23, 0.56, 14), "#3f7fd0", m(0, 0, z));
+        k.add(cyl(0.235, 0.235, 0.04, 14), "#2a5a99", m(0, 0.12, z)); k.add(cyl(0.235, 0.235, 0.04, 14), "#2a5a99", m(0, -0.12, z));
+        k.add(cyl(0.05, 0.05, 0.03, 10), "#f2f2f2", m(0.12, 0.29, z));
+      }
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6 }))));
   } else if (type === "baguette") {
     // Code-built stand-ins for the 1.1 cargo until Codex's models arrive.
     // Drawn 0.3 m longer than its body, reaching back past the rail.
@@ -1231,6 +1253,17 @@ export class World3D {
       } else if (f.type === "drift") {
         const x = (f.x0+f.x1)/2;
         if (!stand("winter/drift",x,0)) kit.add(blob(1,2),"#eef4fb",m(x,SH.heightAt(t,x)-.16,0,0,0,0,3.8,.37,2.2));
+      } else if (f.type === "gravel") {
+        // A gravel bed with a sand berm at its far end.
+        strip(kit, f.x0, f.x1, "#9b8a74", 0.03, 4.6);
+        for (let x = f.x0 + 0.4; x < f.x1; x += 0.9) kit.add(blob(0.09, 0), "#7d6e5c", m(x, SH.heightAt(t, x) + 0.06, ((x * 7.3) % 3) - 1.5));
+        kit.add(blob(1, 1), "#c9b38a", m(f.x1 + 0.6, SH.heightAt(t, f.x1) - 0.1, 0, 0, 0, 0, 1.2, 0.35, 2.4));
+      } else if (f.type === "gate") {
+        // A speed gate: posts and a lit bar over the road.
+        const y = SH.heightAt(t, f.x0);
+        [-2.6, 2.6].forEach((z) => kit.add(box(0.22, 5, 0.22), "#e8e0cc", m(f.x0, y + 2.5, z)));
+        kit.add(box(0.3, 0.45, 5.6), "#2b2f3a", m(f.x0, y + 5, 0));
+        glow.add(box(0.32, 0.18, 5.2), "#3fe08a", m(f.x0, y + 5, 0));
       } else if (f.type === "slick") {
         strip(glow, f.x0, f.x1, this.theme.night ? "#7fd0ff" : "#c8f0ff", 0.035, 4.7);
         [f.x0, f.x1].forEach((x) => { if (!stand("road/ice_marker", x, -3.0)) { post(x, 2.2, "#2f7fd0", -3.0); kit.add(blob(0.3, 0), "#9fe0ff", m(x, SH.heightAt(t, x) + 2.4, -3.0)); } });
@@ -1573,7 +1606,12 @@ export class World3D {
       g.position.set(wp.x, wp.y, 0);
       g.rotation.z = wp.a;
     });
-    model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
+    if (game.delivery.runaway) {
+      // Runaway Rig: the brake lamps glow orange as the brakes heat, and smoke when hot.
+      const h = game.heat || 0;
+      model.brakes.forEach((b) => { b.material.emissive.setRGB(1, 0.45 - 0.3 * h, 0.08); b.material.emissiveIntensity = 0.8 + h * 4 + (game.brakeOn ? 1.2 : 0); });
+      if (h > 0.6 && Math.random() < h * 0.5) { const w = game.wheels[0].getPosition(); this.puff(w.x, w.y, (Math.random() - 0.5), 1 + Math.random(), 0.6, 0, 0.18, 0.6); }
+    } else model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
     if (this.headlight) this.headlight.position.set(p.x + 5, p.y + 2.2, 1.5);
     this.syncSideActors(game);
     // Lantern Lane: the light fades as the drive goes on.

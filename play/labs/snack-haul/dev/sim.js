@@ -10,6 +10,7 @@
 // node play/labs/snack-haul/dev/sim.js topup      the Top-Up Run reaches its target stops
 // node play/labs/snack-haul/dev/sim.js lasso      the Lucky Lasso fires once and ghosts replay it
 // node play/labs/snack-haul/dev/sim.js side       Back Roads, Extra Mile and Old Crust's orders: drivers and ghost replays
+// node play/labs/snack-haul/dev/sim.js downhill   Downhill Dash and Runaway Rig: every course cleared, ghosts replay
 const SH = require("../engine.js");
 
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
@@ -236,12 +237,12 @@ function challenges() {
 function rivals() {
   const table = {};
   let bad = 0;
-  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
+  for (const d of SH.DELIVERIES.concat(SH.SIDE, SH.DOWNHILL)) {
     let pick = null;
-    for (let L = d.track === "extra" ? 2 : [1, 2, 3, 4, 5, 5][d.region]; L <= 5 && !pick; L++) {
+    for (let L = d.downhill || d.track === "extra" ? 2 : [1, 2, 3, 4, 5, 5][d.region]; L <= 5 && !pick; L++) {
       const up = SH.rivalUpgrades(L);
-      for (const v of [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 9, 10]) {
-        const r = drive(d.id, up, v, 200);
+      for (const v of d.downhill ? [7, 8, 9, 10, 11, 12, 14, 16, 18] : [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 9, 10]) {
+        const r = drive(d.id, up, v, d.downhill ? 240 : 200);
         if (r.status !== "done" || r.stars < 2 || r.dockHit || r.time < r.medals.gold) continue;
         const aim = (r.medals.gold + r.medals.silver) / 2;
         if (!pick || Math.abs(r.time - aim) < Math.abs(pick.t - aim)) pick = { v, L, t: Math.round(r.time * 10) / 10, gold: r.medals.gold, silver: r.medals.silver };
@@ -251,7 +252,7 @@ function rivals() {
     else table[d.id] = { v: pick.v, L: pick.L, t: pick.t };
     console.log(d.id.padEnd(12), pick ? `speed ${pick.v} level ${pick.L} time ${pick.t}s (gold ${pick.gold}, silver ${pick.silver})` : "NONE");
   }
-  console.log("rivals", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length);
+  console.log("rivals", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length + SH.DOWNHILL.length);
   if (process.argv.includes("--write")) {
     const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
     const body = "  var RIVALS = {\n" + Object.entries(table).map(([id, c]) => "    " + JSON.stringify(id) + ": " + JSON.stringify(c)).join(",\n") + "\n  };";
@@ -330,17 +331,18 @@ function opening() {
 // Gold times from the bots, see MEDALS in engine.js.
 function medals() {
   const table = {};
-  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
-    const up = d.side ? SH.rivalUpgrades(d.track === "extra" ? 2 : 1) : d.region === 0 ? Object.assign({}, base, { straps: d.index < 3 ? 0 : d.index < 5 ? 1 : 2 }) : SH.rivalUpgrades(Math.min(5, 1 + d.region));
+  for (const d of SH.DELIVERIES.concat(SH.SIDE, SH.DOWNHILL)) {
+    const up = d.downhill ? SH.rivalUpgrades(2) : d.side ? SH.rivalUpgrades(d.track === "extra" ? 2 : 1) : d.region === 0 ? Object.assign({}, base, { straps: d.index < 3 ? 0 : d.index < 5 ? 1 : 2 }) : SH.rivalUpgrades(Math.min(5, 1 + d.region));
     const runs = [];
-    for (let v = 4; v <= 12; v += 0.5) runs.push(play(d, careful(v), up));
-    for (const [c, w] of LEARNERS.concat([[7.5, 8], [8.5, 8], [10, 8]])) runs.push(play(d, learner(c, w), up));
+    // Downhill courses are faster; Runaway Rig has its own bot, so no learners there.
+    for (let v = 4; v <= (d.downhill ? 20 : 12); v += 0.5) runs.push(play(d, careful(v), up, "pickup", d.downhill ? 240 : 200));
+    if (!d.runaway) for (const [c, w] of LEARNERS.concat([[7.5, 8], [8.5, 8], [10, 8]])) runs.push(play(d, learner(c, w), up, "pickup", d.downhill ? 240 : 200));
     const clean = runs.filter((r) => r.status === "done" && r.stars === 3 && !r.dockHit), best = Math.min(...clean.map((r) => r.time)), par = SH.parTime(d);
     const gold = clean.length ? Math.ceil(best * 1.08) : 0;
     if (gold && gold < par) table[d.id] = gold;
     console.log(d.id.padEnd(12), "old", String(par).padStart(3), "clean best", clean.length ? best.toFixed(1) : "none", table[d.id] ? "gold " + table[d.id] : "keeps " + par);
   }
-  console.log("new gold times", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length);
+  console.log("new gold times", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length + SH.DOWNHILL.length);
   if (process.argv.includes("--write")) writeBlock("MEDALS", "  var MEDALS = " + JSON.stringify(table).replace(/,/g, ", ").replace(/:/g, ": ") + ";");
 }
 function writeBlock(name, body) {
@@ -456,6 +458,32 @@ function side() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// Downhill: one proof per course and one ghost replay per mode, no driver matrices.
+// Dash: some cruising speed delivers the sack. Runaway: the runaway bot reaches
+// two stars at some target. Both at level 2, a player's level by then.
+function downhill() {
+  let bad = 0;
+  const up = SH.rivalUpgrades(2);
+  for (const d of SH.DOWNHILL) {
+    const speeds = d.dash ? [8, 11, 14, 18] : [7, 9, 11];
+    const runs = speeds.map((v) => play(d, careful(v), up, "pickup", 240));
+    const best = runs.filter((r) => r.status === "done").sort((a, b) => b.stars - a.stars || a.time - b.time)[0];
+    const ok = best && best.stars >= 2;
+    if (!ok) bad++;
+    console.log(d.id.padEnd(16), runs.map((r) => cell(r, 12)).join(""), ok ? "best " + best.time.toFixed(1) + "s" : "FAIL");
+  }
+  for (const id of ["dash-chilli", "runaway-chilli"]) {
+    const g = SH.createGame({ id, upgrades: up });
+    for (let n = 0; g.status === "driving" && n < 240 * 60; n++) g.step(SH.botInput(g, 9));
+    const a = SH.report(g), b = SH.ghostPath({ id, upgrades: up }, g.rec).report;
+    const same = a.status === b.status && a.kept === b.kept && Math.abs(a.time - b.time) < 1e-9 && a.surges === b.surges && a.gates === b.gates;
+    if (!same) bad++;
+    console.log(id.padEnd(16), same ? "ghost replays exactly" : "GHOST DIFFERS");
+  }
+  console.log("downhill failing", bad);
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -473,6 +501,7 @@ else if (mode === "testdrives") testDrives();
 else if (mode === "topup") topup();
 else if (mode === "lasso") lasso();
 else if (mode === "side") side();
+else if (mode === "downhill") downhill();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }

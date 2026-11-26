@@ -93,7 +93,9 @@ const drivingTruck = () => save.truck === "sleigh" && (!sleighOwned() || !curren
 const menuMusic = () => decemberDressing() ? "music_winter_menu" : "music_menu";
 function weekKey() { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return localDate(d); }
 const level = (id) => save.upgrades[id] || 0;
-const totalStars = () => Object.values(save.stars).reduce((n, v) => n + v, 0);
+// Stars from career and side roads only; Downhill courses keep times and medals, not stars.
+const STAR_IDS = SH.DELIVERIES.concat(SH.SIDE).map((d) => d.id);
+const totalStars = () => STAR_IDS.reduce((n, id) => n + (save.stars[id] || 0), 0);
 // ════ The full-game unlock (Android app only) ═══════════════════════
 // The unlisted web labs page stays fully free. In the app, Bakery Hills, the daily,
 // the Weekly Cup, the Pickup and the Tuk-Tuk are free; one purchase opens the rest.
@@ -147,7 +149,7 @@ const GOALS = [
   { id: "bridge", icon: "🌉", name: "Bridge Builder", desc: "Make 10 deliveries over bridges.", coins: 60, test: () => save.stats.bridges >= 10 },
   { id: "ramp", icon: "🛬", name: "Stuck the Landing", desc: "Land 50 jumps.", coins: 50, test: () => save.stats.landings >= 50 },
   { id: "gold", icon: "🥇", name: "Gold Standard", desc: "Win 10 gold medals.", coins: 120, test: () => Object.values(save.medal).filter((m) => m === 3).length >= 10 },
-  { id: "stars", icon: "🌟", name: "Star Collector", desc: "Collect 100 stars.", coins: 150, test: () => Object.values(save.stars).reduce((n, x) => n + x, 0) >= 100 },
+  { id: "stars", icon: "🌟", name: "Star Collector", desc: "Collect 100 stars.", coins: 150, test: () => totalStars() >= 100 },
   { id: "longhaul", icon: "🛣️", name: "Long Way Round", desc: "Drive 1 km in one Long Haul.", coins: 80, test: () => save.stats.longBest >= 1000 },
   { id: "longhaul5", icon: "🪧", name: "Five Kilometre Club", desc: "Drive 5 km in Long Haul, all runs together.", coins: 120, test: () => save.stats.longMetres >= 5000 },
   { id: "contracts", icon: "📋", name: "Reliable", desc: "Complete 15 contracts.", coins: 100, test: () => save.stats.contracts >= 15 },
@@ -554,10 +556,14 @@ function drainEvents(g) {
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
     else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
+    else if (ev.type === "fade") { play("brake_hiss", 0.8) || beep(220, 0.3, "sawtooth", 0.05); toast("Brakes fading! Ease off", 1300); buzz("warning"); }
+    else if (ev.type === "surge") play("turbo_surge", 0.6) || beep(160, 0.18, "sawtooth", 0.05);
+    else if (ev.type === "gate") { if (ev.ok) { play("coin", 0.7) || beep(1180, 0.1, "triangle", 0.06); toast("Speed gate ✓ +3", 900); } else toast("Gate missed: " + ev.lo + " to " + ev.hi + " m/s", 1100); }
+    else if (ev.type === "line") { play("medal", 0.6); toast("Over the line! Now pull up", 1300); }
     else if (ev.type === "hay") { play("hay_crash", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
-      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle" }[ev.feature];
+      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle", gravel: "Gravel bed: slow down before it", gate: "Speed gate ahead" }[ev.feature];
       if (say) hint(say, 2600);
       const sound = { drift:"snow_drift", bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
       if (sound) play(sound, 0.6);
@@ -642,7 +648,8 @@ function startDelivery(delivery) {
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
-  const label = delivery.topup ? "Top-Up Run: stop at each mat to load one more" : delivery.testDrive ? "Test Drive: " + delivery.name + " in the " + SH.truckSpec(truckId).name : delivery.long ? "Long Haul" : delivery.daily ? "World Tour Daily: " + SH.REGIONS[delivery.region].name + " in the " + SH.truckSpec(truckId).name : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
+  const label = delivery.dash ? "Downhill Dash: lift off the gas to tuck. Brake only to keep the sack" : delivery.runaway ? "Runaway Rig: the throttle's jammed! Feather the brake. Gas is a surge" :
+    delivery.topup ? "Top-Up Run: stop at each mat to load one more" : delivery.testDrive ? "Test Drive: " + delivery.name + " in the " + SH.truckSpec(truckId).name : delivery.long ? "Long Haul" : delivery.daily ? "World Tour Daily: " + SH.REGIONS[delivery.region].name + " in the " + SH.truckSpec(truckId).name : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
   toast(label + ": " + (delivery.winter ? delivery.dropoffs + " porches" : game.total + " loads"), 1700);
   const ch = !delivery.long && !delivery.daily && save.stars[delivery.id] && !save.challenge[delivery.id] ? SH.challengeFor(delivery.id) : null;
   if (delivery.winter) hint("Stop on each doormat, then return to the depot",4500);
@@ -963,7 +970,7 @@ function finishWinterRun(report, delivery) {
 }
 
 const LASSO_MAX = 3;
-function lassoAllowed(d) { return !d.daily && !d.cup && !d.testDrive && !d.winter; }
+function lassoAllowed(d) { return !d.daily && !d.cup && !d.testDrive && !d.winter && !d.downhill; }
 // Lassos are rare and earned, never bought and never random. Returns a results line, or "".
 function giveLasso(why) {
   if ((save.lassos || 0) >= LASSO_MAX) return "";
@@ -1017,7 +1024,7 @@ function failTip(r) {
   return level("straps") < 2 ? "Cargo Straps in the garage hold your load down." : "Slow down before crests and let the truck settle.";
 }
 function following(d) {
-  const list = d.side ? SH.sideTrack(d.track) : SH.DELIVERIES;
+  const list = d.side ? SH.sideTrack(d.track) : d.downhill ? SH.DOWNHILL.filter((x) => !!x.dash === !!d.dash) : SH.DELIVERIES;
   const i = list.findIndex((item)=>item.id===d.id), n = list[i + 1];
   return n && SH.isOpen(n.id, save.stars) ? n : null;
 }
@@ -1260,7 +1267,7 @@ function homeScreen() {
       ${freeDone ? `<button class="btn primary mapcard" data-unlock="map"${artUrl("map") ? ` style="background-image:linear-gradient(90deg,#ffc94dee 45%,#ffc94d44),url('${artUrl("map")}')"` : ""}>The road ahead<small>${SH.FREE_ROUTES.length} free roads done. Honey Harbour, Frosty Pass and more are next</small></button>` :
       `<button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}: ${esc(n.name)}</small></button>`}
       <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "World Tour: " + esc(SH.REGIONS[SH.dailyRegion(today)].name) + " +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
-      <button class="btn" data-nav="long">${ico("long_haul")} Long Haul and Top-Up<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
+      <button class="btn" data-nav="long">${ico("long_haul")} Long Haul and Downhill<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
       ${currentEvent() ? `<button class="btn winter-entry" data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
       <div class="dock">
@@ -1326,7 +1333,15 @@ function longScreen() {
     if (i > 0 && paywalled()) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-long="${i}"${open ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${open ? (best ? "Best " + best + " m. " : "") + "Next milestone " + (mile + 1) * 250 + " m, +" + Math.round(20 * (mile + 1) * r.pay) : "Not reached yet"}</small></button>`;
   }).join("");
-  ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}<h3 class="small">Top-Up Run</h3><p class="sub">Start with two crates. Every stop on the way adds one more, and the road keeps climbing. Three loads lost ends the run.</p><div class="customer"><div class="orders">${tops}</div></div>
+  // Downhill (1.3): Downhill Dash and Runaway Rig, one course per region.
+  const hill = (mode) => SH.DOWNHILL.filter((d) => !!d[mode]).map((d) => {
+    const r = SH.REGIONS[d.region], best = save.best[d.id], md = save.medal[d.id] || 0;
+    if (routePaid(d)) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
+    return `<button class="order" data-go="${d.id}"${regionOpen(d.region) ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${best ? "Best " + best + "s" + (md ? " · " + ["", "bronze", "silver", "gold"][md] : "") : regionOpen(d.region) ? esc(r.name) : "Reach " + esc(r.name)}</small></button>`;
+  }).join("");
+  const downhill = `<h3 class="small">Downhill Dash</h3><p class="sub">A race to the valley with one mail sack. Lift off the gas to tuck: you go faster. The clock stops at the line; then pull up before the wall.</p><div class="customer"><div class="orders">${hill("dash")}</div></div>
+    <h3 class="small">Runaway Rig</h3><p class="sub">The throttle's jammed and Gus Gasket is waiting at the bottom with an extinguisher. Brake in short bursts: hold it and the brakes fade. Gas is a surge that slides the load back off the cab. Hit the speed gates inside their window.</p><div class="customer"><div class="orders">${hill("runaway")}</div></div>`;
+  ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}${downhill}<h3 class="small">Top-Up Run</h3><p class="sub">Start with two crates. Every stop on the way adds one more, and the road keeps climbing. Three loads lost ends the run.</p><div class="customer"><div class="orders">${tops}</div></div>
     <h3 class="small">Long Haul</h3><p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
 }
 
@@ -1376,9 +1391,9 @@ function routesScreen() {
 }
 
 // ════ Route sheet (Q2): what's ahead, the targets, and your times, then Drive ═
-const CARGO_EMOJI = { crate: "📦", eggs: "🥚", milk: "🥛", jelly: "🍮", melon: "🍉", cake: "🎂", popcorn: "🍿", icecream: "🍦", baguette: "🥖", cheese: "🧀", pizza: "🍕", soda: "🥤" };
+const CARGO_EMOJI = { mail: "✉️", tyre: "🛞", toolbox: "🧰", coolant: "🛢️", crate: "📦", eggs: "🥚", milk: "🥛", jelly: "🍮", melon: "🍉", cake: "🎂", popcorn: "🍿", icecream: "🍦", baguette: "🥖", cheese: "🧀", pizza: "🍕", soda: "🥤" };
 const AHEAD_NAMES = { ramp: "ramps", bridge: "plank bridges", ford: "a ford", slick: "ice", wind: "gusts", bump: "speed bumps", pickup: "a pickup stop", ducks: "a duck crossing",
-  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip" };
+  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip", gravel: "a gravel bed", gate: "speed gates" };
 function routeSheet(d) {
   if (!d) return;
   const p = SH.routePreview(d), m = p.medals, ch = SH.challengeFor(d.id), rival = SH.rivalFor(d.id), best = save.best[d.id];
