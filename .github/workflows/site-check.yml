@@ -136,6 +136,12 @@ jobs:
       - name: Check /read/ bookshelf
         run: node scripts/build-read-shelf.mjs --check
 
+      - name: Check generated character board
+        run: node scripts/build-character-board.mjs --check
+
+      - name: Check generated breadcrumbs
+        run: node scripts/build-breadcrumbs.mjs --check
+
       # Every /read/ picture offers 480/800/960 px WebP sizes via srcset. A book
       # imported without re-running the generator would ship one big image to
       # every phone, so assert every page is responsive and every size exists.

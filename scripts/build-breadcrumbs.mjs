@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
+import { withBreadcrumbs } from "./lib/breadcrumbs.mjs";
 
 /*
  * Injects BreadcrumbList structured data into every section page, so Google
@@ -11,35 +11,8 @@ import { fileEol, replaceMarkerBlock, withEol } from "./lib/marker-block.mjs";
  * Run: node scripts/build-breadcrumbs.mjs
  */
 
-const ORIGIN = "https://www.snackpackuniverse.com";
 const root = path.resolve(".");
-const MARKER_OPEN = "<!-- breadcrumbs:generated -->";
-const MARKER_CLOSE = "<!-- /breadcrumbs:generated -->";
-
-// Human labels for the section roots.
-const SECTION = {
-  apps: "Apps",
-  play: "Play",
-  guides: "Guides",
-  privacy: "Privacy",
-  terms: "Terms",
-  "world-cup": "World Cup",
-  // App slugs that appear as an intermediate crumb (e.g. a nested data-deletion
-  // page). Without these the slug is title-cased from its parts rather than
-  // reading as the app's actual name.
-  "snackpack-8-earth-science": "Earth Science"
-};
-
-function titleOf(html) {
-  const m = html.match(/<title>(.*?)<\/title>/s);
-  if (!m) return null;
-  // Strip the site suffix so the crumb reads as a page name, not a full title.
-  return m[1]
-    .split("|")[0]
-    .split("—")[0]
-    .trim()
-    .replace(/&amp;/g, "&");
-}
+const check = process.argv.includes("--check");
 
 /**
  * `play/last-bastion/dev/index.html` is the Vite SOURCE for the published game
@@ -64,7 +37,7 @@ async function* pages(dir) {
 }
 
 async function main() {
-  let added = 0;
+  let changed = 0;
   let unchanged = 0;
   let skipped = 0;
 
@@ -73,55 +46,24 @@ async function main() {
     const dir = path.posix.dirname(rel);
     if (dir === ".") continue; // homepage needs no breadcrumb
 
-    let html = await fs.readFile(file, "utf8");
+    const html = await fs.readFile(file, "utf8");
     if (/<meta[^>]+name="robots"[^>]+noindex/i.test(html)) {
       skipped++;
       continue;
     }
 
-    const parts = dir.split("/");
-    const items = [{ name: "Home", url: `${ORIGIN}/` }];
-    let acc = "";
-    for (let i = 0; i < parts.length; i++) {
-      acc += `/${parts[i]}`;
-      const isLast = i === parts.length - 1;
-      // Some About pages describe an event before it has a story shelf.
-      if (!isLast && i === 2 && /^read\/events\/[^/]+\/about$/.test(dir)) {
-        try {
-          await fs.access(path.join(root, acc.slice(1), "index.html"));
-        } catch (error) {
-          if (error.code !== "ENOENT") throw error;
-          continue;
-        }
+    // Some About pages describe an event before it has a story shelf.
+    let omittedPath;
+    if (/^read\/events\/[^/]+\/about$/.test(dir)) {
+      const event = path.posix.dirname(dir);
+      try {
+        await fs.access(path.join(root, event, "index.html"));
+      } catch (error) {
+        if (error.code !== "ENOENT") throw error;
+        omittedPath = `/${event}`;
       }
-      const label = isLast
-        ? titleOf(html) || SECTION[parts[i]] || parts[i]
-        : SECTION[parts[i]] ||
-          parts[i].replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-      items.push({ name: label, url: `${ORIGIN}${acc}/` });
     }
-
-    const ld = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: items.map((it, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: it.name,
-        item: it.url
-      }))
-    };
-
-    const block =
-      `${MARKER_OPEN}\n<script type="application/ld+json">\n` +
-      JSON.stringify(ld, null, 2) +
-      `\n</script>\n${MARKER_CLOSE}`;
-
-    // Replace an earlier generated block, else insert before </head>.
-    const eol = fileEol(html);
-    const next =
-      replaceMarkerBlock(html, MARKER_OPEN, MARKER_CLOSE, block) ??
-      html.replace("</head>", withEol(block, eol) + eol + "</head>");
+    const next = withBreadcrumbs(html, rel, omittedPath);
 
     // Only touch the file when the block actually changed. Without this the
     // generator rewrote every indexable page on each run, so a one-page edit
@@ -131,13 +73,15 @@ async function main() {
       continue;
     }
 
-    await fs.writeFile(file, next, "utf8");
-    added++;
+    if (check) console.error(`Regenerate breadcrumbs in ${rel}`);
+    else await fs.writeFile(file, next, "utf8");
+    changed++;
   }
 
   console.log(
-    `breadcrumbs: ${added} written, ${unchanged} already current, ${skipped} skipped (noindex)`
+    `breadcrumbs: ${changed} ${check ? "out of date" : "written"}, ${unchanged} already current, ${skipped} skipped (noindex)`
   );
+  if (check && changed) process.exitCode = 1;
 }
 
 main();

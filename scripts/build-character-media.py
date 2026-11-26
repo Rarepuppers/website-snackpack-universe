@@ -62,7 +62,11 @@ def main():
 
     shared = args.monorepo / 'shared-assets'
     catalog = json.loads((shared / 'text/characters/catalog.json').read_text())
-    for character in catalog['characters']:
+    characters = [
+        character for character in catalog['characters']
+        if character.get('status', 'public' if catalog.get('version', 1) == 1 else None) == 'public'
+    ]
+    for character in characters:
         square = square_portrait(args.monorepo / character['portrait'])
         for width in (240, 480, 960):
             square.resize((width, width), Image.Resampling.LANCZOS).save(
@@ -95,7 +99,7 @@ def main():
             for size, paper in paper_sizes:
                 write_sheet(sheets / f'{slug}-{size}.pdf', art, title, paper)
 
-    collection = [character for character in catalog['characters'] if character.get('colouring')]
+    collection = [character for character in characters if character.get('colouring')]
     if collection:
         packs = {}
         for size, paper in paper_sizes:

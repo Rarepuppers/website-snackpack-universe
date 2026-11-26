@@ -12,15 +12,18 @@ character source and reviewed art. Use the workspace Python with Pillow
 and ReportLab.
 
 ```sh
-"$SNACKPACK_PYTHON" scripts/build-character-media.py "$SNACKPACK_ROOT"
-node scripts/build-character-board.mjs "--source=$SNACKPACK_ROOT"
+export SNACKPACK_ROOT SNACKPACK_PYTHON
+npm run build:characters
 node scripts/build-character-board.mjs --check "--source=$SNACKPACK_ROOT"
 npx playwright test tests/visual/character-board.spec.mjs
 ```
 
 `node scripts/build-character-board.mjs --check` also works in a website-only
-checkout. Add `--portraits-only` to the media command when changing portraits
-without changing the art packs. Tests cover roster search, retries and
+checkout, as does `node scripts/build-breadcrumbs.mjs --check`. Both run
+in site CI. The npm command rebuilds portrait derivatives, board pages,
+breadcrumbs, Reads offline hashes and the sitemap in that order. Pass
+`npm run build:characters -- --all-media` when changing the reviewed
+colouring masters or welcome art. Tests cover roster search, retries and
 six-face clue pools, keyboard focus, the text-only clue fallback and PDF
 responses. Rebuild the Reads shelf after generating story cast links so its
 offline hashes remain current. The monorepo’s
