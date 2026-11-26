@@ -15,18 +15,94 @@
       "fact": "Professor Hooten wears round spectacles and a green waistcoat at the library.",
       "aliases": [
         "Wise Owl Librarian",
-        "Wise Owl"
+        "Wise Owl",
+        "Wise Owl Teacher"
       ],
       "colouring": true,
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
-        "Hello, curious friend! Come and see my clock wall."
+        "Hello, curious friend! Come and see my clock wall.",
+        "Come and look at the clocks with me. Which one would you check first?"
       ],
+      "group": "birds",
       "art": {
         "page": "p04",
         "caption": "Professor Hooten shows the twins a wall of five clocks."
-      }
+      },
+      "relationships": [
+        {
+          "to": "booklava",
+          "type": "mentor"
+        }
+      ],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "centi-peeds-garden-race",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "cluck-oclock-and-the-midnight-that-came-early",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "hen-berrys-helping-day",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "meow-inaras-moonlight-story",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "nutmeg-and-the-tree-that-wouldnt-come",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "the-last-parcel-under-the-tree",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-christmas-shadow-show",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-mural",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owl-festival-of-factors",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owls-library-day",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "hen-berry",
@@ -49,12 +125,71 @@
       "status": "public",
       "pronouns": "she/her",
       "greetings": [
-        "Hello, dear! Would you like to help me fold a paper hat?"
+        "Hello, dear! Would you like to help me fold a paper hat?",
+        "Would you like to make a paper hat? You can choose the colour."
       ],
+      "group": "birds",
       "art": {
         "page": "p02",
         "caption": "Hen-Berry hands Coop a green paper hat."
-      }
+      },
+      "relationships": [
+        {
+          "to": "cluck-oclock",
+          "type": "parent"
+        },
+        {
+          "to": "coop-accino",
+          "type": "parent"
+        }
+      ],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "cluck-oclock-and-the-midnight-that-came-early",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "hen-berrys-digraph-dash",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "hen-berrys-helping-day",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-market-morning",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "nutmegs-garden-morning",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "one-more-story-before-santa",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "corgi-on-the-cob",
@@ -73,12 +208,71 @@
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
-        "Hi! Count the cobs with me. This time, help me remember to count myself!"
+        "Hi! Count the cobs with me. This time, help me remember to count myself!",
+        "Hello again! How many friends have you found today?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p02",
         "caption": "Corgi counts the corn in his basket."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cobs-countryside-run",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cobs-ten-frame-picnic",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "nutmeg-and-the-tree-that-wouldnt-come",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "panda-cakes-market-basket",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-button-trail",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-pocketful-of-sounds",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "the-last-parcel-under-the-tree",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "cluck-oclock",
@@ -103,10 +297,58 @@
       "greetings": [
         "Hello! My watch is ready. Are you staying up for midnight?"
       ],
+      "group": "birds",
       "art": {
         "page": "p02",
         "caption": "Cluck wears his gold paper hat while Hen-Berry folds another."
-      }
+      },
+      "relationships": [
+        {
+          "to": "hen-berry",
+          "type": "child"
+        },
+        {
+          "to": "coop-accino",
+          "type": "twin"
+        }
+      ],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "cluck-oclock-and-the-midnight-that-came-early",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "one-more-story-before-santa",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "pork-ulele-and-the-clockwork-concert",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "coop-accino",
@@ -131,10 +373,57 @@
       "greetings": [
         "Hi! Let’s count down together. I’ll start at three."
       ],
+      "group": "birds",
       "art": {
         "page": "p02",
         "caption": "Coop reaches up for her paper hat."
-      }
+      },
+      "relationships": [
+        {
+          "to": "hen-berry",
+          "type": "child"
+        },
+        {
+          "to": "cluck-oclock",
+          "type": "twin"
+        }
+      ],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "cluck-oclock-and-the-midnight-that-came-early",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "one-more-story-before-santa",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "pork-uleles-picnic-song",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "panda-cake",
@@ -153,12 +442,78 @@
       "status": "public",
       "pronouns": "he/him",
       "greetings": [
-        "Hello! Come help me count what’s in my market basket."
+        "Hello! Come help me count what’s in my market basket.",
+        "Hello, friend! What would you put in your market basket?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p13",
         "caption": "Panda-Cake works at the barn stove while Ted brings the soup."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "nutmeg-and-the-tree-that-wouldnt-come",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "panda-cake-discovers-her-abcs",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "panda-cakes-market-basket",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "panda-cakes-puddle-party",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bears-blanket-fort",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "the-last-parcel-under-the-tree",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-christmas-shadow-show",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "ted-e-bear",
@@ -179,10 +534,80 @@
       "greetings": [
         "Hi! I’m keeping little reminders of good days. What would you put in your jar?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p03",
         "caption": "Ted ties a red ribbon around his jar while Corgi waits at the door."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cobs-ten-frame-picnic",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "hen-berrys-helping-day",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "panda-cakes-puddle-party",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-button-trail",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-lantern-that-needed-a-half",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-pocketful-of-sounds",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bears-blanket-fort",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bears-short-vowel-kit",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "the-last-parcel-under-the-tree",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "nutmeg",
@@ -203,10 +628,61 @@
       "greetings": [
         "Come into the barn! We’re just about ready to see everyone round the table."
       ],
+      "group": "mammals",
       "art": {
         "page": "p12",
         "caption": "Nutmeg welcomes the friends into her red barn."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "animal-architects",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "nutmeg-and-the-tree-that-wouldnt-come",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "nutmegs-four-seasons",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "nutmegs-garden-morning",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "nutmegs-stormy-barn",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "shelly-pop",
@@ -227,10 +703,39 @@
       "greetings": [
         "Hello! Come and look by the stream. I spotted something bobbing past."
       ],
+      "group": "reptiles",
       "art": {
         "page": "p05",
         "caption": "Shelly-Pop nudges two floating cobs back with her nose."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "centi-peeds-garden-race",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "shelly-pops-slow-and-steady",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "hop-tart",
@@ -251,10 +756,39 @@
       "greetings": [
         "Hi! Hear that rustle? I think there’s something hiding in these leaves."
       ],
+      "group": "mammals",
       "art": {
         "page": "p10",
         "caption": "Hop-Tart lifts the missing cob above a pile of leaves."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "hop-tarts-stepping-stone-switch",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-great-snowball-truce",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "bark-b-q",
@@ -275,10 +809,34 @@
       "greetings": [
         "Welcome to my garden! There’s room for you at the table."
       ],
+      "group": "mammals",
       "art": {
         "page": "p01",
         "caption": "Bark-B-Q wags his tail under the apple tree."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "sub-zero",
@@ -299,10 +857,45 @@
       "greetings": [
         "Hi there! Come see the track I made on the snowy hill."
       ],
+      "group": "birds",
       "art": {
         "page": "p01",
         "caption": "Sub-Zero slides down the hill on his tummy."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "centi-peeds-below-zero-burrow",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-great-snowball-truce",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-snowflake-post",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zeros-magic-e-lantern",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "eggs-benedict",
@@ -323,10 +916,33 @@
       "greetings": [
         "Hello! I’ve got my pencil. Let’s make a list for the picnic."
       ],
+      "group": "birds",
       "art": {
         "page": "p02",
         "caption": "Eggs-Benedict makes the sign-up sheet and timing chart."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "vincent-van-mouse",
@@ -347,10 +963,32 @@
       "greetings": [
         "Hello! Look closely at my painting. Can you find the crooked chimney?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p01",
         "caption": "Vincent paints a snowy street with a crooked chimney."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-christmas-shadow-show",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-mural",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "french-toast",
@@ -370,10 +1008,28 @@
       "greetings": [
         "Welcome! Shall we see what came out of the bakery today?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p12",
         "caption": "French-Toast shows his basket of sweet potatoes."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "belgian-waffle",
@@ -393,10 +1049,35 @@
       "greetings": [
         "Hello from up here! Is there a message you’d like me to carry?"
       ],
+      "group": "birds",
       "art": {
         "page": "p05",
         "caption": "The wind catches the sign-up sheet over the duck pond."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "captain-beakon-and-the-bell-across-the-bay",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "cereal-swimmer",
@@ -416,9 +1097,38 @@
       "greetings": [
         "Hi! Ready to swim along the counting line with me?"
       ],
+      "group": "sea-creatures",
       "variant": {
         "caption": "Cereal-Swimmer in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "cereal-swimmer-and-the-number-line-lagoon",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "octo-pops-coral-reef",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "octo-pops-ocean-adventure",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "baby-bulldogs",
@@ -438,10 +1148,43 @@
       "greetings": [
         "Hi! There’s room for one more in our game."
       ],
+      "group": "mammals",
       "art": {
         "page": "p02",
         "caption": "The Baby Bulldogs join the friends on the snowy hill."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "baby-bulldogs-at-the-playground",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "captain-beakons-air-show",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "nutmegs-four-seasons",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-great-snowball-truce",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "centi-peed",
@@ -461,9 +1204,39 @@
       "greetings": [
         "Come and see what’s below zero. I’ll go first!"
       ],
+      "group": "bugs",
       "variant": {
         "caption": "Centi-Peed in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "centi-peeds-below-zero-burrow",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "centi-peeds-garden-race",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "hop-tarts-stepping-stone-switch",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "honey-beats",
@@ -482,9 +1255,34 @@
       "greetings": [
         "Hello! Can you tap a beat while we count?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Honey-Beats in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "honey-beats-and-the-number-neighbours",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "ted-e-bear-and-the-lantern-that-needed-a-half",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "foxy-lox",
@@ -503,9 +1301,28 @@
       "greetings": [
         "Hello, clue finder. Let’s see where the trail goes."
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Foxy-Lox in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "foxy-loxs-mystery-trail",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "quill-berry",
@@ -524,9 +1341,43 @@
       "greetings": [
         "Welcome! Listen closely to the end of this word."
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Quill-Berry in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "luckybugs-art-gallery",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "quill-berrys-ending-clues",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owl-festival-of-factors",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owls-library-day",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "pork-ulele",
@@ -545,9 +1396,38 @@
       "greetings": [
         "Hello! Ready to count us into the next song?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Pork-ulele in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "meow-inaras-vowel-team-duet",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "pork-ulele-and-the-clockwork-concert",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "pork-uleles-picnic-song",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "flutter-butter",
@@ -566,9 +1446,44 @@
       "greetings": [
         "Hi! Let’s see who’s down by the stepping stones."
       ],
+      "group": "bugs",
       "variant": {
         "caption": "Flutter-Butter in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "honey-beats-and-the-number-neighbours",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "hop-tarts-stepping-stone-switch",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-art-gallery",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-pairing-parade",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "biscuit-bouncer",
@@ -588,9 +1503,32 @@
       "greetings": [
         "Hi! I have parcels to deliver. Will you help me find the way?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Biscuit-Bouncer in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "biscuit-bouncers-parcel-parade",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-great-snowball-truce",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "booklava",
@@ -610,9 +1548,44 @@
       "greetings": [
         "Hello, number explorer! A zero has slipped out of place."
       ],
+      "group": "birds",
       "variant": {
         "caption": "Booklava in the teacher version of the shared character art."
-      }
+      },
+      "relationships": [
+        {
+          "to": "professor-hooten",
+          "type": "student"
+        }
+      ],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "booklava-and-the-number-that-lost-its-place",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "sub-zero-and-the-snowflake-post",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owl-festival-of-factors",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "bottle-nose",
@@ -632,9 +1605,28 @@
       "greetings": [
         "Hello! What can you spot out in the water?"
       ],
+      "group": "sea-creatures",
       "variant": {
         "caption": "Bottle-Nose in the teacher version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "octo-pops-ocean-adventure",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "captain-beakon",
@@ -653,9 +1645,43 @@
       "greetings": [
         "Ahoy! Listen for the bell from across the bay."
       ],
+      "group": "birds",
       "variant": {
         "caption": "Captain Beakon in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "captain-beakon-and-the-bell-across-the-bay",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "captain-beakons-air-show",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "captain-beakons-star-watch",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "polly-rogers-pirate-cove",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "tick-tusk",
@@ -675,9 +1701,22 @@
       "greetings": [
         "Hello! Shall we try a number trail together?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Tick-Tusk in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": []
     },
     {
       "id": "snack-spector",
@@ -696,9 +1735,28 @@
       "greetings": [
         "Welcome in! What would you put in the shop window?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Snack-Spector in the shopkeeper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "stripe-scouts-trail-clues",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "sail-affe",
@@ -718,9 +1776,27 @@
       "greetings": [
         "Hi! Look up. What can you spot from here?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Sail-Affe in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-mural",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "plate-retriever",
@@ -740,9 +1816,22 @@
       "greetings": [
         "Hello! Would you give me a paw with this plate?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Plate-Retriever in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": []
     },
     {
       "id": "horse-doeuvre",
@@ -761,9 +1850,21 @@
       "greetings": [
         "Hello! Shall we make room for an extra guest?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Horse d’Oeuvre in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": []
     },
     {
       "id": "jimmy-apple-core",
@@ -782,9 +1883,22 @@
       "greetings": [
         "Hello from down below! What do you think is under your feet?"
       ],
+      "group": "bugs",
       "variant": {
         "caption": "Jimmy Apple-Core in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": []
     },
     {
       "id": "leo-lemonade",
@@ -803,10 +1917,32 @@
       "greetings": [
         "Welcome! Can you guess what’s in my wheelbarrow?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p11",
         "caption": "Leo-Lemonade pushes an enormous potato through the gate."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "bark-b-q-and-the-long-christmas-table",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "luckybug",
@@ -825,9 +1961,49 @@
       "greetings": [
         "Hi! Ready to find who goes with whom?"
       ],
+      "group": "bugs",
       "variant": {
         "caption": "Luckybug in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-13-garden-world",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "baby-bulldogs-at-the-playground",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "captain-beakons-star-watch",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-art-gallery",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-market-morning",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "luckybugs-pairing-parade",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "lionnaise",
@@ -846,9 +2022,29 @@
       "greetings": [
         "Hello! We can be brave together. Come and meet the dragon."
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Lionnaise in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-12-zoo-world",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "lionnaise-and-the-dragon",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "octo-pop",
@@ -868,9 +2064,43 @@
       "greetings": [
         "Hi! What would you like to look for in the reef?"
       ],
+      "group": "sea-creatures",
       "variant": {
         "caption": "Octo-Pop in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "cereal-swimmer-and-the-number-line-lagoon",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "octo-pops-coral-reef",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "octo-pops-ocean-adventure",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "pork-uleles-picnic-song",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "ginger-deer",
@@ -889,9 +2119,37 @@
       "greetings": [
         "Welcome! Shall we set out and see what we find?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Ginger-Deer in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "biscuit-bouncers-parcel-parade",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cobs-countryside-run",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "foxy-loxs-mystery-trail",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "spinnerella",
@@ -910,9 +2168,22 @@
       "greetings": [
         "Hello! Can you find the little word hiding in my name?"
       ],
+      "group": "bugs",
       "variant": {
         "caption": "Spinnerella in the helper version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": []
     },
     {
       "id": "candy-nut",
@@ -932,9 +2203,21 @@
       "greetings": [
         "Hi! Have you ever found a nut under a tree?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Candy-Nut in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": []
     },
     {
       "id": "stripe-scout",
@@ -954,9 +2237,43 @@
       "greetings": [
         "Hello! Listen for the sounds that go together."
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Stripe-Scout in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "captain-beakons-air-show",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "stripe-scouts-blend-bridge",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "stripe-scouts-trail-clues",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "vincent-van-mouse-and-the-mural",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "pita-pan",
@@ -975,10 +2292,33 @@
       "greetings": [
         "Hi! I’ll take this end of the basket. Let’s get it up the hill."
       ],
+      "group": "mammals",
       "art": {
         "page": "p08",
         "caption": "Pita-Pan carries the basket up the hill."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "corgi-on-the-cob-and-the-harvest-table",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "pita-pans-mountain-climb",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "fe-line-mignon",
@@ -996,6 +2336,25 @@
       "pronouns": "she/her",
       "greetings": [
         "Welcome to the café. Come and see what’s happening after dark."
+      ],
+      "group": "mammals",
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "fe-line-mignons-moonlit-cafe",
+          "role": "lead"
+        }
       ]
     },
     {
@@ -1018,9 +2377,21 @@
       "greetings": [
         "Hello, reader. Shall we choose a book together?"
       ],
+      "group": "reptiles",
       "variant": {
         "caption": "Cynthia Book-Smart in the student version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": []
     },
     {
       "id": "ham-and-cheese",
@@ -1039,9 +2410,27 @@
       "greetings": [
         "Hi! Can you help me spot a way through the maze?"
       ],
+      "group": "mammals",
       "variant": {
         "caption": "Ham-and-Cheese in the explorer version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "ham-and-cheeses-big-maze",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "meow-inara",
@@ -1060,10 +2449,48 @@
       "greetings": [
         "Hello! Can you give my potato sack a little push?"
       ],
+      "group": "mammals",
       "art": {
         "page": "p10",
         "caption": "Meow-inara arrives at the gate with a sack of potatoes."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-2-123s-counting",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-8-earth-science",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "everybody-brought-potatoes",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "fe-line-mignons-moonlit-cafe",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "meow-inaras-moonlight-story",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "meow-inaras-vowel-team-duet",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "wise-owls-library-day",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "polly-roger",
@@ -1082,9 +2509,35 @@
       "greetings": [
         "Ahoy! Which shore did that sound come from?"
       ],
+      "group": "birds",
       "variant": {
         "caption": "Polly Roger in the architect version of the shared character art."
-      }
+      },
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "captain-beakon-and-the-bell-across-the-bay",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "polly-roger-and-the-red-wings-of-copan",
+          "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "polly-rogers-pirate-cove",
+          "role": "lead"
+        }
+      ]
     },
     {
       "id": "dough-mino",
@@ -1102,7 +2555,18 @@
       "pronouns": "he/him",
       "greetings": [
         "Hello! Let’s put these tiles in a row and see what comes next."
-      ]
+      ],
+      "group": "reptiles",
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-11-prehistoric-pals",
+        "snackpack-9-space-math"
+      ],
+      "appearances": []
     },
     {
       "id": "marmalade-whiskers",
@@ -1120,7 +2584,17 @@
       "pronouns": null,
       "greetings": [
         "Hello there. Would you help me think of a word for my story?"
-      ]
+      ],
+      "group": "mammals",
+      "relationships": [],
+      "webApps": [
+        "snackpack-1-abcs-alphabet",
+        "snackpack-3-spelling-sentences",
+        "snackpack-4-math-arithmetic",
+        "snackpack-7-mathematics",
+        "snackpack-11-prehistoric-pals"
+      ],
+      "appearances": []
     },
     {
       "id": "shepherds-pie-thon",
@@ -1138,7 +2612,13 @@
       "pronouns": null,
       "greetings": [
         "Hello! Ready for a word with layers?"
-      ]
+      ],
+      "group": "reptiles",
+      "relationships": [],
+      "webApps": [
+        "snackpack-3-spelling-sentences"
+      ],
+      "appearances": []
     }
   ],
   "animals": [

@@ -123,3 +123,19 @@ test("the board fits a 320px dark screen at 200 percent text", async ({ page }) 
     expect(await card.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   }
 });
+
+test("story and animal filters can be shared and lead back to the book", async ({ page }) => {
+  await page.goto("/characters/?group=birds&story=cluck-oclock-and-the-midnight-that-came-early");
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(4);
+  await page.getByLabel("Animal group").selectOption("mammals");
+  await expect(page).toHaveURL(/group=mammals/);
+  await expect(page.getByRole("status")).toHaveText("No matching characters");
+  await page.getByLabel("Animal group").selectOption("");
+  await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
+  const greeting = page.locator(".cast-profile .cast-lead");
+  const first = await greeting.textContent();
+  await page.getByRole("button", { name: "Another hello" }).click();
+  await expect(greeting).not.toHaveText(first);
+  await page.getByRole("link", { name: /Midnight That Came Early/ }).click();
+  await expect(page.getByText("Meet the cast", { exact: true })).toHaveCount(1);
+});

@@ -57,7 +57,7 @@
 .cast-section-top p { margin-block: 0 .4rem; color: var(--cast-muted); }
 .cast-search { display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; max-width: min(100%, 25rem); }
 .cast-search label { font-weight: 750; }
-.cast-search input { min-width: 0; width: 100%; border: 1px solid var(--cast-line); color: var(--cast-ink); background: var(--cast-wash); padding: .7rem; border-radius: .55rem; font: inherit; }
+.cast-search input, .cast-search select { min-width: 0; width: 100%; border: 1px solid var(--cast-line); color: var(--cast-ink); background: var(--cast-wash); padding: .7rem; border-radius: .55rem; font: inherit; }
 .cast-search p { margin: 0; min-height: 1.5em; color: var(--cast-muted); }
 .cast-board { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(.65rem, 2vw, 1.3rem); }
 .cast-board li { min-width: 0; }
@@ -113,3 +113,6 @@ button.cast-card { cursor: pointer; padding: 0; }
 @media (max-width: 19rem) {
   .cast-board { grid-template-columns: minmax(0, 1fr); }
 }
+
+.cast-relative { display: inline-flex; align-items: center; gap: .4rem; }
+.cast-relative img { width: 2.25rem; height: 2.25rem; border-radius: .4rem; }

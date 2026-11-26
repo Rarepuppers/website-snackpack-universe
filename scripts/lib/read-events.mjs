@@ -43,14 +43,8 @@ export const READ_EVENTS = [
       { when: "Christmas morning", slug: "the-last-parcel-under-the-tree" },
     ],
     summer: released([
-      { when: "Christmas lunch", slug: "bark-b-q-and-the-long-christmas-table", added: "2026-11-21", cast: [
-        ["bark-b-q", "Bark-B-Q"], ["leo-lemonade", "Leo-Lemonade"], ["eggs-benedict", "Eggs-Benedict"],
-        ["panda-cake", "Panda-Cake"], ["hen-berry", "Hen-Berry"], ["cluck-oclock", "Cluck O’Clock"],
-        ["coop-accino", "Coop-Accino"],
-      ] },
-      { when: "Summer market", slug: "foxy-lox-and-the-postcard-present", added: "2026-12-11", cast: [
-        ["foxy-lox", "Foxy-Lox"], ["quill-berry", "Quill-Berry"], ["french-toast", "French-Toast"],
-      ] },
+      { when: "Christmas lunch", slug: "bark-b-q-and-the-long-christmas-table", added: "2026-11-21" },
+      { when: "Summer market", slug: "foxy-lox-and-the-postcard-present", added: "2026-12-11" },
     ]),
     alsoGood: ["sub-zero-and-the-snowflake-post", "sub-zeros-magic-e-lantern", "nutmegs-four-seasons"],
     extras: [{ href: "/winter/", label: "Winter in the Woods: two short winter stories and two winter games" }],
@@ -197,14 +191,14 @@ export function releasedEventBooks() {
   const events = [...Object.keys(releaseDates), "christmas"].map(id => READ_EVENTS.find(event => event.id === id));
   return events.flatMap(event => {
     const entries = event.id === "christmas" ? event.summer : event.timeline;
-    return entries.map(({ slug, added, cast }) => {
+    return entries.map(({ slug, added }) => {
       const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
       const isSummer = event.id === "christmas";
       const label = isSummer ? "Summer Christmas" : slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
       const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
       return {
         slug, group: isSummer ? "summer-christmas" : event.id, seasonalRelease: true, age: book.ageRange.split("–").map(Number),
-        readingLevel: book.readingLevel, cast, added: added ?? releaseDates[event.id], title: book.title,
+        readingLevel: book.readingLevel, added: added ?? releaseDates[event.id], title: book.title,
         eyebrow: `${label} · ${format} · ${book.storyPageCount} pages`, blurb: book.blurb,
         cover: "pages/cover", ext: "jpg", alt: book.cover.alt, w: book.cover.width, h: book.cover.height,
       };

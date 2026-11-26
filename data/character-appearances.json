@@ -1,0 +1,839 @@
+{
+  "professor-hooten": [
+    {
+      "book": "centi-peeds-garden-race",
+      "title": "Centi-Peed’s Garden Race",
+      "role": "support"
+    },
+    {
+      "book": "cluck-oclock-and-the-midnight-that-came-early",
+      "title": "Cluck O’Clock and the Midnight That Came Early",
+      "role": "cameo"
+    },
+    {
+      "book": "hen-berrys-helping-day",
+      "title": "Hen-Berry’s Helping Day",
+      "role": "support"
+    },
+    {
+      "book": "meow-inaras-moonlight-story",
+      "title": "Meow-inara’s Moonlight Story",
+      "role": "support"
+    },
+    {
+      "book": "nutmeg-and-the-tree-that-wouldnt-come",
+      "title": "Nutmeg and the Tree That Wouldn’t Come",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "support"
+    },
+    {
+      "book": "the-last-parcel-under-the-tree",
+      "title": "The Last Parcel Under the Tree",
+      "role": "support"
+    },
+    {
+      "book": "vincent-van-mouse-and-the-christmas-shadow-show",
+      "title": "Vincent Van Mouse and the Christmas Shadow Show",
+      "role": "support"
+    },
+    {
+      "book": "vincent-van-mouse-and-the-mural",
+      "title": "Vincent Van Mouse and the Mural in Proportion",
+      "role": "support"
+    },
+    {
+      "book": "wise-owl-festival-of-factors",
+      "title": "Wise Owl and the Festival of Factors",
+      "role": "lead"
+    },
+    {
+      "book": "wise-owls-library-day",
+      "title": "Wise Owl’s Library Day",
+      "role": "lead"
+    }
+  ],
+  "hen-berry": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "cameo"
+    },
+    {
+      "book": "cluck-oclock-and-the-midnight-that-came-early",
+      "title": "Cluck O’Clock and the Midnight That Came Early",
+      "role": "support"
+    },
+    {
+      "book": "hen-berrys-digraph-dash",
+      "title": "Hen-Berry’s Digraph Dash",
+      "role": "lead"
+    },
+    {
+      "book": "hen-berrys-helping-day",
+      "title": "Hen-Berry’s Helping Day",
+      "role": "lead"
+    },
+    {
+      "book": "luckybugs-market-morning",
+      "title": "Luckybug and the Market Morning Mix-Up",
+      "role": "support"
+    },
+    {
+      "book": "nutmegs-garden-morning",
+      "title": "Nutmeg’s Garden Morning",
+      "role": "support"
+    },
+    {
+      "book": "one-more-story-before-santa",
+      "title": "One More Story Before Santa",
+      "role": "support"
+    }
+  ],
+  "corgi-on-the-cob": [
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "lead"
+    },
+    {
+      "book": "corgi-on-the-cobs-countryside-run",
+      "title": "Corgi-on-the-Cob’s Countryside Run",
+      "role": "lead"
+    },
+    {
+      "book": "corgi-on-the-cobs-ten-frame-picnic",
+      "title": "Corgi-on-the-Cob’s Ten-Frame Picnic",
+      "role": "lead"
+    },
+    {
+      "book": "nutmeg-and-the-tree-that-wouldnt-come",
+      "title": "Nutmeg and the Tree That Wouldn’t Come",
+      "role": "support"
+    },
+    {
+      "book": "panda-cakes-market-basket",
+      "title": "Panda-Cake’s Market Basket",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-button-trail",
+      "title": "Ted-E-Bear and the Button Trail",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-pocketful-of-sounds",
+      "title": "Ted-E-Bear and the Pocketful of Sounds",
+      "role": "support"
+    },
+    {
+      "book": "the-last-parcel-under-the-tree",
+      "title": "The Last Parcel Under the Tree",
+      "role": "support"
+    }
+  ],
+  "cluck-oclock": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "cameo"
+    },
+    {
+      "book": "cluck-oclock-and-the-midnight-that-came-early",
+      "title": "Cluck O’Clock and the Midnight That Came Early",
+      "role": "lead"
+    },
+    {
+      "book": "one-more-story-before-santa",
+      "title": "One More Story Before Santa",
+      "role": "lead"
+    },
+    {
+      "book": "pork-ulele-and-the-clockwork-concert",
+      "title": "Pork-ulele and the Clockwork Concert",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "cameo"
+    }
+  ],
+  "coop-accino": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "cameo"
+    },
+    {
+      "book": "cluck-oclock-and-the-midnight-that-came-early",
+      "title": "Cluck O’Clock and the Midnight That Came Early",
+      "role": "support"
+    },
+    {
+      "book": "one-more-story-before-santa",
+      "title": "One More Story Before Santa",
+      "role": "support"
+    },
+    {
+      "book": "pork-uleles-picnic-song",
+      "title": "Pork-ulele’s Picnic Song",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "cameo"
+    }
+  ],
+  "panda-cake": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "cameo"
+    },
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "cameo"
+    },
+    {
+      "book": "nutmeg-and-the-tree-that-wouldnt-come",
+      "title": "Nutmeg and the Tree That Wouldn’t Come",
+      "role": "cameo"
+    },
+    {
+      "book": "panda-cake-discovers-her-abcs",
+      "title": "Panda-Cake the Panda: Discovers Her ABCs",
+      "role": "lead"
+    },
+    {
+      "book": "panda-cakes-market-basket",
+      "title": "Panda-Cake’s Market Basket",
+      "role": "lead"
+    },
+    {
+      "book": "panda-cakes-puddle-party",
+      "title": "Panda-Cake’s Puddle Party",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "cameo"
+    },
+    {
+      "book": "ted-e-bears-blanket-fort",
+      "title": "Ted-E-Bear’s Blanket Fort",
+      "role": "support"
+    },
+    {
+      "book": "the-last-parcel-under-the-tree",
+      "title": "The Last Parcel Under the Tree",
+      "role": "cameo"
+    },
+    {
+      "book": "vincent-van-mouse-and-the-christmas-shadow-show",
+      "title": "Vincent Van Mouse and the Christmas Shadow Show",
+      "role": "support"
+    }
+  ],
+  "ted-e-bear": [
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "cameo"
+    },
+    {
+      "book": "corgi-on-the-cobs-ten-frame-picnic",
+      "title": "Corgi-on-the-Cob’s Ten-Frame Picnic",
+      "role": "support"
+    },
+    {
+      "book": "hen-berrys-helping-day",
+      "title": "Hen-Berry’s Helping Day",
+      "role": "support"
+    },
+    {
+      "book": "panda-cakes-puddle-party",
+      "title": "Panda-Cake’s Puddle Party",
+      "role": "support"
+    },
+    {
+      "book": "ted-e-bear-and-the-button-trail",
+      "title": "Ted-E-Bear and the Button Trail",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-lantern-that-needed-a-half",
+      "title": "Ted-E-Bear and the Lantern That Needed a Half",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-pocketful-of-sounds",
+      "title": "Ted-E-Bear and the Pocketful of Sounds",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bears-blanket-fort",
+      "title": "Ted-E-Bear’s Blanket Fort",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bears-short-vowel-kit",
+      "title": "Ted-E-Bear’s Short-Vowel Kit",
+      "role": "lead"
+    },
+    {
+      "book": "the-last-parcel-under-the-tree",
+      "title": "The Last Parcel Under the Tree",
+      "role": "lead"
+    }
+  ],
+  "nutmeg": [
+    {
+      "book": "animal-architects",
+      "title": "Animal Architects: Built by Nature",
+      "role": "lead"
+    },
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "support"
+    },
+    {
+      "book": "nutmeg-and-the-tree-that-wouldnt-come",
+      "title": "Nutmeg and the Tree That Wouldn’t Come",
+      "role": "lead"
+    },
+    {
+      "book": "nutmegs-four-seasons",
+      "title": "Nutmeg’s Four Seasons",
+      "role": "lead"
+    },
+    {
+      "book": "nutmegs-garden-morning",
+      "title": "Nutmeg’s Garden Morning",
+      "role": "lead"
+    },
+    {
+      "book": "nutmegs-stormy-barn",
+      "title": "Nutmeg’s Stormy Barn",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-jar-of-good-things",
+      "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "cameo"
+    }
+  ],
+  "shelly-pop": [
+    {
+      "book": "centi-peeds-garden-race",
+      "title": "Centi-Peed’s Garden Race",
+      "role": "support"
+    },
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "support"
+    },
+    {
+      "book": "shelly-pops-slow-and-steady",
+      "title": "Shelly-Pop’s Slow and Steady",
+      "role": "lead"
+    }
+  ],
+  "hop-tart": [
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "cameo"
+    },
+    {
+      "book": "hop-tarts-stepping-stone-switch",
+      "title": "Hop-Tart and the Stepping-Stone Switch",
+      "role": "lead"
+    },
+    {
+      "book": "sub-zero-and-the-great-snowball-truce",
+      "title": "Sub-Zero and the Great Snowball Truce",
+      "role": "support"
+    }
+  ],
+  "bark-b-q": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "lead"
+    },
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "lead"
+    }
+  ],
+  "sub-zero": [
+    {
+      "book": "centi-peeds-below-zero-burrow",
+      "title": "Centi-Peed and the Below-Zero Burrow",
+      "role": "support"
+    },
+    {
+      "book": "sub-zero-and-the-great-snowball-truce",
+      "title": "Sub-Zero and the Great Snowball Truce",
+      "role": "lead"
+    },
+    {
+      "book": "sub-zero-and-the-snowflake-post",
+      "title": "Sub-Zero and the Snowflake Post",
+      "role": "lead"
+    },
+    {
+      "book": "sub-zeros-magic-e-lantern",
+      "title": "Sub-Zero’s Magic-E Lantern",
+      "role": "lead"
+    }
+  ],
+  "eggs-benedict": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "support"
+    },
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "support"
+    }
+  ],
+  "vincent-van-mouse": [
+    {
+      "book": "vincent-van-mouse-and-the-christmas-shadow-show",
+      "title": "Vincent Van Mouse and the Christmas Shadow Show",
+      "role": "lead"
+    },
+    {
+      "book": "vincent-van-mouse-and-the-mural",
+      "title": "Vincent Van Mouse and the Mural in Proportion",
+      "role": "lead"
+    }
+  ],
+  "french-toast": [
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "cameo"
+    }
+  ],
+  "belgian-waffle": [
+    {
+      "book": "captain-beakon-and-the-bell-across-the-bay",
+      "title": "Captain Beakon and the Bell Across the Bay",
+      "role": "support"
+    },
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "support"
+    }
+  ],
+  "cereal-swimmer": [
+    {
+      "book": "cereal-swimmer-and-the-number-line-lagoon",
+      "title": "Cereal-Swimmer and the Number-Line Lagoon",
+      "role": "lead"
+    },
+    {
+      "book": "octo-pops-coral-reef",
+      "title": "Octo-Pop’s Coral Reef",
+      "role": "support"
+    },
+    {
+      "book": "octo-pops-ocean-adventure",
+      "title": "Octo-Pop’s Ocean Adventure",
+      "role": "support"
+    }
+  ],
+  "baby-bulldogs": [
+    {
+      "book": "baby-bulldogs-at-the-playground",
+      "title": "Baby Bulldogs at the Playground",
+      "role": "lead"
+    },
+    {
+      "book": "captain-beakons-air-show",
+      "title": "Captain Beakon’s Air Show",
+      "role": "support"
+    },
+    {
+      "book": "nutmegs-four-seasons",
+      "title": "Nutmeg’s Four Seasons",
+      "role": "support"
+    },
+    {
+      "book": "sub-zero-and-the-great-snowball-truce",
+      "title": "Sub-Zero and the Great Snowball Truce",
+      "role": "cameo"
+    }
+  ],
+  "centi-peed": [
+    {
+      "book": "centi-peeds-below-zero-burrow",
+      "title": "Centi-Peed and the Below-Zero Burrow",
+      "role": "lead"
+    },
+    {
+      "book": "centi-peeds-garden-race",
+      "title": "Centi-Peed’s Garden Race",
+      "role": "lead"
+    },
+    {
+      "book": "hop-tarts-stepping-stone-switch",
+      "title": "Hop-Tart and the Stepping-Stone Switch",
+      "role": "support"
+    }
+  ],
+  "honey-beats": [
+    {
+      "book": "honey-beats-and-the-number-neighbours",
+      "title": "Honey-Beats and the Number Neighbours",
+      "role": "lead"
+    },
+    {
+      "book": "ted-e-bear-and-the-lantern-that-needed-a-half",
+      "title": "Ted-E-Bear and the Lantern That Needed a Half",
+      "role": "support"
+    }
+  ],
+  "foxy-lox": [
+    {
+      "book": "foxy-loxs-mystery-trail",
+      "title": "Foxy-Lox’s Mystery Trail",
+      "role": "lead"
+    }
+  ],
+  "quill-berry": [
+    {
+      "book": "luckybugs-art-gallery",
+      "title": "Luckybug’s Art Gallery",
+      "role": "support"
+    },
+    {
+      "book": "quill-berrys-ending-clues",
+      "title": "Quill-Berry’s Ending Clues",
+      "role": "lead"
+    },
+    {
+      "book": "wise-owl-festival-of-factors",
+      "title": "Wise Owl and the Festival of Factors",
+      "role": "support"
+    },
+    {
+      "book": "wise-owls-library-day",
+      "title": "Wise Owl’s Library Day",
+      "role": "support"
+    }
+  ],
+  "pork-ulele": [
+    {
+      "book": "meow-inaras-vowel-team-duet",
+      "title": "Meow-inara’s Vowel-Team Duet",
+      "role": "support"
+    },
+    {
+      "book": "pork-ulele-and-the-clockwork-concert",
+      "title": "Pork-ulele and the Clockwork Concert",
+      "role": "lead"
+    },
+    {
+      "book": "pork-uleles-picnic-song",
+      "title": "Pork-ulele’s Picnic Song",
+      "role": "lead"
+    }
+  ],
+  "flutter-butter": [
+    {
+      "book": "honey-beats-and-the-number-neighbours",
+      "title": "Honey-Beats and the Number Neighbours",
+      "role": "support"
+    },
+    {
+      "book": "hop-tarts-stepping-stone-switch",
+      "title": "Hop-Tart and the Stepping-Stone Switch",
+      "role": "support"
+    },
+    {
+      "book": "luckybugs-art-gallery",
+      "title": "Luckybug’s Art Gallery",
+      "role": "support"
+    },
+    {
+      "book": "luckybugs-pairing-parade",
+      "title": "Luckybug’s Pairing Parade",
+      "role": "support"
+    }
+  ],
+  "biscuit-bouncer": [
+    {
+      "book": "biscuit-bouncers-parcel-parade",
+      "title": "Biscuit-Bouncer and the Parcel Parade",
+      "role": "lead"
+    },
+    {
+      "book": "sub-zero-and-the-great-snowball-truce",
+      "title": "Sub-Zero and the Great Snowball Truce",
+      "role": "support"
+    }
+  ],
+  "booklava": [
+    {
+      "book": "booklava-and-the-number-that-lost-its-place",
+      "title": "Booklava and the Number That Lost Its Place",
+      "role": "lead"
+    },
+    {
+      "book": "sub-zero-and-the-snowflake-post",
+      "title": "Sub-Zero and the Snowflake Post",
+      "role": "support"
+    },
+    {
+      "book": "wise-owl-festival-of-factors",
+      "title": "Wise Owl and the Festival of Factors",
+      "role": "support"
+    }
+  ],
+  "bottle-nose": [
+    {
+      "book": "octo-pops-ocean-adventure",
+      "title": "Octo-Pop’s Ocean Adventure",
+      "role": "support"
+    }
+  ],
+  "captain-beakon": [
+    {
+      "book": "captain-beakon-and-the-bell-across-the-bay",
+      "title": "Captain Beakon and the Bell Across the Bay",
+      "role": "support"
+    },
+    {
+      "book": "captain-beakons-air-show",
+      "title": "Captain Beakon’s Air Show",
+      "role": "lead"
+    },
+    {
+      "book": "captain-beakons-star-watch",
+      "title": "Captain Beakon’s Star Watch",
+      "role": "lead"
+    },
+    {
+      "book": "polly-rogers-pirate-cove",
+      "title": "Polly Roger’s Pirate Cove",
+      "role": "support"
+    }
+  ],
+  "snack-spector": [
+    {
+      "book": "stripe-scouts-trail-clues",
+      "title": "Stripe-Scout’s Trail Clues",
+      "role": "support"
+    }
+  ],
+  "sail-affe": [
+    {
+      "book": "vincent-van-mouse-and-the-mural",
+      "title": "Vincent Van Mouse and the Mural in Proportion",
+      "role": "support"
+    }
+  ],
+  "leo-lemonade": [
+    {
+      "book": "bark-b-q-and-the-long-christmas-table",
+      "title": "Bark-B-Q and the Long Christmas Table",
+      "role": "support"
+    },
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "cameo"
+    }
+  ],
+  "luckybug": [
+    {
+      "book": "baby-bulldogs-at-the-playground",
+      "title": "Baby Bulldogs at the Playground",
+      "role": "support"
+    },
+    {
+      "book": "captain-beakons-star-watch",
+      "title": "Captain Beakon’s Star Watch",
+      "role": "support"
+    },
+    {
+      "book": "luckybugs-art-gallery",
+      "title": "Luckybug’s Art Gallery",
+      "role": "lead"
+    },
+    {
+      "book": "luckybugs-market-morning",
+      "title": "Luckybug and the Market Morning Mix-Up",
+      "role": "lead"
+    },
+    {
+      "book": "luckybugs-pairing-parade",
+      "title": "Luckybug’s Pairing Parade",
+      "role": "lead"
+    }
+  ],
+  "lionnaise": [
+    {
+      "book": "lionnaise-and-the-dragon",
+      "title": "Lionnaise and the Dragon",
+      "role": "lead"
+    }
+  ],
+  "octo-pop": [
+    {
+      "book": "cereal-swimmer-and-the-number-line-lagoon",
+      "title": "Cereal-Swimmer and the Number-Line Lagoon",
+      "role": "support"
+    },
+    {
+      "book": "octo-pops-coral-reef",
+      "title": "Octo-Pop’s Coral Reef",
+      "role": "lead"
+    },
+    {
+      "book": "octo-pops-ocean-adventure",
+      "title": "Octo-Pop’s Ocean Adventure",
+      "role": "lead"
+    },
+    {
+      "book": "pork-uleles-picnic-song",
+      "title": "Pork-ulele’s Picnic Song",
+      "role": "support"
+    }
+  ],
+  "ginger-deer": [
+    {
+      "book": "biscuit-bouncers-parcel-parade",
+      "title": "Biscuit-Bouncer and the Parcel Parade",
+      "role": "support"
+    },
+    {
+      "book": "corgi-on-the-cobs-countryside-run",
+      "title": "Corgi-on-the-Cob’s Countryside Run",
+      "role": "support"
+    },
+    {
+      "book": "foxy-loxs-mystery-trail",
+      "title": "Foxy-Lox’s Mystery Trail",
+      "role": "support"
+    }
+  ],
+  "stripe-scout": [
+    {
+      "book": "captain-beakons-air-show",
+      "title": "Captain Beakon’s Air Show",
+      "role": "support"
+    },
+    {
+      "book": "stripe-scouts-blend-bridge",
+      "title": "Stripe-Scout’s Blend Bridge",
+      "role": "lead"
+    },
+    {
+      "book": "stripe-scouts-trail-clues",
+      "title": "Stripe-Scout’s Trail Clues",
+      "role": "lead"
+    },
+    {
+      "book": "vincent-van-mouse-and-the-mural",
+      "title": "Vincent Van Mouse and the Mural in Proportion",
+      "role": "cameo"
+    }
+  ],
+  "pita-pan": [
+    {
+      "book": "corgi-on-the-cob-and-the-harvest-table",
+      "title": "Corgi-on-the-Cob and the Harvest Table",
+      "role": "cameo"
+    },
+    {
+      "book": "pita-pans-mountain-climb",
+      "title": "Pita-Pan’s Mountain Climb",
+      "role": "lead"
+    }
+  ],
+  "fe-line-mignon": [
+    {
+      "book": "fe-line-mignons-moonlit-cafe",
+      "title": "Fe-Line-Mignon’s Moonlit Café",
+      "role": "lead"
+    }
+  ],
+  "ham-and-cheese": [
+    {
+      "book": "ham-and-cheeses-big-maze",
+      "title": "Ham-and-Cheese’s Big Maze",
+      "role": "lead"
+    }
+  ],
+  "meow-inara": [
+    {
+      "book": "everybody-brought-potatoes",
+      "title": "Everybody Brought Potatoes",
+      "role": "cameo"
+    },
+    {
+      "book": "fe-line-mignons-moonlit-cafe",
+      "title": "Fe-Line-Mignon’s Moonlit Café",
+      "role": "support"
+    },
+    {
+      "book": "meow-inaras-moonlight-story",
+      "title": "Meow-inara’s Moonlight Story",
+      "role": "lead"
+    },
+    {
+      "book": "meow-inaras-vowel-team-duet",
+      "title": "Meow-inara’s Vowel-Team Duet",
+      "role": "lead"
+    },
+    {
+      "book": "wise-owls-library-day",
+      "title": "Wise Owl’s Library Day",
+      "role": "support"
+    }
+  ],
+  "polly-roger": [
+    {
+      "book": "captain-beakon-and-the-bell-across-the-bay",
+      "title": "Captain Beakon and the Bell Across the Bay",
+      "role": "lead"
+    },
+    {
+      "book": "polly-roger-and-the-red-wings-of-copan",
+      "title": "Polly Roger and the Red Wings of Copán",
+      "role": "lead"
+    },
+    {
+      "book": "polly-rogers-pirate-cove",
+      "title": "Polly Roger’s Pirate Cove",
+      "role": "lead"
+    }
+  ]
+}
