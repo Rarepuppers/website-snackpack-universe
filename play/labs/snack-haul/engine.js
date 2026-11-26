@@ -46,6 +46,8 @@
     regionStars: 14,               // stars in a region that open the next one
     slick: 0.6,                    // share of normal grip on ice and wet cobbles
     fordDrag: 2,
+    hayDrag: 0.9,                  // drag while ploughing through a smashed hay stack
+    duckPenalty: 2,                // seconds added for driving into the ducks
     bridgeBounce: 0.45,
     popLiftFrom: 6.5,              // popcorn starts to lift above this speed
     popLift: 0.35,
@@ -105,7 +107,9 @@
     ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
     ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
   ];
-  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14 };
+  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, hay: 2.4, seesaw: 21 };
+  // The seesaw bridge: a plank this long tips this far either way on a hinge.
+  var SEESAW = { half: 4.5, tilt: 0.16, thick: 0.15, damp: 2 };
 
   // Early regions rise more gently, so the free region never turns into a wall.
   function regionHeat(heat, r) { var rr = r * 0.75; return heat * (0.8 + rr * 0.075) + rr * 0.04; }
@@ -300,6 +304,9 @@
     (d.feats || []).forEach(function (a) {
       var fx = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE, f = { type: a.type, x0: fx, x1: fx + (a.len || FEATURE_LEN[a.type]), set: true };
       if (a.type === "wind") { f.power = a.power || 0.42; f.phase = a.phase || 0; }
+      if (a.type === "ducks") { f.period = a.period || 7; f.cross = a.cross || 3; f.phase = a.phase || 0; }
+      if (a.type === "hay") f.rows = a.rows || 2;
+      if (a.type === "seesaw") f.xc = Math.round((fx + f.x1) / 2 / SAMPLE) * SAMPLE;
       list.push(f);
     });
     var shapes = (d.shapes || []).map(function (s) { return { x0: START_FLAT + s.at, x1: START_FLAT + s.at + s.w }; });
@@ -373,12 +380,13 @@
     function at(px) { return pts[Math.max(0, Math.min(pts.length - 1, Math.round(px / SAMPLE)))]; }
     // Pickup stops are level, and bridges and fords sag in the middle.
     features.forEach(function (f) {
-      if (f.type === "pickup" || f.type === "dropoff") {
-        var level = at(f.x0).y;
+      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "seesaw" || f.type === "hay") {
+        // Hay gets a few metres of level run-up too: on a climb it stalls the truck.
+        var level = at(f.x0).y, pad = f.type === "hay" ? 6 : 0;
         pts.forEach(function (p) {
-          if (p.x >= f.x0 && p.x <= f.x1) p.y = level;
-          else if (p.x > f.x0 - 9 && p.x < f.x0) p.y += (level - p.y) * ((p.x - (f.x0 - 9)) / 9);
-          else if (p.x > f.x1 && p.x < f.x1 + 9) p.y = level + (p.y - level) * ((p.x - f.x1) / 9);
+          if (p.x >= f.x0 - pad && p.x <= f.x1 + pad) p.y = level;
+          else if (p.x > f.x0 - pad - 9 && p.x < f.x0 - pad) p.y += (level - p.y) * ((p.x - (f.x0 - pad - 9)) / 9);
+          else if (p.x > f.x1 + pad && p.x < f.x1 + pad + 9) p.y = level + (p.y - level) * ((p.x - f.x1 - pad) / 9);
         });
       } else if (f.type === "slick") {
         // Ice on a steep climb cannot be driven, so slick stretches stay gentle.
@@ -412,6 +420,18 @@
         if (pts[v].y < floor) pts[v].y = floor;
       }
     }
+    // The seesaw's mill stream is cut after smoothing, which would fill it in. The
+    // plank's ends rest on the banks; only the stream bed lies under it.
+    features.forEach(function (f) {
+      if (f.type !== "seesaw") return;
+      var level = at(f.xc).y;
+      pts.forEach(function (p) {
+        var off = Math.abs(p.x - f.xc);
+        if (off < SEESAW.half - 0.1) p.y = level - 1.6;
+        else if (off < SEESAW.half + 0.1) p.y = level - 0.45;
+      });
+      f.level = level;
+    });
     // Ramps go on last, because they are meant to be steeper than the road allows.
     // A ramp on a climb would end in a wall, so each one slides to the nearest
     // stretch that is level or falling, and is dropped if there is none close by.
@@ -492,12 +512,45 @@
     return { coins: coins, cans: cans, rocks: rocks, ridges: ridges };
   }
 
+  // ════ Side roads: Back Roads and the Extra Mile ═════════════════
+  // Free Bakery roads outside the career. Their stars go into the same save as the
+  // career's and count towards total stars, but never towards region unlocks or
+  // reputation, so no existing count moves. `track` says which list a road is on.
+  // Back Roads open at 8 Bakery stars; the Extra Mile at 18. Each road opens once
+  // either of the two before it on its track has a star.
+  // `light` sets the time of day. New features: ducks (a crossing on a fixed clock),
+  // hay (light stacks that break), seesaw (a plank on a hinge). `node dev/sim.js side`.
+  // SIDE-BEGIN
+  var SIDE_ROADS = [
+    { id: "back-1", track: "back", name: "Duck Crossing", light: "dawn", rev: 1, seed: "back-1-A1", len: 150, heat: 0.62, load: "ccacc", feats: [{type: "ducks", at: 40, period: 7, cross: 3, phase: 1.5}, {type: "ducks", at: 118, period: 6, cross: 2.6, phase: 4}], ramps: [{at: 66, h: 0.56, arc: true}], shapes: [{type: "drop", at: 80, w: 20, h: 4.5}], feat: 0 },
+    { id: "back-2", track: "back", name: "Hay Maze", light: "morning", rev: 1, seed: "back-2-A1", len: 180, heat: 0.6, load: "ccacc", feats: [{type: "hay", at: 40, rows: 2}, {type: "hay", at: 92, rows: 3}, {type: "hay", at: 140, rows: 2}], feat: 0 },
+    { id: "back-3", track: "back", name: "Mill Race", light: "midday", rev: 1, seed: "back-3-A1", len: 190, heat: 0.58, load: "cacac", feats: [{type: "seesaw", at: 46}, {type: "seesaw", at: 118}], feat: 0 },
+    { id: "back-4", track: "back", name: "Orchard Rollers", light: "golden", rev: 1, seed: "back-4-A1", len: 220, heat: 0.52, load: "ccacca", shapes: [{type: "rollers", at: 40, w: 60, n: 4, h: 0.95}, {type: "rollers", at: 140, w: 45, n: 3, h: 1.25}], feat: 0 },
+    { id: "back-5", track: "back", name: "Lantern Lane", light: "dusk", rev: 1, seed: "back-5-A1", len: 240, heat: 0.56, load: "ccacac", feats: [{type: "ducks", at: 56, period: 6.5, cross: 2.8, phase: 2}, {type: "hay", at: 160, rows: 2}], ramps: [{at: 108, h: 0.32}], feat: 0 },
+    { id: "back-6", track: "back", name: "The Moonlit Bake", light: "night", rev: 1, seed: "back-6-A1", len: 290, heat: 0.54, load: "ccacacac", pickup: 4, pickupAt: 80, feats: [{type: "ducks", at: 40, period: 6, cross: 2.4, phase: 0}, {type: "seesaw", at: 120}, {type: "hay", at: 222, rows: 2}], shapes: [{type: "rollers", at: 168, w: 36, n: 3, h: 0.9}], feat: 0 },
+  ];
+  // SIDE-END
+  var SIDE_OPEN = { back: 8, extra: 18 };
+  var SIDE = SIDE_ROADS.map(function (s, i) {
+    var region = REGIONS[0], d = Object.assign({ region: 0, index: 1 + i % 6, pickup: 0, side: true }, s);
+    d.load = loadFor(region, 0, d.index, s.load);
+    return d;
+  });
+  function sideTrack(track) { return SIDE.filter(function (d) { return d.track === track; }); }
+  function sideStars(track, stars) { return sideTrack(track).reduce(function (n, d) { return n + (stars[d.id] || 0); }, 0); }
+  // The ducks: on the road for `cross` seconds of every `period`, waddling up for two
+  // seconds before. A clock, not physics, so every run and ghost sees the same ducks.
+  function duckState(f, clock) {
+    var c = ((clock + (f.phase || 0)) % f.period + f.period) % f.period;
+    return { active: c < f.cross, warn: c > f.period - 2, u: c < f.cross ? c / f.cross : 0 };
+  }
+
   // ════ Deliveries ═════════════════════════════════════════════════
   // The free game: all of Bakery Hills and the first roads of Dairy Dunes.
   var FREE_ROUTES = DELIVERIES.filter(function (d) { return d.region === 0 || d.id === "dunes-1" || d.id === "dunes-2"; }).map(function (d) { return d.id; });
   function isFree(id) { return FREE_ROUTES.indexOf(id) >= 0; }
   function findDelivery(id) {
-    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || null;
+    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || SIDE.filter(function (x) { return x.id === id; })[0] || null;
   }
   // ════ Customers and Special Orders ══════════════════════════════
   // Each region has one customer. Stars in a region raise their reputation, and
@@ -509,7 +562,9 @@
     { id: "comb", name: "Captain Comb", role: "the harbour master", icon: "\u2693" },
     { id: "yolanda", name: "Yolanda Frost", role: "the ice-cream maker", icon: "\ud83c\udf66" },
     { id: "pepper", name: "Pepper Pete", role: "the popcorn seller", icon: "\ud83c\udf36\ufe0f" },
-    { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" }
+    { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" },
+    // Free customer on the Back Roads: his orders open on Back Roads stars, not reputation.
+    { id: "crust", name: "Old Crust", role: "the miller", icon: "\ud83c\udf3e", region: 0, track: "back" }
   ];
   var REP_STARS = [3, 8, 13, 18, 22];      // region stars for reputation levels 1 to 5
   // Twist per order slot. `fragile` is the region's delicate cargo; `truck` the truck it suits.
@@ -540,6 +595,18 @@
         region: r, index: o.route, len: route.len + (o.extra ? 40 : 0), heat: regionHeat(route.heat, r) * 1.05,
         load: load, pickup: r > 0 && o.twist === "big" ? 2 : 0, grip: o.grip || 1, truck: o.truck || null
       });
+    });
+  });
+  // Old Crust's orders: fresh roads in the Back Roads style, opening at `at` Back Roads stars.
+  [
+    { name: "Dawn Flour Run", twist: "rush", at: 3, light: "dawn", len: 170, load: ["crate", "crate", "crate", "crate", "eggs"], feats: [{type: "ducks", at: 50, period: 6.5, cross: 2.8, phase: 1}, {type: "ducks", at: 118, period: 7, cross: 3, phase: 5}] },
+    { name: "Hay Day", twist: "big", at: 8, light: "golden", len: 210, load: ["crate", "crate", "eggs", "crate", "crate", "eggs", "crate"], feats: [{type: "hay", at: 44, rows: 2}, {type: "hay", at: 104, rows: 2}, {type: "seesaw", at: 150}] },
+    { name: "Millstones by Moonlight", twist: "fragile", at: 14, light: "night", len: 230, load: ["eggs", "eggs", "crate", "eggs", "eggs"], feats: [{type: "seesaw", at: 40}, {type: "ducks", at: 120, period: 6, cross: 2.6, phase: 3}], shapes: [{type: "rollers", at: 160, w: 40, n: 3, h: 1.3}] }
+  ].forEach(function (o, n) {
+    ORDERS.push({
+      id: "back-order-" + (n + 1), order: true, slot: n, name: o.name, customer: 6, twist: o.twist, track: "back", at: o.at, light: o.light,
+      region: 0, index: 2 + n, len: o.len, heat: 0.55 + n * 0.04, load: o.load, pickup: 0, grip: 1, truck: null, feats: o.feats, shapes: o.shapes, feat: 0,
+      seed: "back-order-" + (n + 1) + "-A1"
     });
   });
   function findOrder(id) { return ORDERS.filter(function (o) { return o.id === id; })[0] || null; }
@@ -666,6 +733,38 @@
     pick.rocks.concat(pick.ridges).forEach(function (rock) {
       ground.createFixture({ shape: new planck.Circle({ x: rock.x, y: rock.y }, rock.r), friction: 0.9 });
     });
+    // Hay stacks: light bales two wide, `rows` high. The truck smashes through and the
+    // hay drags at it (BALANCE.hayDrag). Bales go 3 s after the stack is first hit.
+    var hay = [];
+    terrain.features.forEach(function (f) {
+      if (f.type !== "hay") return;
+      f.bales = [];
+      var y0 = heightAt(terrain, f.x0 + 1.2);
+      for (var row = 0; row < f.rows; row++) for (var col = 0; col < 2; col++) {
+        var bale = world.createBody({ type: "dynamic", position: { x: f.x0 + 0.6 + col * 1.2, y: y0 + 0.33 + row * 0.66 } });
+        bale.setUserData({ kind: "hay", stack: f });
+        // Bales pass through the load: sweeping a bed clean was too harsh. The jolt of
+        // ploughing in fast is what shakes crates loose.
+        bale.createFixture({ shape: new planck.Box(0.58, 0.32), density: 0.22, friction: 0.8, filterMaskBits: 0xFFFF ^ CARGO_BIT });
+        f.bales.push(bale); hay.push(bale);
+      }
+    });
+    // Seesaw bridges: a plank on a hinge, resting with its far end up. It counts as
+    // ground, so a load that lands on it is lost, as on the road.
+    var seesaws = [];
+    terrain.features.forEach(function (f) {
+      if (f.type !== "seesaw") return;
+      var py = f.level + SEESAW.half * Math.sin(SEESAW.tilt) - SEESAW.thick;
+      var plank = world.createBody({ type: "dynamic", position: { x: f.xc, y: py }, angle: SEESAW.tilt });
+      plank.setUserData({ kind: "ground", seesaw: f });
+      plank.createFixture({ shape: new planck.Box(SEESAW.half, SEESAW.thick), density: 0.6, friction: roadGrip });
+      world.createJoint(new planck.RevoluteJoint({
+        enableLimit: true, lowerAngle: -SEESAW.tilt, upperAngle: SEESAW.tilt, referenceAngle: 0,
+        enableMotor: true, motorSpeed: 0, maxMotorTorque: SEESAW.damp
+      }, ground, plank, { x: f.xc, y: py }));
+      f.plank = plank; seesaws.push(plank);
+    });
+    var crossings = terrain.features.filter(function (f) { return f.type === "ducks"; });
 
     // A tall truck on big wheels somersaults if its brakes bite as hard as its engine pulls.
     var brakeBite = spec.brake || 1;
@@ -735,7 +834,8 @@
       dropoffs: deliveries, homes: 0, given: {},
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
       total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
-      brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false
+      brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false,
+      clock: 0, hay: hay, seesaws: seesaws, crossings: crossings, honks: 0
     };
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
@@ -766,6 +866,14 @@
       }
       var w = tagged(c, "wheel");
       if (w && w.other && w.other.kind === "ground") w.self.touching += 1;
+      // The truck breaks into a hay stack: it pays a coin and starts the clock.
+      var h = tagged(c, "hay");
+      if (h && h.other && (h.other.kind === "truck" || h.other.kind === "wheel") && h.self.stack.hitAt == null) {
+        h.self.stack.hitAt = g.clock;
+        g.coinsTaken += 1;
+        var hp = h.body.getPosition();
+        g.events.push({ type: "hay", x: hp.x, y: hp.y });
+      }
     });
     world.on("end-contact", function (c) {
       var w = tagged(c, "wheel");
@@ -864,7 +972,7 @@
     // One fixed physics step. input = { gas: bool, brake: bool }
     g.step = function (input) {
       if (g.status !== "driving") { world.step(STEP); return; }
-      g.time += STEP;
+      g.time += STEP; g.clock += STEP;
       if (g.settle > 0) g.settle -= STEP;
       var gas = !!input.gas && g.fuel > 0, brake = !!input.brake;
       // Record the pedals, run-length encoded, so a ghost can replay this run.
@@ -916,6 +1024,9 @@
         if (splash <= 0) { splash = 0.9; g.events.push({ type: "splash", x: pos.x, y: heightAt(terrain, pos.x) }); }
       } else if (zone && zone.type === "drift" && isGrounded) {
         truck.applyForceToCenter({x:-vx*truck.getMass()*(Math.abs(vx)>3 ? .24 : .52),y:0},true);
+      } else if (zone && zone.type === "hay" && zone.hitAt != null && !zone.gone) {
+        // Ploughing through loose hay drags like a ford.
+        truck.applyForceToCenter({ x: -vx * truck.getMass() * BALANCE.hayDrag, y: 0 }, true);
       } else if (zone && zone.type === "wind") {
         // Gusts push on the load, not the truck, so light cargo goes first.
         g.wind = zone.power * (0.5 + 0.5 * Math.sin(g.time * 1.7 + zone.phase));
@@ -943,7 +1054,36 @@
           }
         }
       });
+      // Ducks on the road: driving into them honks and costs 2 s, and the truck pulls up short.
+      crossings.forEach(function (f) {
+        var on = duckState(f, g.clock).active, front = pos.x + D.bedHalf + 0.3, back = pos.x - D.bedHalf;
+        var win = Math.floor((g.clock + (f.phase || 0)) / f.period);
+        if (on && front > f.x0 && back < f.x1 && f.honked !== win) {
+          f.honked = win; g.honks += 1; g.time += BALANCE.duckPenalty;
+          var lv = truck.getLinearVelocity();
+          truck.setLinearVelocity({ x: lv.x * 0.4, y: lv.y });
+          g.events.push({ type: "honk", x: (f.x0 + f.x1) / 2, y: heightAt(terrain, f.x0) });
+        }
+      });
       world.step(STEP);
+      // A stack the truck has hit bursts: its bales stop touching the truck and fly
+      // ahead (a bale wedged under the chassis could stand the truck on its tail).
+      // The slowing comes from the hay's drag. Bales clear away 3 s later.
+      terrain.features.forEach(function (f) {
+        if (f.type !== "hay" || f.hitAt == null) return;
+        if (!f.burst) {
+          f.burst = true;
+          var tv = truck.getLinearVelocity().x;
+          f.bales.forEach(function (b, k) {
+            b.getFixtureList().setFilterData({ groupIndex: -1, categoryBits: 1, maskBits: 0xFFFF ^ CARGO_BIT });
+            b.setLinearVelocity({ x: tv * 1.1 + (k % 2) * 0.8, y: 2.2 + Math.floor(k / 2) * 0.9 });
+            b.setAngularVelocity(k % 2 ? -2 : 2);
+          });
+        } else if (!f.gone && g.clock - f.hitAt >= 3) {
+          f.gone = true;
+          f.bales.forEach(function (b) { b.setActive(false); });
+        }
+      });
 
       // Lasso: put a roped load back on top of the stack, moving with the truck.
       cargo.forEach(function (c) {
@@ -1081,7 +1221,7 @@
       status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, lassoUsed: !!g.lassoUsed, topup: !!d.topup, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
       long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
-      coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
+      honks: g.honks || 0, coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
       lines: lines, earned: lines.reduce(function (n, l) { return n + l.coins; }, 0)
     };
   }
@@ -1103,6 +1243,16 @@
     var porch=g.nextDrop();
     if (porch && (porch.x-pos.x > 9 || g.canDrop())) toStop=Math.min(toStop,porch.x-pos.x);
     if (toStop < 40) want = Math.min(want, Math.max(0.1, toStop * 0.28));
+    // Ducks ahead: wait at the verge when they will be on the road as we get there.
+    (g.crossings || []).forEach(function (f) {
+      var gap = f.x0 - (pos.x + g.dim.bedHalf + 0.3);
+      if (gap < -0.5 || gap > 16 || pos.x - g.dim.bedHalf > f.x1) return;
+      var eta = Math.max(0, gap) / Math.max(1, vx);
+      if (duckState(f, g.clock + eta).active || duckState(f, g.clock + eta + 1.4).active || duckState(f, g.clock).active && gap < 3) {
+        want = Math.min(want, Math.max(0, (gap - 1.5) * 0.3));
+        if (gap < 2.5) toStop = 0.6;
+      }
+    });
     var input = { gas: false, brake: false };
     if (!g.grounded()) {
       if (angle > 0.14) input.brake = true;
@@ -1358,6 +1508,11 @@
   // region a route opens once either of the two before it has a star.
   function isOpen(id, stars) {
     var d = findDelivery(id);
+    if (d && d.side) {
+      if (regionStars(0, stars) < SIDE_OPEN[d.track]) return false;
+      var list = sideTrack(d.track), k = list.indexOf(d);
+      return k === 0 || (stars[list[k - 1].id] || 0) > 0 || (k > 1 && (stars[list[k - 2].id] || 0) > 0);
+    }
     if (d.region > 0 && regionStars(d.region - 1, stars) < BALANCE.regionStars) return false;
     if (d.index === 0) return true;
     var region = DELIVERIES.filter(function (x) { return x.region === d.region; });
@@ -1373,6 +1528,7 @@
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
-    heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng
+    heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng,
+    SIDE: SIDE, SIDE_ROADS: SIDE_ROADS, SIDE_OPEN: SIDE_OPEN, sideTrack: sideTrack, sideStars: sideStars, duckState: duckState, SEESAW: SEESAW
   };
 });

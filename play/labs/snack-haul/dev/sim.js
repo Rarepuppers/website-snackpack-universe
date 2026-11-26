@@ -9,6 +9,7 @@
 // node play/labs/snack-haul/dev/sim.js testdrives every Test Drive with learners and careful drivers
 // node play/labs/snack-haul/dev/sim.js topup      the Top-Up Run reaches its target stops
 // node play/labs/snack-haul/dev/sim.js lasso      the Lucky Lasso fires once and ghosts replay it
+// node play/labs/snack-haul/dev/sim.js side       Back Roads, Extra Mile and Old Crust's orders: drivers and ghost replays
 const SH = require("../engine.js");
 
 if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
@@ -417,6 +418,41 @@ function lasso() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// Side roads (Back Roads, Extra Mile) and Old Crust's orders. A player reaches
+// Back Roads with about 8 Bakery stars, so drivers use level 1 upgrades there and
+// level 2 on the Extra Mile. Targets: learners 2 stars on most roads, careful
+// drivers 2 stars, no flips for either, gas-only no clean 3 stars, and
+// every road with ducks, hay or a seesaw replays exactly from its recording.
+function side() {
+  let bad = 0;
+  const roads = SH.SIDE.concat(SH.ORDERS.filter((o) => o.track));
+  for (const d of roads) {
+    const L = d.track === "extra" ? 2 : 1, up = SH.rivalUpgrades(L);
+    const learn = LEARNERS.map(([c, w]) => play(d, learner(c, w), up, d.truck || "pickup"));
+    const calm = [4.5, 5.5, 6.5].map((v) => play(d, careful(v), up, d.truck || "pickup"));
+    const gas = play(d, gasOnly(), up, d.truck || "pickup");
+    const fails = [];
+    if (learn.filter((r) => r.stars >= 2).length < 2) fails.push("learners");
+    if (calm.filter((r) => r.stars >= 2).length < 2) fails.push("careful");
+    if (learn.concat(calm).some((r) => r.reason === "flip")) fails.push("a flip");
+    // Holding gas may keep the load where the ducks are the test: they cost it time.
+    if (gas.stars === 3 && !gas.honks && !d.order) fails.push("gas-only 3*");
+    // Ghost replay: the moving parts must give the same run twice.
+    const moving = (d.feats || []).some((f) => f.type === "ducks" || f.type === "hay" || f.type === "seesaw");
+    if (moving) {
+      const g = SH.createGame({ delivery: d, upgrades: up, truck: d.truck || "pickup" }), f = learner(6, 10)(g);
+      for (let n = 0; g.status === "driving" && n < 200 * 60; n++) g.step(f(g));
+      const a = SH.report(g), b = SH.ghostPath({ delivery: d, upgrades: up, truck: d.truck || "pickup" }, g.rec).report;
+      if (!(a.status === b.status && a.kept === b.kept && Math.abs(a.time - b.time) < 1e-9 && a.honks === b.honks && a.coinsTaken === b.coinsTaken)) fails.push("GHOST DIFFERS");
+    }
+    if (fails.length) bad++;
+    const honks = calm.concat(learn).reduce((n, r) => n + r.honks, 0);
+    console.log(d.id.padEnd(13), "L" + L, "learner", learn.map((r) => cell(r, 11)).join(""), "careful", calm.map((r) => cell(r, 11)).join(""), "gas", cell(gas, 11), "t" + Math.round(calm[1].time), "honks " + honks, fails.join(", "));
+  }
+  console.log("side roads failing", bad, "of", roads.length);
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -433,6 +469,7 @@ else if (mode === "daily") dailyPool();
 else if (mode === "testdrives") testDrives();
 else if (mode === "topup") topup();
 else if (mode === "lasso") lasso();
+else if (mode === "side") side();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }
