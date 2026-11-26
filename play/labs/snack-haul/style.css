@@ -232,3 +232,9 @@ button.customer.locked { display: block; width: 100%; text-align: left; color: i
 html.big-text { font-size: 115%; }
 html.big-text .sheet, html.big-text .panel { font-size: 1.05em; }
 .progress b { position: absolute; top: -3px; width: 3px; height: calc(100% + 6px); background: #e0483c; border-radius: 2px; transform: translateX(-1px); }
+
+/* Soda fizz gauge (1.1): a small bar that fills with knocks. */
+.chip.fizz { position: relative; width: 64px; min-height: 26px; padding: 0; overflow: hidden; }
+.chip.fizz::before { content: "🥤"; position: absolute; left: 6px; top: 50%; transform: translateY(-50%); z-index: 1; font-size: .9rem; }
+.chip.fizz i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #8fd0ff, #ff9f4a); transition: width .15s; }
+.chip.fizz.warn i { background: linear-gradient(90deg, #ff9f4a, #e8452c); }

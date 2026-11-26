@@ -153,6 +153,7 @@ const GOALS = [
   { id: "streak7", icon: "🗓️", name: "Full Week", desc: "Do the daily delivery 7 days in a row.", coins: 150, test: () => save.daily.streak >= 7 },
   { id: "cupgold", icon: "🏆", name: "Cup Winner", desc: "Win a gold Weekly Cup.", coins: 250, test: () => (save.stats.cupGolds || 0) >= 1 },
   { id: "crumbs", icon: "✨", name: "Golden Crumbs", desc: "Win 10 golden crumbs: three stars, gold and the challenge in one run.", coins: 200, test: () => Object.keys(save.crumb || {}).length >= 10 },
+  { id: "nightbaker", icon: "🌙", name: "Night Baker", desc: "Finish all six Back Roads. Unlocks the Moon Pie roof topper.", coins: 120, test: () => SH.sideTrack("back").every((d) => save.stars[d.id] > 0) },
   { id: "done", icon: "🏆", name: "Haulage Legend", desc: "Finish every route.", coins: 300, test: () => SH.DELIVERIES.every((d) => save.stars[d.id] > 0) }
 ];
 function regionStars(r) { return SH.regionStars(r, save.stars); }
@@ -161,7 +162,7 @@ function regionStars(r) { return SH.regionStars(r, save.stars); }
 const ico = (name, fallback = "", cls = "ico") => (has("ui/" + name + ".webp") ? `<img class="${cls}" src="${url("ui/" + name + ".webp")}" alt="">` : fallback);
 const artUrl = (name) => (has("art/" + name + ".webp") ? url("art/" + name + ".webp") : "");
 const DRIVERS = [["corgi", "Corgi-on-the-Cob"], ["barkbq", "Bark-B-Q"], ["waffle", "Belgian Waffle"], ["booklava", "Booklava"]];
-const TOPPERS = [["", "None"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
+const TOPPERS = [["", "None"], ["moonpie", "Moon Pie"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
 function look(truckId = drivingTruck()) {
   const p = PAINTS.concat(WINTER_PAINTS).find((x) => x.id === save.paint[truckId]);
   return { driver: save.driver, topper: save.topper, upgrades: save.upgrades, paint: p && paintOwned(p) ? p.colors : null };
@@ -204,7 +205,7 @@ function paintOwned(p) {
   if (!h) return !!save.winterRewards[p.id];
   if (h.truck) return masteryLevel(h.truck) >= h.level;
   if (h.region != null) return regionStars(h.region) >= 24;
-  return SH.ORDERS.filter((o) => o.region === h.customer).every((o) => save.orders[o.id]);
+  return SH.ORDERS.filter((o) => o.customer === h.customer).every((o) => save.orders[o.id]);
 }
 function paintHow(p) {
   const h = p.how;
@@ -540,9 +541,12 @@ function drainEvents(g) {
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
     else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
+    else if (ev.type === "honk") { play("duck_honk", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
+    else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
+    else if (ev.type === "hay") { play("hay_crunch", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
-      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
+      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle" }[ev.feature];
       if (say) hint(say, 2600);
       const sound = { drift:"snow_drift", bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
       if (sound) play(sound, 0.6);
@@ -692,6 +696,13 @@ function hud(g) {
       el.className = "chip gap " + (gap < 0 ? "ahead" : gap > 0 ? "behind" : "");
       el.setAttribute("aria-label", gap < 0 ? Math.abs(gap).toFixed(1) + " seconds ahead of the ghost" : gap > 0 ? gap.toFixed(1) + " seconds behind the ghost" : "Level with the ghost");
     }
+  }
+  // Soda fizz: a gauge that fills with every knock and pops the crate when full.
+  const hasSoda = g.cargo.some((c) => c.type === "soda" && !c.lost && !c.broken && !c.delivered);
+  if ($("fizz").hidden === hasSoda) $("fizz").hidden = !hasSoda;
+  if (hasSoda) {
+    const fz = Math.round((g.fizz || 0) * 20) / 20;
+    if (state.hudFizz !== fz) { state.hudFizz = fz; $("fizz").firstChild.style.width = (fz * 100) + "%"; $("fizz").className = "chip fizz" + (fz > 0.7 ? " warn" : ""); $("fizz").setAttribute("aria-label", "Soda fizz " + Math.round(fz * 100) + "%"); }
   }
   const f = g.fuel / g.maxFuel;
   $("fuel").style.width = (f * 100).toFixed(1) + "%";
@@ -992,7 +1003,8 @@ function failTip(r) {
   return level("straps") < 2 ? "Cargo Straps in the garage hold your load down." : "Slow down before crests and let the truck settle.";
 }
 function following(d) {
-  const i = SH.DELIVERIES.findIndex((item)=>item.id===d.id), n = SH.DELIVERIES[i + 1];
+  const list = d.side ? SH.sideTrack(d.track) : SH.DELIVERIES;
+  const i = list.findIndex((item)=>item.id===d.id), n = list[i + 1];
   return n && SH.isOpen(n.id, save.stars) ? n : null;
 }
 function toMenu(screen) {
@@ -1202,7 +1214,7 @@ function renderScreen() {
   ({ home: homeScreen, routes: routesScreen, orders: ordersScreen, long: longScreen, events: eventsScreen, winter: winterScreen, garage: garageScreen, goals: goalsScreen, settings: settingsScreen })[state.screen]();
   refreshShowcase();
 }
-const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
+const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${(SH.DELIVERIES.length + SH.SIDE.length) * 3}</span></div>`;
 const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">← Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
 
 function homeScreen() {
@@ -1228,15 +1240,19 @@ function homeScreen() {
 }
 
 // ════ Customers and Special Orders ════════════════════════════════
-function orderOpen(o) { return regionFull(o.region) && SH.repLevel(o.region, save.stars) > o.slot; }
+function orderOpen(o) {
+  if (o.track) return SH.sideStars(o.track, save.stars) >= o.at;
+  return regionFull(o.region) && SH.repLevel(o.region, save.stars) > o.slot;
+}
 function ordersReady() { return SH.ORDERS.some((o) => orderOpen(o) && !save.orders[o.id]); }
 function ordersScreen() {
   const cards = SH.CUSTOMERS.map((c, r) => {
+    if (c.track) return sideCustomer(c, r);
     const region = SH.REGIONS[r];
     if (r > 0 && paywalled()) return `<button class="customer locked" data-unlock="orders"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Unlock the full game to meet ${esc(c.name)} and their 5 Special Orders.</small></button>`;
     if (!regionOpen(r)) return `<div class="customer locked"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Reach ${esc(region.name)} to meet ${esc(c.name)}.</small></div>`;
     const lvl = SH.repLevel(r, save.stars), stars = regionStars(r), next = SH.REP_STARS[lvl];
-    const list = SH.ORDERS.filter((o) => o.region === r).map((o) => {
+    const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
       const open = orderOpen(o), done = !!save.orders[o.id], needTruck = o.truck && !save.trucks.includes(o.truck);
       const why = !open ? "Reputation " + (o.slot + 1) : needTruck ? "Needs the " + SH.truckSpec(o.truck).name : done ? "Done ✓" : SH.orderText(o);
       return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open && !needTruck ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
@@ -1247,6 +1263,21 @@ function ordersScreen() {
   }).join("");
   ui.innerHTML = `<section class="panel">${panelHead("Special Orders")}
     <p class="sub">Stars in a region raise your reputation with its customer. Each level opens a Special Order. Orders pay well and give depot parts. ${save.parts} part${save.parts === 1 ? "" : "s"} so far.</p>${cards}</section>`;
+}
+
+// Old Crust: a free customer whose orders open on Back Roads stars.
+function sideCustomer(c, r) {
+  const total = SH.sideTrack(c.track).length * 3, got = SH.sideStars(c.track, save.stars);
+  if (!SH.isOpen(SH.sideTrack(c.track)[0].id, save.stars)) return `<div class="customer locked"><b>${ico("lock", "🔒")} Back Roads</b><small>Earn ${SH.SIDE_OPEN[c.track]} Bakery Hills stars to open the Back Roads and meet ${esc(c.name)}.</small></div>`;
+  const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
+    const open = orderOpen(o), done = !!save.orders[o.id];
+    const why = !open ? o.at + " Back Roads stars" : done ? "Done ✓" : SH.orderText(o);
+    return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
+  }).join("");
+  const next = SH.ORDERS.filter((o) => o.customer === r && got < o.at)[0];
+  return `<div class="customer"><div class="who"><span class="face" aria-hidden="true">${c.icon}</span><div><b>${esc(c.name)}</b><small>${esc(c.role)}, Back Roads</small></div>
+    <div class="rep" aria-label="${got} of ${total} Back Roads stars">${got}/${total} ★<small>${next ? next.at - got + " more Back Roads stars for the next order" : "Every order open"}</small></div></div>
+    <div class="orders">${list}</div></div>`;
 }
 
 // ════ Long Haul: one road per region, milestones every 250 m ══════
@@ -1305,8 +1336,24 @@ function routesScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
+    ${state.regionTab === 0 ? sideSection("back", "Back Roads", "Six free country roads at different times of day, for Old Crust the miller. Ducks, hay and a seesaw bridge.") : ""}
     ${paywalled() && SH.TEST_DRIVES.length ? `<h3 class="small">Test Drives</h3><p class="sub">A free taste of each region in a truck from the full game. One opens every 6 Bakery Hills stars.</p><div class="customer"><div class="orders">${SH.TEST_DRIVES.map((t) => `<button class="order" data-test="${t.id}"${testOpen(t) ? "" : " disabled"}><b>${esc(t.name)}</b><small>${esc(SH.REGIONS[t.region].name)} · ${esc(SH.truckSpec(t.truck).name)} · ${testOpen(t) ? ((save.testDrives || {})[t.id] ? "★".repeat(save.testDrives[t.id]) : "Ready") : t.at + " Bakery stars"}</small></button>`).join("")}</div></div>` : ""}
     ${paywalled() ? `<p class="note">Free: all of Bakery Hills and the first two Dairy Dunes roads. ${nativeApp ? "The rest is one payment." : "The rest is in the full game on Google Play."}</p>` : ""}</section>`;
+}
+
+// Back Roads and the Extra Mile: free side tracks on the Bakery Hills tab. Their stars
+// count in the total, never towards opening regions.
+function sideSection(track, title, blurb) {
+  const list = SH.sideTrack(track);
+  if (!list.length) return "";
+  const need = SH.SIDE_OPEN[track], have = regionStars(0);
+  const head = `<h3 class="small">${esc(title)}</h3>`;
+  if (have < need) return `${head}<p class="sub">${esc(blurb)} Opens at ${need} Bakery Hills stars: ${have} of ${need}.</p>`;
+  const cells = list.map((d, k) => {
+    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, exp = (save.medal[d.id] || 0) === 3;
+    return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(title)} ${k + 1}, ${esc(d.name)}, ${st} stars"><b>${k + 1}</b><i class="rname">${esc(d.name)}</i><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small></button>`;
+  }).join("");
+  return `${head}<p class="sub">${esc(blurb)} ${SH.sideStars(track, save.stars)} of ${list.length * 3} stars.</p><div class="routes">${cells}</div>`;
 }
 
 function winterScreen() {
@@ -1355,7 +1402,8 @@ function garageScreen() {
   }).join("");
   // Drivers and roof toppers appear once their models are delivered.
   const pick = (kind, list, folder, suffix) => {
-    const have = list.filter(([id]) => id === "" || save.winterRewards[id] || hasModel(folder + id + suffix));
+    // The Moon Pie comes from the Night Baker goal, and has a code-built stand-in.
+    const have = list.filter(([id]) => id === "" || save.winterRewards[id] || (id === "moonpie" ? !!save.achieved.nightbaker : hasModel(folder + id + suffix)));
     if (have.length < 2) return "";
     return `<div class="set"><b>${ico(kind)} ${kind === "driver" ? "Driver" : "Roof topper"}</b><div class="opts">${have.map(([id, name]) => `<button class="tab" data-look="${kind}" data-val="${id}" aria-pressed="${save[kind] === id}">${esc(name)}</button>`).join("")}</div></div>`;
   };

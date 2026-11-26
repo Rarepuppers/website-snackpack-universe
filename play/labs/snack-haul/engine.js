@@ -25,7 +25,11 @@
     canEvery: 110,
     passShare: 0.5,
     coinValue: 1,
-    cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12 },
+    cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12, baguette: 9, cheese: 12, pizza: 7, soda: 9 },
+    fizzPop: 1,                    // soda fizz that pops the crate; shake adds it, smooth driving bleeds it
+    fizzBleed: 0.12,               // fizz lost per second
+    fizzFrom: 0.35,                // contact impulse a soda crate shrugs off
+    fizzGain: 0.6,                 // fizz per unit of impulse above that
     eggBreak: 2.6,
     ballast: 2.4,                  // low weight under the bed, which keeps flips earned
     valleyBend: 0.3,               // how fast a valley floor may turn upward, in slope per metre
@@ -107,7 +111,7 @@
     ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
     ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
   ];
-  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, hay: 2.4, seesaw: 21 };
+  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21 };
   // The seesaw bridge: a plank this long tips this far either way on a hinge.
   var SEESAW = { half: 4.5, tilt: 0.16, thick: 0.15, damp: 2 };
 
@@ -116,7 +120,9 @@
   function loadFor(region, r, i, code) {
     var a = region.kinds ? region.kinds[0] : CARGO_TYPES[1 + (i * 2 + 1) % 7];
     var b = region.kinds ? region.kinds[1] : CARGO_TYPES[1 + (i * 3 + 4) % 7];
-    return code.split("").map(function (ch) { return ch === "a" ? a : ch === "b" ? b : "crate"; });
+    // g, z, p and s are the 1.1 cargo: baguette, cheese wheel, pizza boxes, soda crate.
+    var extra = { g: "baguette", z: "cheese", p: "pizza", s: "soda" };
+    return code.split("").map(function (ch) { return ch === "a" ? a : ch === "b" ? b : extra[ch] || "crate"; });
   }
 
   // Roads with their own design, for the routes a new player meets first. heat is
@@ -238,7 +244,14 @@
   }
   var DIM = dimsFor(TRUCKS[0]);
   // Width and height of one unit of each cargo type. Melons are round.
+  // New in 1.1, outside CARGO_TYPES so region loads and stats keep their shape:
+  // baguettes (long, they overhang the rail), cheese wheels (heavy and round),
+  // pizza boxes (wide, flat, slippery, stacked in one column) and soda crates (fizz).
+  var NEW_CARGO = ["baguette", "cheese", "pizza", "soda"];
   function cargoSize(type) {
+    if (type === "baguette") return { w: 0.95, h: 0.16 };
+    if (type === "cheese") return { w: 0.54, h: 0.54, round: true };
+    if (type === "pizza") return { w: 0.62, h: 0.1 };
     if (type === "sack") return { w: 0.56, h: 0.5 };      // winter cargo, not yet in CARGO_TYPES
     if (type === "pudding") return { w: 0.5, h: 0.6 };
     return type === "melon" ? { w: 0.5, h: 0.5, round: true } : type === "cake" ? { w: 0.5, h: 0.72 } : { w: 0.52, h: 0.52 };
@@ -304,7 +317,7 @@
     (d.feats || []).forEach(function (a) {
       var fx = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE, f = { type: a.type, x0: fx, x1: fx + (a.len || FEATURE_LEN[a.type]), set: true };
       if (a.type === "wind") { f.power = a.power || 0.42; f.phase = a.phase || 0; }
-      if (a.type === "ducks") { f.period = a.period || 7; f.cross = a.cross || 3; f.phase = a.phase || 0; }
+      if (a.type === "ducks" || a.type === "sails") { f.period = a.period || 7; f.cross = a.cross || 3; f.phase = a.phase || 0; }
       if (a.type === "hay") f.rows = a.rows || 2;
       if (a.type === "seesaw") f.xc = Math.round((fx + f.x1) / 2 / SAMPLE) * SAMPLE;
       list.push(f);
@@ -380,7 +393,7 @@
     function at(px) { return pts[Math.max(0, Math.min(pts.length - 1, Math.round(px / SAMPLE)))]; }
     // Pickup stops are level, and bridges and fords sag in the middle.
     features.forEach(function (f) {
-      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "seesaw" || f.type === "hay") {
+      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "sails" || f.type === "seesaw" || f.type === "hay") {
         // Hay gets a few metres of level run-up too: on a climb it stalls the truck.
         var level = at(f.x0).y, pad = f.type === "hay" ? 6 : 0;
         pts.forEach(function (p) {
@@ -528,11 +541,17 @@
     { id: "back-4", track: "back", name: "Orchard Rollers", light: "golden", rev: 1, seed: "back-4-A1", len: 220, heat: 0.52, load: "ccacca", shapes: [{type: "rollers", at: 40, w: 60, n: 4, h: 0.95}, {type: "rollers", at: 140, w: 45, n: 3, h: 1.25}], feat: 0 },
     { id: "back-5", track: "back", name: "Lantern Lane", light: "dusk", rev: 1, seed: "back-5-A1", len: 240, heat: 0.56, load: "ccacac", feats: [{type: "ducks", at: 56, period: 6.5, cross: 2.8, phase: 2}, {type: "hay", at: 160, rows: 2}], ramps: [{at: 108, h: 0.32}], feat: 0 },
     { id: "back-6", track: "back", name: "The Moonlit Bake", light: "night", rev: 1, seed: "back-6-A1", len: 290, heat: 0.54, load: "ccacacac", pickup: 4, pickupAt: 80, feats: [{type: "ducks", at: 40, period: 6, cross: 2.4, phase: 0}, {type: "seesaw", at: 120}, {type: "hay", at: 222, rows: 2}], shapes: [{type: "rollers", at: 168, w: 36, n: 3, h: 0.9}], feat: 0 },
+    // The Extra Mile: "The Village Fair" (REGION_EXPANSION_PLAN 3.1). Opens at 18 Bakery stars.
+    { id: "bakery-9", track: "extra", name: "Hay Bale Hop", light: "morning", rev: 1, seed: "bakery-9-A1", len: 220, heat: 0.66, load: "cccac", shapes: [{type: "hill", at: 52, w: 46, h: -3.2}], feats: [{type: "hay", at: 74, rows: 3}, {type: "hay", at: 150, rows: 2}], feat: 0 },
+    { id: "bakery-10", track: "extra", name: "Baguette Brae", light: "midday", rev: 1, seed: "bakery-10-A1", len: 260, heat: 0.62, load: "ccccggg", shapes: [{type: "hill", at: 60, w: 90, h: 11}, {type: "drop", at: 160, w: 30, h: 6}], feat: 0 },
+    { id: "bakery-11", track: "extra", name: "Windmill Sails", light: "golden", rev: 1, seed: "bakery-11-A1", len: 300, heat: 0.7, load: "zccacc", feats: [{type: "sails", at: 70, period: 4, cross: 1.2, phase: 0.4}, {type: "sails", at: 170, period: 4, cross: 1.3, phase: 1.9}], ramps: [{at: 120, h: 0.42, arc: true}], feat: 0 },
+    { id: "bakery-12", track: "extra", name: "The Harvest Fair", light: "golden", rev: 1, seed: "bakery-12-A1", len: 380, heat: 0.66, load: "ccaccggg", pickup: 3, pickupAt: 150, feats: [{type: "ducks", at: 44, period: 6.5, cross: 2.6, phase: 1}, {type: "hay", at: 110, rows: 2}, {type: "seesaw", at: 200}, {type: "sails", at: 300, period: 4, cross: 1.2, phase: 0.8}], feat: 0 }
   ];
   // SIDE-END
   var SIDE_OPEN = { back: 8, extra: 18 };
   var SIDE = SIDE_ROADS.map(function (s, i) {
     var region = REGIONS[0], d = Object.assign({ region: 0, index: 1 + i % 6, pickup: 0, side: true }, s);
+    d.trackIndex = SIDE_ROADS.filter(function (x, k) { return k < i && x.track === s.track; }).length;
     d.load = loadFor(region, 0, d.index, s.load);
     return d;
   });
@@ -589,7 +608,10 @@
       { route: 5, twist: "big", extra: 2 }
     ].forEach(function (o, n) {
       var route = ROUTES[o.route], base = loadFor(region, r, o.route, route.load);
-      var load = o.load || (o.extra ? base.concat(["crate", "crate"]) : base);
+      // The big order's two extra loads bring each region's 1.1 cargo: cheese wheels to the
+      // Cheese Fair, soda to the Honey Festival, pizza boxes to the Night Market Feast.
+      var bigExtra = [null, "cheese", "soda", null, null, "pizza"][r] || "crate";
+      var load = o.load || (o.extra ? (bigExtra === "cheese" ? ["cheese"].concat(base, ["crate"]) : base.concat([bigExtra, bigExtra])) : base);
       ORDERS.push({
         id: region.id + "-order-" + (n + 1), order: true, slot: n, name: ORDER_NAMES[r][n], customer: r, twist: o.twist,
         region: r, index: o.route, len: route.len + (o.extra ? 40 : 0), heat: regionHeat(route.heat, r) * 1.05,
@@ -601,12 +623,16 @@
   [
     { name: "Dawn Flour Run", twist: "rush", at: 3, light: "dawn", len: 170, load: ["crate", "crate", "crate", "crate", "eggs"], feats: [{type: "ducks", at: 50, period: 6.5, cross: 2.8, phase: 1}, {type: "ducks", at: 118, period: 7, cross: 3, phase: 5}] },
     { name: "Hay Day", twist: "big", at: 8, light: "golden", len: 210, load: ["crate", "crate", "eggs", "crate", "crate", "eggs", "crate"], feats: [{type: "hay", at: 44, rows: 2}, {type: "hay", at: 104, rows: 2}, {type: "seesaw", at: 150}] },
+    { name: "Flour Power", twist: "rush", track: "extra", at: 3, light: "morning", len: 230, load: ["crate", "crate", "crate", "crate", "baguette", "baguette"], feats: [{type: "hay", at: 60, rows: 2}, {type: "sails", at: 150, period: 4, cross: 1.2, phase: 1}] },
+    { name: "Stack 'Em High", twist: "baguettes", track: "extra", at: 6, light: "midday", len: 240, load: ["crate", "crate", "crate", "crate", "baguette", "baguette", "baguette", "baguette"], shapes: [{type: "hill", at: 60, w: 80, h: 6}] },
+    { name: "Judges' Breakfast", twist: "fragile", track: "extra", at: 9, light: "dawn", len: 260, load: ["eggs", "eggs", "crate", "eggs", "baguette", "baguette"], feats: [{type: "ducks", at: 50, period: 6, cross: 2.4, phase: 2}, {type: "seesaw", at: 140}] },
     { name: "Millstones by Moonlight", twist: "fragile", at: 14, light: "night", len: 230, load: ["eggs", "eggs", "crate", "eggs", "eggs"], feats: [{type: "seesaw", at: 40}, {type: "ducks", at: 120, period: 6, cross: 2.6, phase: 3}], shapes: [{type: "rollers", at: 160, w: 40, n: 3, h: 1.3}] }
-  ].forEach(function (o, n) {
+  ].forEach(function (o, n, all) {
+    var track = o.track || "back", k = all.slice(0, n).filter(function (x) { return (x.track || "back") === track; }).length;
     ORDERS.push({
-      id: "back-order-" + (n + 1), order: true, slot: n, name: o.name, customer: 6, twist: o.twist, track: "back", at: o.at, light: o.light,
+      id: track + "-order-" + (k + 1), order: true, slot: n, name: o.name, customer: 6, twist: o.twist, track: o.track || "back", at: o.at, light: o.light,
       region: 0, index: 2 + n, len: o.len, heat: 0.55 + n * 0.04, load: o.load, pickup: 0, grip: 1, truck: null, feats: o.feats, shapes: o.shapes, feat: 0,
-      seed: "back-order-" + (n + 1) + "-A1"
+      seed: track + "-order-" + (k + 1) + "-A1"
     });
   });
   function findOrder(id) { return ORDERS.filter(function (o) { return o.id === id; })[0] || null; }
@@ -617,7 +643,8 @@
       rain: "It is pouring. Less grip everywhere.",
       fragile: "Nothing but delicate cargo.",
       truck: "Must go in the " + truckSpec(o.truck).name + ".",
-      big: "The biggest load yet" + (o.pickup ? ", with a pickup on the way." : ".")
+      big: "The biggest load yet" + (o.pickup ? ", with a pickup on the way." : "."),
+      baguettes: "A stack of baguettes. Keep the nose down on climbs."
     })[o.twist] || "";
   }
 
@@ -699,7 +726,7 @@
   // clean bot run at the upgrade level expected there, and never looser than the old
   // time. A route missing here keeps the length-based time.
   // MEDALS-BEGIN
-  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76};
+  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38};
   // MEDALS-END
   function medalTimes(d) {
     var best = d.daily || d.long || d.order ? 0 : MEDALS[d.id];
@@ -764,7 +791,7 @@
       }, ground, plank, { x: f.xc, y: py }));
       f.plank = plank; seesaws.push(plank);
     });
-    var crossings = terrain.features.filter(function (f) { return f.type === "ducks"; });
+    var crossings = terrain.features.filter(function (f) { return f.type === "ducks" || f.type === "sails"; });
 
     // A tall truck on big wheels somersaults if its brakes bite as hard as its engine pulls.
     var brakeBite = spec.brake || 1;
@@ -800,13 +827,13 @@
     var cargo = [];
     function addCargo(type, pos, angle) {
       var size = cargoSize(type);
-      var body = world.createBody({ type: "dynamic", position: pos, angle: angle || 0, angularDamping: size.round ? 2 : 0 });
+      var body = world.createBody({ type: "dynamic", position: pos, angle: angle || 0, angularDamping: type === "cheese" ? 0.4 : size.round ? 2 : 0 });
       var info = { kind: "cargo", type: type, lost: false, broken: false, body: body, id: cargo.length, w: size.w, h: size.h, round: !!size.round };
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "popcorn" ? 0.28 : type === "icecream" ? 1.2 : 0.9,
-        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : 0.5) + 0.1 * up.straps,
+        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? 0.45 : type === "icecream" ? 1.2 : 0.9,
+        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? 0.4 : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
       });
@@ -816,11 +843,23 @@
     // Stack the load on the bed, front of the bed first. Each column keeps its
     // own height, because cakes are taller than crates.
     var onBoard = d.load.slice(0, d.load.length - (d.pickup || 0)), pending = d.load.slice(onBoard.length);
-    var columns = [];
-    onBoard.forEach(function (type, i) {
-      var col = i % spec.perRow, size = cargoSize(type), base = columns[col] || 0;
+    var columns = [], slot = 0, pizzaCol = -1, laid = [];
+    onBoard.forEach(function (type) {
+      // Baguettes go on last, lying on top at the back, sticking out past the rail.
+      if (type === "baguette") { laid.push(type); return; }
+      // Pizza boxes share one column, stacked high.
+      var col = type === "pizza" && pizzaCol >= 0 ? pizzaCol : slot++ % spec.perRow, size = cargoSize(type), base = columns[col] || 0;
+      if (type === "pizza" && pizzaCol < 0) pizzaCol = col;
       addCargo(type, { x: spawnX + D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: spawnY + D.bedHeight + base + size.h / 2 + 0.01 });
       columns[col] = base + size.h + 0.012;
+    });
+    // On a full back row they lie across its top; otherwise on the bed against the
+    // rail. The body stays over the bed (an overhanging stack pivoted off under
+    // throttle); the model is drawn longer, so the bread still pokes out the back.
+    var backTop = Math.min(columns[spec.perRow - 1] || 0, columns[spec.perRow - 2] || 0);
+    laid.forEach(function (type, k) {
+      var size = cargoSize(type), x = D.bedLeft + size.w / 2 + 0.04;
+      addCargo(type, { x: spawnX + x, y: spawnY + D.bedHeight + backTop + size.h / 2 + 0.02 + k * (size.h + 0.012) });
     });
 
     var pickupZones = terrain.features.filter(function (f) { return f.type === "pickup"; }), pickupZone = pickupZones[0] || null, zoneIndex = 0;
@@ -890,6 +929,10 @@
     });
     world.on("post-solve", function (c, impulse) {
       var hit = tagged(c, "cargo");
+      // Soda takes shake from every knock; enough and the crate pops.
+      if (hit && hit.self.type === "soda" && !hit.self.broken && !hit.self.lost && g.settle <= 0) {
+        hit.self.fizz = (hit.self.fizz || 0) + Math.max(0, Math.max.apply(null, impulse.normalImpulses) - BALANCE.fizzFrom) * BALANCE.fizzGain;
+      }
       if (!hit || hit.self.type !== "eggs" || hit.self.broken || hit.self.lost || g.settle > 0) return;
       var hardest = Math.max.apply(null, impulse.normalImpulses);
       if (hardest > eggBreak) {
@@ -910,9 +953,14 @@
     function loadPickup() {
       var top = D.bedHeight;
       cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l) top = Math.max(top, l.y + c.h / 2); });
+      // Baguettes go on the back of the stack, so measure the back two columns only.
+      var long = 0, backTop = D.bedHeight;
+      cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l && l.x < D.bedLeft + 1.15) backTop = Math.max(backTop, l.y + c.h / 2); });
       var added = pending.map(function (type, i) {
         var col = i % spec.perRow, row = Math.floor(i / spec.perRow), size = cargoSize(type);
         var local = { x: D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: top + 0.25 + size.h / 2 + row * 0.8 };
+        // Baguettes are handed up lying across the back of the stack.
+        if (type === "baguette") local = { x: D.bedLeft + size.w / 2 + 0.04, y: backTop + 0.04 + size.h / 2 + (long++) * (size.h + 0.02) };
         return addCargo(type, truck.getWorldPoint(local), truck.getAngle());
       });
       pending = g.pending = [];
@@ -1060,9 +1108,10 @@
         var win = Math.floor((g.clock + (f.phase || 0)) / f.period);
         if (on && front > f.x0 && back < f.x1 && f.honked !== win) {
           f.honked = win; g.honks += 1; g.time += BALANCE.duckPenalty;
+          // A gentle check, not a wall: a hard stop would throw the load.
           var lv = truck.getLinearVelocity();
-          truck.setLinearVelocity({ x: lv.x * 0.4, y: lv.y });
-          g.events.push({ type: "honk", x: (f.x0 + f.x1) / 2, y: heightAt(terrain, f.x0) });
+          truck.setLinearVelocity({ x: lv.x * 0.8, y: lv.y });
+          g.events.push({ type: "honk", what: f.type, x: (f.x0 + f.x1) / 2, y: heightAt(terrain, f.x0) });
         }
       });
       world.step(STEP);
@@ -1115,6 +1164,25 @@
           c.taken = true; g.fuel = Math.min(g.maxFuel, g.fuel + BALANCE.canSeconds); g.events.push({ type: "fuel", x: c.x, y: c.y });
         }
       });
+
+      // Soda: fizz bleeds away on smooth roads; a full gauge pops the crate and
+      // shoves its neighbours.
+      var fizzMax = 0;
+      cargo.forEach(function (c) {
+        if (c.type !== "soda" || c.lost || c.broken || c.delivered) return;
+        c.fizz = Math.max(0, (c.fizz || 0) - BALANCE.fizzBleed * STEP);
+        if (c.fizz >= BALANCE.fizzPop) {
+          c.broken = true; c.fizz = 0;
+          var sp = c.body.getPosition();
+          cargo.forEach(function (o) {
+            if (o === c || o.lost || o.broken || o.delivered) return;
+            var op = o.body.getPosition(), dx = op.x - sp.x, dy = op.y - sp.y, dist = Math.hypot(dx, dy);
+            if (dist < 1.1) o.body.applyLinearImpulse({ x: dx / (dist + 0.1) * 0.35, y: 0.45 }, op, true);
+          });
+          g.events.push({ type: "pop", cargo: "soda", x: sp.x, y: sp.y });
+        } else fizzMax = Math.max(fizzMax, c.fizz / BALANCE.fizzPop);
+      });
+      g.fizz = fizzMax;
 
       // A crate that falls through a gap in the physics still counts as lost.
       cargo.forEach(function (c) {
@@ -1315,7 +1383,13 @@
     "market-4": {"v":9,"L":5,"t":50.6},
     "market-6": {"v":7.5,"L":5,"t":72},
     "market-7": {"v":9,"L":5,"t":83},
-    "market-8": {"v":8,"L":5,"t":85.3}
+    "market-8": {"v":8,"L":5,"t":85.3},
+    "back-1": {"v":7.5,"L":1,"t":34.6},
+    "back-2": {"v":8,"L":1,"t":36.4},
+    "back-3": {"v":10,"L":1,"t":32.9},
+    "back-4": {"v":9,"L":1,"t":36.7},
+    "back-5": {"v":10,"L":1,"t":43.5},
+    "back-6": {"v":6.5,"L":1,"t":69.6}
   };
   // RIVALS-END
   function rivalFor(id) { return RIVALS[id] || null; }
@@ -1366,7 +1440,7 @@
   // ════ Route challenges: one extra objective per career route ═════
   // The table is written by `node dev/sim.js challenges --write`, which sets each
   // target from what a bot driver manages, so every challenge is proven possible.
-  var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps" };
+  var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps", hay: "the hay", seesaw: "the seesaw bridges", ducks: "the duck crossings", sails: "the windmill sails" };
   // CHALLENGES-BEGIN
   var CHALLENGES = {
     "bakery-1": {"kind":"coins","n":9},
@@ -1416,7 +1490,13 @@
     "market-5": {"kind":"truck","truck":"hauler"},
     "market-6": {"kind":"flat","n":0.5},
     "market-7": {"kind":"fuel","n":0.75},
-    "market-8": {"kind":"coins","n":37}
+    "market-8": {"kind":"coins","n":37},
+    "back-1": {"kind":"coins","n":21},
+    "back-2": {"kind":"calm","feature":"hay","n":3.5},
+    "back-3": {"kind":"calm","feature":"seesaw","n":4.5},
+    "back-4": {"kind":"flat","n":0.4},
+    "back-5": {"kind":"coins","n":24},
+    "back-6": {"kind":"fuel","n":0.8}
   };
   // CHALLENGES-END
   function challengeFor(id) { return CHALLENGES[id] || null; }
@@ -1523,7 +1603,7 @@
     STEP: STEP, BALANCE: BALANCE, REGIONS: REGIONS, ROUTES: ROUTES, DELIVERIES: DELIVERIES, UPGRADES: UPGRADES, MAX_LEVEL: MAX_LEVEL,
     EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
     TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
-    cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
+    cargoSize: cargoSize, NEW_CARGO: NEW_CARGO, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, topUpRun: topUpRun, dailyRoad: dailyRoad, TEST_DRIVES: TEST_DRIVES, findTestDrive: findTestDrive, loadFor: loadFor, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,

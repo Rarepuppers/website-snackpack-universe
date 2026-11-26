@@ -160,6 +160,8 @@ function trace() {
 // a little easier than its best. A kind the bot cannot do falls back to the next.
 // No-brake only works where the road climbs into the depot: coasting barely slows
 // the truck on the flat, so it stays on Frosty Pass 3 alone.
+// Side roads name their own challenge kind.
+const SIDE_PLAN = { "back-1": "coins", "back-2": "calm:hay", "back-3": "calm:seesaw", "back-4": "flat", "back-5": "coins", "back-6": "fuel" };
 const CHALLENGE_PLAN = {
   bakery: ["coins", "speed", "fuel", "air", "truck:tuktuk", "flat", "fuel", "coins"],
   dunes: ["speed", "coins", "flat", "truck:buggy", "flat", "air", "fuel", "coins"],
@@ -179,8 +181,8 @@ function challenges() {
   const ceilTo = (v, step) => Math.ceil(v / step - 1e-9) * step;
   const round = (v) => Math.round(v * 100) / 100;
   const table = {};
-  for (const d of SH.DELIVERIES) {
-    const region = SH.REGIONS[d.region].id, wanted = CHALLENGE_PLAN[region][d.index];
+  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
+    const region = SH.REGIONS[d.region].id, wanted = d.side ? SIDE_PLAN[d.id] || "coins" : CHALLENGE_PLAN[region][d.index];
     let up = ups[4], runs = speeds.map((v) => drive(d.id, up, v, 200)).filter(ok);
     // A route the bot cannot finish well at level 4 sets its target at level 5.
     if (!runs.length) { up = ups[5]; runs = speeds.map((v) => drive(d.id, up, v, 200)).filter(ok); }
@@ -212,12 +214,12 @@ function challenges() {
   // Check: every challenge is met by at least one bot run.
   Object.assign(SH.CHALLENGES, table);
   let bad = 0;
-  for (const d of SH.DELIVERIES) {
+  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
     const c = table[d.id]; if (!c) { bad++; continue; }
     const truck = c.kind === "truck" ? c.truck : "pickup", noBrake = c.kind === "nobrake";
     if (!(noBrake ? COASTS : [0]).some((coastFrom) => speeds.some((v) => SH.challengeMet(c, drive(d.id, levelFor[d.id], v, 200, truck, null, false, { noBrake, coastFrom }))))) { bad++; console.log("NOT MET", d.id, SH.challengeText(c)); }
   }
-  console.log("challenges", Object.values(table).filter(Boolean).length, "of", SH.DELIVERIES.length, "unmet", bad);
+  console.log("challenges", Object.values(table).filter(Boolean).length, "of", SH.DELIVERIES.length + SH.SIDE.length, "unmet", bad);
   if (process.argv.includes("--write") && !bad) {
     const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
     const body = "  var CHALLENGES = {\n" + Object.entries(table).map(([id, c]) => "    " + JSON.stringify(id) + ": " + JSON.stringify(c)).join(",\n") + "\n  };";
@@ -234,9 +236,9 @@ function challenges() {
 function rivals() {
   const table = {};
   let bad = 0;
-  for (const d of SH.DELIVERIES) {
+  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
     let pick = null;
-    for (let L = [1, 2, 3, 4, 5, 5][d.region]; L <= 5 && !pick; L++) {
+    for (let L = d.track === "extra" ? 2 : [1, 2, 3, 4, 5, 5][d.region]; L <= 5 && !pick; L++) {
       const up = SH.rivalUpgrades(L);
       for (const v of [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 9, 10]) {
         const r = drive(d.id, up, v, 200);
@@ -249,7 +251,7 @@ function rivals() {
     else table[d.id] = { v: pick.v, L: pick.L, t: pick.t };
     console.log(d.id.padEnd(12), pick ? `speed ${pick.v} level ${pick.L} time ${pick.t}s (gold ${pick.gold}, silver ${pick.silver})` : "NONE");
   }
-  console.log("rivals", Object.keys(table).length, "of", SH.DELIVERIES.length);
+  console.log("rivals", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length);
   if (process.argv.includes("--write")) {
     const fs = require("fs"), path = require("path"), file = path.join(__dirname, "..", "engine.js");
     const body = "  var RIVALS = {\n" + Object.entries(table).map(([id, c]) => "    " + JSON.stringify(id) + ": " + JSON.stringify(c)).join(",\n") + "\n  };";
@@ -328,8 +330,8 @@ function opening() {
 // Gold times from the bots, see MEDALS in engine.js.
 function medals() {
   const table = {};
-  for (const d of SH.DELIVERIES) {
-    const up = d.region === 0 ? Object.assign({}, base, { straps: d.index < 3 ? 0 : d.index < 5 ? 1 : 2 }) : SH.rivalUpgrades(Math.min(5, 1 + d.region));
+  for (const d of SH.DELIVERIES.concat(SH.SIDE)) {
+    const up = d.side ? SH.rivalUpgrades(d.track === "extra" ? 2 : 1) : d.region === 0 ? Object.assign({}, base, { straps: d.index < 3 ? 0 : d.index < 5 ? 1 : 2 }) : SH.rivalUpgrades(Math.min(5, 1 + d.region));
     const runs = [];
     for (let v = 4; v <= 12; v += 0.5) runs.push(play(d, careful(v), up));
     for (const [c, w] of LEARNERS.concat([[7.5, 8], [8.5, 8], [10, 8]])) runs.push(play(d, learner(c, w), up));
@@ -338,7 +340,7 @@ function medals() {
     if (gold && gold < par) table[d.id] = gold;
     console.log(d.id.padEnd(12), "old", String(par).padStart(3), "clean best", clean.length ? best.toFixed(1) : "none", table[d.id] ? "gold " + table[d.id] : "keeps " + par);
   }
-  console.log("new gold times", Object.keys(table).length, "of", SH.DELIVERIES.length);
+  console.log("new gold times", Object.keys(table).length, "of", SH.DELIVERIES.length + SH.SIDE.length);
   if (process.argv.includes("--write")) writeBlock("MEDALS", "  var MEDALS = " + JSON.stringify(table).replace(/,/g, ", ").replace(/:/g, ": ") + ";");
 }
 function writeBlock(name, body) {
