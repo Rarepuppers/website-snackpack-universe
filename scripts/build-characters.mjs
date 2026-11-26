@@ -13,6 +13,7 @@ execFileSync(process.env.SNACKPACK_PYTHON || "python3", ["scripts/build-characte
 for (const args of [
   ["scripts/build-character-board.mjs", `--source=${root}`],
   ["scripts/build-breadcrumbs.mjs"],
+  ["scripts/build-character-appearances.mjs"],
   ["scripts/build-read-shelf.mjs"],
   ["scripts/build-sitemap.mjs"],
 ]) {

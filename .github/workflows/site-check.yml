@@ -196,6 +196,9 @@ jobs:
       - name: Check generated character board
         run: node scripts/build-character-board.mjs --check
 
+      - name: Check reviewed book appearances
+        run: node scripts/build-character-appearances.mjs --check
+
       - name: Check generated breadcrumbs
         run: node scripts/build-breadcrumbs.mjs --check
 

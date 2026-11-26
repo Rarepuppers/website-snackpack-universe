@@ -33,6 +33,18 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://www.snackpackuniverse.com";
 const CHECK = process.argv.includes("--check");
 
+const castByBook = new Map();
+const roster = JSON.parse(fs.readFileSync(path.join(ROOT, "data/character-board.json"), "utf8")).characters;
+const castNames = new Map(roster.map(character => [character.id, character.name]));
+const appearances = JSON.parse(fs.readFileSync(path.join(ROOT, "data/character-appearances.json"), "utf8"));
+for (const [id, books] of Object.entries(appearances)) {
+  if (!castNames.has(id)) throw new Error(`Unknown public character: ${id}`);
+  for (const { book, role } of books) {
+    if (!castByBook.has(book)) castByBook.set(book, []);
+    castByBook.get(book).push({ id, role });
+  }
+}
+
 // Reading-path groups, in order. `intro` is shown under the group heading.
 const GROUPS = [
   { id: "alphabet", title: "Alphabet books · all the letters", intro: "Meet A to Z in a complete illustrated picture book. Read together, name the letters and look for familiar things in every picture." },
@@ -238,8 +250,13 @@ function nextBlock(i) {
   const ev = eventForBook(book.slug);
   const isSummer = book.group === "summer-christmas";
   const partOf = isSummer ? '\n<p class="story-event-link">Part of <a href="/read/events/christmas/#summer-christmas">Summer Christmas</a>.</p>' : ev ? `\n<p class="story-event-link">Part of <a href="/read/events/${ev.id}/">${ev.heading}</a>: ${ev.timeline.length} books in the order they happen.</p>` : "";
-  const castLinks = book.cast?.map(([slug, name]) => `<a href="/characters/${slug}/">${escape(name)}</a>`).join(" · ");
-  const cast = castLinks ? `\n<p class="story-cast">Meet the characters: ${castLinks}</p>` : "";
+  const entries = castByBook.get(book.slug) ?? [];
+  const selection = [...entries.filter(entry => entry.role === "lead"),
+    ...entries.filter(entry => entry.role === "support")].slice(0, 3);
+  if (!selection.length && entries.length) selection.push(entries[0]);
+  const escapeName = name => name.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const castLinks = selection.map(({ id }) => `<a href="/characters/${id}/">${escapeName(castNames.get(id))}</a>`).join(" · ");
+  const cast = castLinks ? `\n<p class="story-event-link"><strong>Meet the cast</strong> · ${castLinks}</p>` : "";
   return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + cast + `\n${share}`;
 }
 
@@ -362,6 +379,7 @@ SHELF.forEach((b, i) => {
   const chip = b.group === "summer-christmas" ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/christmas/#summer-christmas">${eventIcon(ev)}Summer Christmas</a></p>` : ev ? `<p class="read-event-chip" style="--event-accent:${ev.accent}"><a href="/read/events/${ev.id}/">${eventIcon(ev)}${ev.heading} · book ${ev.timeline.findIndex((t) => t.slug === b.slug) + 1} of ${ev.timeline.length}</a></p>` : "";
   html = splice(html, "read-share-top:generated", chip + shareTopBlock() + printInfo(b) + `\n<div class="read-offline" data-offline-book="${b.slug}" hidden><button class="btn btn-secondary" type="button" data-read-offline>Save this book for offline</button><button class="text-link" type="button" data-read-remove hidden>Remove saved book</button><button class="text-link" type="button" data-read-cancel hidden>Cancel saving</button><p class="read-offline-status" data-read-offline-status role="status"></p></div><script defer src="/read/offline.js"></script>`, rel);
   html = bookSchema(html, b, rel);
+  html = html.replace(/\n<!-- cast-links:start -->[\s\S]*?<!-- cast-links:end -->\n/g, "");
   write(rel, splice(html, "read-next:generated", nextBlock(i), rel));
 });
 
