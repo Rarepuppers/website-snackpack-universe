@@ -31,6 +31,8 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
   two starter books, Copy buttons); the site header no longer stays pinned on
   screens under 480 px tall, where it covered most of the page; the Snack Haul
   spotlight tests now match the launched page.
+- Generator catch-up: breadcrumbs on 79 pages that had none (characters,
+  animals and others) and WebP for 181 images on 66 pages, ~3 MB lighter.
 
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 

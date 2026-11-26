@@ -69,6 +69,10 @@ clicks and book events only exist from 26 Nov.
 
 Each has the evidence, the work, when it is done, and how we will know it worked.
 
+**Status on 26 Nov:** R9, R11, R12 and R13 are done. Everything else is waiting
+on a date or on data: R7 (~4 Dec), R1 and R6 (~10 Dec), R2 (a week of plays,
+~3 Dec), R3/R15/R16 (~16 Dec), R8 (after R7), R10 (after R6), R5 (Codex).
+
 ### R1. Re-pick the featured row on ~10 December
 - **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
   by adults; Snacky Worm and Pinball are in the row for the class.
@@ -199,12 +203,20 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   and can time out when run alongside other suites on a laptop; they pass on
   their own and on CI.
 
-### R13. Land the generator drift
+### R13. Land the generator drift — **done 26 Nov**
 - **Evidence:** `build-breadcrumbs.mjs` and `build-webp.mjs` rewrite ~80 pages
   (animals, characters, guides, apps screenshots) that other sessions never
   regenerated.
 - **Work:** one session runs both in a quiet moment, reviews and commits.
   Until then, anyone running them must keep only their own files.
+- **Done:** run on a fresh `origin/main` and reviewed: breadcrumbs added to 79
+  pages that never had them (54 character pages, 19 animal pages, a few
+  others); 181 images on 66 pages now offer WebP (World Cup team pages, soccer
+  games, homepage, Apps); 7 new WebP files, about 3 MB lighter (the ABC
+  reading screenshot 1.35 MB → 186 KB; Sokoban and Chess Puzzles social cards
+  ~290 KB → 15 KB). All gates and 65 browser tests passed. From now on both
+  generators should be a no-op unless a page or image is added, so **run them
+  as part of adding any page** and commit their output with it.
 
 ### R15. Classroom shortcuts on the homepage
 - **Evidence:** the class lands on the homepage first (direct visits, desktop);
@@ -309,7 +321,9 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 
 - **Work in a worktree off `origin/main`.** The local website checkout drifts
   and carries other sessions' edits. Push with `git push origin HEAD:refs/heads/main`.
-- **Never run `build-breadcrumbs` or `build-webp` and commit everything** (R13).
+- **`build-breadcrumbs` and `build-webp` were brought current on 26 Nov (R13).**
+  If they now change files you did not touch, another session added pages
+  without running them: commit that drift separately, not inside your change.
 - **Hub screenshots change with any hub edit.** Push, take the six
   `hub-*-actual.png` from CI's `arcade-visual-diff` artifact, commit them as
   baselines. Never refresh baselines from a Mac or Windows run.
