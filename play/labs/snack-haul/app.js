@@ -85,7 +85,8 @@ const fullWeb = !nativeApp && (params.get("full") === "1" || SH.DELIVERIES.some(
 if (fullWeb && !nativeApp) save.webFull = true;
 const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&referrer=utm_source%3Dwebsite%26utm_medium%3Dweb-demo%26utm_campaign%3Dsnack-haul";
 const paywalled = () => !fullWeb && !save.pro;
-const routePaid = (d) => paywalled() && !d.daily && !d.winter && !SH.isFree(d.id);
+// All of Bakery Hills is free (routes, Special Orders, Long Haul); elsewhere only the free routes.
+const routePaid = (d) => paywalled() && d.region > 0 && !d.daily && !d.winter && !SH.isFree(d.id);
 // A region is paid when none of its roads are free.
 const regionPaid = (r) => r > 0 && paywalled() && !SH.DELIVERIES.some((d) => d.region === r && SH.isFree(d.id));
 const truckPaid = (id) => paywalled() && id!=="sleigh" && !FREE_TRUCKS.includes(id);
