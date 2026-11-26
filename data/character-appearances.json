@@ -54,6 +54,11 @@
       "book": "wise-owls-library-day",
       "title": "Wise Owl’s Library Day",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "hen-berry": [
@@ -91,6 +96,11 @@
       "book": "one-more-story-before-santa",
       "title": "One More Story Before Santa",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "corgi-on-the-cob": [
@@ -137,6 +147,11 @@
     {
       "book": "the-last-parcel-under-the-tree",
       "title": "The Last Parcel Under the Tree",
+      "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
       "role": "support"
     }
   ],
@@ -244,6 +259,11 @@
       "book": "vincent-van-mouse-and-the-christmas-shadow-show",
       "title": "Vincent Van Mouse and the Christmas Shadow Show",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "support"
     }
   ],
   "ted-e-bear": [
@@ -301,6 +321,16 @@
       "book": "the-last-parcel-under-the-tree",
       "title": "The Last Parcel Under the Tree",
       "role": "lead"
+    },
+    {
+      "book": "the-angel-on-the-small-tree",
+      "title": "The Angel on the Small Tree",
+      "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "lead"
     }
   ],
   "nutmeg": [
@@ -338,6 +368,11 @@
       "book": "ted-e-bear-and-the-jar-of-good-things",
       "title": "Ted-E-Bear and the Jar of Good Things",
       "role": "cameo"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "shelly-pop": [
@@ -355,6 +390,11 @@
       "book": "shelly-pops-slow-and-steady",
       "title": "Shelly-Pop’s Slow and Steady",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "hop-tart": [
@@ -372,6 +412,11 @@
       "book": "sub-zero-and-the-great-snowball-truce",
       "title": "Sub-Zero and the Great Snowball Truce",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "bark-b-q": [
@@ -384,6 +429,11 @@
       "book": "everybody-brought-potatoes",
       "title": "Everybody Brought Potatoes",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "sub-zero": [
@@ -406,6 +456,11 @@
       "book": "sub-zeros-magic-e-lantern",
       "title": "Sub-Zero’s Magic-E Lantern",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "eggs-benedict": [
@@ -430,6 +485,11 @@
       "book": "vincent-van-mouse-and-the-mural",
       "title": "Vincent Van Mouse and the Mural in Proportion",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "french-toast": [
@@ -449,6 +509,11 @@
       "book": "everybody-brought-potatoes",
       "title": "Everybody Brought Potatoes",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "cereal-swimmer": [
@@ -517,6 +582,16 @@
       "book": "ted-e-bear-and-the-lantern-that-needed-a-half",
       "title": "Ted-E-Bear and the Lantern That Needed a Half",
       "role": "support"
+    },
+    {
+      "book": "the-angel-on-the-small-tree",
+      "title": "The Angel on the Small Tree",
+      "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "foxy-lox": [
@@ -524,6 +599,11 @@
       "book": "foxy-loxs-mystery-trail",
       "title": "Foxy-Lox’s Mystery Trail",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "quill-berry": [
@@ -563,6 +643,11 @@
       "book": "pork-uleles-picnic-song",
       "title": "Pork-ulele’s Picnic Song",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "flutter-butter": [
@@ -597,6 +682,11 @@
       "book": "sub-zero-and-the-great-snowball-truce",
       "title": "Sub-Zero and the Great Snowball Truce",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "booklava": [
@@ -645,11 +735,23 @@
       "role": "support"
     }
   ],
+  "tick-tusk": [
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
+    }
+  ],
   "snack-spector": [
     {
       "book": "stripe-scouts-trail-clues",
       "title": "Stripe-Scout’s Trail Clues",
       "role": "support"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "sail-affe": [
@@ -696,6 +798,11 @@
       "book": "luckybugs-pairing-parade",
       "title": "Luckybug’s Pairing Parade",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "lionnaise": [
@@ -744,6 +851,20 @@
       "role": "support"
     }
   ],
+  "spinnerella": [
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
+    }
+  ],
+  "candy-nut": [
+    {
+      "book": "the-angel-on-the-small-tree",
+      "title": "The Angel on the Small Tree",
+      "role": "lead"
+    }
+  ],
   "stripe-scout": [
     {
       "book": "captain-beakons-air-show",
@@ -783,6 +904,11 @@
       "book": "fe-line-mignons-moonlit-cafe",
       "title": "Fe-Line-Mignon’s Moonlit Café",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ],
   "ham-and-cheese": [
@@ -834,6 +960,18 @@
       "book": "polly-rogers-pirate-cove",
       "title": "Polly Roger’s Pirate Cove",
       "role": "lead"
+    },
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
+    }
+  ],
+  "dough-mino": [
+    {
+      "book": "twenty-four-letters-before-christmas",
+      "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
     }
   ]
 }

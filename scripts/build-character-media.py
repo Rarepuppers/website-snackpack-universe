@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4, LETTER
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
@@ -26,12 +27,19 @@ def square_portrait(path, width=960):
 
 def draw_sheet(pdf, art, title, paper):
     width, height = paper
-    scaled = min((width - 84) / art.width, (height - 116) / art.height)
+    scaled = min((width - 84) / art.width, (height - 132) / art.height)
     art_width, art_height = art.width * scaled, art.height * scaled
     pdf.setFont('Helvetica-Bold', 16)
     pdf.drawCentredString(width / 2, height - 47, title)
     pdf.drawImage(ImageReader(art), (width - art_width) / 2, (height - art_height) / 2 - 10,
                   width=art_width, height=art_height)
+    credit = f'{title} · © 2026 SnackPack Studios · Free at snackpackuniverse.com/characters/colouring/'
+    pdf.setFont('Helvetica', 8)
+    pdf.setFillColor(HexColor('#635950'))
+    pdf.drawCentredString(width / 2, 36, credit)
+    url_width = pdf.stringWidth(credit, 'Helvetica', 8)
+    pdf.linkURL('https://www.snackpackuniverse.com/characters/colouring/',
+                (width / 2 - url_width / 2, 34, width / 2 + url_width / 2, 44))
     pdf.showPage()
 
 

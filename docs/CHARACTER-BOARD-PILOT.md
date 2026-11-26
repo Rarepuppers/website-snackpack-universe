@@ -1,7 +1,7 @@
 # Character catalog publication
 
-The website publishes the 51-character profile catalog from Apps 1–4,
-51 clue rounds, 18 sourced animal pages and artwork in both print sizes.
+The website publishes the 52-character profile catalog and
+52 clue rounds, 39 sourced animal pages and artwork in both print sizes.
 The 14-character colouring pack and the individual drawings use reviewed
 masters. Profiles can show book art or a second portrait when available.
 Homepage, Reads, app pages and books with confirmed appearances link to the board. The public snapshot
@@ -37,3 +37,6 @@ entries stay out of the generated site. Use
 in story text for editorial review. The appearance index powers a single
 cast row per book. After the book is imported, remove the approved
 catalog entry's draft flag and rebuild before verifying the offline reader.
+
+The colouring printer puts the title, studio credit and a clickable colouring
+page link on every A4 and US Letter sheet, including both packs.

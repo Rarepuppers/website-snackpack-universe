@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("the portrait board links to the owl, hen and confirmed family", async ({ page }) => {
   await page.goto("/characters/");
-  await expect(page.locator("#crew .cast-card")).toHaveCount(51);
+  await expect(page.locator("#crew .cast-card")).toHaveCount(52);
   await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
   await expect(page.getByRole("heading", { name: "Professor Hooten" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Midnight That Came Early/ })).toBeVisible();
@@ -58,7 +58,7 @@ test("home and Reads link to the catalog, with search by legacy name", async ({ 
   await search.fill("nobody here");
   await expect(page.getByRole("status")).toHaveText("No matching characters");
   await search.fill("");
-  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(51);
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(52);
   await page.goto("/read/");
   await expect(page.getByRole("link", { name: "Meet the Characters", exact: true })).toHaveAttribute("href", "/characters/");
 });
