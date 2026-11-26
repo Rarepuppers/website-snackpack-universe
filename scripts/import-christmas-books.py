@@ -1,5 +1,6 @@
 """Import reviewed web-original event books, with the original Christmas defaults."""
 from pathlib import Path
+from datetime import date
 import argparse, hashlib, json, html, re, shutil, subprocess
 ROOT=Path(__file__).resolve().parent.parent
 EVENTS = {
@@ -27,9 +28,29 @@ selected = [args.book] if args.book else list(BOOKS.items())
 e=html.escape
 
 
-def render_paragraph(text, event):
+def uses_events_source(event, source_folder):
+    return event != 'christmas' or source_folder.startswith('christmas/')
+
+
+def advent_options(src, data):
+    options = src / 'book-options.json'
+    advent = json.loads(options.read_text(encoding='utf-8')).get('advent') if options.is_file() else data.get('advent')
+    if advent is None:
+        return None
+    try:
+        month, first, last, teaser = (advent[key] for key in ('month', 'firstDay', 'lastDay', 'teaserFrom'))
+        opening, closing = date(2000, month, first), date(2000, month, last)
+        teaser_date = date.fromisoformat('2000-' + teaser)
+        if not teaser_date < opening <= closing or last - first + 1 != data['storyPageCount']:
+            raise ValueError
+    except (KeyError, TypeError, ValueError):
+        parser.error('Advent needs a valid teaser date and one calendar day per story page')
+    return advent
+
+
+def render_paragraph(text, events_source):
     value = e(text, quote=False)
-    if event != 'christmas':
+    if events_source:
         value = value.removeprefix('&gt; ')
         value = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', value)
         value = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', value)
@@ -62,10 +83,10 @@ for source,slug in selected:
     if event not in {*EVENTS, 'christmas'}:
         parser.error(f'Unknown book event: {event}')
     event_label = EVENTS.get(event, 'Christmas')
-    if event != 'christmas':
-        if not source_folder.startswith(event + '/'):
-            parser.error('Use docs/reads-events-bookshelf as the source root for event books')
-    install_printable = event != 'christmas' or args.use_reviewed_printable
+    events_source = uses_events_source(event, source_folder)
+    if events_source and not source_folder.startswith(event + '/'):
+        parser.error('Use docs/reads-events-bookshelf as the source root for event books')
+    install_printable = events_source or args.use_reviewed_printable
     printable = src / f'{slug}.pdf'
     if install_printable and not printable.is_file():
         parser.error('A reviewed book PDF is required')
@@ -74,7 +95,10 @@ for source,slug in selected:
         parser.error('Manifest page order or count is invalid')
     if any(art['status'] != 'accepted' for art in [data['cover'], *(p['art'] for p in data['pages'])]):
         parser.error('All illustration masters must be accepted before import')
-    if event != 'christmas' or source_folder != data['id']:
+    advent = advent_options(src, data)
+    if advent:
+        data['advent'] = advent
+    if events_source or source_folder != data['id']:
         data['sourceFolder'] = source_folder
     folder=ROOT/'read'/slug; (folder/'pages').mkdir(parents=True,exist_ok=True)
     stored=ROOT/'data/web-originals'/slug; stored.mkdir(parents=True,exist_ok=True)
@@ -90,7 +114,7 @@ for source,slug in selected:
         jpeg = str(folder / 'pages' / f'{key}.jpg')
         if shutil.which('magick'):
             subprocess.run(['magick', raster, '-strip', '-quality', '88', jpeg], check=True)
-        elif event != 'christmas' or not Path(jpeg).is_file():
+        elif events_source or not Path(jpeg).is_file():
             if not shutil.which('sips'):
                 parser.error('ImageMagick or macOS sips is required to create missing JPEGs')
             subprocess.run(['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '88', raster, '--out', jpeg],
@@ -120,17 +144,20 @@ for source,slug in selected:
     schema_json = json.dumps(schema, ensure_ascii=False, separators=(',', ':'))
     head=f'<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{e(title)} | Free {format_label.title()}</title><meta name="description" content="{e(blurb,quote=True)}"><link rel="canonical" href="{url}"><meta property="og:title" content="{e(title,quote=True)}"><meta property="og:description" content="{e(blurb,quote=True)}"><meta property="og:url" content="{url}"><meta property="og:type" content="book"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/favicon-32.png"><link rel="stylesheet" href="/assets/fonts/fonts.css"><link rel="stylesheet" href="../../site.css"><script type="application/ld+json">{schema_json}</script>'+theme+'</head>'
     hero=f'<section class="story-title-section"><div class="shell story-title-grid"><div><span class="eyebrow">{format_label} · Free</span><h1>{e(title)}</h1><p class="lead">{e(blurb)}</p><div class="tag-row"><span class="tag">Ages {e(age_range)} · {e(reading_level)}</span><span class="tag">{page_count} story pages</span></div><a class="btn btn-primary" href="#page-1">Begin the story</a><!-- read-share-top:generated --><!-- /read-share-top:generated --></div>{picture("cover",data["cover"])}</div></section>'
+    advent_attrs = f' data-read-advent="{e(json.dumps(advent, separators=(",", ":")), quote=True)}"' if advent else ''
+    if advent:
+        head = head.replace('</head>', '<script defer src="../advent.js"></script></head>')
     cards = []
     for page in data['pages']:
         number = page['number']
-        paragraphs = ''.join(render_paragraph(p, event) for p in re.split(r'\n\s*\n', page['text']))
+        paragraphs = ''.join(render_paragraph(p, events_source) for p in re.split(r'\n\s*\n', page['text']))
         artwork = picture(f'p{number:02}', page['art'], True)
         chapter_title = f'<h2>{e(chapters[number])}</h2>' if number in chapters else ''
         question = render_question(page['question']) if 'question' in page else ''
         cards.append(f'<article class="story-page-card" id="page-{number}">{artwork}<div class="story-page-copy"><span>Page {number} of {page_count}</span>{chapter_title}{paragraphs}{question}</div></article>\n')
     finish_copy = 'A SnackPack original picture book, free to read together.' if reading_level == 'Read together' else 'A SnackPack original story, free to read online or print.'
     finish=f'<section><div class="shell story-finish-card"><span class="eyebrow">The end · Thank you for reading</span><h2>Share another story</h2><p>{finish_copy}</p><!-- read-next:generated --><!-- /read-next:generated --><div class="stack-inline"><a class="btn btn-secondary" href="./{slug}.pdf" download>Print this book (PDF)</a><a class="btn btn-secondary" href="../">Back to the bookshelf</a></div></div></section>'
-    (folder/'index.html').write_text(head+'<body class="story-reader-page"><header class="topbar">'+header+'</header><main>'+hero+'<section class="story-pages" aria-label="Story pages"><div class="shell">'+chapter_nav+''.join(cards)+'</div></section>'+finish+'</main>'+tail,encoding='utf-8')
+    (folder/'index.html').write_text(head+'<body class="story-reader-page"><header class="topbar">'+header+'</header><main>'+hero+'<section class="story-pages" aria-label="Story pages"'+advent_attrs+'><div class="shell">'+chapter_nav+''.join(cards)+'</div></section>'+finish+'</main>'+tail,encoding='utf-8')
 registry_path.write_text(json.dumps(registry,indent=2)+'\n',encoding='utf-8')
 print('Imported',len(selected),'web-original books')
 
@@ -140,8 +167,10 @@ for _, slug in selected:
     loc = registry[slug]
     d=json.loads((ROOT/loc).read_text(encoding='utf-8'))
     event = d.get('event', 'christmas')
-    source_base = 'docs/reads-events-bookshelf' if event != 'christmas' else 'docs/christmas-picture-books-2026'
-    entry={'id':f'web-{event}-'+d['id'],'title':d['title'],'art':[source_base+'/'+d.get('sourceFolder', d['id'])+'/'+a['master'] for a in [d['cover']]+[p['art'] for p in d['pages']]],'pages':[{'text':p['text']} for p in d['pages']]}
+    source_folder = d.get('sourceFolder', d['id'])
+    source_base = ('docs/reads-events-bookshelf' if uses_events_source(event, source_folder)
+                   else 'docs/christmas-picture-books-2026')
+    entry={'id':f'web-{event}-'+d['id'],'title':d['title'],'art':[source_base+'/'+source_folder+'/'+a['master'] for a in [d['cover']]+[p['art'] for p in d['pages']]],'pages':[{'text':p['text']} for p in d['pages']]}
     for index, previous in enumerate(web['books']):
         if previous['id'] == entry['id']:
             web['books'][index] = entry

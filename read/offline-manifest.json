@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 69,
- "bytes": 161098224,
+ "books": 71,
+ "bytes": 178064696,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -18,6 +18,7 @@
   "/read/offline.js",
   "/read/shelf-filter.js",
   "/read/events.js",
+  "/read/advent.js",
   "/assets/fonts/fonts.css",
   "/assets/favicon-32.png",
   "/assets/snackpack-mark-96.png",
@@ -64,7 +65,7 @@
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p23.webp",
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p24.webp"
    ],
-   "html_sha256": "c9e662932b6d374d37adfc27adf2879802aa31b998e393fb27cce34b90cb4c53",
+   "html_sha256": "aef3f53dfe1a71b58eb86859dd66c909aafa283a9899471a67d51f797c1abc98",
    "bytes": 10146370
   },
   {
@@ -98,7 +99,7 @@
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp"
    ],
-   "html_sha256": "bb383719a23ed3837805050bf91e57b03d315d3b42df58ba25737a399a8fc0aa",
+   "html_sha256": "159ac09644d316b63ee773b5b19dcb12e7f931b03c45ea19ab942d6a9f0eeda9",
    "bytes": 9688408
   },
   {
@@ -132,7 +133,7 @@
     "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
     "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp"
    ],
-   "html_sha256": "59b00a36c8749a73faf09474846b40a0e8c9a4ab85c121fb59ba7fc98543fccb",
+   "html_sha256": "895dfe32a56e341dcfe674e6c488c04a6c5db645f51da11368fcda7a7db707a1",
    "bytes": 6113052
   },
   {
@@ -186,7 +187,7 @@
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp"
    ],
-   "html_sha256": "911d93f6998c22ea314b85596abfa76dba3953f9518c5effff2aec6a0ff68708",
+   "html_sha256": "c5b9bfa68008e62b50146e0fb67ccb8fd2e1db0e6064ca03a039e28a93f542f6",
    "bytes": 18464118
   },
   {
@@ -220,7 +221,7 @@
     "/read/one-more-story-before-santa/pages/p23.webp",
     "/read/one-more-story-before-santa/pages/p24.webp"
    ],
-   "html_sha256": "156e59cef290aeb0caf01d0f88e669e2485fac333bb08dc8db81e5337d0093a7",
+   "html_sha256": "300083f80cdd70af7898817e7d4857f5594fb934e3f36e7e81c078b614b979a7",
    "bytes": 5652364
   },
   {
@@ -256,7 +257,7 @@
     "/read/the-last-parcel-under-the-tree/pages/p25.webp",
     "/read/the-last-parcel-under-the-tree/pages/p26.webp"
    ],
-   "html_sha256": "9356c03ef7ee9c81d8e843a490cf2d9d7b2986ea7e7fcc0c6dd2f306624202a8",
+   "html_sha256": "1cddbfbb3cb9d30686ed5f43143565fd5d2199c51f6f83d5d57d2a47b76ef307",
    "bytes": 9806592
   },
   {
@@ -1272,6 +1273,74 @@
    "bytes": 6167296
   },
   {
+   "slug": "twenty-four-letters-before-christmas",
+   "title": "Twenty-Four Letters Before Christmas",
+   "urls": [
+    "/read/twenty-four-letters-before-christmas/",
+    "/read/twenty-four-letters-before-christmas/pages/cover.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p01.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p02.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p03.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p04.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p05.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p06.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p07.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p08.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p09.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p10.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p11.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p12.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p13.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p14.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p15.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p16.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p17.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p18.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p19.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p20.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p21.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p22.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p23.webp",
+    "/read/twenty-four-letters-before-christmas/pages/p24.webp"
+   ],
+   "html_sha256": "5b7a7467a2f7fc9ff63e7c706f48f7a5f8fcf35df18c14e946b47e991df605a3",
+   "bytes": 7487070
+  },
+  {
+   "slug": "the-angel-on-the-small-tree",
+   "title": "The Angel on the Small Tree",
+   "urls": [
+    "/read/the-angel-on-the-small-tree/",
+    "/read/the-angel-on-the-small-tree/pages/cover.webp",
+    "/read/the-angel-on-the-small-tree/pages/p01.webp",
+    "/read/the-angel-on-the-small-tree/pages/p02.webp",
+    "/read/the-angel-on-the-small-tree/pages/p03.webp",
+    "/read/the-angel-on-the-small-tree/pages/p04.webp",
+    "/read/the-angel-on-the-small-tree/pages/p05.webp",
+    "/read/the-angel-on-the-small-tree/pages/p06.webp",
+    "/read/the-angel-on-the-small-tree/pages/p07.webp",
+    "/read/the-angel-on-the-small-tree/pages/p08.webp",
+    "/read/the-angel-on-the-small-tree/pages/p09.webp",
+    "/read/the-angel-on-the-small-tree/pages/p10.webp",
+    "/read/the-angel-on-the-small-tree/pages/p11.webp",
+    "/read/the-angel-on-the-small-tree/pages/p12.webp",
+    "/read/the-angel-on-the-small-tree/pages/p13.webp",
+    "/read/the-angel-on-the-small-tree/pages/p14.webp",
+    "/read/the-angel-on-the-small-tree/pages/p15.webp",
+    "/read/the-angel-on-the-small-tree/pages/p16.webp",
+    "/read/the-angel-on-the-small-tree/pages/p17.webp",
+    "/read/the-angel-on-the-small-tree/pages/p18.webp",
+    "/read/the-angel-on-the-small-tree/pages/p19.webp",
+    "/read/the-angel-on-the-small-tree/pages/p20.webp",
+    "/read/the-angel-on-the-small-tree/pages/p21.webp",
+    "/read/the-angel-on-the-small-tree/pages/p22.webp",
+    "/read/the-angel-on-the-small-tree/pages/p23.webp",
+    "/read/the-angel-on-the-small-tree/pages/p24.webp"
+   ],
+   "html_sha256": "b098426da0d741a0a558170d8b45e1e00643748c26e176a45a629d5c93b494c9",
+   "bytes": 9479402
+  },
+  {
    "slug": "bark-b-q-and-the-long-christmas-table",
    "title": "Bark-B-Q and the Long Christmas Table",
    "urls": [
@@ -1310,7 +1379,7 @@
     "/read/bark-b-q-and-the-long-christmas-table/pages/p31.webp",
     "/read/bark-b-q-and-the-long-christmas-table/pages/p32.webp"
    ],
-   "html_sha256": "e5564ecf76f3f6e9c684b7a9473490f8280a7ccd82e8eb10d8bcea0cdc531650",
+   "html_sha256": "5085831782ee60499566c64925be998a15abed1db86136fc2884ed963567c8ca",
    "bytes": 11426006
   }
  ],
@@ -2016,6 +2085,58 @@
   "/read/cluck-oclock-and-the-midnight-that-came-early/pages/p22.webp",
   "/read/cluck-oclock-and-the-midnight-that-came-early/pages/p23.webp",
   "/read/cluck-oclock-and-the-midnight-that-came-early/pages/p24.webp",
+  "/read/twenty-four-letters-before-christmas/",
+  "/read/twenty-four-letters-before-christmas/pages/cover.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p01.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p02.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p03.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p04.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p05.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p06.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p07.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p08.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p09.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p10.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p11.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p12.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p13.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p14.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p15.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p16.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p17.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p18.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p19.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p20.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p21.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p22.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p23.webp",
+  "/read/twenty-four-letters-before-christmas/pages/p24.webp",
+  "/read/the-angel-on-the-small-tree/",
+  "/read/the-angel-on-the-small-tree/pages/cover.webp",
+  "/read/the-angel-on-the-small-tree/pages/p01.webp",
+  "/read/the-angel-on-the-small-tree/pages/p02.webp",
+  "/read/the-angel-on-the-small-tree/pages/p03.webp",
+  "/read/the-angel-on-the-small-tree/pages/p04.webp",
+  "/read/the-angel-on-the-small-tree/pages/p05.webp",
+  "/read/the-angel-on-the-small-tree/pages/p06.webp",
+  "/read/the-angel-on-the-small-tree/pages/p07.webp",
+  "/read/the-angel-on-the-small-tree/pages/p08.webp",
+  "/read/the-angel-on-the-small-tree/pages/p09.webp",
+  "/read/the-angel-on-the-small-tree/pages/p10.webp",
+  "/read/the-angel-on-the-small-tree/pages/p11.webp",
+  "/read/the-angel-on-the-small-tree/pages/p12.webp",
+  "/read/the-angel-on-the-small-tree/pages/p13.webp",
+  "/read/the-angel-on-the-small-tree/pages/p14.webp",
+  "/read/the-angel-on-the-small-tree/pages/p15.webp",
+  "/read/the-angel-on-the-small-tree/pages/p16.webp",
+  "/read/the-angel-on-the-small-tree/pages/p17.webp",
+  "/read/the-angel-on-the-small-tree/pages/p18.webp",
+  "/read/the-angel-on-the-small-tree/pages/p19.webp",
+  "/read/the-angel-on-the-small-tree/pages/p20.webp",
+  "/read/the-angel-on-the-small-tree/pages/p21.webp",
+  "/read/the-angel-on-the-small-tree/pages/p22.webp",
+  "/read/the-angel-on-the-small-tree/pages/p23.webp",
+  "/read/the-angel-on-the-small-tree/pages/p24.webp",
   "/read/bark-b-q-and-the-long-christmas-table/",
   "/read/bark-b-q-and-the-long-christmas-table/pages/cover.webp",
   "/read/bark-b-q-and-the-long-christmas-table/pages/p01.webp",
@@ -2058,6 +2179,7 @@
   "/read/offline.js",
   "/read/shelf-filter.js",
   "/read/events.js",
+  "/read/advent.js",
   "/assets/fonts/fonts.css",
   "/assets/favicon-32.png",
   "/assets/snackpack-mark-96.png",

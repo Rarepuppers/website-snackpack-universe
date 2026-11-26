@@ -5946,6 +5946,192 @@
       "pdf_sha256": "9cb3d41371109307998da39f0a40fd955bb060c2049e6feca667a93956173746"
     },
     {
+      "slug": "the-angel-on-the-small-tree",
+      "source_id": "web-christmas-the-angel-on-the-small-tree",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/cover.png": "823adbcf5df781967a0e1f06f316b186d8d57f47204cd2e0138b7a087678142b",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p01.png": "b088cecdda9159659298f5a220c8b4f14c64adf3f4e14899cf217ae91f2c6ca1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p02.png": "182b588f10f76bf95adf5c4dd17c702af05365f9af99ab78aabfb28460ab6d20",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p03.png": "b09d537bcff7e6b706816067db048b9a53c9ca1f54d1a09f6a94bd3f6212fa57",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p04.png": "a3c357ab09b9dfa225f3d7e12b5f93adc3e398572f972948eab13014855fc332",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p05.png": "45134130c7dd6c54faa1feec8b704eb83b3f5ac166643b8b0537a53e7f6666c7",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p06.png": "eb373204c79eb3492b051882e7d6614f6520539853f8a40b86f6f45a7770600a",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p07.png": "34d494374494f762638dc0a1e30461c1a69c7627dad55223107535a1dad8ba67",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p08.png": "e52e4bbc7a727b150195ac377555e6239f946e08ec9880bac6e58ae06c2a8d17",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p09.png": "b293600f1a7415c1f5cefcc42aa813fd3b13601cc2f08efd5c702c648750c571",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p10.png": "89dd2d8eaf240a2b6b93a97714ec1c76eb23eba7f044930e3174c501b9d1ab0c",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p11.png": "0a3d1281670f6e592b959a43ac1aca456de3fe2a1f463119d0e41a7a951020cd",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p12.png": "336455c258cc931a48545852b0498f3e7eb9f849f7b0e85f35842e78098d0573",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p13.png": "5fe0f8f75c532a3b4efe547ab78039d64a4dade268b6469570b891be5561be12",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p14.png": "6c08456d2a7b11bf06d5cd828d078b09a355d798de5ebdcb1429c7c6995fe397",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p15.png": "d2bc7907c1a7127e889be4ec8a58be66e62c8abc493fea380b763fbea1ccd3a7",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p16.png": "b1582523cfc51dd996e4028a40c31bd5f49e00c7a3b888cd87b64914492efac0",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p17.png": "84b4b56e292e0fc448ff8b1cc2f2523aa30d5d9b59cb8b139bdc5cc0cbb6a6db",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p18.png": "9f25f58271d5d5503483e72d60efde1eb04e8c9eb8485bfbdfadcf59a81ff7f1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p19.png": "361fe44e920876fe2dc85534a1e512f5391007f5aa7634eda33086dacb931da1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p20.png": "4906d5a5b89426878364ef565985ac5ee127fe2dad657be53fe1f831de22b1ea",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p21.png": "1fc65d8e9d1fcaaecf3f9993e49ee1580fc966f297a6ce5b77ec76b690a0f753",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p22.png": "45966c25edbefe5f7b20bedb78980af2c0a3713bb31f2860d33fa4f67f96b164",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p23.png": "2f2c978100064c200fbd8e056335de92f3a0d35f4960f21bf6e3d2f24620c23a",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p24.png": "8c0675dcb004dbb6aeca263d36c6369c4c79dc622df250b6bb12ebdf1589eff5"
+      },
+      "text": [
+        "On the first Saturday in December, Ted-E-Bear carried a small tree into his sitting room. It stood in a red pot by the window, no taller than Ted's shoulder. \"It's perfect,\" said Honey-Beats. \"It's tiny,\" said Candy-Nut. \"It's both,\" said Ted.",
+        "Ted brought down the old decorations box and blew the dust off the lid. On top was a photograph in a wooden frame. It showed a small tree, a very small Ted, and his gran. And on the very top of the tree, standing up straight, was a fabric angel.",
+        "Under the photograph, wrapped in tissue paper, was the angel herself. She had a cream dress, a gold string halo and two felt wings. One wing was big and puffy. The other wing was small and flat. \"Her wings don't match,\" said Candy-Nut. \"Gran made them,\" said Ted. \"She made them in a hurry.\"",
+        "\"Angel first!\" said Honey-Beats. \"Like in the photo!\" \"Decorations first!\" said Candy-Nut. She had made twelve acorns out of salt dough and painted every one. \"The angel goes on last. Everybody knows that.\" They both looked at Ted. \"The tree doesn't mind,\" said Ted. \"Shall we start with the angel and see?\"",
+        "Ted lifted Honey-Beats up high, so she could reach the top branch. \"Up you go, Angel!\" said Honey-Beats, and she slipped the angel's loop over the tip of the tree. Ted put Honey-Beats down. They all stood back to look.",
+        "The angel had turned round to face the wall. \"She's shy,\" said Candy-Nut.",
+        "Ted lifted Candy-Nut up this time. Candy-Nut turned the angel round to face the room. \"Up you go, Angel!\" They stood back. The angel slowly tipped forward until she was looking at the floor. \"She's lost something,\" said Honey-Beats.",
+        "While Ted fetched the lights, Candy-Nut hung her first salt-dough acorn. Honey-Beats hung the second one. Then the third. They hung all twelve, one each, taking turns.",
+        "Under the tree there was one present already. It was wrapped in green paper with a red bow. It had a very funny shape. A round, flat part. And two long, thin bumps sticking out of the top. \"What do you think it is?\" whispered Candy-Nut.",
+        "\"A frying pan,\" said Honey-Beats, \"and two spoons.\" \"A snowman's hat,\" said Candy-Nut, \"and his arms.\" \"A lollipop with legs!\" \"A pancake with chopsticks!\" They laughed so much that Candy-Nut fell over. \"Christmas morning,\" said Ted, from the doorway, with the lights.",
+        "They tried the angel one more time. Honey-Beats held her very straight, and Ted lifted her very slowly. \"Up you go, Angel!\" The angel leaned... and leaned... and leaned all the way over to one side, until she was looking straight down at the present. \"She's peeking!\" said Candy-Nut.",
+        "Honey-Beats crossed her arms. \"She's supposed to stand up straight. Like in the photo.\" Ted sat down on the rug. \"Let's work out why she leans. Then we can decide what to do about it.\"",
+        "Candy-Nut held the angel up by her loop, in the air, all by herself. The angel swung, and tipped over toward her big puffy wing. \"It's the wing!\" said Candy-Nut. \"The big one's heavier. It pulls her over.\"",
+        "\"We could make the big wing smaller,\" said Honey-Beats. Ted looked at the wing his gran had sewn. \"I'd like to keep it, if we can.\" Honey-Beats thought. She tapped her drumsticks together, the way she did when she was thinking. Tap, tap, tap.",
+        "\"Then let's make the small wing heavier!\" said Honey-Beats. They looked in the decorations box for something small and a little bit heavy. A button? Too light. A conker? Too lumpy. A pine cone? Too big.",
+        "At the very bottom of the box, Candy-Nut found a little brass bell on a red thread. She tied it to the small wing. Very carefully. Double knot. Candy-Nut held the angel up by her loop again. The angel hung perfectly straight. And when she moved, she went jingle.",
+        "Ted lifted them both up together this time, one under each arm. \"Up you go, Angel!\" they said. The angel stood on top of the tree, straight and tall, with her halo on and her bell ringing softly.",
+        "\"Now she looks like the photo,\" said Honey-Beats. She picked up the photograph to check. Then she looked closer. Then she held it right up to her nose. \"Ted,\" she said. \"In the photo... she's leaning.\"",
+        "Ted put on his reading glasses. He looked. In the photograph, on the top of Gran's little tree, the angel was leaning over to one side. Not very much. Just a little. Ted laughed. \"I'd forgotten. Gran always said, 'She leans toward the best bit.'\"",
+        "\"What's the best bit?\" asked Candy-Nut. \"Gran never said,\" said Ted. \"We used to try to guess.\" Honey-Beats looked up at the angel, standing straight with her little bell. \"Can we take the bell off?\" she said. \"Just to see?\"",
+        "So Candy-Nut untied the double knot, and Ted lifted Honey-Beats up one last time. \"Up you go, Angel!\" They stood back. They watched. The angel leaned slowly over, and stopped.",
+        "She was pointing straight at the funny-shaped present. \"She thinks the present is the best bit!\" said Candy-Nut. \"She might be right,\" said Honey-Beats.",
+        "Ted switched on the lights. The little tree glowed, with twelve salt-dough acorns and one leaning angel. Candy-Nut tied the brass bell to a low branch, where everybody could reach it.",
+        "Honey-Beats gave the bell a tap with her drumstick. Jingle. \"Ted,\" she said. \"Is it a drum?\" Ted smiled, and said nothing at all, which is what grown-ups say when the answer is \"Christmas morning\"."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-angel-on-the-small-tree/pages/p01.jpg": "6358070ca04ee40f6b81bcf4eb89f7c59fb3d8e73e01ef3980e959520274076a",
+        "read/the-angel-on-the-small-tree/pages/p02.jpg": "cfae4b525fc4a63db5b5a18af01756fa3b3041f0ba2d7e9f25355e91e43448e0",
+        "read/the-angel-on-the-small-tree/pages/p03.jpg": "76cdc7621556d470eb75c7e615aa73801846205cd9c8376d5c5c880184a9ecb6",
+        "read/the-angel-on-the-small-tree/pages/p04.jpg": "2fc41b4bfa1d98856fa0e6248121e9d4ec6a6c9c56342f70a31206d18de3cf8d",
+        "read/the-angel-on-the-small-tree/pages/p05.jpg": "0a1fcfdca4c0cc51d1cbfe1257b3414910c921502dde6d8ecb2f05bb95f19b7d",
+        "read/the-angel-on-the-small-tree/pages/p06.jpg": "412420a7c5b7595f35a006a11f331ab2be4290dc0d2da49dc4916dc1f4fbbc22",
+        "read/the-angel-on-the-small-tree/pages/p07.jpg": "735d37dbd674b3d1bec3a4f07d9f57dc6eb7ff819a5aaf1c20854ae99e915f79",
+        "read/the-angel-on-the-small-tree/pages/p08.jpg": "8de8932eb8b0d195ac2a854f69f568f2e579fc6c514c3a9aff2bdc4f4b4dfe41",
+        "read/the-angel-on-the-small-tree/pages/p09.jpg": "5f9efd124ad2c04d9724ff23facf4de2bdb58cc143eac647cea6ed1f3257d3f2",
+        "read/the-angel-on-the-small-tree/pages/p10.jpg": "933b0032d2583d27b79521746b7149bdc620224fee6475541445bb56811fc964",
+        "read/the-angel-on-the-small-tree/pages/p11.jpg": "55175cce415771fd3eb41f13af933fa08180f53a95e966a0310890c42f4d0b01",
+        "read/the-angel-on-the-small-tree/pages/p12.jpg": "fbed4026590a474baa00696ef86e1c0657621085fabe354f68c3b4f2bc6c6109",
+        "read/the-angel-on-the-small-tree/pages/p13.jpg": "915d43b0433974031d1f8151e73014edc9a358ccc627a7b836a57e4fd488e60f",
+        "read/the-angel-on-the-small-tree/pages/p14.jpg": "2719510fc9c56d40af6a4ba80fdcd2b45b2a76432702a4cb50d3b809d509025e",
+        "read/the-angel-on-the-small-tree/pages/p15.jpg": "2a5114b9cfcedad63a7072377af4f13fb6e52e47bc68dd67e78d182ca01f076d",
+        "read/the-angel-on-the-small-tree/pages/p16.jpg": "0d1f908dbe34c9468c432689fa345bffeb907d93bab0d5c15185557a327f6220",
+        "read/the-angel-on-the-small-tree/pages/p17.jpg": "786bafeb59e13ebded6309a760318f3cfbd9f9c551c6e05a01ce64de761030e3",
+        "read/the-angel-on-the-small-tree/pages/p18.jpg": "aa84b59108cc12b04b619a76272aa1b3d85c04a19efdddbe5a88258fa94041ad",
+        "read/the-angel-on-the-small-tree/pages/p19.jpg": "eaa5a3575a0311a3c1054979ebb6ee32027e3149a8758c60b38dbd442f5771ea",
+        "read/the-angel-on-the-small-tree/pages/p20.jpg": "d3c4835b3b0d955d10511806ede2f2bdc875507cef6f6d2008771bdcc0757411",
+        "read/the-angel-on-the-small-tree/pages/p21.jpg": "25460c93f119b37c0ee2fae5ed746bd10a2d2b0dfe9340ebd65ef2ab2f693cbd",
+        "read/the-angel-on-the-small-tree/pages/p22.jpg": "07360030cc1e130a179a52207fe78686330326f59df9e79d81b3d42d1612c390",
+        "read/the-angel-on-the-small-tree/pages/p23.jpg": "255b3efa3ef77cb740751ca97a50c31d9d156768e5332c9b19bf1955b62184fa",
+        "read/the-angel-on-the-small-tree/pages/p24.jpg": "367753478991c26757c603c079f2ba5dd2e079dac3815a6a4194a02ce709baf6"
+      },
+      "pdf": "read/the-angel-on-the-small-tree/the-angel-on-the-small-tree.pdf",
+      "pdf_sha256": "071aa6542a9b4485e41084dbac6df5ecae4d15fdf1fc7107f9fa7e58b808d0d2",
+      "cover_jpeg_sha256": "ff73dd0f1d2f0377f9d1cfb9bc06a1a4aa9efa29e4b85158c9ee73faf69a2bd2"
+    },
+    {
       "slug": "the-cat-and-the-rat",
       "source_id": "the-cat-and-the-rat",
       "source_art": {
@@ -6216,6 +6402,192 @@
       },
       "pdf": "read/the-last-parcel-under-the-tree/the-last-parcel-under-the-tree.pdf",
       "pdf_sha256": "72009022f307e383b9055ef7333cb289ae0032c0f88c52e9274f944bcfaaee96"
+    },
+    {
+      "slug": "twenty-four-letters-before-christmas",
+      "source_id": "web-christmas-twenty-four-letters-before-christmas",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/cover.png": "b04f71bd4243857b01608155c2ca35785f0460460650d352b0556638465af5a5",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p01.png": "01c2db1ecc33e928e4181e9975b54e391c23ee732d7dbc5454621c37267bd693",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p02.png": "7ee9874de839cf1f21a49f1c50401f37db4bc0bf82dfccb2129490d935123ecb",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p03.png": "a612447aec02ef546ccabe712858a2cdcdabceaf5e02f62bdf71d0066d3df9ea",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p04.png": "14c8c3f196523bccc5ff9f68fe207aedbc1b852cc1bd2057e8a3c231fcf3151a",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p05.png": "a5d24f3e208da66629196bda3f7b6d3d0a34f1610e4d02c8223d716d10003471",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p06.png": "532e7f9dc17aed8f4379c33590580822b84232a77d77f5e062659da54715a03d",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p07.png": "efbd23a15bc1a793cd56776690b0c0a7ccff83680ce3778b5b8556039e69d94f",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p08.png": "f088a22de796f35a95589a842e3a1eb1b9606f7c28a8b26ff65635785fca9e35",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p09.png": "4f96174e7a6e49545b353dea84316f5fd1d2da8b098cbee557bf9cc133a36cb7",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p10.png": "caf6d37afbf4b2453900039e09b0a5a7f33505d7d33579b6496a54aa645c5c61",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p11.png": "4e9a5e521207bbfffa901c03719c51668942e392a7d7335bcc237b0e5d3a6462",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p12.png": "22e39eab54c100e24adc90d57134505190156ca71d8b793e583562910e0182f8",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p13.png": "2517d33c068d99b2a9f7b2568b66f52348d59466d0d16516b6307f61e33b57f4",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p14.png": "b410ac653d7c08e89165d5fd22f55b4469a84c79259d43aeac76c9d8d3010837",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p15.png": "6e083e7e1d887bf7579e89b1af31385d1eb72bc6cd8f372293e558a4f4f681df",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p16.png": "7e68165691b33cfb0ebcd8a6d2968c46a1293c03c4d9298bbcdea099f37c0924",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p17.png": "54794f727bdfb851436b319ffbd595db292a54c982c08c9a2a7ae844b6c8e90c",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p18.png": "36f8337ce35bb9ab0d2709dc48f6b9766d272a53fde21c5d9310ca2b879eaba0",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p19.png": "9d5416dffd477a3b44b0e793317a8c49234dede84d29d12046eb20a4eea41d0e",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p20.png": "7ede17258b83079dc460114e72e37f4b5fcc02db38b010942a8d39be365099c9",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p21.png": "fe44fbfa0b702242cfd9b8f140fbeecbd7a1b1d769ae19bbfe09aa9ec1294c24",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p22.png": "2aebccb758fc5b3ce27ab63e77c32b57b96e660bf47e908906f2e9463a931aa9",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p23.png": "8b17e8e2d041bc7eb4d2581b6ecdcf4db32c3323eba84cd9bcc7b0c3e36b9885",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p24.png": "7c52c8e6769d6f95e6bf5473e5efc8a8b9b51dab1f6c803b5d6371033c57edcf"
+      },
+      "text": [
+        "1 December At eight o'clock in the morning, Ted-E-Bear found a gold envelope on his doormat. It had no stamp. His name was on the front, in big, wobbly letters. Inside was a piece of shiny gold paper with zigzag edges, and a note. Piece 1. Keep me safe. Bring me to the Great Oak on Christmas Eve. \"Who sent this?\" said Ted.",
+        "2 December The next morning, Corgi-on-the-Cob got one too. He sniffed the gold envelope. He sniffed it again. \"Cocoa,\" he said. \"This letter smells of hot cocoa.\" Piece 2. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "3 December Panda-Cake opened his envelope at the Breakfast Bistro, over a plate of pancakes. Out fell a gold piece, a note, and one tiny yellow feather, as soft as fluff. Panda-Cake put the feather carefully in his apron pocket. \"A clue,\" he said.",
+        "4 December Nutmeg's envelope came while she was choosing a Christmas tree. She looked at the library clock. Eight o'clock exactly. \"Ted's came at eight,\" she said. \"Corgi's came at eight. Panda-Cake's came at eight. Somebody is very good at telling the time.\"",
+        "5 December Vincent Van Mouse held his gold piece up to the light. \"Look at these edges,\" he said. \"Zig, zag, zig, zag. Somebody cut this with zigzag scissors. The kind that are safe for small paws.\" Piece 5. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "6 December Sub-Zero's envelope came with the first snow. He put his gold piece in his cooler backpack, between two Chilly-Facts, to keep it safe and flat. \"Whoever you are,\" he called out into the snowflakes, \"I'm keeping it safe!\"",
+        "7 December Hop-Tart got piece 7. He hopped straight round to Sub-Zero's house to compare. They held their two gold pieces side by side. They wiggled them. Click. They fitted together. \"They're pieces of the same thing!\" said Hop-Tart. \"But what thing?\"",
+        "8 December Pork-ulele got piece 8, and wrote a song about it on his ukulele. Who sends the letters, gold and bright? Who comes at eight and leaves no name? Who'll be at the Great Oak, Christmas night? He wasn't sure about the ending. He kept playing anyway.",
+        "9 December Luckybug's gold piece was bigger than she was. She carried it home over her head, like a little golden sail, all the way across the green. Piece 9. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "10 December Fe-Line-Mignon read her note very slowly, the way she read poetry. \"Ted showed me his note,\" she said. \"The writing was round and wobbly. Mine is tall and wobbly. These letters were written by two different paws.\" Two senders. Taking turns.",
+        "11 December Dough Mino asked everybody to bring their pieces to the library. He laid them out in a long, neat row on the floor. Eleven pieces. Lots of them had a sharp point at one end. \"Points,\" said Dough Mino. \"Lots of points. What has lots of points?\"",
+        "12 December Shelly-Pop's envelope was waiting on the little jetty at the duck pond, held down with a pebble so it couldn't blow away. \"Whoever left this,\" said Shelly-Pop, \"is very careful.\" Piece 12. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "13 December Polly Roger's envelope came all the way to the harbour. \"Arrr,\" she said. \"A treasure map? No. A treasure piece!\" She tucked it under her eye patch for safekeeping, which was not a good idea, and then into her coat pocket, which was.",
+        "14 December Biscuit-Bouncer was so excited about piece 14 that he bounced three times round the garden before he opened it. Then he had to go and find it in the snow. Piece 14. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "15 December Tick-Tusk got piece 15. She took out her pocket watch. \"I've been watching the post box,\" she said. \"Every morning, just before eight o'clock, somebody small posts a gold envelope. Too quickly to see who.\"",
+        "16 December Snack-Spector got piece 16, and went straight to the post box with his magnifying glass. In the snow were two sets of tiny footprints, side by side. Three thin toes each. Like a small bird's. \"Two small birds,\" said Snack-Spector, \"who smell of cocoa, leave yellow fluff and are very good at telling the time.\"",
+        "17 December Professor Hooten opened his envelope in the library and read it twice. Snack-Spector told him all the clues. Professor Hooten turned his head almost all the way round, and smiled, and said nothing at all.",
+        "18 December Hen-Berry got piece 18 at her kitchen table. She read the note. She looked at the two empty cocoa mugs by the sink. She looked at the zigzag scissors on the windowsill. She smiled, just like Professor Hooten, and said nothing at all.",
+        "19 December Spinnerella's envelope was very big and Spinnerella was very small. So she spun a silver thread round her gold piece and hung it in the corner of her web, where it turned and glittered in the light. Piece 19. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "20 December Bark-B-Q's piece came on a frosty morning. He sniffed it, like Corgi had. \"Cocoa,\" he agreed. \"And a little bit of hay. Like a henhouse.\" He wagged. He was getting close.",
+        "21 December Honey-Beats got piece 21. She tapped the envelope with her drumsticks. Tap, tap. Tap, tap. \"Two paws,\" she said. \"Taking turns. Like a drum and a bell.\" Everybody in the village was guessing now.",
+        "22 December Foxy-Lox read her note and laughed. \"I know who it is,\" she said. \"Who?\" said everybody. \"I'm not telling,\" said Foxy-Lox. \"It's much more fun to find out.\"",
+        "23 December On the twenty-third, Belgian-Waffle went to the post box to collect the morning letters, the way he always did. There was only one gold envelope inside. And it had his own name on the front. \"For me?\" said Belgian-Waffle. Nobody ever sent him anything. Piece 23. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "24 December: Christmas Eve As the sun went down, everybody came to the Great Oak, holding their gold pieces. Dough Mino laid them out in the snow. Points. Edges. Corners. Click, click, click. It was a star, as big as Ted-E-Bear. But in the very middle, there was a hole. Out from behind the Great Oak came two small chicks, one holding a flask of cocoa and one holding a watch. \"It was us,\" said Coop-Accino. \"We cut a star into twenty-four pieces,\" said Cluck O'Clock, \"so everybody could bring a piece of it.\" \"But who has the middle?\" said Ted. The twins looked at each other. Then they looked straight out of the page, at you. \"You do,\" they said. Put your hand on the middle of the star. There. Now it's whole. And together, everybody lifted it up to the top of the Great Oak, where it shone over the whole village all Christmas night."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/twenty-four-letters-before-christmas/pages/p01.jpg": "828ae898a8580000ac7f7edb933dc4c4aa59b55e00ef586979068b28a4e6722b",
+        "read/twenty-four-letters-before-christmas/pages/p02.jpg": "6b9b1c8ad541aca9a25575618948b7cd13b31cf3835b24e87c2b416187352f80",
+        "read/twenty-four-letters-before-christmas/pages/p03.jpg": "36a67a41f64197619fc4b943fdcc2ec2b498515d7b95228d04d3bf3fc148d5b9",
+        "read/twenty-four-letters-before-christmas/pages/p04.jpg": "20297ec4a79f8f65fb4235f9d77cca7717a376e79ceb1a69b26419620db23b35",
+        "read/twenty-four-letters-before-christmas/pages/p05.jpg": "899923892762c0f7ba904143e39719c59fc685e8b40436ca16896937f0641aa6",
+        "read/twenty-four-letters-before-christmas/pages/p06.jpg": "b3bd72a4ef77f4b5c5217ed9a8677f53acc0ddc674e6cc151a8b382d38b4369c",
+        "read/twenty-four-letters-before-christmas/pages/p07.jpg": "d6d06d4a60df4b19df606d32f6d4cd28a945d9c703946eb0e2d456c5fd112b0a",
+        "read/twenty-four-letters-before-christmas/pages/p08.jpg": "fae7fc64d034a94831f0f0dd44ce78f7c2633eea324103695417ff2e9109334e",
+        "read/twenty-four-letters-before-christmas/pages/p09.jpg": "acb52582ee83ef92e23843f2fdbbfb591978c8061cc6e71f8f9581d04b5fe073",
+        "read/twenty-four-letters-before-christmas/pages/p10.jpg": "1265ad1f84a85a1ba696139a1a2670bc7939c6c5fb401e5bb88bde7722902418",
+        "read/twenty-four-letters-before-christmas/pages/p11.jpg": "8697481eb724ce27f5627c0fd4df2539ae62a99e1428bd0855d422090f9fb526",
+        "read/twenty-four-letters-before-christmas/pages/p12.jpg": "c3a9d8f9ae921620c40395e34be51d60a816e7850072bfe77e99d75371ed2dc5",
+        "read/twenty-four-letters-before-christmas/pages/p13.jpg": "3a74d1418e43420c1c0e92cf58562f23b911ee8a8056a8335619f6f48e5e3920",
+        "read/twenty-four-letters-before-christmas/pages/p14.jpg": "6e81f7fd35b6d0e9a95fb98a9ffc151f7073891f47a77b00c0bd4a0f12387707",
+        "read/twenty-four-letters-before-christmas/pages/p15.jpg": "50e3ef1d832954523e4038643066e2d9331daea190c1c02728467e861e65822b",
+        "read/twenty-four-letters-before-christmas/pages/p16.jpg": "0e74ec7949dfd9007e544ae3a75de5b51bffb7b77a2f6b117a270fd95b76c9dd",
+        "read/twenty-four-letters-before-christmas/pages/p17.jpg": "200f1f4e5dbf0f6cf44f386e220bf05df7dedf9888642f41a9000ec12e4cbe41",
+        "read/twenty-four-letters-before-christmas/pages/p18.jpg": "daca3f2ce41b66b07414c7f1b3e1439c6300467f179d189e56c9ba68313ddd23",
+        "read/twenty-four-letters-before-christmas/pages/p19.jpg": "8ea0d7aac071083f2ca383ea1a8107eb579549bba991b616cb5a895ad088bf6a",
+        "read/twenty-four-letters-before-christmas/pages/p20.jpg": "698ddbe6f547e2a5a179c304e956866b443c4f3995070bd7e58b4323d6bf992a",
+        "read/twenty-four-letters-before-christmas/pages/p21.jpg": "fc2f16007551f3df249f67f0ac63b2ce81bbdd113b8ad50f5967b076ef413b7f",
+        "read/twenty-four-letters-before-christmas/pages/p22.jpg": "45a441366c9b66f8905eadd3a31ecd1b795a1febf4b459a0df9138060db0e2bc",
+        "read/twenty-four-letters-before-christmas/pages/p23.jpg": "37a18e9e4a587a4d6808a5ea7f6f20356240212bf23b414f40c6b56689feddfe",
+        "read/twenty-four-letters-before-christmas/pages/p24.jpg": "bfa77ddfa4f654af39d03b9f2d76b33e5843a9d1d57dd66c21c79e58f023838e"
+      },
+      "pdf": "read/twenty-four-letters-before-christmas/twenty-four-letters-before-christmas.pdf",
+      "pdf_sha256": "8bec3f69b968f37979e12e94730810e6871051cfe71bb983079db184c54c24ed",
+      "cover_jpeg_sha256": "c296a521af0d8bbf16d0e62291c3b89e59d54b4fa4e95ae42158eae2b23793c6"
     },
     {
       "slug": "vincent-van-mouse-and-the-christmas-shadow-show",

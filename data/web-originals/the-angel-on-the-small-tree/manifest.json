@@ -1,0 +1,1014 @@
+{
+  "schemaVersion": 1,
+  "id": "the-angel-on-the-small-tree",
+  "title": "The Angel on the Small Tree",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "5–7",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 934,
+  "blurb": "Honey-Beats and Candy-Nut are decorating Ted-E-Bear’s little tree. In the old photograph, the fabric angel stands up straight on the very top. Here, she won’t. Every time they put her up, she turns a different way. And what is that funny-shaped present underneath?",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On the first Saturday in December, Ted-E-Bear carried a small tree into his sitting room. It stood in a red pot by the window, no taller than Ted’s shoulder.\n\n“It’s perfect,” said Honey-Beats.\n\n“It’s tiny,” said Candy-Nut.\n\n“It’s both,” said Ted.",
+      "illustrationDirection": "Ted carrying a small fir in a red pot through the doorway into his sitting room. Honey-Beats bouncing with joy, Candy-Nut with arms folded, unimpressed.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b088cecdda9159659298f5a220c8b4f14c64adf3f4e14899cf217ae91f2c6ca1",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 448558,
+            "sha256": "3c457ea358786466103e383841f20e6b300e69dc2348bbfd824b8dab0b1de99d"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 267316,
+            "sha256": "c9ac33292631d2bf3e568fd6d337d374a5e5e7f08d11609656d19fcd2793ccfd"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117008,
+            "sha256": "86c4f13aa785cd62465523708af822a6b58e3bfeba36e635c782295268687a7f"
+          }
+        ],
+        "review": "Bare fir in its red pot is carried in from the right with correct dress and scale, and Honey-Beats has two sticks. Candy-Nut keeps her paws crossed. Window, doorway and rug establish the room.",
+        "generator": "built-in imagegen",
+        "alt": "Ted-E-Bear carries a small tree into his sitting room as Honey-Beats and Candy-Nut watch."
+      },
+      "alt": "Ted-E-Bear carries a small tree into his sitting room as Honey-Beats and Candy-Nut watch."
+    },
+    {
+      "number": 2,
+      "text": "Ted brought down the old decorations box and blew the dust off the lid.\n\nOn top was a photograph in a wooden frame. It showed a small tree, a very small Ted, and his gran. And on the very top of the tree, standing up straight, was a fabric angel.",
+      "illustrationDirection": "Ted blowing dust off the old decorations box. Close on the framed photograph in his paw: young Ted, Gran and a small tree with the angel on top.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "182b588f10f76bf95adf5c4dd17c702af05365f9af99ab78aabfb28460ab6d20",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 342970,
+            "sha256": "d685cbf16cf9567403bd9c3854acd9d07c4e8a6a37b1e4df72a0c67658e519fd"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 222232,
+            "sha256": "70e7a31b500323f6a7a7c9a5a445462079c8851261e286c733a089ff397e56c9"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 101272,
+            "sha256": "e84aa2fa7749e2be618c52cc2a350fda279f2aa46d1936a8a8dbc1aac923dec6"
+          }
+        ],
+        "review": "The wooden family photo shows two bears, a fir and a slightly leaning angel. The real toy stays wrapped inside the box.",
+        "generator": "built-in imagegen",
+        "alt": "Ted finds an old photograph of himself as a cub with his gran and a small tree."
+      },
+      "alt": "Ted finds an old photograph of himself as a cub with his gran and a small tree."
+    },
+    {
+      "number": 3,
+      "text": "Under the photograph, wrapped in tissue paper, was the angel herself.\n\nShe had a cream dress, a gold string halo and two felt wings. One wing was big and puffy. The other wing was small and flat.\n\n“Her wings don’t match,” said Candy-Nut.\n\n“Gran made them,” said Ted. “She made them in a hurry.”",
+      "illustrationDirection": "The angel unwrapped from tissue paper, held up in Ted’s paws. The children leaning close. Her big puffy wing and her small flat wing are obvious.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b09d537bcff7e6b706816067db048b9a53c9ca1f54d1a09f6a94bd3f6212fa57",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 391192,
+            "sha256": "0a18da7be8c1ed51beeb5a7ac94b2f90b11df7beccbe767559016b8b15dfb8e4"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 228970,
+            "sha256": "213ca8fbb460dc699c8ea34d276fbdabd560af4d8b55e4b002ca3dbc40a4476e"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100818,
+            "sha256": "0535e8517ab97e650a4068c211199e3ae8580a1f28d412b4c740e130c607d920"
+          }
+        ],
+        "review": "One small flat right wing, one puffy left wing, and a distinct gold halo and hanging loop. Tree decorations and gift are out of view. Ted and both children match their anchor. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Ted unwraps a fabric angel whose two wings don’t match."
+      },
+      "alt": "Ted unwraps a fabric angel whose two wings don’t match."
+    },
+    {
+      "number": 4,
+      "text": "“Angel first!” said Honey-Beats. “Like in the photo!”\n\n“Decorations first!” said Candy-Nut. She had made twelve acorns out of salt dough and painted every one. “The angel goes on last. Everybody knows that.”\n\nThey both looked at Ted.\n\n“The tree doesn’t mind,” said Ted. “Shall we start with the angel and see?”",
+      "illustrationDirection": "Honey-Beats pointing at the photo; Candy-Nut holding up a tray of twelve painted salt-dough acorns. Both looking up at Ted.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a3c357ab09b9dfa225f3d7e12b5f93adc3e398572f972948eab13014855fc332",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 421648,
+            "sha256": "d290c9eb94806e10b24d320abd0646843b790b187d5f5f64bd4309f5976f50fd"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 260176,
+            "sha256": "319821ccb1ebcfe10c5708f70007095d9a09a5317b65e359edd7d2f6917ab85d"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115772,
+            "sha256": "0ff5a8e10dce5cbae5a0579606dbda67be19feeb88e44e2708c77caa75e10dfd"
+          }
+        ],
+        "review": "Counted twelve painted acorns, three rows of four, all with gold caps and red ribbon. Honey-Beats points at the photograph and holds two sticks. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats wants the angel first, and Candy-Nut wants her salt-dough acorns first."
+      },
+      "alt": "Honey-Beats wants the angel first, and Candy-Nut wants her salt-dough acorns first."
+    },
+    {
+      "number": 5,
+      "text": "Ted lifted Honey-Beats up high, so she could reach the top branch.\n\n“Up you go, Angel!” said Honey-Beats, and she slipped the angel’s loop over the tip of the tree.\n\nTed put Honey-Beats down. They all stood back to look.",
+      "illustrationDirection": "Ted lifting Honey-Beats high so she can slip the angel’s loop over the tip of the tree.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "45134130c7dd6c54faa1feec8b704eb83b3f5ac166643b8b0537a53e7f6666c7",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 361988,
+            "sha256": "7e2c41aa82d0e197df92b7f2e692383af5eb8b158f8b35de5b0c73727ac444d5"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 234948,
+            "sha256": "a54e46b7a09e2e624d12da68cdb00aed13c733ac165b15eac363b3a74a5a9c06"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 106340,
+            "sha256": "d046e3dd1ea35694611b7ebbe1df6636dd6ccb6adf39693a6ef42266ebec4825"
+          }
+        ],
+        "review": "Ted lifts Honey-Beats safely. She places the asymmetric angel and holds exactly two drumsticks; the fir is bare. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Ted lifts Honey-Beats up to put the angel on top of the tree."
+      },
+      "alt": "Ted lifts Honey-Beats up to put the angel on top of the tree."
+    },
+    {
+      "number": 6,
+      "text": "The angel had turned round to face the wall.\n\n“She’s shy,” said Candy-Nut.",
+      "illustrationDirection": "Close on the treetop: the angel facing the wall. Honey-Beats and Candy-Nut, small at the bottom, staring up.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "eb373204c79eb3492b051882e7d6614f6520539853f8a40b86f6f45a7770600a",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 353906,
+            "sha256": "c92a96e1cb7e1947328f3385c0d18ebcbd3e6e8eed54c822e76ff69e96c92a87"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 228404,
+            "sha256": "d101bedf9155438a9ad568842c2228861b48c8af746ef2f056fe23a617a71cb2"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103578,
+            "sha256": "3406e412c2db2c0c971eae7b5ef8f80d5a5db8c1a4b833c015a2f7a28018ac33"
+          }
+        ],
+        "review": "Rear view only, large wing at viewer left, small at right, and the toy sits directly on the top of the bare fir.",
+        "generator": "built-in imagegen",
+        "alt": "The angel has turned round to face the wall."
+      },
+      "alt": "The angel has turned round to face the wall."
+    },
+    {
+      "number": 7,
+      "text": "Ted lifted Candy-Nut up this time. Candy-Nut turned the angel round to face the room.\n\n“Up you go, Angel!”\n\nThey stood back.\n\nThe angel slowly tipped forward until she was looking at the floor.\n\n“She’s lost something,” said Honey-Beats.",
+      "illustrationDirection": "Ted lifting Candy-Nut; then (same picture) the angel tipping forward to look at the floor. Honey-Beats looking down too, to see what she’s looking at.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "34d494374494f762638dc0a1e30461c1a69c7627dad55223107535a1dad8ba67",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 355764,
+            "sha256": "7bbd8c98c2a6982809c26f56abc8480dd9dc7268f2b848978aa7fd7858d8a8c6"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 229424,
+            "sha256": "1a0292cd0b3f18c9a99486c461d8a907c2e7d589adebc9a16a858bf9ffa2b2af"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104260,
+            "sha256": "4697385129a21c5b7e3a2364e0276ec304689029ad8ee47a382aa371f377137c"
+          }
+        ],
+        "review": "The angel is looped onto the fir tip and tips forward toward the rug. Two sticks. Safe lift.",
+        "generator": "built-in imagegen",
+        "alt": "The angel tips forward to look at the floor."
+      },
+      "alt": "The angel tips forward to look at the floor."
+    },
+    {
+      "number": 8,
+      "text": "While Ted fetched the lights, Candy-Nut hung her first salt-dough acorn. Honey-Beats hung the second one. Then the third.\n\nThey hung all twelve, one each, taking turns.",
+      "illustrationDirection": "The children taking turns hanging salt-dough acorns on the lower branches. Ted in the doorway with a tangle of fairy lights.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "e52e4bbc7a727b150195ac377555e6239f946e08ec9880bac6e58ae06c2a8d17",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 332658,
+            "sha256": "f14317848432ab20303c6e714872b1429b9589363036a70718f5c1871d58d429"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 222896,
+            "sha256": "5f541ef0248ffa8c30b5ca88462811c854dcaf899ef19ef2bd41e0c083d4627f"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 106510,
+            "sha256": "2d8106a99027eb82d5b0c30b7b6fdd75bf3275a5ccfbceaa5e1d22514c28c050"
+          }
+        ],
+        "review": "Six hanging acorns, two the children are hanging and four on the tray make twelve. The light strand is unlit.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats and Candy-Nut take turns hanging painted acorns on the tree."
+      },
+      "alt": "Honey-Beats and Candy-Nut take turns hanging painted acorns on the tree."
+    },
+    {
+      "number": 9,
+      "text": "Under the tree there was one present already. It was wrapped in green paper with a red bow.\n\nIt had a very funny shape. A round, flat part. And two long, thin bumps sticking out of the top.\n\n“What do you think it is?” whispered Candy-Nut.",
+      "illustrationDirection": "Low angle on the funny-shaped present: a round flat shape with two long bumps sticking up, in green paper and a red bow. Two small faces peeking at it.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b293600f1a7415c1f5cefcc42aa813fd3b13601cc2f08efd5c702c648750c571",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 320696,
+            "sha256": "2707d0723592b7d7efe83521ed9acde46ad43a48f4c03793ca8a0887f1f28086"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 205960,
+            "sha256": "ad6feea77fa5ec7a436d40ead2ac6d464e9fde158770db6b417e8fba92a39091"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97316,
+            "sha256": "ce4103d92ef08c416a8201fee1e7e066c38d1250c1c8bfd9f5200d74b70610f3"
+          }
+        ],
+        "review": "The unopened gift has two covered stick shapes and a red bow. Tree lights are off.",
+        "generator": "built-in imagegen",
+        "alt": "The children peek at a present with a very funny shape."
+      },
+      "alt": "The children peek at a present with a very funny shape."
+    },
+    {
+      "number": 10,
+      "text": "“A frying pan,” said Honey-Beats, “and two spoons.”\n\n“A snowman’s hat,” said Candy-Nut, “and his arms.”\n\n“A lollipop with legs!”\n\n“A pancake with chopsticks!”\n\nThey laughed so much that Candy-Nut fell over.\n\n“Christmas morning,” said Ted, from the doorway, with the lights.",
+      "illustrationDirection": "Both children rolling on the rug with laughter; Candy-Nut upside down. Ted in the doorway holding the lights.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "89dd2d8eaf240a2b6b93a97714ec1c76eb23eba7f044930e3174c501b9d1ab0c",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 432980,
+            "sha256": "c861853eb506e96b04ebc4ec32ab8e3b7dee6b0ee2548200bcb58f62ecfa0c28"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 276930,
+            "sha256": "01e937d8e371bedc16ed9a02f850049c8ab3352c0f9b22c09ba6ff71b5c2401d"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 128674,
+            "sha256": "cbad5306777d5074d11628faca6500726f500d3a60b3f278ff2b76da74e41bad"
+          }
+        ],
+        "review": "Gift retained, angel at the top, brown acorns on the visible branches and the light strand in Ted’s paws.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats and Candy-Nut laugh so hard that Candy-Nut falls over."
+      },
+      "alt": "Honey-Beats and Candy-Nut laugh so hard that Candy-Nut falls over."
+    },
+    {
+      "number": 11,
+      "text": "They tried the angel one more time. Honey-Beats held her very straight, and Ted lifted her very slowly.\n\n“Up you go, Angel!”\n\nThe angel leaned... and leaned... and leaned all the way over to one side, until she was looking straight down at the present.\n\n“She’s peeking!” said Candy-Nut.",
+      "illustrationDirection": "The angel leaning far over to her left, looking down at the present. Candy-Nut pointing and laughing.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0a3d1281670f6e592b959a43ac1aca456de3fe2a1f463119d0e41a7a951020cd",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 365106,
+            "sha256": "b8f13f5def3ea355bbbe05457a0e9fef60369789ac956e626cf79527f687a7c7"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 228760,
+            "sha256": "34a46bab59826a6820c50bafe448dac6d278c916e835995f605ebcc8edd49e89"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107154,
+            "sha256": "932cc94308b05d24effffd4757cd2581e8f15bc7087551d1253954c366fecb30"
+          }
+        ],
+        "review": "The tilted angel sits directly over the tip and looks down toward the wrapped drum on her large-wing side.",
+        "generator": "built-in imagegen",
+        "alt": "The angel leans all the way over as if she is peeking at the present."
+      },
+      "alt": "The angel leans all the way over as if she is peeking at the present."
+    },
+    {
+      "number": 12,
+      "text": "Honey-Beats crossed her arms. “She’s supposed to stand up straight. Like in the photo.”\n\nTed sat down on the rug. “Let’s work out why she leans. Then we can decide what to do about it.”",
+      "illustrationDirection": "Honey-Beats with arms crossed, cross face, the photo at her feet. Ted sitting down on the rug beside her, calm.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "336455c258cc931a48545852b0498f3e7eb9f849f7b0e85f35842e78098d0573",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 386534,
+            "sha256": "a7d2368a8a361c755c57d352882f117b3eb77d4d98c9b96c2e3e39af066a62c4"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 237952,
+            "sha256": "e4ad16ea3ca71addf38807404203f99b1b92e6b926f8dd0ec95ce26e82631b5f"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104100,
+            "sha256": "62779baec3cc9db3b66fb580ed63bf36a1f95933037daf8d0db90b57db9c6bab"
+          }
+        ],
+        "review": "Honey-Beats has crossed arms and both sticks, the photo rests on the rug and Ted sits beside her. Frame and expressions are clear at 390 px.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats crosses her arms. Ted sits on the rug to help."
+      },
+      "alt": "Honey-Beats crosses her arms. Ted sits on the rug to help."
+    },
+    {
+      "number": 13,
+      "text": "Candy-Nut held the angel up by her loop, in the air, all by herself.\n\nThe angel swung, and tipped over toward her big puffy wing.\n\n“It’s the wing!” said Candy-Nut. “The big one’s heavier. It pulls her over.”",
+      "illustrationDirection": "Candy-Nut holding the angel up by her loop in mid-air; the angel swinging and tipping toward her big wing. Honey-Beats and Ted watching closely.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5fe0f8f75c532a3b4efe547ab78039d64a4dade268b6469570b891be5561be12",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 381614,
+            "sha256": "e4fb2ea318704b76e8b7b5d1cfad1e3eec1a5f49ba0f070bb35319e6566bf575"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 239552,
+            "sha256": "4bde94de91cd4f34ce5a2db060e809156900999437d743d38a52799e3cdab62a"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105594,
+            "sha256": "96f5a53776ef5475067db4db20ab397ea04b22a01af9f94d5e5bb030945400f0"
+          }
+        ],
+        "review": "Candy-Nut holds the thread loop and the angel tips toward its large left wing. Two drumsticks remain visible. No bell.",
+        "generator": "built-in imagegen",
+        "alt": "Candy-Nut holds the angel by her loop and sees her tip toward the big wing."
+      },
+      "alt": "Candy-Nut holds the angel by her loop and sees her tip toward the big wing."
+    },
+    {
+      "number": 14,
+      "text": "“We could make the big wing smaller,” said Honey-Beats.\n\nTed looked at the wing his gran had sewn. “I’d like to keep it, if we can.”\n\nHoney-Beats thought. She tapped her drumsticks together, the way she did when she was thinking. Tap, tap, tap.",
+      "illustrationDirection": "Honey-Beats tapping her drumsticks together, thinking hard. Ted holding the puffy wing gently.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6c08456d2a7b11bf06d5cd828d078b09a355d798de5ebdcb1429c7c6995fe397",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403750,
+            "sha256": "f327a044433041aef3381bc4947089f2783050c9753fee594d36c0bfd34548f0"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246084,
+            "sha256": "58529c8a26f7ea1b274d9bdf4fc8caee38c7800b3ce8673aa12713f48e53996c"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108432,
+            "sha256": "29c654e5a8676e579f54d1bb218d77ca914a98ec9e58284147523a9eb96a0aa7"
+          }
+        ],
+        "review": "Ted weighs the large felt wing and Honey-Beats brings her two drumsticks together. The rejected button, conker and cone have not been introduced yet.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats taps her drumsticks while she thinks."
+      },
+      "alt": "Honey-Beats taps her drumsticks while she thinks."
+    },
+    {
+      "number": 15,
+      "text": "“Then let’s make the small wing heavier!” said Honey-Beats.\n\nThey looked in the decorations box for something small and a little bit heavy.\n\nA button? Too light. A conker? Too lumpy. A pine cone? Too big.",
+      "illustrationDirection": "The children digging in the decorations box; laid out on the rug: a big button, a conker and a pine cone.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d2bc7907c1a7127e889be4ec8a58be66e62c8abc493fea380b763fbea1ccd3a7",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 405912,
+            "sha256": "cd9cae582a11d98009b16eed198f2e4aee2c1155709ff0bf8134d58de5ac9284"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 247748,
+            "sha256": "a004588c8e555d3c3e9d2257955332eefa535ae4bd78937bc3cc43fd1c696487"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111590,
+            "sha256": "c2ac3c809cef25a2448f9ad39aa4f15c988406fd39c96869d5744d68dc553615"
+          }
+        ],
+        "review": "Counted the three rejected objects on the rug: one button, one conker, one pine cone. The two drumsticks are beside Honey-Beats.",
+        "generator": "built-in imagegen",
+        "alt": "The children search the decorations box for something small and heavy."
+      },
+      "alt": "The children search the decorations box for something small and heavy."
+    },
+    {
+      "number": 16,
+      "text": "At the very bottom of the box, Candy-Nut found a little brass bell on a red thread.\n\nShe tied it to the small wing. Very carefully. Double knot.\n\nCandy-Nut held the angel up by her loop again.\n\nThe angel hung perfectly straight. And when she moved, she went *jingle*.",
+      "illustrationDirection": "Candy-Nut tying a small brass bell on a red thread to the small wing, tongue out in concentration. Then the angel hanging straight from her loop.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b1582523cfc51dd996e4028a40c31bd5f49e00c7a3b888cd87b64914492efac0",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 330024,
+            "sha256": "0be262f937f0f61c5bec1800675e5c58de9ea854d9bc0d76743e3cbc4da5c237"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 213316,
+            "sha256": "afac6164e9b4a97a4c12719ae03c74dbbc5b00a418a98bbb435f6a2485c2417c"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99764,
+            "sha256": "0470ea2b7f4d6955fb6d0900a6a1b3d1e9084df4a2b129c198425ef8e1ac1a76"
+          }
+        ],
+        "review": "The fabric angel hangs straight. One small brass bell hangs from a red thread at the small wing on the viewer’s left, with no duplicate bell.",
+        "generator": "built-in imagegen",
+        "alt": "Candy-Nut ties a little bell to the angel’s small wing, and the angel hangs straight."
+      },
+      "alt": "Candy-Nut ties a little bell to the angel’s small wing, and the angel hangs straight."
+    },
+    {
+      "number": 17,
+      "text": "Ted lifted them both up together this time, one under each arm.\n\n“Up you go, Angel!” they said.\n\nThe angel stood on top of the tree, straight and tall, with her halo on and her bell ringing softly.",
+      "illustrationDirection": "Ted lifting both children at once, one under each arm, as they place the angel. She stands straight.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "84b4b56e292e0fc448ff8b1cc2f2523aa30d5d9b59cb8b139bdc5cc0cbb6a6db",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 371558,
+            "sha256": "74d49c471bc64ef6f00bc5295215c31b8386cfd8297d3508249575e63adad3df"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 244404,
+            "sha256": "62e6aefd6476febe45b88920b9a8583db0780c2ad2232964e09ad9f1c3882b02"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113204,
+            "sha256": "500ad97786095c0dc0e9683b21432a1a16857af2b65bb138d685dfc0059a794c"
+          }
+        ],
+        "review": "Twelve acorns in four rows of three, two drumsticks, one bell on the small wing and one wrapped parcel. Ted lifts both children, and the angel is upright.",
+        "generator": "built-in imagegen",
+        "alt": "Ted lifts both children so they can place the angel together."
+      },
+      "alt": "Ted lifts both children so they can place the angel together."
+    },
+    {
+      "number": 18,
+      "text": "“Now she looks like the photo,” said Honey-Beats.\n\nShe picked up the photograph to check. Then she looked closer. Then she held it right up to her nose.\n\n“Ted,” she said. “In the photo... she’s leaning.”",
+      "illustrationDirection": "Honey-Beats holding the photograph right up to her nose, eyes wide.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9f25f58271d5d5503483e72d60efde1eb04e8c9eb8485bfbdfadcf59a81ff7f1",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 332156,
+            "sha256": "0249aab589ef48ef63b96bcaeb8872bafa2e79f6a9bfd65ccf4c2a3fe135013c"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 215334,
+            "sha256": "743e5b5788b4aa7cd61fcfa94862b49f63b1522b471b1199b017575979f49e74"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97822,
+            "sha256": "b48b3c7afb35ea0beaec945492d32c28e191a16d5be4c5f8cab07c98238e06e8"
+          }
+        ],
+        "review": "The framed sepia photo shows young Ted and Gran by their small fir. Both drumsticks are visible and Honey-Beats’ eyes widen.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats looks closely at the old photograph."
+      },
+      "alt": "Honey-Beats looks closely at the old photograph."
+    },
+    {
+      "number": 19,
+      "text": "Ted put on his reading glasses. He looked.\n\nIn the photograph, on the top of Gran’s little tree, the angel was leaning over to one side. Not very much. Just a little.\n\nTed laughed. “I’d forgotten. Gran always said, ’She leans toward the best bit.’”",
+      "illustrationDirection": "Ted in his small reading glasses studying the photograph, laughing. Close enough to see: the angel in the photo leans a little.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "361fe44e920876fe2dc85534a1e512f5391007f5aa7634eda33086dacb931da1",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 383388,
+            "sha256": "093743c0be022abd2647470b8e7d8ff87484876f580553bb4790d7fc70e2de30"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 236232,
+            "sha256": "7d60e6008df8c0df8030d60ace434b0ddea6baf2ae6f01fc8ca45630351640cc"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104470,
+            "sha256": "2776e317480c054d387386a7ecab72b74861a534153be4298ec94488d3ca8dbe"
+          }
+        ],
+        "review": "Ted wears round reading glasses and laughs at the framed family photo. The little figure leans slightly.",
+        "generator": "built-in imagegen",
+        "alt": "Ted laughs as he sees that the angel in the photograph was leaning too."
+      },
+      "alt": "Ted laughs as he sees that the angel in the photograph was leaning too."
+    },
+    {
+      "number": 20,
+      "text": "“What’s the best bit?” asked Candy-Nut.\n\n“Gran never said,” said Ted. “We used to try to guess.”\n\nHoney-Beats looked up at the angel, standing straight with her little bell.\n\n“Can we take the bell off?” she said. “Just to see?”",
+      "illustrationDirection": "The three of them on the rug looking up at the straight angel with her bell. Honey-Beats asking, one paw raised.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4906d5a5b89426878364ef565985ac5ee127fe2dad657be53fe1f831de22b1ea",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 408330,
+            "sha256": "e9427326ecfb85d961171a36334f6f90e93ba974c31db01f3dd3876a09c94238"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 248896,
+            "sha256": "a1855a82e95100033110f05be5c2cbfd51e05f17fefa00a13ca0a263fbc55ead"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111236,
+            "sha256": "50e0b17c367a5749d4d6daa7102deb8d1db96e7afe4aaba38a7f134a64696e90"
+          }
+        ],
+        "review": "Ted wears his round glasses. Two sticks, one bell hung from the flat wing and the toy stands straight.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats asks if they can take the bell off."
+      },
+      "alt": "Honey-Beats asks if they can take the bell off."
+    },
+    {
+      "number": 21,
+      "text": "So Candy-Nut untied the double knot, and Ted lifted Honey-Beats up one last time.\n\n“Up you go, Angel!”\n\nThey stood back. They watched.\n\nThe angel leaned slowly over, and stopped.",
+      "illustrationDirection": "Late afternoon blue light. Ted lifting Honey-Beats; Candy-Nut holding the untied bell.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1fc65d8e9d1fcaaecf3f9993e49ee1580fc966f297a6ce5b77ec76b690a0f753",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 361158,
+            "sha256": "3401cefa1ad84df1727ff8397f76aa09ae384daba9ac47b2cd9a8192a29cb948"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 231388,
+            "sha256": "b499be87f5990d9c8cb952a6c69e0364e2c57240dcac6c2cb833bd6735e54c55"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 106144,
+            "sha256": "beef96199c032c8d055d0e72b84452988a57bb67c2971dd00a5fb3d598801f6e"
+          }
+        ],
+        "review": "The loose bell is in Candy-Nut’s paw, the angel is off-balance and Honey-Beats holds both sticks as Ted lifts her. One green parcel on the right.",
+        "generator": "built-in imagegen",
+        "alt": "Ted lifts Honey-Beats one last time as Candy-Nut holds the bell."
+      },
+      "alt": "Ted lifts Honey-Beats one last time as Candy-Nut holds the bell."
+    },
+    {
+      "number": 22,
+      "text": "She was pointing straight at the funny-shaped present.\n\n“She thinks the present is the best bit!” said Candy-Nut.\n\n“She might be right,” said Honey-Beats.",
+      "illustrationDirection": "The angel leaning to point straight down at the present. Both children delighted.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "45966c25edbefe5f7b20bedb78980af2c0a3713bb31f2860d33fa4f67f96b164",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 424848,
+            "sha256": "aea67531d26b35f5b0adb85155751902b8eac85f8d93f56903e1bdbd60c0277f"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 257896,
+            "sha256": "d28a4918c1c3388ff19adc4877719d761a7b25b77cc7fd994e2cc7c2feb0773d"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113984,
+            "sha256": "a61c5b8a0f99811a30d3be2143fcf29f74450e3d5922aa78cf248533e7b81b57"
+          }
+        ],
+        "review": "One attached angel leans toward her larger wing and the parcel below. Two sticks and no bell on the angel. Dusk hues and unlit tree.",
+        "generator": "built-in imagegen",
+        "alt": "The angel leans over to point straight at the present."
+      },
+      "alt": "The angel leans over to point straight at the present."
+    },
+    {
+      "number": 23,
+      "text": "Ted switched on the lights. The little tree glowed, with twelve salt-dough acorns and one leaning angel.\n\nCandy-Nut tied the brass bell to a low branch, where everybody could reach it.",
+      "illustrationDirection": "Wide: the little tree glowing with warm fairy lights, twelve acorns and the leaning angel. Candy-Nut tying the brass bell to a low branch. Snow outside the window.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2f2c978100064c200fbd8e056335de92f3a0d35f4960f21bf6e3d2f24620c23a",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 366982,
+            "sha256": "a13b8871e25bf2ba85755f356a5a3e106ff0d8cccdda38e05f7cf47b96095224"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 242018,
+            "sha256": "19b10bfcc8a8e2968dd7983ff51304cd8baf299660881e6e131a8c00ed1e42c3"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110406,
+            "sha256": "763882aa9bd111ff8ccfbf51f87bd94407996219522cf47eb16da438ff187d3f"
+          }
+        ],
+        "review": "Counted twelve acorns in four rows of three. One brass bell on a low branch, warm fairy lights, two drumsticks, the leaning angel on the tip and the one green parcel beneath her large wing.",
+        "generator": "built-in imagegen",
+        "alt": "The tree glows with lights, twelve acorns and the leaning angel."
+      },
+      "alt": "The tree glows with lights, twelve acorns and the leaning angel."
+    },
+    {
+      "number": 24,
+      "text": "Honey-Beats gave the bell a tap with her drumstick. *Jingle.*\n\n“Ted,” she said. “Is it a drum?”\n\nTed smiled, and said nothing at all, which is what grown-ups say when the answer is “Christmas morning”.",
+      "illustrationDirection": "Honey-Beats tapping the low bell with a drumstick; Candy-Nut giggling; Ted in his armchair, smiling, saying nothing.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8c0675dcb004dbb6aeca263d36c6369c4c79dc622df250b6bb12ebdf1589eff5",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 409142,
+            "sha256": "4a8af94fd00b5606e7424c967d6ea076d3462f50f9452fcd8a9be527d50ec01e"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 255214,
+            "sha256": "f177479410ce136cdf0d10d1221c6c891edb95c385d47f5a4d985baa21e425bb"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117072,
+            "sha256": "5daef57ce0ffa4f5b662fc030e8b0463e8bc93014e7c63763cd6faaf7a178220"
+          }
+        ],
+        "review": "One brass bell low on red thread, two sticks, one unopened wrapped parcel, toy leaning and Ted in his chair without spectacles.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats taps the bell and asks if the present is a drum. Ted just smiles."
+      },
+      "alt": "Honey-Beats taps the bell and asks if the present is a drum. Ted just smiles."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "823adbcf5df781967a0e1f06f316b186d8d57f47204cd2e0138b7a087678142b",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 386540,
+        "sha256": "37710172b252a4eb971cf67056b283a47b843ed55c351fb66390d3bbe74f72eb"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 243410,
+        "sha256": "e743223e256a6f95310d98d7a1db6fe2079d6421c0386e1d161ab8be5fe06afd"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 110560,
+        "sha256": "63485641e8d5270ec7fa24862d447b55e2d8d7d315dafe4e7b4a4369d4f849e9"
+      }
+    ],
+    "review": "Ted has a bare head. The toy angel leans toward her larger left wing on the viewer’s right. The green drum-shaped present below has two raised, fully wrapped drumstick shapes. Reviewed full-size, at 160 px and in greyscale.",
+    "generator": "built-in imagegen",
+    "alt": "Honey-Beats and Candy-Nut tilt their heads at a leaning fabric angel on top of a small tree, while Ted-E-Bear smiles behind them."
+  },
+  "sourceFolder": "christmas/the-angel-on-the-small-tree",
+  "webSlug": "the-angel-on-the-small-tree",
+  "reviewedPrintableSha256": "071aa6542a9b4485e41084dbac6df5ecae4d15fdf1fc7107f9fa7e58b808d0d2"
+}

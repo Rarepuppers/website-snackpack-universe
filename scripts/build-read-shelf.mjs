@@ -53,7 +53,7 @@ const GROUPS = [
   { id: "stage-3", title: "Stage 3 · short o and u", intro: "Adds g, o, u, l, f and b, so every short vowel is covered." },
   { id: "trail", title: "Reading Trail · next steps", intro: "Eight read-together stories for focused phonics practice, rather than controlled independent decodables: short-vowel review, sh/ch/th/wh, blends, magic e, vowel teams, word endings, ar/or/er/ir/ur, and y and -le endings." },
   { id: "places", title: "Real places · Copán, Honduras", intro: "Two books about one real place: the Maya city of Copán in Honduras and its scarlet macaws. A read-together story for younger readers and a class report for ages 9 to 12, with the facts checked against named sources." },
-  { id: "christmas", title: "Christmas picture books", intro: "Six woodland Christmas stories, in the order they happen. Share one aloud or follow a mystery on your own; they stay on the shelf all year." },
+  { id: "christmas", title: "Christmas picture books", intro: "Woodland Christmas stories in the order they happen. Share one aloud or follow a mystery on your own. They stay on the shelf all year." },
   { id: "summer-christmas", title: "Summer Christmas", intro: "Find Christmas stories set on the coast in summer, with shady picnics and bright market days." },
   { id: "thanksgiving", title: "Thanksgiving stories", intro: "Share a woodland feast, count the corn cobs and see what happens when all six friends bring potatoes." },
   { id: "new-year", title: "New Year stories", intro: "Sort a year of memories and count down to midnight with the woodland friends." },
@@ -153,7 +153,7 @@ function card(b, i) {
   const pages = (bookHtml.match(/<article class="story-page-card"/g) || []).length;
   const schema = [...bookHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1])).find(x => x['@type'] === 'Book');
   const topic = b.group === 'numbers' ? String(schema?.about || '').replace(/<[^>]*>/g,'') : '';
-  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb} ${topic}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3>${topic ? `<span class="read-topic">${escape(topic)}</span>` : ""}<span class="read-saved-label" data-saved-label>Saved status unavailable</span><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
+  return `<a class="read-library-card" href="./${b.slug}/" data-search="${escape(`${b.title} ${b.eyebrow} ${b.blurb} ${topic}`)}" data-pages="${pages}" data-kind="${KIND[b.group]}" data-age="${b.age[0]}-${b.age[1]}" data-added="${b.added ?? ""}"><picture>${sourceTag(path.join(ROOT, "read", b.slug, `${b.cover}.webp`), src, "hub")}<img src="${src}.${b.ext}" alt="${b.alt}" width="${b.w}" height="${b.h}"${i > 2 ? " loading=\"lazy\"" : ""}></picture><div><span class="eyebrow">${b.eyebrow}</span><h3>${plainTitle(b.title)}</h3>${topic ? `<span class="read-topic">${escape(topic)}</span>` : ""}<span class="read-saved-label" data-saved-label>Saved status unavailable</span><p>${b.blurb}</p><span class="btn btn-primary">Read the story</span></div></a>`;
 }
 
 // Stage shortcuts (a 13-book shelf is a long scroll on a phone) and the
@@ -199,6 +199,10 @@ function shelfBlock() {
     const books = SHELF.filter((b) => b.group === g.id);
     if (!books.length) continue;
     const event = READ_EVENTS.find((e) => e.id === g.id);
+    if (event) {
+      const seasonOrder = new Map(event.timeline.map(({ slug }, i) => [slug, i]));
+      books.sort((a, b) => seasonOrder.get(a.slug) - seasonOrder.get(b.slug));
+    }
     const more = g.id === "summer-christmas" ? ' <a class="text-link" href="./events/christmas/#summer-christmas">Browse Summer Christmas</a>' : event ? ` <a class="text-link" href="./events/${event.id}/">${event.heading} in reading order</a> · <a class="text-link" href="./events/">Holiday and event stories</a>` : "";
     out.push(`<div class="read-shelf-group" id="${g.id}"><h2 class="read-shelf-heading">${g.title}</h2><p class="read-shelf-intro">${g.intro}${more}</p><div class="read-library-grid">`);
     for (const b of books) out.push(card(b, shown++));
@@ -403,7 +407,7 @@ function offlineManifest() {
       html_sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT,'read',b.slug,'index.html'),'utf8').replace(/\r\n/g,'\n')).digest('hex'),
       bytes: resources.filter(u => /\.(webp|png)$/.test(u)).reduce((n,u) => n + fs.statSync(path.join(ROOT,u)).size,0) });
   }
-  urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js", "/read/events.js",
+  urls.push("/site.css", "/theme.js", "/read/share.js", "/read/reader.js", "/read/reading-position.js", "/read/offline.js", "/read/shelf-filter.js", "/read/events.js", "/read/advent.js",
     "/assets/fonts/fonts.css", "/assets/favicon-32.png", "/assets/snackpack-mark-96.png");
   urls.push(...READ_EVENTS.map(eventIconPath));
   for (const f of fs.readdirSync(path.join(ROOT, "assets/fonts")).filter((f) => f.endsWith(".woff2")).sort()) urls.push(`/assets/fonts/${f}`);

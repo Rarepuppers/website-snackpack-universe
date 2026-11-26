@@ -1,5 +1,8 @@
 import fs from 'node:fs';
 import {test,expect} from '@playwright/test';
+import {READ_EVENTS} from '../../scripts/lib/read-events.mjs';
+const christmasEvent = READ_EVENTS.find(({id}) => id === 'christmas');
+const webOriginals=JSON.parse(fs.readFileSync(new URL('../../data/web-originals.json',import.meta.url),'utf8'));
 const books=[
  ['nutmeg-and-the-tree-that-wouldnt-come','Tree That',24],
  ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow',24],
@@ -8,6 +11,9 @@ const books=[
  ['sub-zero-and-the-great-snowball-truce','Great Snowball Truce',24,'Ages 5–7 · Read together'],
  ['captain-beakon-and-the-bell-across-the-bay','Bell Across the Bay',44,'Ages 12–14 · Independent reading'],
 ];
+if (webOriginals['the-angel-on-the-small-tree']) {
+ books.push(['the-angel-on-the-small-tree','The Angel on the Small Tree',24,'Ages 5–7 · Read together']);
+}
 for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -29,7 +35,7 @@ for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(errors).toEqual([]);
  await page.goto('/read/?q='+encodeURIComponent(query));
- await expect(page.locator('.read-library-card:visible')).toHaveCount(1);
+ await expect(page.locator(`.read-library-card[href="./${slug}/"]`)).toBeVisible();
 });
 
 test('the harbour mystery is discoverable by age and can open a chapter directly',async({page})=>{
@@ -44,19 +50,14 @@ test('the harbour mystery is discoverable by age and can open a chapter directly
  await expect(page.locator('#page-31').getByRole('heading')).toHaveText('The blue boathouse');
 });
 
-test('the Christmas event page lists the six books in reading order and books link back to it',async({page})=>{
+test('the Christmas event page follows the published reading order and books link back to it',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/read/events/christmas/');
- const woodland=page.locator('ol.read-event-books');
- await expect(woodland.locator('.read-event-book')).toHaveCount(6);
- await expect(woodland.locator('h3 a')).toHaveText([
-   'Nutmeg and the Tree That Wouldn’t Come',
-   'Vincent Van Mouse and the Christmas Shadow Show',
-   'Sub-Zero and the Great Snowball Truce',
-   'Captain Beakon and the Bell Across the Bay',
-   'One More Story Before Santa',
-   'The Last Parcel Under the Tree',
- ]);
+ const woodland=page.locator('ol.read-event-books h3 a');
+ await expect(woodland).toHaveCount(christmasEvent.timeline.length);
+ expect(await woodland.evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(
+   christmasEvent.timeline.map(({slug})=>`../../${slug}/`),
+ );
  await expect(page.locator('[data-tonight]:visible')).toHaveCount(1);
  await page.goto('/read/events/');
  await expect(page.locator('a.read-event-card[data-read-event="christmas"]')).toHaveCount(1);
@@ -116,7 +117,6 @@ const foxy = {
  slug:'foxy-lox-and-the-postcard-present', title:'Foxy-Lox and the Postcard Present',
  pages:16, age:'7-9', matchingAges:['7-8','9-10'], otherAge:'11-12',
 };
-const webOriginals=JSON.parse(fs.readFileSync(new URL('../../data/web-originals.json',import.meta.url),'utf8'));
 const summerBooks=[bark,foxy].filter(({slug})=>Object.hasOwn(webOriginals,slug));
 const christmas='/read/events/christmas/';
 const reader=({slug})=>`/read/${slug}/`;
@@ -127,7 +127,7 @@ test('Summer Christmas discovery reflects the released web originals',async({pag
  const guide=page.getByRole('region',{name:'Christmas reading guide'});
  const guideLink=guide.getByRole('link',{name:/Browse Summer Christmas stories/});
  const jsonLd=await page.locator('script[type="application/ld+json"]').first().textContent();
- expect(JSON.parse(jsonLd).mainEntity.numberOfItems).toBe(6+summerBooks.length);
+ expect(JSON.parse(jsonLd).mainEntity.numberOfItems).toBe(christmasEvent.timeline.length+summerBooks.length);
  await expect(group).toHaveCount(Number(summerBooks.length>0));
  await expect(guideLink).toHaveCount(Number(summerBooks.length>0));
  if(summerBooks.length){

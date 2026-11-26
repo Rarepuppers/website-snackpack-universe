@@ -18,6 +18,10 @@
 import fs from "node:fs";
 
 const originalRegistry = JSON.parse(fs.readFileSync(new URL("../../data/web-originals.json", import.meta.url), "utf8"));
+export function readAdvent(slug) {
+  const manifest = originalRegistry[slug];
+  return manifest ? JSON.parse(fs.readFileSync(new URL("../../" + manifest, import.meta.url), "utf8")).advent : undefined;
+}
 const released = timeline => timeline.filter(({ slug }) => originalRegistry[slug]);
 const publishedSlugs = (slugs) => slugs.filter(slug => originalRegistry[slug]);
 
@@ -27,14 +31,18 @@ export const READ_EVENTS = [
     icon: "christmas",
     title: "Christmas",
     heading: "Christmas stories",
-    tagline: "A woodland Christmas, from choosing the tree to the last parcel on Christmas morning.",
-    intro: "Six original picture books follow the woodland friends up to Christmas morning. Read them in the order they happen, or pick by age. Five stories are for ages 4 to 9, and the harbour mystery is for confident readers aged 12 to 14.",
+    tagline: "A woodland Christmas, from the first decorations to the last parcel on Christmas morning.",
+    intro: "Follow the woodland friends from the first decorations to Christmas morning. Read the stories in the order they happen, or pick one to suit your readers.",
     accent: "#8C1D2B",
     dates: [{ kind: "fixed", month: 12, day: 25 }],
     leadDays: 40,
     tailDays: 6,
     // Reading order follows the season; the shelf and the "Next" chain use it.
     timeline: [
+      ...released([
+        { when: "Every day, 1 to 24 December", slug: "twenty-four-letters-before-christmas" },
+        { when: "Decorating day", slug: "the-angel-on-the-small-tree" },
+      ]),
       { when: "Early December", slug: "nutmeg-and-the-tree-that-wouldnt-come" },
       { when: "The week before", slug: "vincent-van-mouse-and-the-christmas-shadow-show" },
       { when: "The first snow", slug: "sub-zero-and-the-great-snowball-truce" },
@@ -48,8 +56,17 @@ export const READ_EVENTS = [
     ]),
     alsoGood: ["sub-zero-and-the-snowflake-post", "sub-zeros-magic-e-lantern", "nutmegs-four-seasons"],
     extras: [{ href: "/winter/", label: "Winter in the Woods: two short winter stories and two winter games" }],
+    printables: [
+      ...(originalRegistry["twenty-four-letters-before-christmas"] ? [
+        { href: "/read/events/christmas/twenty-four-piece-star.pdf", label: "Twenty-Four Piece Star activity sheet" },
+        { href: "/read/events/christmas/colouring-twenty-four-letters-before-christmas.pdf", label: "Colour Twenty-Four Letters Before Christmas" },
+      ] : []),
+      ...(originalRegistry["the-angel-on-the-small-tree"] ? [
+        { href: "/read/events/christmas/colouring-the-angel-on-the-small-tree.pdf", label: "Colour The Angel on the Small Tree" },
+      ] : []),
+    ],
     // Read-alouds that "Read together tonight" rotates through, in order.
-    tonight: ["nutmeg-and-the-tree-that-wouldnt-come", "vincent-van-mouse-and-the-christmas-shadow-show", "sub-zero-and-the-great-snowball-truce", "one-more-story-before-santa", "the-last-parcel-under-the-tree"],
+    tonight: [...publishedSlugs(["the-angel-on-the-small-tree"]), "nutmeg-and-the-tree-that-wouldnt-come", "vincent-van-mouse-and-the-christmas-shadow-show", "sub-zero-and-the-great-snowball-truce", "one-more-story-before-santa", "the-last-parcel-under-the-tree"],
     tonightSpecial: {
       "one-more-story-before-santa": { date: "12-24", label: "Christmas Eve pick" },
       "the-last-parcel-under-the-tree": { date: "12-25", label: "Christmas Day pick" },
@@ -190,10 +207,11 @@ export function releasedEventBooks() {
   const releaseDates = { thanksgiving: "2026-11-20", "new-year": "2026-11-20" };
   const events = [...Object.keys(releaseDates), "christmas"].map(id => READ_EVENTS.find(event => event.id === id));
   return events.flatMap(event => {
-    const entries = event.id === "christmas" ? event.summer : event.timeline;
-    return entries.map(({ slug, added }) => {
+    return released(eventEntries(event)).flatMap(({ slug, added }) => {
       const book = JSON.parse(fs.readFileSync(new URL(`../../${originalRegistry[slug]}`, import.meta.url), "utf8"));
-      const isSummer = event.id === "christmas";
+      const isSummer = event.summer?.some(entry => entry.slug === slug);
+      // The original woodland Christmas shelf cards are authored in build-read-shelf.
+      if (event.id === "christmas" && !isSummer && !book.sourceFolder?.startsWith("christmas/")) return [];
       const label = isSummer ? "Summer Christmas" : slug === "everybody-brought-potatoes" ? "Friendsgiving" : event.title;
       const format = book.readingLevel === "Read together" ? "Read-aloud" : "Story";
       return {
