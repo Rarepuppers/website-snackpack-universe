@@ -40,6 +40,10 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
 - Pyramid and TriPeaks now share their own painted cards (delivered 18 Oct,
   never switched on). Codex prompt for the next art batch:
   `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md`.
+- `ff0c14b0` adopted the six 2048 screenshots (size switch) from CI. Then the
+  two 4K Last Bastion review tests get a longer timeout: they timed out twice
+  on CI's software renderer while every check in them passed. Plan updated
+  with the 26 Nov Search Console detail for the 4 Dec title read.
 
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 

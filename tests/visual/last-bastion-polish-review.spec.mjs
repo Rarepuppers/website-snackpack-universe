@@ -13,6 +13,8 @@ const cases = [
 ];
 for (const item of cases) {
   test(`dense kit review ${item.palette} ${item.width}`, async ({ page }) => {
+    // A 4K canvas under stress=12 on CI's software renderer can pass 30 s (timed out on 348713d2 and ff0c14b0).
+    test.slow(item.width >= 3840, "4K canvas on a software renderer");
     mkdirSync(output, { recursive: true });
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));

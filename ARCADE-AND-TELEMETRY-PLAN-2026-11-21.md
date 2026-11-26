@@ -75,6 +75,14 @@ R5's prompt. Still waiting, because the data does not exist yet: R6 (class
 behaviour over school days; new events began 26 Nov), R16 (needs the daily
 counts), R10 (depends on R6). R5 waits on Codex.
 
+**Status on 26 Nov (evening check):** CI and live state confirmed; the
+gated items are still gated. GoatCounter has under a day of the new events
+(one book start, no game starts yet: the class arrives ~15:00 UTC), so R6,
+R1's re-check and R16 cannot be read before their dates. Search Console (to
+23 Nov) gave no new lever that the plan's own rules allow us to pull before
+4 Dec; its details are recorded under R7 and R17 for the reads. One CI flake
+came back and was fixed (R12, item 4).
+
 ### R1. Re-pick the featured row — **done early, 26 Nov**
 - **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
   by adults; Snacky Worm and Pinball are in the row for the class.
@@ -165,6 +173,29 @@ counts), R10 (depends on R6). R5 waits on Codex.
   Thirteen per day: 3.95 → 5.3 clicks (+34%) at a slightly worse position, so
   the title helps. 2048 is too small to call but not worse. **Keep both.**
   Re-confirm at a full 28 days (~4 Dec) before the Thirteen "how to play" box.
+- **Per-query view for the 4 Dec read (Search Console 27 Oct–23 Nov, 28
+  days, 139 clicks / 6,493 impressions / position 6.3).** The clicks come from
+  `13 card game online` (20 clicks, 7.3% CTR, pos 4.2), `tien len online`
+  (12, 4.2%, 7.8) and `13 card game` (8, 4.8%, 8.7). The leak is a group of
+  queries **already in the top 4 with almost no clicks**: `free thirteen`
+  246 impressions / 0 clicks at 3.2, `card game 13 online` 201 / 1 at 2.9,
+  `online thirteen` 116 / 0 at 4.0, `thirteen game online` 89 / 0 at 3.1,
+  `play thirteen online` 44 / 0 at 3.8. The title already contains "Free",
+  "13 Card Game" and "Online", so wording is not the obvious cause; the likely
+  one is the results page itself (game carousels or app packs above the blue
+  links for "thirteen" phrasings). **At the 4 Dec read:** compare these five
+  queries before/after 6 Nov. If they are still ~0% at positions 3–4, do not
+  touch the title again; the "how to play in 60 seconds" box and position
+  work stay the lever. Also seen: `thirteen (tien len) | play it online`
+  (46 impressions, pos 6.8), which is someone typing a page title.
+- **The rules guide** (`/guides/thirteen-tien-len-rules/`) is the site's
+  biggest impression page outside `/play/`: 978 impressions, 3 clicks (0.3%)
+  at 8.9. Its queries are rules questions (`how to play 13 card game` 46,
+  `the thirteen rules` 45, `13 rules` 41, `how to play 13` 32 at 6.1), all
+  0 clicks. It was retitled on 26 Nov for exactly these; read it with the
+  Thirteen page on ~4 Dec (title change needs ~2 weeks to show) and again on
+  ~24 Dec. Also `bài tiến lên tiếng anh là gì` / `tiến lên in english`: a
+  small Vietnamese audience asking what the game is called in English.
 - **New finding:** 2048's queries include "2048 no ads", "2048 without ads"
   (position 1.2), "2048 google classroom" and "ezclasswork". Schools look for
   ad-free 2048. See R17.
@@ -241,6 +272,14 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
      launch-email version. Tests updated to the launched state.
   3. The Last Bastion "dense kit review" failure did not repeat on the next
      two runs. Treat it as flaky unless it comes back.
+  4. **It came back** on `ff0c14b0` (the 2048 baseline push), again as
+     "dense kit review tritanopia 3840": a 30 s test timeout, not an
+     assertion. Both failures were the 3840×2160 cases, which drive a 4K
+     canvas at `stress=12` through CI's software renderer and spend 2.4 s
+     holding keys on top. The two 3840 cases are now `test.slow()` (90 s);
+     the 1920 cases keep 30 s and nothing the test checks changed. If a 3840
+     case still times out at 90 s, that is a real performance regression for
+     Last Bastion's owner, not a flake.
 - **Local note:** `arcade-mobile` and `arcade-header` load every game in turn
   and can time out when run alongside other suites on a laptop; they pass on
   their own and on CI.
@@ -288,6 +327,14 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   title strip (changes every game screenshot, so do it with a baseline round).
 - **Measure:** Search Console queries containing "no ads", "ad free",
   "unblocked" or "classroom" across `/play/` at 28 days.
+- **Baseline (27 Oct–23 Nov):** `2048 no ads` 24 impressions / 2 clicks at
+  4.5; `2048 without ads` 5 at 1.2; `rummy 500 no ads` 10 / 0 at 5.0;
+  `rummy 500 unblocked` 1 at 9; `mines unblocked` 1 at 6; `word search
+  unblocked` 6 at 39.8; `2048 google classroom` 1 at 16; `2048 ezclasswork` 2
+  at 8.5; a few `klondike … no ads` at 5–33. Rummy 500 was not in the 26 Nov
+  check but already has "No Ads" in its title and description, so nothing to
+  change; the zero clicks on 10 impressions are noise. No query yet for
+  typing or math-facts practice (both pages are a day old).
 
 ### R14. Not now
 - **More solitaire variants:** big demand, never ranked (indexing limit).
@@ -319,7 +366,7 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 
 | Date | What | Tool |
 | --- | --- | --- |
-| ~4 Dec | Thirteen and 2048 titles (R7) | Search Console |
+| ~4 Dec | Thirteen and 2048 titles (R7), incl. the five top-4 zero-click queries and the rules guide | Search Console |
 | ~10 Dec | First read of the new events (R6), featured row (R1) | `scripts/read-site-events.mjs` |
 | ~11 Dec | Sokoban + Chess Puzzles day 28 (separate plan) | Search Console |
 | ~16 Dec | Snack Typer and Fact Sprint at 14 school days | GoatCounter |
