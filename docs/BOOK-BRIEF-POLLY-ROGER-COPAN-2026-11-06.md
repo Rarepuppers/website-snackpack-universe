@@ -77,7 +77,7 @@ eaten across the country. The reviewer should confirm that page 6 feels right.
   caricature.
 - Polly must match `read/polly-rogers-pirate-cove/pages/` and the portrait
   `apps/snackpack-3-spelling-sentences/assets/character-portraits/polly-roger-parrot.webp`.
-- Full art instructions are in `docs/ART-BRIEF-WEB-BOOKS-2026-11-06.md`.
+- Full art instructions are in `docs/archive/ART-BRIEF-WEB-BOOKS-2026-11-06.md`.
 
 ## Before publishing
 

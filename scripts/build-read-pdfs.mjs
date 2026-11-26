@@ -51,6 +51,23 @@ function jpegInfo(buf) {
   throw new Error("no SOF marker found");
 }
 
+// ── Credit footer (2026-11-26) ───────────────────────────────────────────
+// Printed pages get photocopied and separated, so every page carries the book
+// title, the copyright holder and the address. The cover also says what
+// copying is allowed, so teachers know they may.
+const COPYRIGHT = "\u00a9 2026 SnackPack Studios";
+const SITE = "snackpackuniverse.com/read";
+const LICENCE = "Free to copy for home and classroom use. Not for resale.";
+const FOOT_SIZE = 8, FOOT_LINE = 11;
+const FOOT_H = (licence) => (licence ? 2 : 1) * FOOT_LINE + 6; // space kept clear above the box bottom
+function footer(title, licence) {
+  const left = (PAGE_W - BOX_W) / 2, bottom = (PAGE_H - BOX_H) / 2;
+  let credit = `${title} \u00b7 ${COPYRIGHT} \u00b7 Free at ${SITE}`;
+  if (textWidth(credit, FOOT_SIZE, false) > BOX_W) credit = `${COPYRIGHT} \u00b7 Free at ${SITE}`;
+  const rows = licence ? [LICENCE, credit] : [credit];
+  return rows.map((r, i) => `BT /F1 ${FOOT_SIZE} Tf 0.45 0.4 0.36 rg ${left.toFixed(2)} ${(bottom + 2 + (rows.length - 1 - i) * FOOT_LINE).toFixed(2)} Td ${pdfText(r)} Tj ET`).join("\n") + "\n";
+}
+
 const colorSpace = (n) => (n === 1 ? "/DeviceGray" : n === 4 ? "/DeviceCMYK" : "/DeviceRGB");
 
 // PDF text string. Plain ASCII goes in a literal string; anything else (the
@@ -191,9 +208,9 @@ function questionPages(title, { items, answers }) {
     for (const a of answers) para(a, 10.5, false, true, 3);
   }
   newPage();
-  // Footer on the last page only: a printed copy passed round a class still points home.
-  pages[pages.length - 1] += `\nBT /F1 9 Tf 0.45 0.4 0.36 rg ${left.toFixed(2)} ${(bottom + 4).toFixed(2)} Td ${pdfText("Free to read online and print: snackpackuniverse.com/read")} Tj ET`;
-  return pages;
+  // A photocopied questions sheet still says whose it is and where it came from.
+  // One line only, inside the 24pt already kept clear, so no book gains a page.
+  return pages.map((p) => `${p}\n${footer(title, false)}`);
 }
 
 // ── PDF assembly ─────────────────────────────────────────────────────────
@@ -205,7 +222,7 @@ function buildPdf(images, title, textPages = []) {
   const obj = (n, body) => { offsets[n] = len; push(`${n} 0 obj\n`); push(body); push("\nendobj\n"); };
 
   const n = images.length;
-  const hasFonts = textPages.length > 0 || images.some(img => img.caption?.length);
+  const hasFonts = true; // every page carries the credit footer
   // 1 catalog, 2 pages, then per image: page, contents, xobject; then the two
   // fonts, then per text page: page, contents.
   const pageIds = images.map((_, i) => 3 + i * 3);
@@ -228,9 +245,11 @@ function buildPdf(images, title, textPages = []) {
     const lines = copy.slice(1).flatMap(p => wrap(p, 13, false, BOX_W));
     const copyH = copy.length ? heading.length * headingLeading + lines.length * 18 + 24 : 0;
     if (copyH > BOX_H / 2) throw new Error(`Page ${i + 1}: story copy too long for a readable picture-book page`);
-    const scale = Math.min(BOX_W / img.width, (BOX_H - copyH) / img.height);
+    const foot = FOOT_H(i === 0);
+    const scale = Math.min(BOX_W / img.width, (BOX_H - copyH - foot) / img.height);
     const w = img.width * scale, h = img.height * scale;
-    const x = (PAGE_W - w) / 2, y = copy.length ? (PAGE_H + BOX_H) / 2 - h : (PAGE_H - h) / 2;
+    const boxBottom = (PAGE_H - BOX_H) / 2 + foot;
+    const x = (PAGE_W - w) / 2, y = copy.length ? (PAGE_H + BOX_H) / 2 - h : boxBottom + (BOX_H - foot - h) / 2;
     let content = `q\n${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm\n/Im0 Do\nQ\n`;
     let textY = y - 26;
     for (const [font, size, lineHeight, rows] of [['F2', headingSize, headingLeading, heading], ['F1', 13, 18, lines]]) {
@@ -240,6 +259,7 @@ function buildPdf(images, title, textPages = []) {
         textY -= lineHeight;
       }
     }
+    content += footer(title, i === 0);
     const contentBytes = Buffer.from(content, 'latin1');
 
     obj(pageId,

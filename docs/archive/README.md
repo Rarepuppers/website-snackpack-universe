@@ -5,6 +5,7 @@ work from these; the live plans are at the repository root.
 
 | File | Archived | Why |
 |---|---|---|
+| `ART-BRIEF-WEB-BOOKS-2026-11-06.md` | 2026-11-26 | Completed: Copán pair, Reading Trail 7–8 and the final Big Two tile/card all delivered and live (Big Two final 2026-11-09) |
 | `ARCADE-NEXT-PLAN-2026-10-20.md` | 2026-11-26 | Completed: Thirteen levels, Rummy 500, Block Puzzle, Brick Breaker, Chess, Killer Sudoku all shipped; open options carried into `ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md` §6 |
 | `ARCADE-AUDIT-2026-10-17.md` | 2026-11-26 | Completed: playthrough audit; its fixes landed via the 10-20 plan |
 | `ARCADE-QUALITY-PLAN-2026-09.md` | 2026-11-26 | Completed gate work; remaining items and standing traps carried into the live arcade plan §6 and §8 |
