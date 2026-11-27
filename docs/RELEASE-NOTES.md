@@ -19,8 +19,8 @@ Plan: [`READ-PLAN-2026-10.md`](../READ-PLAN-2026-10.md) "Printable credit footer
 ## 2026-11-27 - Thirteen quick guide and reusable classroom dailies
 
 - [Thirteen](../play/thirteen/) has a collapsible "How to play in 60 seconds"
-  box above the board. Thirteen and 2048 keep their titles after the early
-  matched-window Search Console read.
+  box in the title strip, keeping the hand on screen. Thirteen and 2048 keep
+  their titles after the early matched-window Search Console read.
 - [Teacher links](../for-teachers/) can be copied once and used for the new
   Snack Typer and Fact Sprint daily each day. GoatCounter reports starts
   and daily finishes from those links using a fixed classroom label.

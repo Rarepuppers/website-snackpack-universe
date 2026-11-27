@@ -247,8 +247,14 @@ windows on the calendar for measurement.
   `thirteen game online` 73 at 3.62 → 47 at 3.40,
   `play thirteen online` 44 at 3.77 → 21 at 4.24. The five totalled
   0 / 448 before and 1 / 440 after. Keep the titles and put a collapsible
-  "How to play in 60 seconds" box above Thirteen’s board. The existing
-  related-game links below the game already include Big Two and Rummy 500.
+  "How to play in 60 seconds" box in the title strip above Thirteen’s
+  board. The first layout gave the collapsed box its own row. CI run
+  [45925422202](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45925422202)
+  measured only 138 px of the hand visible on phones and 107 px on laptops.
+  The disclosure now sits alongside the title when collapsed, so the
+  hand starts on the first screen. The focused browser check showed the
+  whole hand at both 375×812 and 1280×800 and verified keyboard operation.
+  The screenshot baselines passed. The existing related-game links below the game already include Big Two and Rummy 500.
   Keep the full 28 days as a follow-up measurement.
 - **Per-query view for the 4 Dec read (Search Console 27 Oct–23 Nov, 28
   days, 139 clicks / 6,493 impressions / position 6.3).** The clicks come from
