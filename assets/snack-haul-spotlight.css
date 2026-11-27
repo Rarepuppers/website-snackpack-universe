@@ -26,10 +26,11 @@
 }
 
 .snack-haul-spotlight .stack-inline {
+  align-items: center;
   margin-top: 16px;
 }
 
-.snack-haul-spotlight img {
+.snack-haul-spotlight-card > img {
   display: block;
   width: 100%;
   height: auto;
