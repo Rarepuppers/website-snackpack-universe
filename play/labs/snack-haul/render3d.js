@@ -238,8 +238,10 @@ function winterTopper(id) {
   return kitMesh(shape,false,id==="star");
 }
 
-function buildTruck(spec, rail, quality, look = {}) {
-  const authored = model("trucks/truck_" + spec.id) || (spec.runners ? sleighFallback(spec, look) : null);
+function buildTruck(spec, rail, quality, look = {}, driving = false) {
+  const asset = "trucks/truck_" + spec.id;
+  const authored = (driving ? model(asset + "_lod1") : null)
+    || model(asset) || (spec.runners ? sleighFallback(spec, look) : null);
   const D = SH.dimsFor(spec), width = authored ? AUTHORED_WIDTH[spec.id] || 1.8 : spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
   // look.paint is an earned paint job: [body colour, trim colour].
   const [paint, trim] = look.paint || PAINT[spec.id];
@@ -1096,7 +1098,7 @@ export class World3D {
     this.setStage(t, game.regionIndex, game.delivery.id, game.delivery.snowy || game.delivery.winter, game.delivery.twist === "blizzard", game.delivery.light);
     const scene = this.scene, q = this.quality, theme = this.theme;
 
-    const model = buildTruck(game.spec, game.rail, q, this.look);
+    const model = buildTruck(game.spec, game.rail, q, this.look, true);
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
     this.buildGhost(q);
@@ -1512,7 +1514,7 @@ export class World3D {
     if (!gg) return;
     // Dash Dalloway, the rival, drives an orange-tinted pickup with no driver styling of yours.
     const rival = this.ghostKind === "rival";
-    const gm = buildTruck(gg.spec, gg.rail, q, rival ? {} : this.look);
+    const gm = buildTruck(gg.spec, gg.rail, q, rival ? {} : this.look, true);
     const ghostify = (o) => o.traverse((c) => {
       if (c.isLight) c.visible = false;
       if (!c.isMesh) return;
