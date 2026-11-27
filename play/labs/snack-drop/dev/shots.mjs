@@ -45,6 +45,12 @@ await page.screenshot({ path: path.join(out, "1-menu.png") });
 await page.click("text=Play");
 await page.waitForTimeout(300);
 for (const x of [120, 300, 200, 160, 260]) { await page.mouse.move(x, 400); await page.mouse.down(); await page.mouse.up(); await page.waitForTimeout(700); }
+// Hold over the pile: the aim line and the landing ghost show.
+await page.mouse.move(210, 420); await page.mouse.down(); await page.waitForTimeout(500);
+await page.screenshot({ path: path.join(out, "2b-aim.png") });
+const ghost = await page.evaluate(() => window.__snackdrop.view.ghost.visible);
+console.log("ghost visible while held", ghost);
+await page.mouse.up(); await page.waitForTimeout(600);
 const drops = await page.evaluate(() => window.__snackdrop.game.drops);
 console.log("tap drops", drops);
 await page.screenshot({ path: path.join(out, "2-early.png") });
@@ -53,6 +59,12 @@ await page.screenshot({ path: path.join(out, "2-early.png") });
 await page.goto(base + "?bot=1");
 await page.waitForFunction(() => window.__snackdrop.game.drops > 60, null, { timeout: 120000 });
 await page.screenshot({ path: path.join(out, "3-mid.png") });
+// Right after a merge: the score pop-up is on screen.
+const m0 = await page.evaluate(() => window.__snackdrop.game.merges);
+await page.waitForFunction((m) => window.__snackdrop.game.merges > m, m0, { timeout: 60000 });
+await page.waitForTimeout(150);
+await page.screenshot({ path: path.join(out, "3b-merge.png") });
+console.log("pop-ups showing", await page.evaluate(() => document.querySelectorAll(".pop.go").length));
 await page.waitForFunction(() => window.__snackdrop.game.status === "over", null, { timeout: 400000, polling: 1000 });
 await page.waitForTimeout(1500);
 await page.screenshot({ path: path.join(out, "4-over.png") });

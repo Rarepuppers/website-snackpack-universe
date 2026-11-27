@@ -42,4 +42,24 @@ h1, h2 { font-family: var(--serif); margin: 0; }
 .how { font-size: .85rem; }
 .tiers { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; font-size: .78rem; font-weight: 700; color: var(--soft); margin: 0 0 14px; }
 .tiers span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--c); margin-right: 4px; }
-@media (prefers-reduced-motion: reduce) { .toast, .veil, .ladder li { transition: none; } }
+.chain { position: fixed; left: max(14px, env(safe-area-inset-left)); top: calc(max(10px, env(safe-area-inset-top)) + clamp(3.4rem, 9vh, 4.6rem)); font-family: var(--serif); font-weight: 700; font-size: 1.25rem; color: #3a2414; background: var(--c, #fff8ee); padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); opacity: 0; transform: scale(var(--s, 1)); transform-origin: left center; transition: opacity .25s, transform .15s; pointer-events: none; }
+.chain.on { opacity: 1; }
+.chain.bump { animation: chainbump .22s ease-out; }
+@keyframes chainbump { 0% { transform: scale(calc(var(--s, 1) * 1.35)); } 100% { transform: scale(var(--s, 1)); } }
+
+.pops { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.pop { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); font-weight: 800; font-size: 1.05rem; color: #fff; text-shadow: 0 2px 0 #3a2414, 0 0 6px #3a241488; opacity: 0; white-space: nowrap; }
+.pop.gold { color: #ffd54a; font-size: 1.3rem; }
+.pop.big { font-size: 1.7rem; }
+.pop.go { animation: popup .9s ease-out forwards; }
+@keyframes popup { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.7); } 15% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -260%) scale(1); } }
+
+.sheet .card { display: block; width: 100%; max-height: 48vh; object-fit: contain; border-radius: 14px; margin: 10px 0 12px; box-shadow: 0 4px 14px #3a241433; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toast, .veil, .ladder li, .chain { transition: none; }
+  .chain.bump { animation: none; }
+  .pop.go { animation: popfade .9s linear forwards; }
+  @keyframes popfade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+}

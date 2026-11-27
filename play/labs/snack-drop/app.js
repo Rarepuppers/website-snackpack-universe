@@ -18,6 +18,8 @@ function dayKey(d = new Date()) {
 }
 
 // ════ Sound ═══════════════════════════════════════════════════════
+// C major pentatonic, two octaves up from G4.
+const CHAIN_NOTES = [392, 440, 523, 587, 659, 784, 880, 1047, 1175, 1319];
 const sound = {
   ctx: null, muted: store.get("mute", false),
   wake() { if (!this.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (C) this.ctx = new C(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
@@ -30,7 +32,11 @@ const sound = {
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
   },
   drop() { this.tone(220, 0.12, "triangle", 0.12, 0.6); },
-  merge(tier, chain) { const f = 330 * Math.pow(1.122, tier) * (1 + 0.06 * (chain - 1)); this.tone(f, 0.18, "sine", 0.2, 1.5); this.tone(f * 1.5, 0.12, "triangle", 0.08, 1.2); },
+  merge(tier, chain) {
+    const f = 330 * Math.pow(1.122, tier); this.tone(f, 0.18, "sine", 0.2, 1.5); this.tone(f * 1.5, 0.12, "triangle", 0.08, 1.2);
+    // Each chain step plays the next note of a scale, so a long chain sounds like a little tune.
+    if (chain >= 2) { const n = CHAIN_NOTES[Math.min(chain - 2, CHAIN_NOTES.length - 1)]; setTimeout(() => this.tone(n, 0.22, "triangle", 0.13), 40); }
+  },
   packed() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.25, "triangle", 0.16), i * 90)); },
   over() { [392, 330, 262].forEach((f, i) => setTimeout(() => this.tone(f, 0.3, "sine", 0.16), i * 160)); }
 };
@@ -39,6 +45,10 @@ const sound = {
 const view = new Renderer($("view"));
 let game = null, mode = "classic", paused = true, acc = 0, last = performance.now();
 let aimX = 0, botRand = SD.rng(99), overShown = false;
+// Slow motion and hit-stop only change how many fixed physics steps run per
+// frame, never the step itself, so the game plays out the same either way.
+let timeScale = 1, hitStop = 0, slowFor = 0, maxChain = 0, overAt = 0, cardUrl = "", cardBlob = null;
+const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function bestKey() { return mode === "daily" ? "daily_" + dayKey() : "best"; }
 
@@ -66,6 +76,8 @@ function start(m) {
   game = SD.createGame({ seed, mode: m });
   view.reset();
   aimX = 0; acc = 0; overShown = false; paused = false;
+  timeScale = 1; hitStop = 0; slowFor = 0; maxChain = 0; overAt = 0;
+  chainEl.classList.remove("on");
   $("hud").hidden = false; $("ladder").hidden = false;
   $("score").textContent = "0";
   $("bestline").textContent = (m === "daily" ? "Today's best " : "Best ") + store.get(bestKey(), 0);
@@ -105,19 +117,67 @@ function pauseSheet() {
     </div>`);
 }
 
+const MODE_NAME = { classic: "Classic", daily: "Daily Drop" };
+
+// The score card: a picture of the crate as it ended plus the numbers, made on
+// a 2D canvas so it can be shared as an image.
+function makeCard(isBest) {
+  const W = 1080, H = 1350, c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#f6e3c8"; x.fillRect(0, 0, W, H);
+  // The crate at the normal camera, rendered this instant so the WebGL buffer
+  // is still there to copy, cropped around the crate.
+  view.release(); view.push.amount = 0;
+  view.draw(game, 0, false);
+  const src = view.renderer.domElement, sw = src.width, sh = src.height, r = src.getBoundingClientRect();
+  const tl = view.toScreen(-SD.CRATE.half - 0.6, SD.CRATE.height + 0.6), br = view.toScreen(SD.CRATE.half + 0.6, -0.4);
+  const sx0 = (tl.x - r.left) / r.width * sw, sy0 = (tl.y - r.top) / r.height * sh;
+  const cw = (br.x - tl.x) / r.width * sw, ch = (br.y - tl.y) / r.height * sh;
+  const box = { x: 90, y: 260, w: 900, h: 720 }, k = Math.min(box.w / cw, box.h / ch);
+  const dw = cw * k, dh = ch * k;
+  x.save(); roundRect(x, box.x, box.y, box.w, box.h, 40); x.clip();
+  x.fillStyle = "#f3dcc0"; x.fillRect(box.x, box.y, box.w, box.h);
+  x.drawImage(src, sx0, sy0, cw, ch, box.x + (box.w - dw) / 2, box.y + (box.h - dh) / 2, dw, dh);
+  x.restore();
+  x.textAlign = "center"; x.fillStyle = "#3a2414";
+  x.font = "700 64px Fraunces, Georgia, serif"; x.fillText("Snack Drop", W / 2, 110);
+  x.font = "700 34px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40";
+  x.fillText(MODE_NAME[mode] + " · Pantry Box · " + dayKey(), W / 2, 170);
+  if (isBest) { x.fillStyle = "#f7b73d"; roundRect(x, W / 2 - 150, 196, 300, 48, 24); x.fill(); x.fillStyle = "#33210a"; x.font = "800 28px 'DM Sans', system-ui, sans-serif"; x.fillText("New best!", W / 2, 230); }
+  x.fillStyle = "#3a2414"; x.font = "700 150px Fraunces, Georgia, serif"; x.fillText(String(game.score), W / 2, 1120);
+  const stats = [["Best snack", SD.TIERS[game.best].name], ["Longest chain", maxChain >= 2 ? "×" + maxChain : "—"], ["Drops", String(game.drops)]];
+  stats.forEach(([label, value], i) => {
+    const cx = 200 + i * 340;
+    x.font = "700 28px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40"; x.fillText(label, cx, 1190);
+    x.font = "800 40px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#3a2414"; x.fillText(value, cx, 1245);
+  });
+  x.fillStyle = TIER_COLORS[game.best]; x.beginPath(); x.arc(200 - x.measureText(stats[0][1]).width / 2 - 26, 1231, 13, 0, Math.PI * 2); x.fill();
+  x.font = "600 26px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40"; x.fillText("snackpackuniverse.com/play", W / 2, 1310);
+  return c;
+}
+function roundRect(x, l, t, w, h, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + h, r); x.arcTo(l + w, t + h, l, t + h, r); x.arcTo(l, t + h, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); }
+
+function shareText() {
+  return `Snack Drop ${mode === "daily" ? "Daily " + dayKey() : "Classic"}: ${game.score} points, made a ${SD.TIERS[game.best].name}${maxChain >= 2 ? ", chain ×" + maxChain : ""}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
+}
+
 function overSheet() {
-  const key = bestKey(), prev = store.get(key, 0), isBest = game.score > prev;
+  const key = bestKey(), prev = store.get(key, 0), isBest = game.score > prev && game.score > 0;
   if (isBest) store.set(key, game.score);
-  const biggest = SD.TIERS[game.best].name;
   if (game.best > store.get("biggest", 0)) store.set("biggest", game.best);
-  sound.over();
+  view.release();
+  const card = makeCard(isBest);
+  if (cardUrl) URL.revokeObjectURL(cardUrl);
+  cardUrl = ""; cardBlob = null;
+  card.toBlob((b) => { cardBlob = b; if (b) { cardUrl = URL.createObjectURL(b); const img = $("card"); if (img) img.src = cardUrl; } }, "image/png");
   openSheet(`
     <h2 id="sheet-title">${isBest ? "New best!" : "Crate's full"}</h2>
-    <div class="big">${game.score}</div>
-    <p>Biggest snack: ${biggest}. ${game.drops} drops.${isBest ? "" : " Best " + prev + "."}</p>
+    <img class="card" id="card" alt="Score card: ${game.score} points, best snack ${SD.TIERS[game.best].name}" src="${card.toDataURL("image/jpeg", 0.7)}">
+    <p class="sr">${game.score} points. Best snack ${SD.TIERS[game.best].name}. ${game.drops} drops.${isBest ? "" : " Best " + prev + "."}</p>
     <div class="stack">
       <button class="btn primary" data-go="${mode}">${mode === "daily" ? "Try today's again" : "Play again"}</button>
-      ${mode === "daily" ? '<button class="btn" data-act="share">Share result</button>' : ""}
+      <button class="btn" data-act="share">Share card</button>
       <button class="btn" data-act="home">Menu</button>
     </div>`);
 }
@@ -130,9 +190,15 @@ $("sheet").addEventListener("click", (e) => {
   if (act === "resume") { closeSheet(); paused = false; }
   if (act === "home") home();
   if (act === "share") {
-    const text = `Snack Drop Daily ${dayKey()}: ${game.score} points, made a ${SD.TIERS[game.best].name}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
-    if (navigator.share) navigator.share({ text }).catch(() => {});
-    else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { b.textContent = "Copied"; });
+    const text = shareText();
+    const file = cardBlob && typeof File === "function" ? new File([cardBlob], "snack-drop-" + game.score + ".png", { type: "image/png" }) : null;
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) navigator.share({ files: [file], text }).catch(() => {});
+    else if (navigator.share) navigator.share({ text }).catch(() => {});
+    else {
+      // Desktop: save the picture and copy the text.
+      if (cardUrl) { const a = document.createElement("a"); a.href = cardUrl; a.download = "snack-drop-" + game.score + ".png"; a.click(); }
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { b.textContent = "Saved and copied"; });
+    }
   }
 });
 
@@ -169,17 +235,54 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => { keys[e.key] = false; });
 document.addEventListener("visibilitychange", () => { if (document.hidden && game && game.status === "playing" && !paused && !BOT) pauseSheet(); });
 
+// ════ Pop-ups and the chain counter ═════════════════════════════════
+const popLayer = $("pops"), chainEl = $("chain");
+const popPool = Array.from({ length: 14 }, () => { const d = document.createElement("div"); d.className = "pop"; popLayer.appendChild(d); return d; });
+let popNext = 0, chainTimer = 0;
+function scorePop(ev) {
+  const d = popPool[popNext]; popNext = (popNext + 1) % popPool.length;
+  const at = view.toScreen(ev.x, ev.y);
+  d.textContent = "+" + ev.points + (ev.chain >= 2 ? " ×" + (1 + 0.25 * (ev.chain - 1)).toFixed(2).replace(/\.?0+$/, "") : "");
+  d.className = "pop" + (ev.chain >= 2 || ev.type === "packed" ? " gold" : "") + (ev.tier >= 8 ? " big" : "");
+  d.style.left = at.x + "px"; d.style.top = at.y + "px";
+  void d.offsetWidth; d.classList.add("go");
+}
+// Colours climb with the chain, from cream to gold to hot pink.
+const CHAIN_COLORS = ["#fff8ee", "#ffe39a", "#f7b73d", "#f28c3a", "#ee6b5f", "#e0448f"];
+function showChain(n) {
+  chainEl.textContent = "Chain ×" + n;
+  chainEl.style.setProperty("--c", CHAIN_COLORS[Math.min(n - 2, CHAIN_COLORS.length - 1)]);
+  chainEl.style.setProperty("--s", String(1 + Math.min(n - 2, 6) * 0.12));
+  chainEl.classList.remove("bump"); void chainEl.offsetWidth; chainEl.classList.add("on", "bump");
+  clearTimeout(chainTimer); chainTimer = setTimeout(() => chainEl.classList.remove("on"), (SD.BALANCE.chainWindow + 0.5) * 1000);
+}
+
 // ════ Loop ════════════════════════════════════════════════════════
 function handle(ev) {
   view.onEvent(ev);
   if (ev.type === "drop") { sound.drop(); updateLadder(); }
   if (ev.type === "merge") {
     sound.merge(ev.tier, ev.chain);
-    if (ev.chain >= 2) toast(`Chain ×${ev.chain}  +${ev.points}`);
+    scorePop(ev);
+    if (ev.chain > maxChain) maxChain = ev.chain;
+    if (ev.chain >= 2) showChain(ev.chain);
     if (ev.tier === game.best && game.made[ev.tier] === 1 && ev.tier >= 4) toast(`First ${SD.TIERS[ev.tier].name}!`);
     updateLadder(game.made[ev.tier] === 1 ? ev.tier : null);
+    // Hit-stop from Layer Cake up; a short slow motion and camera push for Big Burger.
+    if (!REDUCED && ev.tier >= 8) hitStop = 0.06;
+    if (!REDUCED && ev.tier >= 9) { slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
   }
-  if (ev.type === "packed") { sound.packed(); toast(`Hamper packed! +${ev.points}`); }
+  if (ev.type === "packed") {
+    sound.packed(); scorePop(ev); toast(`Hamper packed! +${ev.points}`);
+    if (!REDUCED) { hitStop = 0.06; slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
+  }
+  if (ev.type === "over") {
+    // Slow motion and a camera push onto the snack that went over the line.
+    let worst = null;
+    for (const s of game.snacks) if (!worst || s.over > worst.over) worst = s;
+    if (worst) { const p = worst.body.getPosition(); view.pushTo(p.x, p.y, 0.55); }
+    sound.over();
+  }
 }
 
 function frame(now) {
@@ -188,9 +291,13 @@ function frame(now) {
     const speed = 6 * dt;
     if (keys.ArrowLeft) aimX -= speed;
     if (keys.ArrowRight) aimX += speed;
-    acc += dt;
+    if (hitStop > 0) { hitStop -= dt; timeScale = 0; }
+    else if (slowFor > 0) { slowFor -= dt; timeScale = 0.35; if (slowFor <= 0) view.release(); }
+    else timeScale = 1;
+    acc += dt * timeScale;
     let n = 0;
     while (acc >= SD.STEP && n < 6) {
+      view.beforeStep(game);
       let drop = null;
       if (BOT) { if (game.canDrop() && game.snacks.every((s) => s.landed)) { aimX = SD.botAim(game, "careful", botRand); drop = aimX; } }
       else if (pendingDrop && game.canDrop()) { drop = aimX; pendingDrop = false; }
@@ -201,11 +308,17 @@ function frame(now) {
       acc -= SD.STEP; n++;
     }
     if (n === 6) acc = 0;
+    view.alpha = Math.min(1, acc / SD.STEP);
     $("score").textContent = game.score;
   } else if (game && game.status === "over") {
-    game.step({});
-    if (!overShown) { overShown = true; setTimeout(overSheet, 900); }
-  }
+    // The pile keeps settling in slow motion while the camera moves in.
+    overAt += dt;
+    acc += dt * (REDUCED ? 1 : 0.3);
+    while (acc >= SD.STEP) { view.beforeStep(game); game.step({}); acc -= SD.STEP; }
+    view.alpha = Math.min(1, acc / SD.STEP);
+    game.events.length = 0;
+    if (!overShown && overAt > 1.3) { overShown = true; overSheet(); }
+  } else view.alpha = 1;
   if (game) view.draw(game, dt, !paused);
   else view.renderer.render(view.scene, view.camera);
   requestAnimationFrame(frame);
@@ -218,4 +331,4 @@ for (let i = 0; i < 60 * 14; i++) { if (game.canDrop() && game.snacks.every((s) 
 game.events.length = 0;
 if (BOT) start("classic"); else home();
 requestAnimationFrame(frame);
-window.__snackdrop = { get game() { return game; } };
+window.__snackdrop = { get game() { return game; }, view };

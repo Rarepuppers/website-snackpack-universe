@@ -191,8 +191,19 @@ export class Renderer {
     this.templates = TIERS.map((t) => { const m = BUILD[t.id](t); m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); return m; });
     this.meshes = new Map();
     this.pops = new Map();
-    this.crumbs = [];
+    this.squash = new Map();   // id -> seconds since it landed
+    this.wasLanded = new Set();
+    this.prev = new Map();     // id -> position before the last physics step, for smooth drawing
+    this.alpha = 1;
     this.shake = 0;
+    this.push = { amount: 0, target: 0, x: 0, y: 0 };  // camera push toward a point
+    this.reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this.ghostMat = new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.3, depthWrite: false });
+    this.ghosts = TIERS.map((t, i) => {
+      const m = this.templates[i].clone();
+      m.traverse((o) => { if (o.isMesh) { o.material = this.ghostMat; o.castShadow = false; o.receiveShadow = false; } });
+      return m;
+    });
     this.buildScene();
     this.resize();
     window.addEventListener("resize", () => this.resize());
@@ -238,6 +249,26 @@ export class Renderer {
     this.guide = mesh(new THREE.PlaneGeometry(0.06, 1), new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.55 }), 0, 0, 0.02);
     this.guide.castShadow = false; s.add(this.guide);
     this.held = new THREE.Group(); s.add(this.held);
+    this.ghost = new THREE.Group(); this.ghost.renderOrder = 2; s.add(this.ghost);
+    this.ghostTier = -1;
+
+    // Crumbs: one instanced mesh reused round-robin, so a big chain makes no new objects.
+    this.CRUMBS = 240;
+    this.crumbMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.12, 0.12, 0.12), new THREE.MeshStandardMaterial({ roughness: 0.7 }), this.CRUMBS);
+    this.crumbMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.crumbMesh.frustumCulled = false; this.crumbMesh.castShadow = false;
+    this.crumbData = Array.from({ length: this.CRUMBS }, () => ({ x: 0, y: 0, vx: 0, vy: 0, life: 0, max: 1, spin: 0, rot: 0 }));
+    this.crumbNext = 0;
+    this.tmpM = new THREE.Matrix4(); this.tmpQ = new THREE.Quaternion(); this.tmpE = new THREE.Euler(); this.tmpV = new THREE.Vector3(); this.tmpS = new THREE.Vector3(); this.tmpC = new THREE.Color();
+    const zero = new THREE.Matrix4().makeScale(0, 0, 0);
+    for (let i = 0; i < this.CRUMBS; i++) { this.crumbMesh.setMatrixAt(i, zero); this.crumbMesh.setColorAt(i, this.tmpC.set("#ffffff")); }
+    s.add(this.crumbMesh);
+
+    // The danger ring: a ring around the snack that is over the line, which empties as its time runs out.
+    this.ringSteps = 40;
+    this.ringGeos = Array.from({ length: this.ringSteps + 1 }, (_, i) => new THREE.RingGeometry(0.86, 1, 48, 1, Math.PI / 2, Math.max(0.001, (i / this.ringSteps) * Math.PI * 2)));
+    this.ring = new THREE.Mesh(this.ringGeos[this.ringSteps], new THREE.MeshBasicMaterial({ color: "#ee6b5f", transparent: true, opacity: 0.9, depthTest: false }));
+    this.ring.renderOrder = 3; this.ring.visible = false; s.add(this.ring);
     this.nextShow = new THREE.Group(); s.add(this.nextShow);
     this.heldTier = -1; this.nextTier = -1;
   }
@@ -280,14 +311,39 @@ export class Renderer {
   }
 
   burst(x, y, color, n) {
-    const geo = this.crumbGeo || (this.crumbGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12));
+    this.tmpC.set(color);
     for (let i = 0; i < n; i++) {
-      const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, transparent: true }));
-      const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4;
-      m.position.set(x, y, 0.8);
-      m.userData = { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp + 2, life: 0.6 + Math.random() * 0.3, spin: Math.random() * 8 };
-      this.scene.add(m); this.crumbs.push(m);
+      const k = this.crumbNext; this.crumbNext = (k + 1) % this.CRUMBS;
+      const c = this.crumbData[k], a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4;
+      c.x = x; c.y = y; c.vx = Math.cos(a) * sp; c.vy = Math.sin(a) * sp + 2;
+      c.life = c.max = 0.6 + Math.random() * 0.3; c.spin = Math.random() * 8; c.rot = 0;
+      this.crumbMesh.setColorAt(k, this.tmpC);
     }
+    this.crumbMesh.instanceColor.needsUpdate = true;
+  }
+
+  // Called by the game loop before each physics step: remembers where every
+  // snack was, so draw() can blend between steps on 90 and 120 Hz screens.
+  beforeStep(g) {
+    for (const s of g.snacks) {
+      const p = s.body.getPosition();
+      let o = this.prev.get(s.id);
+      if (!o) { o = { x: 0, y: 0, a: 0 }; this.prev.set(s.id, o); }
+      o.x = p.x; o.y = p.y; o.a = s.body.getAngle();
+    }
+  }
+
+  // A short camera move toward a point (big merges, game over).
+  pushTo(x, y, amount) {
+    if (this.reduced) return;
+    this.push.x = x; this.push.y = y; this.push.target = amount;
+  }
+  release() { this.push.target = 0; }
+
+  // Screen position of a point on the game plane, for the score pop-ups.
+  toScreen(x, y) {
+    const v = this.tmpV.set(x, y, 0.8).project(this.camera), r = this.canvas.getBoundingClientRect();
+    return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height };
   }
 
   draw(g, dt, showHeld) {
@@ -297,9 +353,16 @@ export class Renderer {
       seen.add(s.id);
       let m = this.meshes.get(s.id);
       if (!m) { m = this.templates[s.tier].clone(); this.scene.add(m); this.meshes.set(s.id, m); }
-      const p = s.body.getPosition();
-      m.position.set(p.x, p.y, 0);
-      m.rotation.z = s.body.getAngle();
+      const p = s.body.getPosition(), ang = s.body.getAngle(), o = this.prev.get(s.id), al = this.alpha;
+      if (o) { m.position.set(o.x + (p.x - o.x) * al, o.y + (p.y - o.y) * al, 0); m.rotation.z = o.a + (ang - o.a) * al; }
+      else { m.position.set(p.x, p.y, 0); m.rotation.z = ang; }
+      // Squash on landing: wider and flatter, then a small wobble back.
+      if (s.landed && !this.wasLanded.has(s.id)) { this.wasLanded.add(s.id); if (!this.pops.has(s.id)) this.squash.set(s.id, 0); }
+      if (this.squash.has(s.id)) {
+        const t = this.squash.get(s.id) + dt, d = 0.26;
+        if (t >= d) { this.squash.delete(s.id); m.scale.setScalar(1); }
+        else { const k = Math.sin((t / d) * Math.PI * 2.5) * (1 - t / d) * 0.14; m.scale.set(1 + k, 1 - k, 1); this.squash.set(s.id, t); }
+      }
       if (this.pops.has(s.id)) {
         const t = this.pops.get(s.id) + dt;
         const k = t > 0.22 ? 1 : 0.7 + 0.3 * Math.sin((t / 0.22) * Math.PI * 0.5) + 0.12 * Math.sin((t / 0.22) * Math.PI);
@@ -307,7 +370,7 @@ export class Renderer {
         if (t > 0.22) this.pops.delete(s.id); else this.pops.set(s.id, t);
       }
     }
-    for (const [id, m] of this.meshes) if (!seen.has(id)) { this.scene.remove(m); this.meshes.delete(id); }
+    for (const [id, m] of this.meshes) if (!seen.has(id)) { this.scene.remove(m); this.meshes.delete(id); this.prev.delete(id); this.squash.delete(id); this.wasLanded.delete(id); }
 
     // Held snack, guide line, next snack.
     if (this.heldTier !== g.current) { this.heldTier = g.current; this.setHeld(this.held, g.current); }
@@ -325,6 +388,11 @@ export class Renderer {
     this.guide.visible = ready;
     this.guide.scale.y = Math.max(0.01, top - floor);
     this.guide.position.set(g.aim, (top + floor) / 2, 0.9);
+    // Landing ghost: the held snack at its real size where it first meets the pile.
+    if (this.ghostTier !== g.current) { this.ghostTier = g.current; this.ghost.clear(); this.ghost.add(this.ghosts[g.current]); }
+    this.ghost.visible = ready && top - floor > TIERS[g.current].halfH * 2.2;
+    this.ghost.position.set(g.aim, floor + TIERS[g.current].halfH, 0);
+    this.ghostMat.opacity = 0.22 + 0.06 * Math.sin(performance.now() / 260);
     const ns = 0.55 / Math.max(0.55, TIERS[g.next].halfW);
     this.nextShow.scale.setScalar(ns);
     this.nextShow.position.set(0, CRATE.height + 2.9, 0);
@@ -335,30 +403,50 @@ export class Renderer {
     const pulse = g.danger > 0 ? 0.5 + 0.5 * Math.sin(performance.now() / 90) : 0;
     this.line.material.opacity = 0.35 + 0.65 * Math.max(g.danger, pulse * g.danger);
 
-    // Crumbs from merges.
-    for (let i = this.crumbs.length - 1; i >= 0; i--) {
-      const c = this.crumbs[i], u = c.userData;
-      u.life -= dt; u.vy -= 14 * dt;
-      c.position.x += u.vx * dt; c.position.y += u.vy * dt;
-      c.rotation.x += u.spin * dt; c.rotation.y += u.spin * dt;
-      c.material.opacity = Math.max(0, u.life / 0.6);
-      if (u.life <= 0) { this.scene.remove(c); c.material.dispose(); this.crumbs.splice(i, 1); }
+    // Danger ring on the snack that is over the line the longest.
+    let worst = null;
+    for (const s of g.snacks) if (s.over > 0 && (!worst || s.over > worst.over)) worst = s;
+    if (worst && g.status === "playing") {
+      const left = Math.max(0, 1 - worst.over / SD.BALANCE.overLimit), m = this.meshes.get(worst.id), t = TIERS[worst.tier];
+      this.ring.geometry = this.ringGeos[Math.round(left * this.ringSteps)];
+      this.ring.visible = true;
+      if (m) this.ring.position.set(m.position.x, m.position.y, 1.2);
+      this.ring.scale.setScalar(Math.max(t.halfW, t.halfH) + 0.35);
+    } else this.ring.visible = false;
+
+    // Crumbs from merges. Fading crumbs shrink, because instances share one material.
+    let live = false;
+    for (let i = 0; i < this.CRUMBS; i++) {
+      const c = this.crumbData[i];
+      if (c.life <= 0) continue;
+      live = true;
+      c.life -= dt; c.vy -= 14 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.rot += c.spin * dt;
+      const k = c.life > 0 ? Math.min(1, c.life / c.max * 1.6) : 0;
+      this.tmpQ.setFromEuler(this.tmpE.set(c.rot, c.rot, 0));
+      this.tmpM.compose(this.tmpV.set(c.x, c.y, 0.8), this.tmpQ, this.tmpS.set(k, k, k));
+      this.crumbMesh.setMatrixAt(i, this.tmpM);
     }
+    if (live || this.crumbsWereLive) this.crumbMesh.instanceMatrix.needsUpdate = true;
+    this.crumbsWereLive = live;
 
     // Camera, slightly above, with a small shake on big merges.
     this.shake = Math.max(0, this.shake - dt);
-    const sx = this.shake ? (Math.random() - 0.5) * this.shake : 0, sy = this.shake ? (Math.random() - 0.5) * this.shake : 0;
-    this.camera.position.set(sx, this.focusY + this.dist * 0.17 + sy, this.dist);
-    this.camera.lookAt(0, this.focusY, 0);
+    const amp = this.reduced ? 0 : this.shake;
+    const sx = amp ? (Math.random() - 0.5) * amp : 0, sy = amp ? (Math.random() - 0.5) * amp : 0;
+    const P = this.push;
+    P.amount += (P.target - P.amount) * Math.min(1, dt * 5);
+    const fx = P.x * P.amount, fy = this.focusY + (P.y - this.focusY) * P.amount, d = this.dist * (1 - 0.35 * P.amount);
+    this.camera.position.set(fx + sx, fy + d * 0.17 + sy, d);
+    this.camera.lookAt(fx, fy, 0);
     this.renderer.render(this.scene, this.camera);
   }
 
   // Remove everything from the last game.
   reset() {
     for (const m of this.meshes.values()) this.scene.remove(m);
-    this.meshes.clear(); this.pops.clear();
-    for (const c of this.crumbs) this.scene.remove(c);
-    this.crumbs = [];
+    this.meshes.clear(); this.pops.clear(); this.prev.clear(); this.squash.clear(); this.wasLanded.clear();
+    for (const c of this.crumbData) c.life = 0;
+    this.push.amount = this.push.target = 0; this.shake = 0;
     this.heldTier = this.nextTier = -1;
   }
 }
