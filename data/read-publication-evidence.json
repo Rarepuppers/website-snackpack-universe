@@ -386,6 +386,206 @@
       "cover_jpeg_sha256": "3f21888692894c429416e5e92e59704a16a6ea2ab264b1045fcd237beb399d36"
     },
     {
+      "slug": "biscuit-bouncer-and-the-great-sledge-race",
+      "source_id": "web-christmas-biscuit-bouncer-and-the-great-sledge-race",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/cover.png": "16abf0dfd041237db053e46d2abd98ad5c3bb6dc13b4a303a966a08ae97b5bc9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p01.png": "28a8ffd23989323e9cb41e4c9b2105987391fd6561d6c0b5f3f6664138945b51",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p02.png": "f6468924fc0aef478fc0a797e272aa9fdd825ab9b609170c566c3e73e174b16f",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p03.png": "1e995a0d04fe0583982fb3b3ed827daf9b404ec4382cee29fb00f1daf3c3d28e",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p04.png": "d34b1943be5a4d4b3d6fd7868638d986c469c381243a4c9a7961111119497764",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p05.png": "aaef6dd826cfaab73b90c229259d0417b33e5bacae6e5c10a23f0baff03ab0ae",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p06.png": "f1b7a78984d748725563eca353e03877be81a34bb183ba7f1cecf5c415645d2c",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p07.png": "845b02b85d942a9556a48ad2c5c11b7b93778194f891aa0038e708ede5509e8b",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p08.png": "f6ebebd7453860bbcffb23cfe99739b8abf4b5d20e5c4ed9ff388721fe232cdb",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p09.png": "a372f43c2d32ba5f0bd93eb7c945b44bcf1115ec66bdf3f5aac4485815be9e00",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p10.png": "dffb25bd6627b1abf15b4d8d7c5a6eda90b2f42ae82adfc5dca6135fcbf68f69",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p11.png": "f1f445e7b6fb72bcf12a24ee89dd2ecfc6a65204a1ee6c6e73b302928b0b1ade",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p12.png": "9a07fd37cd323d2d9b16475b6df0170127f84234b7817ff5ad5f74c91520d641",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p13.png": "784c35f4f03d0c971d01651917dfc9b52508365f7c34cdde9e00b7c78a46d9f9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p14.png": "058e36d9c3c45fbe55dd95ba357775aca1c237f3b48f9260121a7895affeb3fb",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p15.png": "aa85a07c579a5f4fe0f8251b876340094d6a8a18cdd5f383b0c269dd91e818f9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p16.png": "46a48c182075565166cdb1de59984bd0dbbfe82ff4ffefe772aa777407db3026",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p17.png": "7fc7849feec6f3cc62b2d083e251723caffe3d9c4770fc0ba8c3133476b4075a",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p18.png": "9cf2d189f28a5589683232c095fd94925cc49390a0485c3fe9574c3f56efd1cc",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p19.png": "d1dc8cbe62feb47fd7253e7bae8907dda39af74c9bb26bb42f364bb9187ede4f",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p20.png": "5e0e688848f3be15248450d56f4930af155fc6b28350ce5eb0d559d11eefcb87",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p21.png": "c8b6d34f423c790c0e4e7e7b05555d44cf177be5a060f0fff4fceba28bacca35",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p22.png": "1507f94572d78e950dba71a320fc179b4018692c3935083fd8a7017833c59550",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p23.png": "77268490befd7d1d464089a6a395285b650d6ae06cc4937372942b3b8c08e3ed",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p24.png": "fa020a7ffbcc9cfa531f5ef980248dc04f2003305dcbbbe58aa8fa71bf227446",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p25.png": "4513a7f5aeddc6d3c7bd06fa28010ab2b89f81a488f380a7011c0eda8bb8f951",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p26.png": "2cace35630dd770e031099691a1e84e861f692a7501557b34e1ebc3c3d383e71"
+      },
+      "text": [
+        "On the first snowy Saturday of the Christmas holidays, everybody in the village climbed Snowdrop Hill for the Great Sledge Race. At the bottom, beside a wall of straw bales, Bark-B-Q held up the prize. It was a small golden bell on a red ribbon. Ding-a-ling, went the Golden Bell.",
+        "Biscuit-Bouncer had raced every year. Every year, he had bounced off. \"I can't help it,\" he said. \"When I'm excited, my legs go boing.\" This year, he wanted that bell more than anything.",
+        "The race was for teams of two. Sail-Affe and Horse d'Oeuvre had the Red Flash, the fastest, shiniest sledge on the hill. The Baby Bulldogs had a long wooden toboggan. They were so small that all four counted as one team. Everybody already had a partner. Everybody except Biscuit-Bouncer.",
+        "And Tick-Tusk. She sat on a tree stump, polishing her gold pocket watch. Somebody had told her she was too heavy for a sledge. \"You'll sink,\" they'd said. Biscuit-Bouncer bounced over. \"Do you want to race with me?\" \"I've never been on a sledge,\" said Tick-Tusk. \"I've never stayed on one,\" said Biscuit-Bouncer. \"So we're even.\"",
+        "They didn't have a sledge. But in the back of Ted-E-Bear's shed, they found an old tin bathtub. \"It's a bath,\" said Tick-Tusk. \"It's a sledge now,\" said Biscuit-Bouncer. They rubbed candle wax all over the bottom to make it slippery. They tied a rope to the front. Then they dragged it up the hill.",
+        "The first practice went like this. Biscuit-Bouncer pushed the bathtub, ran, and jumped in. \"Ready... steady... BOUNCE!\" The bathtub slid away down the hill. Biscuit-Bouncer bounced straight out of the back of it into the snow. Tick-Tusk clicked her pocket watch. \"Very fast,\" she said. \"For a bathtub with nobody in it.\"",
+        "Tick-Tusk walked all the way down the course and back up again. She looked at the snow very carefully. \"The middle of the hill is soft,\" she said. \"We'd sink. But the snow by the fence is packed hard. That's the fast way. Then there's the bend round the Big Fir. We have to lean into it together.\" \"You've been watching,\" said Biscuit-Bouncer. \"Every year,\" said Tick-Tusk. \"From the stump.\"",
+        "\"So here's the plan,\" she said. \"You push. You're the best pusher on the hill. I steer. And then, Biscuit-Bouncer, you sit still.\" Biscuit-Bouncer's legs went boing just hearing it. \"When you want to bounce,\" said Tick-Tusk, \"hold on to my trunk.\"",
+        "They practised all afternoon. Push. Jump in. Hold on. Sit still. Lean. Biscuit-Bouncer fell out four times. Then three times. Then once. Then not at all. Tick-Tusk clicked her watch. \"Eleven seconds faster,\" she said. Her ears flapped. She was smiling.",
+        "On race day, the whole village lined the hill. Eggs-Benedict stood at the top with her stopwatch and a red flag. Bark-B-Q stood at the bottom by the straw bales, with the Golden Bell. Sub-Zero waddled up to the start line with no sledge at all. \"I'll just slide on my tummy,\" he said. \"Sledges only, Sub-Zero,\" said Eggs-Benedict. So Sub-Zero borrowed a tea tray.",
+        "Four teams lined up: the Red Flash, the Bulldogs' toboggan, Sub-Zero's tea tray and the bathtub. Eggs-Benedict raised her flag. \"Ready... steady... GO!\" \"BOUNCE!\" shouted Biscuit-Bouncer, and pushed with all four legs.",
+        "The bathtub shot off the line. Sub-Zero's tea tray spun round and round and went down backwards. The Bulldogs' toboggan wiggled like a puppy's tail. And the Red Flash went straight to the front, red and shiny and fast.",
+        "Tick-Tusk steered the bathtub over to the hard snow by the fence. Whoosh! They began to catch up. Biscuit-Bouncer's legs went boing. He grabbed Tick-Tusk's trunk and held on tight. He sat still.",
+        "Ahead of them was the Big Fir and the bend. The Red Flash took the bend too fast. Sail-Affe's long scarf flew up over Horse d'Oeuvre's eyes. \"I can't see!\" cried Horse d'Oeuvre. \"How do you stop?\"",
+        "The Red Flash spun round twice and ploughed into a deep snowdrift. Nobody was hurt. But one of its runners had snapped, and Sail-Affe and Horse d'Oeuvre were sitting in the snow, up to their noses, with a broken sledge.",
+        "Tick-Tusk looked at her pocket watch. \"If we stop now,\" she said quietly, \"we lose.\" Biscuit-Bouncer looked down the hill at the Golden Bell, shining by the straw bales. Then he looked at his friends in the snowdrift.",
+        "\"Lean, Tick-Tusk!\" he said. \"Lean and stop!\" Tick-Tusk leaned. She put down her big, flat feet, and the bathtub ploughed to a stop right beside the drift. Behind them, the Bulldogs' toboggan whizzed past, yipping. Then Sub-Zero went by, still backwards, waving.",
+        "\"Are you hurt?\" asked Biscuit-Bouncer. \"No,\" said Sail-Affe. \"But the Red Flash is broken. We're out.\" Her long neck drooped. \"Then come with us,\" said Biscuit-Bouncer. Horse d'Oeuvre stared. \"In a BATH?\"",
+        "\"It's a big bath,\" said Tick-Tusk. So Sail-Affe climbed in at the front, with her long neck sticking up like the mast of a ship. Horse d'Oeuvre squeezed in behind her, knees up to his nose. Tick-Tusk sat behind him, to steer. That left a tiny space at the very back for Biscuit-Bouncer, if he sat very, very still.",
+        "They left the Red Flash safe in the drift, to fetch later. Biscuit-Bouncer got behind the bathtub. It was much heavier now. He dug in all four paws. \"Ready... steady... BOUNCE!\"",
+        "The bathtub began to slide. Then it began to slide fast. Then it began to go faster than anything had ever gone down Snowdrop Hill. Whoooooosh! They shot past Sub-Zero. \"Hello again!\" he called, spinning.",
+        "On the last long straight, there was only one sledge ahead: the Bulldogs' toboggan. The bathtub drew level. Then it was side by side. Biscuit-Bouncer's legs went boing, boing, BOING. He held Tick-Tusk's trunk with both paws. \"Sit still,\" he told himself. \"Lean together.\" Everybody leaned forward at once.",
+        "WHUMP! The bathtub and the toboggan hit the straw bales at exactly the same moment. Straw flew up into the air and came down again like golden snow.",
+        "Eggs-Benedict came running down the hill with her stopwatch. \"The bathtub,\" she puffed, \"and the toboggan... crossed the line... at exactly the same time!\" Bark-B-Q looked at the Golden Bell. \"But there's only one bell.\"",
+        "The Bulldogs looked at Biscuit-Bouncer. Biscuit-Bouncer looked at the Bulldogs. \"You were in front all the way down the straight,\" said Biscuit-Bouncer. \"You stopped for your friends,\" said the biggest Bulldog. \"We saw.\" So Bark-B-Q handed over the Golden Bell on its long red ribbon, and both teams held an end. The smallest Bulldog rang it. Ding-a-ling-a-ling!",
+        "Then everybody climbed back up the hill and pulled the Red Flash out of the drift together. \"I'll fix the runner,\" said Horse d'Oeuvre. \"And next year, we'll race you.\" Tick-Tusk clicked her watch. \"Fourteen seconds faster than practice,\" she said. \"With four of us.\" Biscuit-Bouncer didn't answer. He had sat still for long enough. He bounced all the way home."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p01.jpg": "bcb2e854100ca37944837a4e8b3d1024f1ce8a0554b363cbb44a39c7d130608d",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p02.jpg": "8286f30f3e023596aebd7a4d3e68cc3d1a971646aa8ac98232ab1af152f74fee",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p03.jpg": "be82f514e0a03c704702e186ce9fd31c9eb2ebe6a38615c12b87caed2b29efd1",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p04.jpg": "67c709468a89184f9955966f684aa4c361fdf716f7fd57fc4c7cd68d7cd1895c",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p05.jpg": "3d08d72cd3dc414eb0e7dc2bd77688a904e8ffdcf2bd8d1a96912d33db04704e",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p06.jpg": "b4cea98687db6aa4396be04888cafcafbf02f6f388eceb44e246ab9d2b3e15ba",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p07.jpg": "157a4a0e956a4071f103d2624478ff301aec5741c43e3e060eb5726e26c93162",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p08.jpg": "85864d68f8a36457ee3d10b3c38ec4da0b2b4c7ae1d295c726778c9062959647",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p09.jpg": "a0828d1a6f367d2a176182404dca494300474bb14606bd0511cb37b1daf077cb",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p10.jpg": "29422dbd2e4d6aa84d53df83a7b8544be2fe908d16d6a78bed4f79460b8ebfd9",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p11.jpg": "c11a20abd3507f482c3010193148a826d3c5d8fb422b5713af0592f9c047552c",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p12.jpg": "8be7ae82b143e68eb4a8bea6ae737dcd007fa682c7f820d6963e73b1b0399b2d",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p13.jpg": "7a44d66dbdb558bd47b224e026067577982ac1485d05b30213fbe735ba0b25db",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p14.jpg": "f539d567fb5a218c4c8c9cba06b07ea0deb8c6ff9834c749eda1cd71cd85aa6a",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p15.jpg": "fe92636d180b7494595b1462aa6e5f412758d8a6c1be777c3d046844f68ba30a",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p16.jpg": "cc11e908c30c012c7817b777cd3a70c9ed881fabfc695ae068f013456f757a77",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p17.jpg": "b0501a6f49d147866d37d1cd6ab1d02c523c896f7f5a35263463a82c11da9f16",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p18.jpg": "1b198584bb904ff50bddfbc5a0b6b982bb2e0329968d4b3c7afdd03230f4c583",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p19.jpg": "01224070e030d1ed2fc650095309bef8140fe0ec9e6c1750d2d13dd02e7367dc",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p20.jpg": "802969ee8ca2209d4a258216f57b8db64ebbd07af582093755b13f7307595557",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p21.jpg": "d2702e0aa96887d0042d144e4fd2ebbc24636f3b62a99fa6d69c663d95d56348",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p22.jpg": "7507f892b43c3a9031faa91db8d6eba80d05ed6423027eaa078b0055286bb2bb",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p23.jpg": "8c835a8ec14b7db3527496b6b85077cc270f1946684d52ab805e4807284c9505",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p24.jpg": "7c33b47667f817d2f5705968cb18c412ac44fd6fac42339166bfd33536f7b45e",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p25.jpg": "e7cc624b3aab96e2869d123587be923676af6945deb97cd90abd2d12883abc74",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p26.jpg": "73c81f61d77caaaefce50df0e923a2f72f6eea7c017e80791646727b3ba8425e"
+      },
+      "pdf": "read/biscuit-bouncer-and-the-great-sledge-race/biscuit-bouncer-and-the-great-sledge-race.pdf",
+      "pdf_sha256": "4c120a96513c8dc781e660c22d9c03cf697425113d2d8a609af822f6f9bd6e4a",
+      "cover_jpeg_sha256": "20403cfd60d69f55d2bff387b45952735a82b208e1f8cae423afbe0e84edb1ad"
+    },
+    {
       "slug": "biscuit-bouncers-parcel-parade",
       "source_id": "biscuit-bouncer-parcel-parade",
       "source_art": {
@@ -6402,6 +6602,220 @@
       },
       "pdf": "read/the-last-parcel-under-the-tree/the-last-parcel-under-the-tree.pdf",
       "pdf_sha256": "72009022f307e383b9055ef7333cb289ae0032c0f88c52e9274f944bcfaaee96"
+    },
+    {
+      "slug": "the-star-that-fell-on-the-longest-night",
+      "source_id": "web-christmas-the-star-that-fell-on-the-longest-night",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/cover.png": "188dea1152f9d8c13c2db48d14a53d7dbda83ecadd13962bfd0df2a7be3b8b96",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p01.png": "19495a1a52b1d30280bae373048253b63e45d6dee71712e8528088e5770b83b4",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p02.png": "dc181a75386158635d16818207a7cc17b66bce4e30fc1b7e31e6d939beb8e166",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p03.png": "1f8531332907130ee213d9206f25064da9d7ea6da1f202e2254632adef8c12da",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p04.png": "27b66193665e27d5debe088fc0635ab70d0e1e12fdc3a62c0e5dd5d755d025a2",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p05.png": "f9dc528c19bc974caf64cd6a953fc6f838bf1198baea4b85be357eb0fcc9a1c1",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p06.png": "08321d034b8fad1108d9060306585e81b9db56cab4f204330845441aa41abb1f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p07.png": "c12504bed2cd80b159f70071bddf286c2fb090e9334967df3ae5069970ef97e2",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p08.png": "ec0f1d2f2ca55e2d9257a4eac6fed1aa7963b1c5a7d7f40b8703437e21467c26",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p09.png": "44b9b0c25b3c4dbd8e51435109227645d57dedfe65a1ea987c330fe8f49b3f2f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p10.png": "951549b22c263595831e451259a9e9d14874228031b357e4a4d796223b340b03",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p11.png": "cce5dff12d67f730b0ecd2db0d3e993ff3b5f3e7883b20c29670df16ae51aa29",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p12.png": "f3d40d77516033135dec22b28ca5a49e171ae6210d143469ba4ac4878432141f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p13.png": "4f9064425958e4511464f5ddd6a5d80cf9807371edb53dcf2a8da605c81b3306",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p14.png": "db8bb72ee787123f82d702de469c422fb37c414fedbf6b112c5eda1c5c68674e",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p15.png": "9db40d856f183d8fee09c8ac079eea2059988a7f4fe6bde2fb21f17b27e1548d",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p16.png": "f5e461719efc5cc4be5935ee6b596fa6627d8bcad2819c9ace8c365299f29fc3",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p17.png": "ecc814d3f87d2ba21c9738de66a1f8f89c810c68bbf2d88ed560a9aaf9157910",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p18.png": "09911a1357d3cae0de47479f5530107bfe466d6b6faf8180e668e956369f006e",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p19.png": "7869606d20d677b8627d1a693d5f12c7abe50a635e44e23cdf3ebe9bd9ede3a7",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p20.png": "b5c029035fc2d0625557e8128c92125e9f9a644a1532d4f62c12702a1f19e73c",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p21.png": "b41f3485c2535dd600dde79e62593341315e6d0264d541d392887269315640da",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p22.png": "f8ef090a82bf586c9f33d18a6990536e043e2c747302de8bb21aaaddd00293ed",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p23.png": "a7579ab89fd31c43d87f70815ddcc1755275a706116f16c13d9427e989dc6030",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p24.png": "36a5234a735f08936783dc0e6f5dd70b1ac82e223358e15e2704f6a4e4211112",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p25.png": "dccd1d5788e260d6fe7c6e49aa90a2373a4749c6e2179191b10a4aebf5b13256",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p26.png": "c6b6387b1baea43cbdb7fa2becbe3d602725476c0c5bee54c30f0576eef23c2a",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p27.png": "9309d317fa99e37b7d69766404bdb4991b4f7cc1a25af3463b5dcb3380f440f4",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p28.png": "23dc146d7d00fb33e13099d2442f503ba2ec998951404e32d2aef907ec2506c0"
+      },
+      "text": [
+        "On the longest night of the year, the library was warm and the windows were black. Booklava, Cluck O'Clock and Luckybug sat on the rug by the paper tree. They had made a star out of gold paper for the top. It was a bit crumpled at one point. \"Why does the star go at the top?\" asked Luckybug. \"Why not the middle?\"",
+        "Professor Hooten put down his tea. \"Ah,\" he said. \"For that, you need a very old story. Older than the village. Older than the library.\" He took a thin blue book from the highest shelf. \"Shall I?\" \"Yes,\" said all three at once.",
+        "Hooten opened the book. The lamplight flickered, and outside the snow went on falling. \"Long ago,\" he read, \"before there was a village, or a library, or a single book, there was only the wood, and the snow, and the sky.\"",
+        "And on the longest night of the year, the sky was full of stars. The smallest star lived right at the very edge. From there she could see the wood below, white and silver and fast asleep. She wanted to see it better. So she leaned over, just a little. And then a little more.",
+        "She leaned too far. Down she fell, through the cold and the dark, past the cloud and the treetops and the branches, and landed in the snow at the foot of a young oak tree. Fsssss, went the snow.",
+        "The creatures of the wood came out to see what had fallen. Bear came, who was the strongest. Squirrel came, who was the best climber. Owl came, who was the best flier. Hare came, who was the quickest. And in a crack in the oak bark, a small grey Spider watched. Nobody noticed her. Nobody ever did.",
+        "The star lay in the snow, glowing, but already a little less bright. \"She's getting colder,\" said Hare. \"A star can't live down here.\" \"When the sun comes up,\" said Owl, \"she'll go out altogether.\" \"Then we'll put her back,\" said Bear. \"Before morning.\"",
+        "\"I'm the strongest,\" said Bear. \"I'll throw her home.\" He picked up the star in his big paws. He swung his arms back, once, twice, three times, and threw her as high as anything had ever been thrown.",
+        "The star went up, and up, and up... as high as the treetops. And then she came down again. Plop, into the snow. She was dimmer than before. And she was heavier, too. A bright star is as light as a feather. A fading star grows as heavy as a stone.",
+        "\"I'm the best climber,\" said Squirrel. \"I'll carry her home.\" She tucked the star under her chin and climbed the tallest pine on the hill, higher and higher, until the branches were thin as straws. But the very top twig was too thin to hold her. She stretched and stretched. The sky was still far away. Slowly she climbed down. The star was dimmer still.",
+        "\"I'm the best flier,\" said Owl. \"I'll fly her home.\" He held the star in his claws and flew up into the night, higher than the pine, higher than the clouds, until the air was thin and his wings ached. But the sky is always higher than wings. Owl glided down, tired out, and laid the star in the snow.",
+        "Now the star was no brighter than an ember in a dying fire. She was too heavy for one creature to lift at all. The creatures sat around her in the snow. \"The strongest couldn't do it,\" said Bear. \"The best climber couldn't do it,\" said Squirrel. \"The best flier couldn't do it,\" said Owl. Hare said nothing. She just watched the star grow dim.",
+        "\"Excuse me,\" said a tiny voice. They all looked round. There, on the oak bark, was the small grey Spider. \"I'm not strong,\" said Spider. \"I can't climb like Squirrel or fly like Owl. But I'm very small and very light. I can go where none of you can go. I can go right to the very top twig.\"",
+        "\"And then what?\" said Bear. \"Then,\" said Spider, \"I'll need all of you.\"",
+        "So Bear carried the star, heavy as a stone, up the hill to the tallest pine. Squirrel wove a little cradle out of moss. Owl pulled one soft feather from his chest to line it. Together they laid the star inside. And Hare, who was quickest, ran to the top of the hill to watch the moon.",
+        "Spider began to climb. Up the trunk she went, past the place where Bear could reach. Past the branch where Squirrel had stopped. Up, and up, where the twigs were as thin as whiskers. And all the way, behind her, she spun a single silver thread.",
+        "At the very top twig, Spider looped her thread over, tight and neat. Then she let herself down again on the other end, slowly, swinging in the starlight, all the way to the snow. Now the thread went up the tree, over the very top twig and back down, with both ends on the ground.",
+        "They tied the moss cradle to one end of the thread. \"That thread is thinner than a whisker,\" said Bear. \"It'll never hold.\" \"Spider silk is stronger than it looks,\" said Spider. \"So are spiders.\"",
+        "Hare came racing down the hill. \"The moon is almost over the pine! It's nearly the middle of the night!\" The middle of the longest night is the moment when the sky bends lowest to the ground. Everybody in the wood knew that. So they all took hold of the other end of the thread. Bear first. Then Squirrel. Then Hare. Then Owl, with his claws. And last of all, at the very end, Spider.",
+        "\"Together,\" said Spider. \"Pull!\" They pulled. The cradle lifted off the snow. Up it went, past the lowest branches. And as the star rose, she began to glow a little brighter.",
+        "The thread creaked. Bear's paws slipped in the snow. Squirrel dug in her claws. Owl beat his wings. \"Together,\" said Spider. \"Pull!\" Up went the star, past the middle of the tree, brighter and brighter, until it was hard to look at her.",
+        "At the very middle of the longest night, the star reached the very top of the tallest pine. And the sky, which had been so far away all night, bent down. Just a little. The way someone big bends down to pick up someone small.",
+        "The star let go of the cradle and went home. For one moment, the whole wood was as bright as a summer noon. Every snowflake shone. Every creature's shadow stretched across the hill. Then it was night again.",
+        "The creatures looked up. There she was, the smallest star, back at the very edge of the sky. She was shining brighter than she ever had before. And on the very top twig of the pine, one tiny spark stayed caught on Spider's thread until morning.",
+        "\"And that is why,\" the creatures told their children, and their children's children, \"on the longest night, we put a star on the very top of the tree. \"To remember that nobody could do it alone. And that the smallest of us went the highest.\"",
+        "Professor Hooten closed the thin blue book. Nobody said anything for a while. The paper tree rustled. The snow tapped at the window. \"Is it true?\" said Cluck O'Clock at last. \"Which part?\" said Hooten. \"The spider part.\"",
+        "Professor Hooten turned his head, almost all the way round, to look up at the dark corner of the ceiling. There, in her web, sat Spinnerella. She waved one leg. \"My great-great-great-great-great-grandmother,\" said Spinnerella, \"never stopped talking about it.\"",
+        "So Spinnerella let herself down on a silver thread, and Booklava, Cluck O'Clock and Luckybug held up the crumpled gold star together, and Spinnerella fixed it to the very top of the paper tree. Outside, on the longest night, one small star at the edge of the sky shone a little brighter than the rest."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-star-that-fell-on-the-longest-night/pages/p01.jpg": "16f9781445584198a9249e5e47c18b8fa54de651b7e6fcafa6f4c989ac865523",
+        "read/the-star-that-fell-on-the-longest-night/pages/p02.jpg": "bd02a8cf308292ba03de151764663c9265314cf5f16b5981c9d8c49806ab1a86",
+        "read/the-star-that-fell-on-the-longest-night/pages/p03.jpg": "8f623aeeac4f90dbdfe8207be05e387af6e87a0b132c478add6008c08f5c361a",
+        "read/the-star-that-fell-on-the-longest-night/pages/p04.jpg": "95eca6c06ebbdd851097d7d0d4af8d85fa6f641d67a98d348bcb95ef4fa3e45d",
+        "read/the-star-that-fell-on-the-longest-night/pages/p05.jpg": "ea50addc2a47f366e926ee026d9db90b14426f4df21732d1e13a634c3a454007",
+        "read/the-star-that-fell-on-the-longest-night/pages/p06.jpg": "9fa43dbfdaab5ca106b10a4fa4071bdbe506092046d80595cc15950fe54e2bb0",
+        "read/the-star-that-fell-on-the-longest-night/pages/p07.jpg": "65b6c7f4ab88600fa37caf4963aa2ab1719e20f969cddf023b8803087802afc9",
+        "read/the-star-that-fell-on-the-longest-night/pages/p08.jpg": "dde1dc80abff99742ff38ee3b84d51f633dce6217213aecefaf050dbe6653ca7",
+        "read/the-star-that-fell-on-the-longest-night/pages/p09.jpg": "764e4816c081b5f54268d6c56361a0e8dc1ca3473f573d9fc753be9b802e23fb",
+        "read/the-star-that-fell-on-the-longest-night/pages/p10.jpg": "81382afe8cd38bfbeb25eef6e20a251957f6d7a6ba99113f23c77170d62c9390",
+        "read/the-star-that-fell-on-the-longest-night/pages/p11.jpg": "d551c4e688987b7e339aeb08b2eef1cf14c81e640ff74d5305c0b45e667b0f6e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p12.jpg": "db24df2cc491a538d20514aaba89448ef7be2a2a3819579e9bdbbac407434030",
+        "read/the-star-that-fell-on-the-longest-night/pages/p13.jpg": "3bea67dfe2ee2f7f1f821b41c4dad0375c61b339777012888a28af5d8649db8a",
+        "read/the-star-that-fell-on-the-longest-night/pages/p14.jpg": "d1a208557684e904acc1f7d572c8fcf7390837dd9a9379831e9767bc9500b4b1",
+        "read/the-star-that-fell-on-the-longest-night/pages/p15.jpg": "92bec82d922149a62c52d6ea1684a512104948a5cce5de6ac4cfc2df2da98d0e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p16.jpg": "a5520436d98dce6018d9d5717bbbb046790be7f654a056abdbc0b1e5bdb939a0",
+        "read/the-star-that-fell-on-the-longest-night/pages/p17.jpg": "3d5de30fab25d1b82d25e7d18aee28f415ea61beb6ba6619b425b84dcaa9b05d",
+        "read/the-star-that-fell-on-the-longest-night/pages/p18.jpg": "5d67b1fe3ea30595194e8afe637a632fb9c5cba37fbce72ca3959f7d3dab140b",
+        "read/the-star-that-fell-on-the-longest-night/pages/p19.jpg": "6148da92162ae4cfcdbddc8ffc6b12f1a58de97a126c671cc23a41b85f8498b4",
+        "read/the-star-that-fell-on-the-longest-night/pages/p20.jpg": "04a7517aaca0d12921206999b3dfd826f8a6598d575a5dc54bba816077a83547",
+        "read/the-star-that-fell-on-the-longest-night/pages/p21.jpg": "203a8fbfefa820aeebc0dc08427122f7a42369e6608ffcd3b8b7f7916466f3bc",
+        "read/the-star-that-fell-on-the-longest-night/pages/p22.jpg": "9c3f4919bde725465ef98314907055f1a4bc36178acc4fbc7607f766fab9932f",
+        "read/the-star-that-fell-on-the-longest-night/pages/p23.jpg": "5f64b9e0d5247f96a43a0ccaa635f675a54b0edc7e0dec0a00f4271b31e6a943",
+        "read/the-star-that-fell-on-the-longest-night/pages/p24.jpg": "4e7722da04c9204a8df8c2c6677558b588133dd4bbb9ab6398f08a828d52376e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p25.jpg": "35e1c0aaa394958e55f78157c3d7ab905b11082fe803cfeadf2234bf10bea497",
+        "read/the-star-that-fell-on-the-longest-night/pages/p26.jpg": "3e097f18a74625de3656babef0c9bc693fb3402e032d4c25344db22ff004ac12",
+        "read/the-star-that-fell-on-the-longest-night/pages/p27.jpg": "a89e764eddbee50e2371ea32a317618743be7388aaa49657e1d975214bf6d8a7",
+        "read/the-star-that-fell-on-the-longest-night/pages/p28.jpg": "ce78b6c715aaaacc53684e2a3bdf9abf4013fafc0d76216cbf0ab55828c6df9b"
+      },
+      "pdf": "read/the-star-that-fell-on-the-longest-night/the-star-that-fell-on-the-longest-night.pdf",
+      "pdf_sha256": "dcd6bf9b7c921d1f353e213e9562b76db6f2f54769732e0b3cf4988feb698d47",
+      "cover_jpeg_sha256": "63986d4d1605696a7c25d30c75da9f2940b5f40f0960e4510a464fd647991cec"
     },
     {
       "slug": "twenty-four-letters-before-christmas",

@@ -59,6 +59,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "the-star-that-fell-on-the-longest-night",
+      "title": "The Star That Fell on the Longest Night",
+      "role": "lead"
     }
   ],
   "hen-berry": [
@@ -180,6 +185,11 @@
       "book": "ted-e-bear-and-the-jar-of-good-things",
       "title": "Ted-E-Bear and the Jar of Good Things",
       "role": "cameo"
+    },
+    {
+      "book": "the-star-that-fell-on-the-longest-night",
+      "title": "The Star That Fell on the Longest Night",
+      "role": "support"
     }
   ],
   "coop-accino": [
@@ -434,6 +444,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "cameo"
     }
   ],
   "sub-zero": [
@@ -461,6 +476,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "cameo"
     }
   ],
   "eggs-benedict": [
@@ -473,6 +493,11 @@
       "book": "everybody-brought-potatoes",
       "title": "Everybody Brought Potatoes",
       "role": "support"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "cameo"
     }
   ],
   "vincent-van-mouse": [
@@ -552,6 +577,11 @@
     {
       "book": "sub-zero-and-the-great-snowball-truce",
       "title": "Sub-Zero and the Great Snowball Truce",
+      "role": "cameo"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
       "role": "cameo"
     }
   ],
@@ -687,6 +717,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "lead"
     }
   ],
   "booklava": [
@@ -703,6 +738,11 @@
     {
       "book": "wise-owl-festival-of-factors",
       "title": "Wise Owl and the Festival of Factors",
+      "role": "support"
+    },
+    {
+      "book": "the-star-that-fell-on-the-longest-night",
+      "title": "The Star That Fell on the Longest Night",
       "role": "support"
     }
   ],
@@ -740,6 +780,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "support"
     }
   ],
   "snack-spector": [
@@ -759,6 +804,18 @@
       "book": "vincent-van-mouse-and-the-mural",
       "title": "Vincent Van Mouse and the Mural in Proportion",
       "role": "support"
+    },
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "support"
+    }
+  ],
+  "horse-doeuvre": [
+    {
+      "book": "biscuit-bouncer-and-the-great-sledge-race",
+      "title": "Biscuit-Bouncer and the Great Sledge Race",
+      "role": "cameo"
     }
   ],
   "leo-lemonade": [
@@ -802,6 +859,11 @@
     {
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
+    },
+    {
+      "book": "the-star-that-fell-on-the-longest-night",
+      "title": "The Star That Fell on the Longest Night",
       "role": "cameo"
     }
   ],
@@ -855,6 +917,11 @@
     {
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
+      "role": "cameo"
+    },
+    {
+      "book": "the-star-that-fell-on-the-longest-night",
+      "title": "The Star That Fell on the Longest Night",
       "role": "cameo"
     }
   ],

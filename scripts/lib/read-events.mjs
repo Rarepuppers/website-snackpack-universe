@@ -46,6 +46,10 @@ export const READ_EVENTS = [
       { when: "Early December", slug: "nutmeg-and-the-tree-that-wouldnt-come" },
       { when: "The week before", slug: "vincent-van-mouse-and-the-christmas-shadow-show" },
       { when: "The first snow", slug: "sub-zero-and-the-great-snowball-truce" },
+      ...released([
+        { when: "The first snowy Saturday", slug: "biscuit-bouncer-and-the-great-sledge-race" },
+        { when: "The longest night, 21 December", slug: "the-star-that-fell-on-the-longest-night" },
+      ]),
       { when: "Christmas week · older readers", slug: "captain-beakon-and-the-bell-across-the-bay" },
       { when: "Christmas Eve", slug: "one-more-story-before-santa" },
       { when: "Christmas morning", slug: "the-last-parcel-under-the-tree" },
@@ -64,10 +68,28 @@ export const READ_EVENTS = [
       ...(originalRegistry["the-angel-on-the-small-tree"] ? [
         { href: "/read/events/christmas/colouring-the-angel-on-the-small-tree.pdf", label: "Colour The Angel on the Small Tree" },
       ] : []),
+      ...(originalRegistry["biscuit-bouncer-and-the-great-sledge-race"] ? [
+        { href: "/read/events/christmas/colouring-biscuit-bouncer-and-the-great-sledge-race.pdf", label: "Colour Biscuit-Bouncer and the Great Sledge Race" },
+      ] : []),
+      ...(originalRegistry["the-star-that-fell-on-the-longest-night"] ? [
+        { href: "/read/events/christmas/colouring-the-star-that-fell-on-the-longest-night.pdf", label: "Colour The Star That Fell on the Longest Night" },
+      ] : []),
     ],
     // Read-alouds that "Read together tonight" rotates through, in order.
-    tonight: [...publishedSlugs(["the-angel-on-the-small-tree"]), "nutmeg-and-the-tree-that-wouldnt-come", "vincent-van-mouse-and-the-christmas-shadow-show", "sub-zero-and-the-great-snowball-truce", "one-more-story-before-santa", "the-last-parcel-under-the-tree"],
+    tonight: publishedSlugs([
+      "the-angel-on-the-small-tree",
+      "nutmeg-and-the-tree-that-wouldnt-come",
+      "vincent-van-mouse-and-the-christmas-shadow-show",
+      "sub-zero-and-the-great-snowball-truce",
+      "biscuit-bouncer-and-the-great-sledge-race",
+      "the-star-that-fell-on-the-longest-night",
+      "one-more-story-before-santa",
+      "the-last-parcel-under-the-tree",
+    ]),
     tonightSpecial: {
+      ...(originalRegistry["the-star-that-fell-on-the-longest-night"] ? {
+        "the-star-that-fell-on-the-longest-night": { date: "12-21", label: "Longest night pick" },
+      } : {}),
       "one-more-story-before-santa": { date: "12-24", label: "Christmas Eve pick" },
       "the-last-parcel-under-the-tree": { date: "12-25", label: "Christmas Day pick" },
     },

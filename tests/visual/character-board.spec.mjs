@@ -65,8 +65,11 @@ test("home and Reads link to the catalog, with search by legacy name", async ({ 
 
 test("an app-led profile has its own alternative portrait", async ({ page }) => {
   await page.goto("/characters/tick-tusk/");
-  await page.getByText("See another portrait", { exact: true }).click();
-  const art = page.locator(".cast-art img");
+  const portrait = page.locator("details.cast-art").filter({
+    has: page.getByText("See another portrait", { exact: true }),
+  });
+  await portrait.locator("summary").click();
+  const art = portrait.locator("img");
   await expect(art).toBeVisible();
   await expect.poll(() => art.evaluate(image => image.naturalWidth)).toBe(480);
 });

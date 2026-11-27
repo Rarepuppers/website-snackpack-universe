@@ -3,6 +3,8 @@ import {test,expect} from '@playwright/test';
 import {READ_EVENTS} from '../../scripts/lib/read-events.mjs';
 const christmasEvent = READ_EVENTS.find(({id}) => id === 'christmas');
 const webOriginals=JSON.parse(fs.readFileSync(new URL('../../data/web-originals.json',import.meta.url),'utf8'));
+const sledge = ['biscuit-bouncer-and-the-great-sledge-race','Biscuit-Bouncer and the Great Sledge Race',26,'Ages 6–8 · Read together'];
+const star = ['the-star-that-fell-on-the-longest-night','The Star That Fell on the Longest Night',28,'Ages 6–9 · Read together'];
 const books=[
  ['nutmeg-and-the-tree-that-wouldnt-come','Tree That',24],
  ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow',24],
@@ -11,9 +13,11 @@ const books=[
  ['sub-zero-and-the-great-snowball-truce','Great Snowball Truce',24,'Ages 5–7 · Read together'],
  ['captain-beakon-and-the-bell-across-the-bay','Bell Across the Bay',44,'Ages 12–14 · Independent reading'],
 ];
-if (webOriginals['the-angel-on-the-small-tree']) {
- books.push(['the-angel-on-the-small-tree','The Angel on the Small Tree',24,'Ages 5–7 · Read together']);
-}
+books.push(...[
+ ['the-angel-on-the-small-tree','The Angel on the Small Tree',24,'Ages 5–7 · Read together'],
+ sledge,
+ star,
+].filter(([slug])=>Object.hasOwn(webOriginals,slug)));
 for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -37,6 +41,41 @@ for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader
  await page.goto('/read/?q='+encodeURIComponent(query));
  await expect(page.locator(`.read-library-card[href="./${slug}/"]`)).toBeVisible();
 });
+
+for(const [[slug,title],matchingAges] of [[sledge,['5-6','7-8']],[star,['5-6','7-8','9-10']]]){
+ if(!Object.hasOwn(webOriginals,slug)) continue;
+ test(`${title} appears in the age filters and has a colouring PDF`,async({page})=>{
+   await page.goto('/read/?q='+encodeURIComponent(title));
+   const card=page.locator(`.read-library-card[href="./${slug}/"]`);
+   for(const age of matchingAges){
+     await page.locator(`[data-filter-age="${age}"]`).click();
+     await expect(card).toBeVisible();
+   }
+   await page.locator('[data-filter-age="11-12"]').click();
+   await expect(card).toBeHidden();
+   await page.goto('/read/events/christmas/');
+   const printable=page.getByRole('link',{name:`Colour ${title}`,exact:true});
+   const href=await printable.getAttribute('href');
+   const download=await page.request.get(new URL(href,page.url()).href);
+   expect(download.ok()).toBe(true);
+   expect((await download.body()).subarray(0,5).toString()).toBe('%PDF-');
+ });
+}
+
+if(Object.hasOwn(webOriginals,star[0])){
+ test('the longest night features the Star and both books link to each other',async({page})=>{
+   await page.clock.setFixedTime(new Date(2026,11,21,12));
+   await page.goto('/read/events/christmas/');
+   const pick=page.locator('[data-tonight]:visible');
+   await expect(pick).toContainText('Longest night pick');
+   await expect(pick).toContainText(star[1]);
+   const advent='twenty-four-letters-before-christmas';
+   for(const [from,to] of [[advent,star[0]],[star[0],advent]]){
+     await page.goto(`/read/${from}/`);
+     await expect(page.locator(`.story-finish-card a[href*="${to}"]`)).toHaveCount(1);
+   }
+ });
+}
 
 test('the harbour mystery is discoverable by age and can open a chapter directly',async({page})=>{
  await page.goto('/read/?type=stories');
