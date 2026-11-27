@@ -35,8 +35,11 @@ Record released roles in the monorepo catalog under `appearances`. Draft
 entries stay out of the generated site. Use
 `node scripts/build-character-appearances.mjs --candidates` to find names
 in story text for editorial review. The appearance index powers a single
-cast row per book. After the book is imported, remove the approved
-catalog entry's draft flag and rebuild before verifying the offline reader.
+cast row per book. For pre-approved holiday casts, `releaseWithBook` lets the source build
+publish only after that title is registered as published and has an
+indexable reader. Rebuild the board from the monorepo and regenerate the
+appearance index before the Reads shelf. A published Christmas or
+Thanksgiving book without a cast row fails the shelf check.
 
 The colouring printer puts the title, studio credit and a clickable colouring
 page link on every A4 and US Letter sheet, including both packs.

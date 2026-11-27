@@ -19,6 +19,7 @@
 //
 // To add a book: import it (scripts/import-decodable-book.mjs or by hand), then
 // add one entry to SHELF in reading order and re-run this script.
+import { publishedOriginals } from "./lib/character-release.mjs";
 import {nextChoices} from "./lib/read-recommendations.mjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -42,6 +43,12 @@ for (const [id, books] of Object.entries(appearances)) {
   for (const { book, role } of books) {
     if (!castByBook.has(book)) castByBook.set(book, []);
     castByBook.get(book).push({ id, role });
+  }
+}
+
+for (const [slug, event] of publishedOriginals(new URL("../", import.meta.url))) {
+  if ((event === "christmas" || event === "thanksgiving") && !castByBook.has(slug)) {
+    throw new Error(`${slug} is published without cast links. Run the character board and appearance builders from the shared catalog before building Reads.`);
   }
 }
 
