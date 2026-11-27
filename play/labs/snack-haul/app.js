@@ -1250,6 +1250,31 @@ function renderScreen() {
 const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${(SH.DELIVERIES.length + SH.SIDE.length) * 3}</span></div>`;
 const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">← Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
 
+// ════ Next up (Q16): the three closest rewards across every progress track ═
+// Each candidate is { text, left } where left is the share still to go (0 to 1).
+function nextUp() {
+  const c = [], stars = (n) => n + (n === 1 ? " more star" : " more stars");
+  const regionsOpen = SH.REGIONS.filter((_, r) => regionOpen(r)).length;
+  if (regionsOpen < SH.REGIONS.length && !regionPaid(regionsOpen)) {
+    const have = regionStars(regionsOpen - 1), need = SH.BALANCE.regionStars;
+    if (have < need) c.push({ text: `${stars(need - have)} in ${SH.REGIONS[regionsOpen - 1].name} open ${SH.REGIONS[regionsOpen].name}`, left: (need - have) / need });
+  }
+  SH.CUSTOMERS.forEach((cu, r) => {
+    if (cu.track || !regionFull(r)) return;
+    const have = regionStars(r), next = SH.REP_STARS.find((x) => x > have);
+    if (next != null) c.push({ text: `${stars(next - have)} in ${SH.REGIONS[r].name} for ${cu.name}'s next order`, left: (next - have) / next });
+  });
+  Object.entries(SH.SIDE_OPEN || {}).forEach(([track, need]) => {
+    const have = regionStars(0), name = { back: "the Back Roads", extra: "the Extra Mile" }[track];
+    if (name && have < need) c.push({ text: `${stars(need - have)} in Bakery Hills open ${name}`, left: (need - have) / need });
+  });
+  const t = drivingTruck(), lvl = masteryLevel(t), km = (save.mastery[t] || 0) / 1000;
+  if (lvl < MASTERY_KM.length) { const to = MASTERY_KM[lvl], from = MASTERY_KM[lvl - 1] || 0; c.push({ text: `${(to - km).toFixed(1)} km in the ${SH.truckSpec(t).name} to mastery ${lvl + 1}`, left: (to - km) / Math.max(0.1, to - from) }); }
+  const stage = depotStage();
+  if (stage < DEPOT_PARTS.length) { const need = DEPOT_PARTS[stage]; c.push({ text: `${need - save.parts} depot part${need - save.parts === 1 ? "" : "s"} to depot stage ${stage + 1}`, left: (need - save.parts) / Math.max(1, need - (DEPOT_PARTS[stage - 1] || 0)) }); }
+  return c.filter((x) => x.left > 0).sort((a, b) => a.left - b.left).slice(0, 3);
+}
+
 function homeScreen() {
   const n = nextRoute(), today = localDate(), doneToday = save.daily.last === today;
   // Every free road driven: the Drive button becomes the road ahead.
@@ -1263,6 +1288,7 @@ function homeScreen() {
       <button class="btn" data-nav="long">${ico("long_haul")} Long Haul and Top-Up<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
       ${currentEvent() ? `<button class="btn winter-entry" data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
+      ${(() => { const n = nextUp(); return n.length && save.stats.deliveries ? `<div class="nextup" aria-label="Next up"><b>Next up</b>${n.map((x) => `<span>${esc(x.text)}</span>`).join("")}</div>` : ""; })()}
       <div class="dock">
         <button class="btn" data-nav="routes">${ico("routes")} Routes</button>
         <button class="btn" data-nav="garage">${ico("garage")} Garage</button>
