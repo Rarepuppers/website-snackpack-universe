@@ -1,5 +1,9 @@
 # Codex prompt — arcade art, 26 November 2026
 
+> Completed 27 November 2026. Website commits `49f722bd` and `88e959ae`
+> delivered and verified the art and arcade release. This is the original
+> handover kept for reference.
+
 Paste everything below the line into Codex. It is self-contained. The standing
 brief it extends is `CODEX-ASSET-BRIEF-2026-10-17.md` (items 12–18); the plan
 that asked for it is `ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md` (R5).

@@ -6,6 +6,22 @@ Started 21 November 2026, rewritten 26 November 2026, updated 27 November 2026. 
 `ARCADE-QUALITY-PLAN-2026-09.md` (all now in `docs/archive/`); their open items are carried
 over in section 6. Art requests stay in `CODEX-ASSET-BRIEF-2026-10-17.md`.
 
+## Release closeout
+
+Implementation is complete as of 27 November 2026. `49f722bd` shipped the
+Thirteen quick guide, reusable teacher links and classroom counts, and the
+painted arcade assets. `88e959ae` kept the Thirteen hand on the first screen.
+[Check website](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45927005045)
+passed all 426 browser checks and verified all 52 boards at phone and laptop
+sizes. The existing screenshot baselines passed. The release and corrected
+Thirteen layout were verified on the public site.
+
+The [completed art handover](docs/archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md)
+is archived. This plan stays open for the measurements in section 5. The
+November readings already settled the immediate release decisions. Reopen
+feature work only if the longer measurements meet the recorded decision
+rules.
+
 Data sources and how to read them:
 - **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.
   Key: the "### read access" section of `~/billing/goatcounter.txt`.
@@ -105,7 +121,7 @@ windows on the calendar for measurement.
   more starts from outside HN than Pinball has in total, swap it in for Pinball
   in `featuredFirst` (`play/hub.js`) and update `arcade-thirteen.spec.mjs`'s
   featured-order test and the six hub baselines from CI.
-- **Done when:** the row reflects the ~10 Dec event read.
+- **Follow-up:** re-check the featured row and hub positions around 10 Dec.
 - **Measure:** `hub-position/1-5` share of hub clicks before and after.
 - **Decision (6–26 Nov data):** Hearts had 10 starts, all from outside
   Honduras, against Pinball's 7 in total, so the rule swaps Hearts in for
@@ -158,7 +174,7 @@ windows on the calendar for measurement.
 - **Done when:** files land under the same names, then switch the hub, Daily
   page and related-games references from `typing.svg` / `math-facts.svg` to
   the PNGs (run `build-related-games.mjs` and `build-webp.mjs`).
-- **Prompt:** `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md` (paste as is).
+- **Archived prompt:** [27 November art delivery brief](docs/archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md).
   The delivery checklist now matches the file list (11 PNGs and 11 WebPs).
   The two tile PNGs are absent from main as of the 26 Nov verification.
 - **27 Nov delivery:** Snack Typer and Fact Sprint have painted transparent
@@ -226,7 +242,7 @@ windows on the calendar for measurement.
   | 2048 after | 6 | 107 | 5.61% | 8.5 |
   Thirteen per day: 3.95 → 5.3 clicks (+34%) at a slightly worse position, so
   the title helps. 2048 is too small to call but not worse. **Keep both.**
-  Re-confirm at a full 28 days (~4 Dec) before the Thirteen "how to play" box.
+  Re-confirm at a full 28 days (~4 Dec). The box shipped after the 27 Nov interim read.
 - **Equal-length interim check (18 days each, finalized through 24 Nov):**
   | Page | 19 Oct–5 Nov clicks / impressions | CTR / position | 7–24 Nov clicks / impressions | CTR / position |
   | --- | --- | --- | --- | --- |

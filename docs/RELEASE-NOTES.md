@@ -18,6 +18,11 @@ Plan: [`READ-PLAN-2026-10.md`](../READ-PLAN-2026-10.md) "Printable credit footer
 
 ## 2026-11-27 - Thirteen quick guide and reusable classroom dailies
 
+Shipped in `49f722bd` and `88e959ae`.
+[Check website](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45927005045)
+passed 426 browser checks. The
+[completed art brief](archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md) is archived.
+
 - [Thirteen](../play/thirteen/) has a collapsible "How to play in 60 seconds"
   box in the title strip, keeping the hand on screen. Thirteen and 2048 keep
   their titles after the early matched-window Search Console read.
@@ -67,7 +72,7 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
   homepage hero; Hearts replaces Pinball in the featured row.
 - Pyramid and TriPeaks now share their own painted cards (delivered 18 Oct,
   never switched on). Codex prompt for the next art batch:
-  `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md`.
+  [arcade art brief](archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md).
 - `ff0c14b0` adopted the six 2048 screenshots (size switch) from CI. Then the
   two 4K Last Bastion review tests get a longer timeout: they timed out twice
   on CI's software renderer while every check in them passed. Plan updated
