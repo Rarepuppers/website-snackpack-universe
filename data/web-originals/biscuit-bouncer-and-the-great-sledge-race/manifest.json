@@ -1,0 +1,1094 @@
+{
+  "schemaVersion": 1,
+  "id": "biscuit-bouncer-and-the-great-sledge-race",
+  "title": "Biscuit-Bouncer and the Great Sledge Race",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "6–8",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 26,
+  "wordCount": 1161,
+  "blurb": "Every snowy December, the village races sledges down Snowdrop Hill for the Golden Bell. Biscuit-Bouncer has never won. He’s never even stayed on. This year he has a new partner, an old tin bathtub and a plan. All he has to do is sit still. And then, halfway down, he has to decide what winning is for.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On the first snowy Saturday of the Christmas holidays, everybody in the village climbed Snowdrop Hill for the Great Sledge Race.\n\nAt the bottom, beside a wall of straw bales, Bark-B-Q held up the prize. It was a small golden bell on a red ribbon.\n\n*Ding-a-ling,* went the Golden Bell.",
+      "illustrationDirection": "Wide view of Snowdrop Hill covered in snow, villagers climbing with sledges. At the bottom by the curved wall of straw bales, Bark-B-Q holds up the Golden Bell on its red ribbon.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "28a8ffd23989323e9cb41e4c9b2105987391fd6561d6c0b5f3f6664138945b51",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 390246,
+            "sha256": "2dd053ff68afce1297ce334cf74b33b7e418dd08f048d3d7392d502adcccd89f"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 255164,
+            "sha256": "0b70e43ffd47515f41c7f91b151631e4d16b9c54011b93a55a5ad33de41c2fae"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120722,
+            "sha256": "305fa35ba86343764f572af3b42fa26deebb5004c9adccd3449f84a53a01972f"
+          }
+        ],
+        "review": "One golden bell with Bark-B-Q at the straw finish. The villagers pull empty sledges uphill. The left-hand fence and right-hand Big Fir read correctly viewed uphill from the finish.",
+        "generator": "built-in imagegen",
+        "alt": "The village climbs Snowdrop Hill as Bark-B-Q holds up the Golden Bell."
+      },
+      "alt": "The village climbs Snowdrop Hill as Bark-B-Q holds up the Golden Bell."
+    },
+    {
+      "number": 2,
+      "text": "Biscuit-Bouncer had raced every year. Every year, he had bounced off.\n\n“I can’t help it,” he said. “When I’m excited, my legs go *boing*.”\n\nThis year, he wanted that bell more than anything.",
+      "illustrationDirection": "Biscuit-Bouncer mid-bounce, all four legs off the ground, in his red bobble hat. Behind him, a sledge sliding away without him (a memory of other years).",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f6468924fc0aef478fc0a797e272aa9fdd825ab9b609170c566c3e73e174b16f",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 313676,
+            "sha256": "866b7be63416f8f144006adf9341901c447c0641b7ef323e0ae838252ce91e0d"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 195738,
+            "sha256": "41b4276b7e002b126fc318ecef19ef74071a295c8e0791251fad6a7e49265f3c"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92232,
+            "sha256": "63e5e2e3d5529699e856c5fbeaf126dc401f2204702938d6eee9fc51d8c20fc2"
+          }
+        ],
+        "review": "Puppy alone with all four paws off the snow, dressed in red with no ball. One faded empty wooden sledge recalls the previous years.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer bounces into the air while a sledge slides away without him."
+      },
+      "alt": "Biscuit-Bouncer bounces into the air while a sledge slides away without him."
+    },
+    {
+      "number": 3,
+      "text": "The race was for teams of two.\n\nSail-Affe and Horse d’Oeuvre had the Red Flash, the fastest, shiniest sledge on the hill. The Baby Bulldogs had a long wooden toboggan. They were so small that all four counted as one team.\n\nEverybody already had a partner. Everybody except Biscuit-Bouncer.",
+      "illustrationDirection": "At the top: Sail-Affe and Horse d’Oeuvre polishing the shiny Red Flash; the four Baby Bulldogs piling onto their long toboggan. Biscuit-Bouncer alone between them.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1e995a0d04fe0583982fb3b3ed827daf9b404ec4382cee29fb00f1daf3c3d28e",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 283842,
+            "sha256": "b30f91fc855efd895c90bb91372f1448df91396f41e637056f9b9a50f7ef6011"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 191188,
+            "sha256": "fad935e84e470315a1390623046afdb0dcc65d4e9dd76a66ba792c24776bbbd2"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93564,
+            "sha256": "5dc80dbd9bb32762bed39dc4dc9c8654612eb3ab3850173723552ae024977886"
+          }
+        ],
+        "review": "Exactly four Bulldogs in matching coloured hats and scarves prepare the long pale toboggan. Giraffe and pony polish the red racing sledge while the solitary red-white hatted puppy stands between the teams.",
+        "generator": "built-in imagegen",
+        "alt": "The other teams get ready with their sledges while Biscuit-Bouncer stands alone."
+      },
+      "alt": "The other teams get ready with their sledges while Biscuit-Bouncer stands alone."
+    },
+    {
+      "number": 4,
+      "text": "And Tick-Tusk.\n\nShe sat on a tree stump, polishing her gold pocket watch. Somebody had told her she was too heavy for a sledge. “You’ll sink,” they’d said.\n\nBiscuit-Bouncer bounced over. “Do you want to race with me?”\n\n“I’ve never been on a sledge,” said Tick-Tusk.\n\n“I’ve never stayed on one,” said Biscuit-Bouncer. “So we’re even.”",
+      "illustrationDirection": "Tick-Tusk on a tree stump, polishing her gold pocket watch. Biscuit-Bouncer bouncing up to her, tail wagging.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d34b1943be5a4d4b3d6fd7868638d986c469c381243a4c9a7961111119497764",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 444148,
+            "sha256": "8a8099e526c0e0dde0fc69583efbf3d018b4f42d7ca028276cea15c3281b8fcc"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 283134,
+            "sha256": "d57ee0a0f2b44cbfbe24203e55aaf2b3c045556f92f9bce6c585b133a5d551d5"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 130522,
+            "sha256": "121b0d2d0e81b31fb0726e1d42bf361ebaf5297f183b4adb031864d94f19bd7e"
+          }
+        ],
+        "review": "One gold pocket watch on the neck chain, one cloth, Tick-Tusk seated safely on the stump. Biscuit-Bouncer is in red, in mid-bounce and without the ball.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer asks Tick-Tusk, who sits on a tree stump, to race with him."
+      },
+      "alt": "Biscuit-Bouncer asks Tick-Tusk, who sits on a tree stump, to race with him."
+    },
+    {
+      "number": 5,
+      "text": "They didn’t have a sledge. But in the back of Ted-E-Bear’s shed, they found an old tin bathtub.\n\n“It’s a bath,” said Tick-Tusk.\n\n“It’s a sledge now,” said Biscuit-Bouncer.\n\nThey rubbed candle wax all over the bottom to make it slippery. They tied a rope to the front. Then they dragged it up the hill.",
+      "illustrationDirection": "In Ted’s shed: the two pulling a dented tin bathtub out from behind a deckchair. Then, outside, rubbing candle wax on the bottom.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aaef6dd826cfaab73b90c229259d0417b33e5bacae6e5c10a23f0baff03ab0ae",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 362086,
+            "sha256": "5f38199bb9f725b2164a0d0eb2bfcff49a9cb8111038edf6dee5a3874efd86f9"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219498,
+            "sha256": "63e20dfb5e449d4b2c40da1cf0414454382c66fa27aca537ce18a889d9ef8ffd"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97126,
+            "sha256": "d8303c83127572c9baf67e6538b629920adcbf9ac8486b9704b0731f5407993a"
+          }
+        ],
+        "review": "One dented tin tub, deckchair, candle and wax by the shed. Correct hats, scarves and Tick-Tusk’s watch.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer and Tick-Tusk find an old tin bathtub and wax the bottom."
+      },
+      "alt": "Biscuit-Bouncer and Tick-Tusk find an old tin bathtub and wax the bottom."
+    },
+    {
+      "number": 6,
+      "text": "The first practice went like this.\n\nBiscuit-Bouncer pushed the bathtub, ran, and jumped in. “Ready... steady... BOUNCE!”\n\nThe bathtub slid away down the hill. Biscuit-Bouncer bounced straight out of the back of it into the snow.\n\nTick-Tusk clicked her pocket watch. “Very fast,” she said. “For a bathtub with nobody in it.”",
+      "illustrationDirection": "The empty bathtub sliding off down the slope; Biscuit-Bouncer face-first in the snow behind it; Tick-Tusk clicking her watch, deadpan.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f1b7a78984d748725563eca353e03877be81a34bb183ba7f1cecf5c415645d2c",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 438802,
+            "sha256": "417314039db34c68fcd166cd8e017884b6c0864bdb638b2eecee323a5542cd1f"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 282574,
+            "sha256": "45a0bb24c7f8442499d9b751baa85c4daec7c19aa9b634c076354db850858f55"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 135476,
+            "sha256": "ddbb4b70907f15566c9c62385a801d3f8c628ba2bc2c3acb7ec15f3763955ae7"
+          }
+        ],
+        "review": "The empty tin bath slides alone. Puppy lands safely in soft snow and Tick-Tusk uses her one visible watch. No other teams, start flags or finish bales.",
+        "generator": "built-in imagegen",
+        "alt": "The bathtub slides away while Biscuit-Bouncer lands face-first in the snow."
+      },
+      "alt": "The bathtub slides away while Biscuit-Bouncer lands face-first in the snow."
+    },
+    {
+      "number": 7,
+      "text": "Tick-Tusk walked all the way down the course and back up again. She looked at the snow very carefully.\n\n“The middle of the hill is soft,” she said. “We’d sink. But the snow by the fence is packed hard. That’s the fast way. Then there’s the bend round the Big Fir. We have to lean into it together.”\n\n“You’ve been watching,” said Biscuit-Bouncer.\n\n“Every year,” said Tick-Tusk. “From the stump.”",
+      "illustrationDirection": "High view of the whole course: the fence on the right, the Big Fir and its bend, the straw bales at the bottom. Tick-Tusk walking beside the fence, pointing at the packed snow.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "845b02b85d942a9556a48ad2c5c11b7b93778194f891aa0038e708ede5509e8b",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 415486,
+            "sha256": "b9a0e26d527f2216e22b3ccb1f15d10ed64176f9801b69536cb2096347e11bca"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 263900,
+            "sha256": "e33fe87ee4cc5318e5b89ee194b2a5c9911521fc8277ce977feb29ebe626d854"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120198,
+            "sha256": "321ed9c35113d66c428cbc1cc0dbee49550d658313c771f36d00be6d88d4f961"
+          }
+        ],
+        "review": "The elevated view establishes the right-hand fence and hard snow strip. The Big Fir and safe left-hand bend lead to the straw bales. Tick-Tusk wears the teal hat and scarf.",
+        "generator": "built-in imagegen",
+        "alt": "Tick-Tusk walks the course and points out the hard-packed snow by the fence."
+      },
+      "alt": "Tick-Tusk walks the course and points out the hard-packed snow by the fence."
+    },
+    {
+      "number": 8,
+      "text": "“So here’s the plan,” she said. “You push. You’re the best pusher on the hill. I steer. And then, Biscuit-Bouncer, you sit still.”\n\nBiscuit-Bouncer’s legs went *boing* just hearing it.\n\n“When you want to bounce,” said Tick-Tusk, “hold on to my trunk.”",
+      "illustrationDirection": "Tick-Tusk explaining with her trunk raised; Biscuit-Bouncer trying not to bounce, legs quivering.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f6ebebd7453860bbcffb23cfe99739b8abf4b5d20e5c4ed9ff388721fe232cdb",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 386250,
+            "sha256": "d2b77709e979fb52838c568a1d07e0a7b605dcb3111923e6d3e072df558160f0"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 253878,
+            "sha256": "96587ffabcd0597e6378cd3f029cbce412c4762e8a5ad6ff80dcc202b1c39b92"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117986,
+            "sha256": "e460a93175a89c8cd3b05479b41726509566dad6bfbfabc3ddfab76dbcd04e8e"
+          }
+        ],
+        "review": "Only the correctly dressed pair remain. She lifts her trunk while the dog keeps all four paws down. Fence and fir preserve the hill.",
+        "generator": "built-in imagegen",
+        "alt": "Tick-Tusk explains the plan while Biscuit-Bouncer tries hard not to bounce."
+      },
+      "alt": "Tick-Tusk explains the plan while Biscuit-Bouncer tries hard not to bounce."
+    },
+    {
+      "number": 9,
+      "text": "They practised all afternoon.\n\nPush. Jump in. Hold on. Sit still. Lean.\n\nBiscuit-Bouncer fell out four times. Then three times. Then once. Then not at all.\n\nTick-Tusk clicked her watch. “Eleven seconds faster,” she said. Her ears flapped. She was smiling.",
+      "illustrationDirection": "A playful sequence in one picture: three small ghost-images of Biscuit-Bouncer tumbling out, then the final one sitting still in the tub holding Tick-Tusk’s trunk. Golden late light.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a372f43c2d32ba5f0bd93eb7c945b44bcf1115ec66bdf3f5aac4485815be9e00",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 464114,
+            "sha256": "7c5b629cce9cca7076b1877bf2c3e2c8e9d685bb1e5c6265fcfe5a1e23d567e4"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 284150,
+            "sha256": "34e471341597132e10c5d001fd5fee33d639d70cbf2f81e169ba87b6d0e24ced"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 128224,
+            "sha256": "2332bacd77efcc5d8f8d985d1eeaba2904b9c16c841a9567ef79f31c9d723111"
+          }
+        ],
+        "review": "Counted three faded tumble poses and one solid final puppy, with both paws on the curled trunk.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer practises until he can sit still in the bathtub."
+      },
+      "alt": "Biscuit-Bouncer practises until he can sit still in the bathtub."
+    },
+    {
+      "number": 10,
+      "text": "On race day, the whole village lined the hill.\n\nEggs-Benedict stood at the top with her stopwatch and a red flag. Bark-B-Q stood at the bottom by the straw bales, with the Golden Bell.\n\nSub-Zero waddled up to the start line with no sledge at all. “I’ll just slide on my tummy,” he said.\n\n“Sledges only, Sub-Zero,” said Eggs-Benedict.\n\nSo Sub-Zero borrowed a tea tray.",
+      "illustrationDirection": "Race day. Crowd along the hill. Eggs-Benedict at the top with a stopwatch and red flag. Sub-Zero holding up a silver tea tray, beak up, proud.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dffb25bd6627b1abf15b4d8d7c5a6eda90b2f42ae82adfc5dca6135fcbf68f69",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 355516,
+            "sha256": "8b46481a860fb105664ba049235473b587424815e6181065605bf9838a6d2920"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 221594,
+            "sha256": "dd4972feaecbf29cfc067e8c1aaf57b4ab31a687a06cfe3c746443823e7868cf"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103560,
+            "sha256": "ec0a3aa7c5dd9573e8e20229778ac31baa94ec48d000f4705be866de11665044"
+          }
+        ],
+        "review": "Brown crowned hen has one red flag and one silver stopwatch; the penguin holds one round tray.",
+        "generator": "built-in imagegen",
+        "alt": "On race day, Eggs-Benedict waits at the top with her flag and Sub-Zero borrows a tea tray."
+      },
+      "alt": "On race day, Eggs-Benedict waits at the top with her flag and Sub-Zero borrows a tea tray."
+    },
+    {
+      "number": 11,
+      "text": "Four teams lined up: the Red Flash, the Bulldogs’ toboggan, Sub-Zero’s tea tray and the bathtub.\n\nEggs-Benedict raised her flag.\n\n“Ready... steady... GO!”\n\n“BOUNCE!” shouted Biscuit-Bouncer, and pushed with all four legs.",
+      "illustrationDirection": "The four sledges in a row on the start line. Eggs-Benedict’s flag coming down. Biscuit-Bouncer pushing the bathtub with all four legs.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f1f445e7b6fb72bcf12a24ee89dd2ecfc6a65204a1ee6c6e73b302928b0b1ade",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 448960,
+            "sha256": "9d9fef3bc445ecea4fabdd43652fe8cdac8cf97d2f7c815d0056e03115a96724"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 289410,
+            "sha256": "dd5d0c0d892a7f780282a65f5458d09c0a6c7cd957207e192bf018af400d5e26"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 136754,
+            "sha256": "10b33aa6503d91e158b3f245c34e5af89c1e0cfbd9a2b6aea1ff60769756111b"
+          }
+        ],
+        "review": "Counted exactly four starting vehicles and four differently hatted Bulldogs, two Red Flash riders, one penguin and just one elephant in the tub. The lead puppy is outside pressing on the back rim, and the crowned hen drops her red flag.",
+        "generator": "built-in imagegen",
+        "alt": "Four sledges line up and Biscuit-Bouncer pushes off as the flag drops."
+      },
+      "alt": "Four sledges line up and Biscuit-Bouncer pushes off as the flag drops."
+    },
+    {
+      "number": 12,
+      "text": "The bathtub shot off the line.\n\nSub-Zero’s tea tray spun round and round and went down backwards. The Bulldogs’ toboggan wiggled like a puppy’s tail.\n\nAnd the Red Flash went straight to the front, red and shiny and fast.",
+      "illustrationDirection": "The race from the side: the Red Flash in front, the toboggan wiggling, Sub-Zero spinning backwards on the tea tray, the bathtub close behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9a07fd37cd323d2d9b16475b6df0170127f84234b7817ff5ad5f74c91520d641",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 276666,
+            "sha256": "b6d8ba607757d45d4e28c487c9f5144d8889bac84469b62a9f466dc77a0739fe"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 180010,
+            "sha256": "50026cd38db2fc393806b13e9f0ab3b6ecd7481575c683b4752abfcba849a7d2"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82486,
+            "sha256": "c9bdf58a62f8ae5ab26e0abe54d15067d144095e6ff910cdebd61d92818ae348"
+          }
+        ],
+        "review": "Counted four vehicles in race order. The giraffe sits in front of the green-hatted pony, all four Bulldogs are visible, the penguin faces backwards, and the watch-wearing elephant sits ahead of the puppy.",
+        "generator": "built-in imagegen",
+        "alt": "The Red Flash takes the lead as Sub-Zero spins backwards on his tea tray."
+      },
+      "alt": "The Red Flash takes the lead as Sub-Zero spins backwards on his tea tray."
+    },
+    {
+      "number": 13,
+      "text": "Tick-Tusk steered the bathtub over to the hard snow by the fence. Whoosh! They began to catch up.\n\nBiscuit-Bouncer’s legs went *boing*. He grabbed Tick-Tusk’s trunk and held on tight.\n\nHe sat still.",
+      "illustrationDirection": "The bathtub hugging the fence, snow spraying. Biscuit-Bouncer gripping Tick-Tusk’s trunk, eyes squeezed shut, sitting still.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "784c35f4f03d0c971d01651917dfc9b52508365f7c34cdde9e00b7c78a46d9f9",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 345208,
+            "sha256": "dea3bb54863c1e716f98aacc0c474c9dda760ea9ac98787b31953de9e704606c"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 219032,
+            "sha256": "88121c4e3b1c612b85937ec1f8cc1f2f2f831a680b58beb14484789a173e45aa"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103678,
+            "sha256": "eed3f09d7f07cdb47b00b1dd92acdada9eec8f1bf6bb1a46d13b5d5d45010524"
+          }
+        ],
+        "review": "The two friends hug the fence in the dented tub. Tick-Tusk steers in front with her watch and curled trunk; Biscuit-Bouncer grips her trunk behind with both paws and closed eyes.",
+        "generator": "built-in imagegen",
+        "alt": "The bathtub speeds along by the fence as Biscuit-Bouncer holds on to Tick-Tusk’s trunk."
+      },
+      "alt": "The bathtub speeds along by the fence as Biscuit-Bouncer holds on to Tick-Tusk’s trunk."
+    },
+    {
+      "number": 14,
+      "text": "Ahead of them was the Big Fir and the bend.\n\nThe Red Flash took the bend too fast. Sail-Affe’s long scarf flew up over Horse d’Oeuvre’s eyes.\n\n“I can’t see!” cried Horse d’Oeuvre. “How do you stop?”",
+      "illustrationDirection": "At the Big Fir bend: the Red Flash tilting wildly, Sail-Affe’s long striped scarf flying over Horse d’Oeuvre’s eyes.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "058e36d9c3c45fbe55dd95ba357775aca1c237f3b48f9260121a7895affeb3fb",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 384160,
+            "sha256": "d9fdc10fd500366cf4c201a6a2f80315b7f125727d8ac0138ed4b48dd2988834"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 247592,
+            "sha256": "9f97e1742999268b8917b9bd53c9e2b306bee64cd6e31698d06335d9df499105"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120080,
+            "sha256": "25e3a3dbd2208401ca7ddd51a6a20618fe630ff457e12630ef5f959a57594dd8"
+          }
+        ],
+        "review": "Only the two Red Flash riders at the bend. The purple-and-yellow striped scarf covers both eyes of the green-hatted pony. Both runners are intact before the crash.",
+        "generator": "built-in imagegen",
+        "alt": "At the bend, Sail-Affe’s scarf flies over Horse d’Oeuvre’s eyes."
+      },
+      "alt": "At the bend, Sail-Affe’s scarf flies over Horse d’Oeuvre’s eyes."
+    },
+    {
+      "number": 15,
+      "text": "The Red Flash spun round twice and ploughed into a deep snowdrift.\n\nNobody was hurt. But one of its runners had snapped, and Sail-Affe and Horse d’Oeuvre were sitting in the snow, up to their noses, with a broken sledge.",
+      "illustrationDirection": "The Red Flash nose-down in a deep drift, one runner snapped. Sail-Affe and Horse d’Oeuvre sitting in snow up to their noses, unhurt, dismayed.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aa85a07c579a5f4fe0f8251b876340094d6a8a18cdd5f383b0c269dd91e818f9",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 279814,
+            "sha256": "233a1186b5c70892fe9b8ecbfe58ddc918155ae61b12828bf4ce8402a90a1160"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 186700,
+            "sha256": "5f1aeb30e207afd37676e7be30848d894fad911c0d654f86d80b6db8ac79c5f2"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95382,
+            "sha256": "86bf2f695ad69347f3101b0be64304e17d7352eabf1e0ddd00932f0488fe8c0e"
+          }
+        ],
+        "review": "Both Red Flash riders are safe up to their noses in soft snow by the fir and wear the established hats and scarves. One runner visibly has two splintered ends separated by a gap.",
+        "generator": "built-in imagegen",
+        "alt": "The Red Flash is stuck in a snowdrift with a broken runner. Its riders are fine but stuck."
+      },
+      "alt": "The Red Flash is stuck in a snowdrift with a broken runner. Its riders are fine but stuck."
+    },
+    {
+      "number": 16,
+      "text": "Tick-Tusk looked at her pocket watch. “If we stop now,” she said quietly, “we lose.”\n\nBiscuit-Bouncer looked down the hill at the Golden Bell, shining by the straw bales.\n\nThen he looked at his friends in the snowdrift.",
+      "illustrationDirection": "Close on Biscuit-Bouncer’s face: looking from the far-off Golden Bell, small and shining at the bottom, to his friends in the drift. Tick-Tusk holding up her watch.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "46a48c182075565166cdb1de59984bd0dbbfe82ff4ffefe772aa777407db3026",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 404240,
+            "sha256": "2026027a0f5fbfac643cd5e40947bdcf522429033bfa798a92acf11ad7374287"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 259274,
+            "sha256": "4e35cd534dad4aa64f89e7b1269ecd4f7b9c800a4f4efa4cdb5b78e66d12af0c"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123500,
+            "sha256": "6bfd137bfc412c3cfd05e64816f135a55f115cb90435eb7910853989e02c9ab3"
+          }
+        ],
+        "review": "The puppy stays in the rear of the tub, the elephant shows her watch, and the two uniformed Red Flash riders are safe in the snow by the snapped runner. The distant straw finish and tiny bell sit near the end of the winding run.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer looks at the far-off bell, then at his friends in the snow."
+      },
+      "alt": "Biscuit-Bouncer looks at the far-off bell, then at his friends in the snow."
+    },
+    {
+      "number": 17,
+      "text": "“Lean, Tick-Tusk!” he said. “Lean and stop!”\n\nTick-Tusk leaned. She put down her big, flat feet, and the bathtub ploughed to a stop right beside the drift.\n\nBehind them, the Bulldogs’ toboggan whizzed past, yipping. Then Sub-Zero went by, still backwards, waving.",
+      "illustrationDirection": "Tick-Tusk leaning and putting her big feet down as brakes; the bathtub ploughing to a stop beside the drift. The toboggan whizzing past; Sub-Zero waving backwards.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7fc7849feec6f3cc62b2d083e251723caffe3d9c4770fc0ba8c3133476b4075a",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403738,
+            "sha256": "08f9519f2299626d18d3b410cc92d4f749a21acf0e4438183a4c81bef927dc15"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 253674,
+            "sha256": "1eaafaf0077159b2dffde987c2e7b80d124d326c412307174911fbd33aa03ab7"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117156,
+            "sha256": "a7ec0dfc04c1b0ec940b3d4094c728a2eef7d9f2650284c9a0523d494fa84c3f"
+          }
+        ],
+        "review": "Tick-Tusk brakes both front feet through soft powder beside the drift. All four hatted Bulldogs and the backwards waving penguin race past on their own vehicles.",
+        "generator": "built-in imagegen",
+        "alt": "Tick-Tusk brakes with her feet and the bathtub stops beside the drift as the others race past."
+      },
+      "alt": "Tick-Tusk brakes with her feet and the bathtub stops beside the drift as the others race past."
+    },
+    {
+      "number": 18,
+      "text": "“Are you hurt?” asked Biscuit-Bouncer.\n\n“No,” said Sail-Affe. “But the Red Flash is broken. We’re out.” Her long neck drooped.\n\n“Then come with us,” said Biscuit-Bouncer.\n\nHorse d’Oeuvre stared. “In a BATH?”",
+      "illustrationDirection": "Biscuit-Bouncer reaching a paw to Sail-Affe; Horse d’Oeuvre staring at the bathtub in disbelief.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9cf2d189f28a5589683232c095fd94925cc49390a0485c3fe9574c3f56efd1cc",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 413032,
+            "sha256": "9f53c0176f77a847e3956a1ad4ed52f921a821dcee4933c7814abed44e9a30ec"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 264852,
+            "sha256": "4fba01cc9b4f293eddbb014c089760afcdf456c183213882a2df805eb836231b"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123442,
+            "sha256": "9b2584bf5ac8abaa397bdab5d202e31b1df243aa30160dae1a1a8e1b5499e92d"
+          }
+        ],
+        "review": "The red-hatted puppy reaches towards the drooping giraffe, the pony looks at the empty tin bath, and the elephant still wears her gold watch. The broken Red Flash and deep drift remain beside the fir.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer offers to take Sail-Affe and Horse d’Oeuvre in the bathtub."
+      },
+      "alt": "Biscuit-Bouncer offers to take Sail-Affe and Horse d’Oeuvre in the bathtub."
+    },
+    {
+      "number": 19,
+      "text": "“It’s a big bath,” said Tick-Tusk.\n\nSo Sail-Affe climbed in at the front, with her long neck sticking up like the mast of a ship. Horse d’Oeuvre squeezed in behind her, knees up to his nose. Tick-Tusk sat behind him, to steer.\n\nThat left a tiny space at the very back for Biscuit-Bouncer, if he sat very, very still.",
+      "illustrationDirection": "Friends squeezing into the bathtub: Sail-Affe at the front with her neck up like a mast, Horse d’Oeuvre jammed in behind her with his knees up to his nose, Tick-Tusk behind him, and a tiny gap at the very back for Biscuit-Bouncer.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d1dc8cbe62feb47fd7253e7bae8907dda39af74c9bb26bb42f364bb9187ede4f",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 398044,
+            "sha256": "69bc9aedd51e8dd4efb6b8f2693a5c044f4464fa39d9e606cdd372c107d57e0f"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 249230,
+            "sha256": "4afa2f2d077efaeb50ba8fe74913117044597b0981af989eb7b031b13dad2a3b"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118160,
+            "sha256": "ae4e4f1a8cc688df06c5ccb13bcc31dbb2128715c9ea556d363c3d55650cadd4"
+          }
+        ],
+        "review": "Three hatted riders in exact order from the front rope: giraffe, pony, elephant. The puppy stays outside the back with a small space left for him. The broken racing sledge is empty beside the big fir.",
+        "generator": "built-in imagegen",
+        "alt": "Sail-Affe, Tick-Tusk and Horse d’Oeuvre squeeze into the bathtub."
+      },
+      "alt": "Sail-Affe, Tick-Tusk and Horse d’Oeuvre squeeze into the bathtub."
+    },
+    {
+      "number": 20,
+      "text": "They left the Red Flash safe in the drift, to fetch later.\n\nBiscuit-Bouncer got behind the bathtub. It was much heavier now. He dug in all four paws.\n\n“Ready... steady... BOUNCE!”",
+      "illustrationDirection": "Biscuit-Bouncer behind the loaded tub, paws dug in, straining, about to push. The broken Red Flash safely in the drift.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5e0e688848f3be15248450d56f4930af155fc6b28350ce5eb0d559d11eefcb87",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 390140,
+            "sha256": "b3e034e01b72f7671d8e088ad55bc745652980f56f9ba73b6ff67d9d30bcd198"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 250646,
+            "sha256": "47afa01c24358461ac48c3ca623531e370f13f7780ec71a0fc73032341639c1d"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 119082,
+            "sha256": "32fed56067da77c8189a85b97699e11a792f689dc6880be52af9f4e4b9b0a42b"
+          }
+        ],
+        "review": "The puppy crouches with all four paws anchored in powder behind the loaded tub. From the front rope: giraffe, pony, elephant, then a gap for the puppy. The damaged Red Flash stays empty at the fir.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer gets ready to push the heavy bathtub."
+      },
+      "alt": "Biscuit-Bouncer gets ready to push the heavy bathtub."
+    },
+    {
+      "number": 21,
+      "text": "The bathtub began to slide. Then it began to slide fast. Then it began to go faster than anything had ever gone down Snowdrop Hill.\n\nWhoooooosh!\n\nThey shot past Sub-Zero. “Hello again!” he called, spinning.",
+      "illustrationDirection": "The bathtub flying downhill, giant snow spray, Sail-Affe’s neck and scarf streaming. Sub-Zero on his tea tray, spinning, waving as they pass.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c8b6d34f423c790c0e4e7e7b05555d44cf177be5a060f0fff4fceba28bacca35",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 419036,
+            "sha256": "8683e34eded4882a36146182f4a407a88b7cbb0003f83f2ad465e5acfcdaa084"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 262312,
+            "sha256": "5ab2c1645b18f663db9188c15a1bc75d09ab44f27ff2c3e1e6969484a322b556"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 124514,
+            "sha256": "34874ff0cfd84432a28e69ea7d287658e95bc22808a16f67dca1c851e82b4660"
+          }
+        ],
+        "review": "Four riders in order from the front rope: giraffe, pony, elephant, red-hatted puppy. A round tea tray spins behind them with one hatted penguin waving.",
+        "generator": "built-in imagegen",
+        "alt": "The full bathtub shoots down the hill past Sub-Zero."
+      },
+      "alt": "The full bathtub shoots down the hill past Sub-Zero."
+    },
+    {
+      "number": 22,
+      "text": "On the last long straight, there was only one sledge ahead: the Bulldogs’ toboggan.\n\nThe bathtub drew level. Then it was side by side.\n\nBiscuit-Bouncer’s legs went *boing, boing, BOING*. He held Tick-Tusk’s trunk with both paws.\n\n“Sit still,” he told himself. “Lean together.”\n\nEverybody leaned forward at once.",
+      "illustrationDirection": "The last straight from the side: the bathtub and the toboggan neck and neck, everyone leaning forward together. Biscuit-Bouncer holding Tick-Tusk’s trunk with both paws.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1507f94572d78e950dba71a320fc179b4018692c3935083fd8a7017833c59550",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 338858,
+            "sha256": "bb38332a14b3a1e94d17a96607a87e0d241328a069ca11f44234e119a82ad696"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 209110,
+            "sha256": "0a7709143297598b93527effb7db75b558a412c8fb055ba1dcffecdd0685536b"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93220,
+            "sha256": "931b05111013d669d5e334a82f6a38807b6beed3642d188aa41c908d59ccc256"
+          }
+        ],
+        "review": "Four riders in the correct order in each sledge. The puppy grips the elephant’s one curled trunk with both paws. Both teams race beside one another on the open last straight, with the toboggan farther back in depth.",
+        "generator": "built-in imagegen",
+        "alt": "The bathtub and the Bulldogs’ toboggan race side by side on the last straight."
+      },
+      "alt": "The bathtub and the Bulldogs’ toboggan race side by side on the last straight."
+    },
+    {
+      "number": 23,
+      "text": "WHUMP!\n\nThe bathtub and the toboggan hit the straw bales at exactly the same moment. Straw flew up into the air and came down again like golden snow.",
+      "illustrationDirection": "WHUMP: both sledges hitting the straw bales, straw exploding upward like golden snow. Paws and hooves everywhere, everyone laughing.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "77268490befd7d1d464089a6a395285b650d6ae06cc4937372942b3b8c08e3ed",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 517914,
+            "sha256": "6c956614e3b650c6dad63c375488dfe011f99228f1edca0563eafdc6e9dec631"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 321364,
+            "sha256": "76e29e276e793c5a74ad222070d5a6a02a1cb05e3d9036e6125c2ad399ea79f5"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 147188,
+            "sha256": "00b6bec7a600df6a98a294025344f82dce8758924b089a8f9db2d8d4b59b4d3e"
+          }
+        ],
+        "review": "Counted four Bulldog faces and yellow, green, red and blue hats in one toboggan. The other four sit in the right order from the front rope: giraffe, pony, elephant, puppy. Both sledges reach the soft straw together, with one prize bell by the bales.",
+        "generator": "built-in imagegen",
+        "alt": "Both sledges crash into the straw bales at the same moment, and straw flies everywhere."
+      },
+      "alt": "Both sledges crash into the straw bales at the same moment, and straw flies everywhere."
+    },
+    {
+      "number": 24,
+      "text": "Eggs-Benedict came running down the hill with her stopwatch.\n\n“The bathtub,” she puffed, “and the toboggan... crossed the line... at exactly the same time!”\n\nBark-B-Q looked at the Golden Bell. “But there’s only one bell.”",
+      "illustrationDirection": "Eggs-Benedict running down, puffing, holding up her stopwatch. Bark-B-Q holding the single Golden Bell, puzzled.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fa020a7ffbcc9cfa531f5ef980248dc04f2003305dcbbbe58aa8fa71bf227446",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 351316,
+            "sha256": "423532d991b96e5cbdb8a9d92e1fe84df470d987c94507dcde38e5a1a0087307"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 221228,
+            "sha256": "b0c0db79ff8f327290b616908f0b3c27259023ac78d7ab0cea6c7d3a1506362f"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105564,
+            "sha256": "43467be2d80b79f7c238afdb22a4ae2e3a2bddf273c20c21d81dcce30b99d231"
+          }
+        ],
+        "review": "At the straw finish the crowned hen holds one silver stopwatch. The retriever chef in a blue scarf holds only one Golden Bell, dangling from one red ribbon.",
+        "generator": "built-in imagegen",
+        "alt": "Eggs-Benedict announces a dead heat, and Bark-B-Q holds up the one bell."
+      },
+      "alt": "Eggs-Benedict announces a dead heat, and Bark-B-Q holds up the one bell."
+    },
+    {
+      "number": 25,
+      "text": "The Bulldogs looked at Biscuit-Bouncer. Biscuit-Bouncer looked at the Bulldogs.\n\n“You were in front all the way down the straight,” said Biscuit-Bouncer.\n\n“You stopped for your friends,” said the biggest Bulldog. “We saw.”\n\nSo Bark-B-Q handed over the Golden Bell on its long red ribbon, and both teams held an end. The smallest Bulldog rang it. *Ding-a-ling-a-ling!*",
+      "illustrationDirection": "Bark-B-Q handing over the bell; the long red ribbon held by Biscuit-Bouncer at one end and the biggest Bulldog at the other. The smallest Bulldog ringing it.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4513a7f5aeddc6d3c7bd06fa28010ab2b89f81a488f380a7011c0eda8bb8f951",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 456492,
+            "sha256": "f956cc7c5a5ded569bc1ea538e8019acf256dfa8deacd44e562de3067f3ead40"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 280020,
+            "sha256": "68f8a0f6495bf9ab04aed543974f54ba498bca686c827c31e8e2c4f8ef21d9d4"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 129094,
+            "sha256": "c97ad77205806c8677e0bafe49cd13670c8ab743cde5703b55189e9a4ea3a104"
+          }
+        ],
+        "review": "Four Bulldogs in yellow, green, red and blue. The puppy and the biggest blue-hatted Bulldog hold opposite ends of one long ribbon while the smallest yellow-hatted Bulldog rings its one bell. The retriever marshal hands it over.",
+        "generator": "built-in imagegen",
+        "alt": "Both teams hold the bell’s long ribbon while the smallest Bulldog rings it."
+      },
+      "alt": "Both teams hold the bell’s long ribbon while the smallest Bulldog rings it."
+    },
+    {
+      "number": 26,
+      "text": "Then everybody climbed back up the hill and pulled the Red Flash out of the drift together.\n\n“I’ll fix the runner,” said Horse d’Oeuvre. “And next year, we’ll race you.”\n\nTick-Tusk clicked her watch. “Fourteen seconds faster than practice,” she said. “With four of us.”\n\nBiscuit-Bouncer didn’t answer. He had sat still for long enough. He bounced all the way home.",
+      "illustrationDirection": "Late afternoon: everyone pulling the Red Flash out of the drift together. In the foreground, Biscuit-Bouncer bouncing high toward home; Tick-Tusk holding up her watch, smiling.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2cace35630dd770e031099691a1e84e861f692a7501557b34e1ebc3c3d383e71",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 380340,
+            "sha256": "c60dd9352d6e7788b3835d05b7bc2a1918c2dfa0a5a9d37b02205923eb65cd0b"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 243152,
+            "sha256": "3f1a19d96f38a4a0b0f5419607b8cbe36bfc4794171887e5745fa46cc44bcede"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110906,
+            "sha256": "878ce696f4a491726a155f14a69fe727155b4fd73380da51c4b471d18af33a01"
+          }
+        ],
+        "review": "Four Bulldogs, one giraffe and one pony pull the damaged Red Flash by one rope at the fir. The elephant and puppy each appear once in the foreground, with the watch and long afternoon shadows.",
+        "generator": "built-in imagegen",
+        "alt": "Everyone pulls the Red Flash out of the snow, and Biscuit-Bouncer bounces happily home."
+      },
+      "alt": "Everyone pulls the Red Flash out of the snow, and Biscuit-Bouncer bounces happily home."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "16abf0dfd041237db053e46d2abd98ad5c3bb6dc13b4a303a966a08ae97b5bc9",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 401858,
+        "sha256": "0e338b27a10a389d926941bbf991dec261763e96b5dbde0a34467fd72c592fdf"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 261748,
+        "sha256": "c7d8dca66f85197e072f19c050d21a96af89d03033bd7e6e30d72a6c714b3f19"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 124770,
+        "sha256": "fe4c9edf724233eef54d10a107dc08fbcced636985acd18ee468720a493a0ef0"
+      }
+    ],
+    "review": "The central tub and both faces read clearly at 160 px and in greyscale. Tick-Tusk’s watch and single curled trunk, four Bulldogs, Red Flash seating and wool hats, and the Golden Bell are visible.",
+    "generator": "built-in imagegen",
+    "alt": "Tick-Tusk and Biscuit-Bouncer race down a snowy hill in an old tin bathtub."
+  },
+  "sourceFolder": "christmas/biscuit-bouncer-and-the-great-sledge-race",
+  "webSlug": "biscuit-bouncer-and-the-great-sledge-race",
+  "reviewedPrintableSha256": "4c120a96513c8dc781e660c22d9c03cf697425113d2d8a609af822f6f9bd6e4a"
+}

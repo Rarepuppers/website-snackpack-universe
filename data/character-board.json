@@ -106,6 +106,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-star-that-fell-on-the-longest-night",
+          "role": "lead"
         }
       ]
     },
@@ -362,6 +367,11 @@
           "kind": "book",
           "id": "ted-e-bear-and-the-jar-of-good-things",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-star-that-fell-on-the-longest-night",
+          "role": "support"
         }
       ]
     },
@@ -885,6 +895,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "cameo"
         }
       ]
     },
@@ -949,6 +964,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "cameo"
         }
       ]
     },
@@ -996,6 +1016,11 @@
           "kind": "book",
           "id": "everybody-brought-potatoes",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "cameo"
         }
       ]
     },
@@ -1247,6 +1272,11 @@
         {
           "kind": "book",
           "id": "sub-zero-and-the-great-snowball-truce",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
           "role": "cameo"
         }
       ]
@@ -1629,6 +1659,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "lead"
         }
       ]
     },
@@ -1686,6 +1721,11 @@
         {
           "kind": "book",
           "id": "wise-owl-festival-of-factors",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "the-star-that-fell-on-the-longest-night",
           "role": "support"
         }
       ]
@@ -1793,6 +1833,10 @@
       "kind": "Elephant",
       "greeting": "Hello! Shall we try a number trail together?",
       "moment": "Numbers and exploring",
+      "book": [
+        "biscuit-bouncer-and-the-great-sledge-race",
+        "Biscuit-Bouncer and the Great Sledge Race"
+      ],
       "alt": "The SnackPack portrait of Tick-Tusk, elephant",
       "animal": "elephants",
       "fact": "The second part of my name points to an elephant’s tusks.",
@@ -1807,6 +1851,10 @@
         "Hello! Shall we try a number trail together?"
       ],
       "group": "mammals",
+      "art": {
+        "page": "p04",
+        "caption": "Tick-Tusk sits on a tree stump with her gold pocket watch."
+      },
       "variant": {
         "caption": "Tick-Tusk in the explorer version of the shared character art."
       },
@@ -1826,6 +1874,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "support"
         }
       ]
     },
@@ -1882,6 +1935,10 @@
       "kind": "Giraffe",
       "greeting": "Hi! Look up. What can you spot from here?",
       "moment": "Exploring together",
+      "book": [
+        "biscuit-bouncer-and-the-great-sledge-race",
+        "Biscuit-Bouncer and the Great Sledge Race"
+      ],
       "alt": "The SnackPack portrait of Sail-Affe, giraffe",
       "animal": "giraffes",
       "fact": "The end of my name sounds like the end of “giraffe”.",
@@ -1895,6 +1952,10 @@
         "Hi! Look up. What can you spot from here?"
       ],
       "group": "mammals",
+      "art": {
+        "page": "p03",
+        "caption": "Sail-Affe wears a striped scarf while the team gets its sledge ready."
+      },
       "variant": {
         "caption": "Sail-Affe in the explorer version of the shared character art."
       },
@@ -1912,6 +1973,11 @@
         {
           "kind": "book",
           "id": "vincent-van-mouse-and-the-mural",
+          "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
           "role": "support"
         }
       ]
@@ -1957,6 +2023,10 @@
       "kind": "Pony",
       "greeting": "Hello! Shall we make room for an extra guest?",
       "moment": "The pony in the crew",
+      "book": [
+        "biscuit-bouncer-and-the-great-sledge-race",
+        "Biscuit-Bouncer and the Great Sledge Race"
+      ],
       "alt": "The SnackPack portrait of Horse d’Oeuvre, pony",
       "animal": "horses-and-ponies",
       "fact": "My name sounds like “hors d’oeuvre”, a little bite served before a meal.",
@@ -1970,6 +2040,10 @@
         "Hello! Shall we make room for an extra guest?"
       ],
       "group": "mammals",
+      "art": {
+        "page": "p03",
+        "caption": "Horse d’Oeuvre polishes the Red Flash before the race."
+      },
       "variant": {
         "caption": "Horse d’Oeuvre in the helper version of the shared character art."
       },
@@ -1983,7 +2057,13 @@
         "snackpack-8-earth-science",
         "snackpack-11-prehistoric-pals"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "biscuit-bouncer-and-the-great-sledge-race",
+          "role": "cameo"
+        }
+      ]
     },
     {
       "id": "jimmy-apple-core",
@@ -2128,6 +2208,11 @@
         {
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-star-that-fell-on-the-longest-night",
           "role": "cameo"
         }
       ]
@@ -2317,6 +2402,11 @@
         {
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-star-that-fell-on-the-longest-night",
           "role": "cameo"
         }
       ]
@@ -3808,31 +3898,31 @@
       "answer": "biscuit-bouncer",
       "clues": [
         [
-          "I’m one of the faces on the SnackPack character board.",
+          "I was there for the sledge race on Snowdrop Hill.",
           [
             "biscuit-bouncer",
-            "plate-retriever",
-            "booklava",
-            "bottle-nose",
-            "captain-beakon",
+            "tick-tusk",
+            "sail-affe",
+            "horse-doeuvre",
+            "sub-zero",
+            "eggs-benedict"
+          ]
+        ],
+        [
+          "My team uses a tin bath as a sledge.",
+          [
+            "biscuit-bouncer",
             "tick-tusk"
           ]
         ],
         [
-          "My card describes me as “puppy”.",
-          [
-            "biscuit-bouncer",
-            "plate-retriever"
-          ]
-        ],
-        [
-          "I have parcels to deliver along a route.",
+          "I am the puppy who helps push it.",
           [
             "biscuit-bouncer"
           ]
         ]
       ],
-      "explanation": "Finding a better route."
+      "explanation": "Biscuit-Bouncer is the team’s pusher."
     },
     {
       "answer": "booklava",

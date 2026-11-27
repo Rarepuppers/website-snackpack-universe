@@ -435,18 +435,18 @@
     "answer": "biscuit-bouncer",
     "candidates": [
       "biscuit-bouncer",
-      "plate-retriever",
-      "booklava",
-      "bottle-nose",
-      "captain-beakon",
-      "tick-tusk"
+      "tick-tusk",
+      "sail-affe",
+      "horse-doeuvre",
+      "sub-zero",
+      "eggs-benedict"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “puppy”.",
-      "I have parcels to deliver along a route."
+      "I was there for the sledge race on Snowdrop Hill.",
+      "My team uses a tin bath as a sledge.",
+      "I am the puppy who helps push it."
     ],
-    "explanation": "Finding a better route.",
+    "explanation": "Biscuit-Bouncer is the team’s pusher.",
     "name": "Biscuit-Bouncer"
   },
   {

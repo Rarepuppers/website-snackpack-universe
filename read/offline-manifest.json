@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 71,
- "bytes": 178064696,
+ "books": 73,
+ "bytes": 195612856,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -65,7 +65,7 @@
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p23.webp",
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p24.webp"
    ],
-   "html_sha256": "aef3f53dfe1a71b58eb86859dd66c909aafa283a9899471a67d51f797c1abc98",
+   "html_sha256": "5bcbb7ce6ce4a3fc268816e918f0212fe3c4c709f567a1db4d2aee92c018d3ee",
    "bytes": 10146370
   },
   {
@@ -99,7 +99,7 @@
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp"
    ],
-   "html_sha256": "159ac09644d316b63ee773b5b19dcb12e7f931b03c45ea19ab942d6a9f0eeda9",
+   "html_sha256": "089881406c9600def0c72f00ce2510fa4d08498673b31bafe9aaa9343135f27c",
    "bytes": 9688408
   },
   {
@@ -133,7 +133,7 @@
     "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
     "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp"
    ],
-   "html_sha256": "895dfe32a56e341dcfe674e6c488c04a6c5db645f51da11368fcda7a7db707a1",
+   "html_sha256": "2cbda2c38f8719fb77b40f6c55b1d4ed951ff0e8da05351033039a65eef91b67",
    "bytes": 6113052
   },
   {
@@ -187,7 +187,7 @@
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp"
    ],
-   "html_sha256": "c5b9bfa68008e62b50146e0fb67ccb8fd2e1db0e6064ca03a039e28a93f542f6",
+   "html_sha256": "f1c1182d4678bf4dd7534fb5ee7ea8f2a57d27dd5755d4ba4e0647989c9849a5",
    "bytes": 18464118
   },
   {
@@ -221,7 +221,7 @@
     "/read/one-more-story-before-santa/pages/p23.webp",
     "/read/one-more-story-before-santa/pages/p24.webp"
    ],
-   "html_sha256": "300083f80cdd70af7898817e7d4857f5594fb934e3f36e7e81c078b614b979a7",
+   "html_sha256": "cf3a803d308b7c666a42f9b8bab2e7116423d0e8b9ae218ac94d2bf0b8d2ffd7",
    "bytes": 5652364
   },
   {
@@ -257,7 +257,7 @@
     "/read/the-last-parcel-under-the-tree/pages/p25.webp",
     "/read/the-last-parcel-under-the-tree/pages/p26.webp"
    ],
-   "html_sha256": "1cddbfbb3cb9d30686ed5f43143565fd5d2199c51f6f83d5d57d2a47b76ef307",
+   "html_sha256": "5024615139bf8fc886c900854cf47a62bc43f16ed9ef5d84798fa1dc35a8bc14",
    "bytes": 9806592
   },
   {
@@ -1303,7 +1303,7 @@
     "/read/twenty-four-letters-before-christmas/pages/p23.webp",
     "/read/twenty-four-letters-before-christmas/pages/p24.webp"
    ],
-   "html_sha256": "74249bdcc3ba6c3e3f7fe213376435d4fe1065f2f17631e62186c7a91efea5e2",
+   "html_sha256": "1f085f424ee513776f4058a6d7f69d99e25e25fe9867f294050e37d7d173a604",
    "bytes": 7487070
   },
   {
@@ -1337,8 +1337,82 @@
     "/read/the-angel-on-the-small-tree/pages/p23.webp",
     "/read/the-angel-on-the-small-tree/pages/p24.webp"
    ],
-   "html_sha256": "906462d3c88d8b555c293e04cda2130758287377cd8a7b238273e484275f9770",
+   "html_sha256": "f7010eeeaab409e0b3c7ebc2215d2fab2b776c292a27c58cb90f30fb351c9378",
    "bytes": 9479402
+  },
+  {
+   "slug": "biscuit-bouncer-and-the-great-sledge-race",
+   "title": "Biscuit-Bouncer and the Great Sledge Race",
+   "urls": [
+    "/read/biscuit-bouncer-and-the-great-sledge-race/",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/cover.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p01.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p02.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p03.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p04.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p05.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p06.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p07.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p08.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p09.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p10.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p11.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p12.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p13.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p14.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p15.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p16.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p17.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p18.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p19.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p20.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p21.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p22.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p23.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p24.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p25.webp",
+    "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p26.webp"
+   ],
+   "html_sha256": "ebf3fa5f94a87823a678f911922b2c748c4e9c803f8dbf919a96fd828d719639",
+   "bytes": 10463982
+  },
+  {
+   "slug": "the-star-that-fell-on-the-longest-night",
+   "title": "The Star That Fell on the Longest Night",
+   "urls": [
+    "/read/the-star-that-fell-on-the-longest-night/",
+    "/read/the-star-that-fell-on-the-longest-night/pages/cover.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p01.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p02.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p03.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p04.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p05.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p06.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p07.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p08.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p09.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p10.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p11.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p12.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p13.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p14.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p15.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p16.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p17.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p18.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p19.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p20.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p21.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p22.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p23.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p24.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p25.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p26.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p27.webp",
+    "/read/the-star-that-fell-on-the-longest-night/pages/p28.webp"
+   ],
+   "html_sha256": "a9c598b563a29f5c2eb82412a20bcbd1a496157d1b80a09ca37cddfa48de9877",
+   "bytes": 7084178
   },
   {
    "slug": "bark-b-q-and-the-long-christmas-table",
@@ -1379,7 +1453,7 @@
     "/read/bark-b-q-and-the-long-christmas-table/pages/p31.webp",
     "/read/bark-b-q-and-the-long-christmas-table/pages/p32.webp"
    ],
-   "html_sha256": "5085831782ee60499566c64925be998a15abed1db86136fc2884ed963567c8ca",
+   "html_sha256": "1a8af7d927e70fa7e9bd98a947f4e0c7ea242810766448e31448fb3724cc86f9",
    "bytes": 11426006
   }
  ],
@@ -2137,6 +2211,64 @@
   "/read/the-angel-on-the-small-tree/pages/p22.webp",
   "/read/the-angel-on-the-small-tree/pages/p23.webp",
   "/read/the-angel-on-the-small-tree/pages/p24.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/cover.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p01.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p02.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p03.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p04.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p05.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p06.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p07.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p08.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p09.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p10.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p11.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p12.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p13.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p14.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p15.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p16.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p17.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p18.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p19.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p20.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p21.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p22.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p23.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p24.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p25.webp",
+  "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p26.webp",
+  "/read/the-star-that-fell-on-the-longest-night/",
+  "/read/the-star-that-fell-on-the-longest-night/pages/cover.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p01.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p02.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p03.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p04.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p05.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p06.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p07.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p08.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p09.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p10.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p11.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p12.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p13.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p14.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p15.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p16.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p17.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p18.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p19.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p20.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p21.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p22.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p23.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p24.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p25.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p26.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p27.webp",
+  "/read/the-star-that-fell-on-the-longest-night/pages/p28.webp",
   "/read/bark-b-q-and-the-long-christmas-table/",
   "/read/bark-b-q-and-the-long-christmas-table/pages/cover.webp",
   "/read/bark-b-q-and-the-long-christmas-table/pages/p01.webp",
