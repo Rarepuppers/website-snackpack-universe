@@ -1,5 +1,5 @@
 {
- "version": "e472d6d46e",
+ "version": "b900d24a8c",
  "files": [
   "art/advent_bg.webp",
   "art/customer_santa.webp",
@@ -199,6 +199,7 @@
   "models/trucks/truck_buggy.glb",
   "models/trucks/truck_hauler.glb",
   "models/trucks/truck_monster.glb",
+  "models/trucks/truck_pickup_lod1.glb",
   "models/trucks/truck_pickup.glb",
   "models/trucks/truck_sleigh.glb",
   "models/trucks/truck_tuktuk.glb",
