@@ -298,6 +298,23 @@ test('Bark-B-Q recommends the next Summer Christmas story only after Foxy-Lox is
 const parcel = 'dough-mino-and-the-parcel-mix-up';
 const villageBook = 'the-great-christmas-un-robbery';
 
+for (const [slug, title, matchingAges, excludedAge] of [
+  [parcel, 'Dough Mino and the Parcel Mix-Up', ['7-8', '9-10', '11-12'], '5-6'],
+  [villageBook, 'The Great Christmas Un-Robbery', ['9-10', '11-12'], '7-8'],
+]) {
+ if (!Object.hasOwn(webOriginals, slug)) continue;
+ test(`${title} is discoverable in its older-reader age bands`, async ({page}) => {
+   await page.goto('/read/?q='+encodeURIComponent(title));
+   const card = page.locator(`.read-library-card[href="./${slug}/"]`);
+   for (const age of matchingAges) {
+     await page.locator(`[data-filter-age="${age}"]`).click();
+     await expect(card).toBeVisible();
+   }
+   await page.locator(`[data-filter-age="${excludedAge}"]`).click();
+   await expect(card).toBeHidden();
+ });
+}
+
 if (Object.hasOwn(webOriginals, parcel)) {
  test('Dough Mino’s end card and Christmas share the Parcel Puzzle PDF', async ({page}) => {
    await page.goto(`/read/${parcel}/`);
