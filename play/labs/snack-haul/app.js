@@ -563,6 +563,8 @@ function drainEvents(g) {
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
     else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : ev.cargo==="toolbox" ? "Toolbox spilled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
+    else if (ev.type === "tailgateLoose") { toast("Tailgate loose. Ease over bumps.", 1600); buzz("warning"); }
+    else if (ev.type === "tailgateLost") { thud(0.7); toast("Tailgate lost! Watch the load.", 1700); buzz("warning"); }
     else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
     else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
     else if (ev.type === "snack") { play("pickup_load", 0.7) || beep(880, 0.12, "triangle", 0.06); toast((ev.stop ? "Truck Stop special: " : "") + SNACKS[ev.kind].name + ". Tap it to eat", 1300); }
@@ -591,9 +593,9 @@ function makeGhost(delivery) {
   const rival = SH.rivalFor(delivery.id), saved = save.ghost[delivery.id];
   try {
     if (rival && save.stars[delivery.id] && !save.rival[delivery.id]) {
-      return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup" }) };
+      return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup", legacyCargoPhysics: true }) };
     }
-    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, lasso: !!saved.lasso, upgrades: saved.upgrades, truck: saved.truck }), rec: saved.rec, i: 0, k: 0 };
+    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, lasso: !!saved.lasso, upgrades: saved.upgrades, truck: saved.truck, legacyCargoPhysics: !saved.cargoPhysics }), rec: saved.rec, i: 0, k: 0 };
   } catch (e) { /* the run goes on without a ghost */ }
   return null;
 }
@@ -845,7 +847,7 @@ function finishDelivery(g) {
           }
         });
       } else if (d.cup) cupLine = "Cup legs count with two stars and a clean stop.";
-      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, lasso: !!g.lassoLeft || !!g.lassoUsed, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
+      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, cargoPhysics: g.cargoPhysics, lasso: !!g.lassoLeft || !!g.lassoUsed, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
     }
     // Bakery Hills 4 is the first route where a bare truck loses its load, so the farm hands over spare straps first.
     if (d.id === "bakery-3" && !save.gifts.straps) gift = giveStraps();
