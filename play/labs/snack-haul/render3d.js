@@ -227,6 +227,7 @@ function buildTruck(spec, rail, quality, look = {}) {
   // look.paint is an earned paint job: [body colour, trim colour].
   const [paint, trim] = look.paint || PAINT[spec.id];
   const body = new Kit(), metal = new Kit(), dark = new Kit(), glass = new Kit(), rails = new Kit(), brakes = [];
+  const rearRail = new Kit();
   const half = width / 2, bedTop = D.bedHeight;
 
   // Chassis and bed floor
@@ -248,8 +249,9 @@ function buildTruck(spec, rail, quality, look = {}) {
     const bars = rail > 0.5 ? 3 : 2;
     for (let b = 1; b <= bars; b++) rails.add(box(right - left, 0.045, 0.05), trim, m((left + right) / 2, bedTop + (rail * b) / bars, z));
   });
-  for (let i = 0; i < 4; i++) rails.add(box(0.05, rail + 0.04, 0.09), trim, m(-D.bedHalf + 0.03, bedTop + rail / 2, -half + 0.2 + i * ((width - 0.4) / 3)));
-  rails.add(box(0.05, 0.05, width - 0.1), trim, m(-D.bedHalf + 0.03, bedTop + rail, 0));
+  const gateX = -D.bedHalf + 0.03;
+  for (let i = 0; i < 4; i++) rearRail.add(box(0.05, rail + 0.04, 0.09), trim, m(0, rail / 2, -half + 0.2 + i * ((width - 0.4) / 3)));
+  rearRail.add(box(0.05, 0.05, width - 0.1), trim, m(0, rail, 0));
 
   // Cab
   const cx = D.cabX, back = cx - D.cabHalfX, nose = D.bedHalf + (spec.id === "hauler" ? 0.2 : 0.32);
@@ -379,6 +381,10 @@ function buildTruck(spec, rail, quality, look = {}) {
   };
   const metalMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.38, metalness: 0.7 });
   add(rails, metalMat);
+  const tailgate = add(rearRail, metalMat);
+  tailgate.position.set(gateX, bedTop, 0);
+  const authoredGate = authored?.getObjectByName("tailgate");
+  if (authoredGate) tailgate.attach(authoredGate);
   if (!authored) {
     add(body, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.34, metalness: 0.28 }));
     add(metal, metalMat);
@@ -412,7 +418,18 @@ function buildTruck(spec, rail, quality, look = {}) {
     });
     return g;
   });
-  return { root, wheels, brakes, driver, team, gait: 0, deer: team ? ["deer_a","deer_b"].map((id)=>team.getObjectByName(id)).filter(Boolean) : [] };
+  return { root, wheels, brakes, driver, team, tailgate, gait: 0, deer: team ? ["deer_a","deer_b"].map((id)=>team.getObjectByName(id)).filter(Boolean) : [] };
+}
+
+function syncTailgate(scene, model, game, z, reduceMotion) {
+  const fall = game.tailgateFall;
+  if (!fall) return;
+  const gate = model.tailgate, t = Math.max(0, game.time - fall.at);
+  gate.visible = !reduceMotion && t < 0.9;
+  if (!gate.visible) return;
+  if (gate.parent !== scene) scene.add(gate);
+  gate.position.set(fall.x + (fall.vx - 2.4) * t, fall.y + fall.vy * t - 5 * t * t, z);
+  gate.rotation.z = fall.angle + 4.6 * t;
 }
 
 function wheelModel(r, chunky) {
@@ -1442,12 +1459,14 @@ export class World3D {
       const gp = this.pose(gg.truck);
       gm.root.position.set(gp.x, gp.y, GHOST_Z);
       gm.root.rotation.z = gp.a;
+      syncTailgate(this.scene, gm, gg, GHOST_Z, this.reduceMotion);
       if (gm.tag) gm.tag.position.set(gp.x, gp.y + 2.5, GHOST_Z);
       gg.wheels.forEach((w, i) => { const wp = this.pose(w); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = wp.a; });
     }
     const model = this.truckModel, truck = game.truck, p = this.pose(truck);
     model.root.position.set(p.x, p.y, 0);
     model.root.rotation.z = p.a;
+    syncTailgate(this.scene, model, game, 0, this.reduceMotion);
     paceTeam(model,game.speed(),dt,this.reduceMotion);
     game.wheels.forEach((w, i) => {
       const wp = this.pose(w), g = model.wheels[i];

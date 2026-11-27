@@ -47,6 +47,14 @@
     slick: 0.6,                    // share of normal grip on ice and wet cobbles
     fordDrag: 2,
     bridgeBounce: 0.45,
+    cargoBedBounce: 0.09,
+    cargoBedBounceFrom: 5.5,       // m/s closing speed into the deck
+    tailgateRoadHit: 8,            // m/s normal closing speed on a landing or chassis strike
+    tailgateCargoHit: 5,           // m/s into the rear restraint
+    tailgateWearGain: 0.17,
+    tailgateWearPerHit: 0.38,      // a single strike cannot tear off a fresh gate
+    tailgateHitCooldown: 0.24,    // one landing can touch several fixtures
+    tailgateWarning: 0.56,
     popLiftFrom: 6.5,              // popcorn starts to lift above this speed
     popLift: 0.35,
     cakeTilt: 0.6,                 // radians off upright before a cake is ruined
@@ -626,12 +634,16 @@
     var truck = world.createBody({ type: "dynamic", position: { x: spawnX, y: spawnY } });
     truck.setUserData({ kind: "truck" });
     function part(shape, density) {
-      truck.createFixture(Object.assign({ shape: shape, density: density * spec.weight, friction: 0.5 }, GROUP));
+      return truck.createFixture(Object.assign({ shape: shape, density: density * spec.weight, friction: 0.5 }, GROUP));
     }
-    part(new planck.Box(D.bedHalf, D.bedHeight, { x: 0, y: 0 }, 0), 2.2);
+    var bed = part(new planck.Box(D.bedHalf, D.bedHeight, { x: 0, y: 0 }, 0), 2.2);
     part(new planck.Box(D.cabHalfX, D.cabHalfY, { x: D.cabX, y: D.cabY }, 0), 0.8);
     part(new planck.Box(D.bedHalf * 0.7, 0.1, { x: 0, y: -0.28 }, 0), BALANCE.ballast);
-    part(new planck.Box(0.05, rail / 2, { x: -D.bedHalf + 0.03, y: D.bedHeight + rail / 2 }, 0), 0.4);
+    var tailgateX = -D.bedHalf + 0.03;
+    var tailgate = part(new planck.Box(0.05, rail / 2, { x: tailgateX, y: D.bedHeight + rail / 2 }, 0), 0.4);
+    var cargoPhysics = opts.legacyCargoPhysics ? 0 : 1;
+    var breakableGate = cargoPhysics && !spec.runners && !spec.downhillOnly && !d.winter;
+    var gateWear = 0, gateHit = 0, nextGateHit = 0;
 
     var wheelGrip = 1 + 0.25 * up.tyres + (spec.id === "buggy" ? 0.3 : 0);
     function wheel(x) {
@@ -677,6 +689,7 @@
     var g = {
       delivery: d, region: region, regionIndex: d.region, terrain: terrain, world: world, truck: truck, wheels: wheels,
       cargo: cargo, coins: pick.coins, cans: pick.cans, rocks: pick.rocks, rail: rail, upgrades: up, spec: spec, dim: D,
+      cargoPhysics: cargoPhysics, tailgateFall: null,
       status: "driving", reason: null, time: 0, coinsTaken: 0, par: parTime(d), medals: medalTimes(d),
       fuel: BALANCE.tankSeconds + 9 * up.tank, maxFuel: BALANCE.tankSeconds + 9 * up.tank,
       dropoffs: deliveries, homes: 0, given: {},
@@ -698,6 +711,58 @@
       if (b && b.kind === kind) return { self: b, other: a, body: contact.getFixtureB().getBody() };
       return null;
     }
+    function closingSpeed(contact) {
+      var manifold = contact.getWorldManifold(null);
+      var a = contact.getFixtureA().getBody(), b = contact.getFixtureB().getBody();
+      var n = manifold.normal, fastest = 0;
+      for (var i = 0; i < manifold.pointCount; i++) {
+        var av = a.getLinearVelocityFromWorldPoint(manifold.points[i]);
+        var bv = b.getLinearVelocityFromWorldPoint(manifold.points[i]);
+        fastest = Math.max(fastest, (av.x - bv.x) * n.x + (av.y - bv.y) * n.y);
+      }
+      return fastest;
+    }
+    function checkTailgateContact(contact) {
+      if (!breakableGate) return;
+      var a = contact.getFixtureA(), b = contact.getFixtureB();
+      var hit = tagged(contact, "cargo");
+      if (hit && (a === bed || b === bed) && hit.self.type !== "jelly" && hit.self.type !== "popcorn") {
+        // Spring back a little on a hard deck strike; preserve softer contacts,
+        // cargo-on-cargo behaviour and jelly's own springiness.
+        var hardLanding = g.settle <= 0 && closingSpeed(contact) >= BALANCE.cargoBedBounceFrom;
+        contact.setRestitution(hardLanding ? BALANCE.cargoBedBounce : 0.04);
+      }
+      if (g.settle > 0 || g.tailgateFall || g.time < nextGateHit) return;
+      if (hit && !hit.self.lost && !hit.self.broken && !hit.self.delivered &&
+          (a === tailgate || b === tailgate)) {
+        gateHit = Math.max(gateHit, closingSpeed(contact) - BALANCE.tailgateCargoHit);
+      } else {
+        var groundHit = tagged(contact, "ground");
+        if (groundHit && groundHit.other &&
+            (groundHit.other.kind === "wheel" || groundHit.other.kind === "truck")) {
+          gateHit = Math.max(gateHit, closingSpeed(contact) - BALANCE.tailgateRoadHit);
+        }
+      }
+    }
+    function applyGateWear() {
+      if (!gateHit) return;
+      var prior = gateWear;
+      gateWear += Math.min(BALANCE.tailgateWearPerHit, gateHit * BALANCE.tailgateWearGain);
+      gateHit = 0;
+      nextGateHit = g.time + BALANCE.tailgateHitCooldown;
+      if (gateWear < BALANCE.tailgateWarning) return;
+      var at = truck.getWorldPoint({ x: tailgateX, y: D.bedHeight });
+      if (gateWear >= 1) {
+        var v = truck.getLinearVelocityFromWorldPoint(at);
+        // Contact callbacks run while the world is locked. Disable collisions
+        // after the step, keeping the chassis' tuned mass and centre of gravity.
+        tailgate.setSensor(true);
+        g.tailgateFall = { x: at.x, y: at.y, angle: truck.getAngle(), vx: v.x, vy: v.y, at: g.time };
+        g.events.push({ type: "tailgateLost", x: at.x, y: at.y });
+      } else if (prior < BALANCE.tailgateWarning) {
+        g.events.push({ type: "tailgateLoose", x: at.x, y: at.y });
+      }
+    }
     world.on("begin-contact", function (c) {
       var hit = tagged(c, "cargo");
       if (hit && hit.other && hit.other.kind === "ground" && !hit.self.lost && !hit.self.broken) {
@@ -717,6 +782,7 @@
     // Ice, wet cobbles and plank bridges change how a tyre meets the road.
     var mixedGrip = Math.sqrt(wheelGrip * roadGrip);
     world.on("pre-solve", function (c) {
+      checkTailgateContact(c);
       var w = tagged(c, "wheel");
       if (!w || !w.other || w.other.kind !== "ground") return;
       var f = featureAt(terrain, w.body.getPosition().x);
@@ -880,6 +946,7 @@
         }
       });
       world.step(STEP);
+      applyGateWear();
 
       // How much the rear tyre is spinning against the road: drives the dust.
       var rearSurface = -wheels[0].getAngularVelocity() * D.wheelR;
