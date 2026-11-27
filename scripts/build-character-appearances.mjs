@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { isPublicBookEntry, publishedOriginals } from "./lib/character-release.mjs";
 
 const root = new URL("../", import.meta.url);
 const at = file => new URL(file, root);
@@ -11,6 +12,7 @@ const { characters } = source
   ? JSON.parse(fs.readFileSync(path.join(source, "shared-assets/text/characters/catalog.json")))
   : json("data/character-board.json");
 const publicCharacters = characters.filter(character => (character.status ?? "public") === "public");
+const releases = publishedOriginals(root);
 const roles = ["lead", "support", "cameo"];
 const shelfTitles = new Map(json("data/read-collections.json").flatMap(collection =>
   collection.sources.map(book => [book.slug, book.title])
@@ -31,7 +33,7 @@ for (const entry of fs.readdirSync(at("read/"), { withFileTypes: true })) {
 }
 const result = Object.fromEntries(publicCharacters.flatMap(character => {
   const appearances = (character.appearances ?? []).flatMap(appearance => {
-    if (appearance.kind !== "book" || appearance.draft) return [];
+    if (appearance.kind !== "book" || !isPublicBookEntry(appearance, appearance.id, releases)) return [];
     const book = bookPages.get(appearance.id);
     assert(book, `Published appearance has no book page: ${character.id} in ${appearance.id}`);
     assert(roles.includes(appearance.role), `Invalid role for ${character.id} in ${appearance.id}`);

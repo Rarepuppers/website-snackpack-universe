@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { replaceMarkerBlock } from "./lib/marker-block.mjs";
+import { isPublicBookEntry, publishedOriginals } from "./lib/character-release.mjs";
 import { withBreadcrumbs } from "./lib/breadcrumbs.mjs";
 
 const site = new URL("../", import.meta.url);
@@ -76,6 +77,7 @@ if (from) {
   }
 }
 
+const releases = publishedOriginals(site);
 const publicIds = new Set(publicRecords.map(record => record.id));
 const characters = publicRecords.map(record => ({
   ...pick(record, fields),
@@ -86,12 +88,12 @@ const characters = publicRecords.map(record => ({
   ...(record.apps || record.webApps ? {webApps: (record.apps?.map(binding => appRoutes[binding.app] ?? binding.app) ?? record.webApps)
     .filter(id => Object.hasOwn(releasedApps, id) && fs.existsSync(local(`apps/${id}/index.html`)))} : {}),
   ...(record.appearances && {appearances: record.appearances
-    .filter(appearance => appearance.kind === "book" && !appearance.draft)
+    .filter(appearance => appearance.kind === "book" && isPublicBookEntry(appearance, appearance.id, releases))
     .map(appearance => pick(appearance, ["kind", "id", "role"]))}),
 }));
 const animals = data.animals.map(animal => pick(animal, ["id", "name", "fact", "sourceName", "source"]));
 const seasonal = new Map((data.seasonalRounds ?? [])
-  .filter(round => !round.draft).map(round => [round.answer, round]));
+  .filter(round => isPublicBookEntry(round, round.book, releases)).map(round => [round.answer, round]));
 const rounds = data.rounds.map(round => seasonal.get(round.answer) ?? round);
 assert(rounds.length > 0, "Publish at least one complete clue round");
 assert.equal(new Set(rounds.map(round => round.answer)).size, rounds.length);
