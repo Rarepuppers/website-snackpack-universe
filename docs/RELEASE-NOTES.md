@@ -16,6 +16,23 @@ Plan: [`READ-PLAN-2026-10.md`](../READ-PLAN-2026-10.md) "Printable credit footer
   books and Captain Beakon's Bell are unchanged and listed as remaining work.
   `docs/ART-BRIEF-WEB-BOOKS-2026-11-06.md` archived (all delivered).
 
+## 2026-11-27 - Thirteen quick guide and reusable classroom dailies
+
+- [Thirteen](../play/thirteen/) has a collapsible "How to play in 60 seconds"
+  box above the board. Thirteen and 2048 keep their titles after the early
+  matched-window Search Console read.
+- [Teacher links](../for-teachers/) can be copied once and used for the new
+  Snack Typer and Fact Sprint daily each day. GoatCounter reports starts
+  and daily finishes from those links using a fixed classroom label.
+- Snack Typer counts keyboard and IME input in its typing box as a start.
+  Practice rounds launched from a daily link stay out of the daily count.
+- The early GoatCounter read supports keeping Hearts featured. The
+  26–27 November data had zero Honduras book starts and zero classroom-game
+  daily finishes, so the Spanish option and weekly pack stay off the release.
+- The arcade, Daily page and related-game cards use painted Snack Typer and
+  Fact Sprint tiles. Both games plus Rummy 500, Block Puzzle, Brick Breaker,
+  Chess and Killer Sudoku have new share cards.
+
 ## 2026-11-26 - Classroom arcade: event counts, Snack Typer and Fact Sprint
 
 Plan of record: [`ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md`](../ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md).

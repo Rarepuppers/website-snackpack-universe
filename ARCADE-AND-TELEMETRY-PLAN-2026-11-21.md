@@ -1,6 +1,6 @@
 # Arcade + classroom plan (plan of record)
 
-Started 21 November 2026, rewritten 26 November 2026. This is the live plan for
+Started 21 November 2026, rewritten 26 November 2026, updated 27 November 2026. This is the live plan for
 `/play/`, the classroom audience and the site's event counts. It replaces
 `ARCADE-NEXT-PLAN-2026-10-20.md`, `ARCADE-AUDIT-2026-10-17.md` and
 `ARCADE-QUALITY-PLAN-2026-09.md` (all now in `docs/archive/`); their open items are carried
@@ -61,7 +61,7 @@ clicks and book events only exist from 26 Nov.
 | 4 | Tip popup waits until after school: never Mon–Fri 08:00–15:00 local. `/read/` never had one. | **Live** 26 Nov | 1401b2e3 |
 | 5 | **Snack Typer** `/play/typing/`: six lessons, sentences from 10 books with links back, finger-coloured keyboard, accuracy stars, daily, resume; funnel Sentences & Spelling | **Live** 26 Nov | 5d5fd62f |
 | 6 | **Fact Sprint** `/play/math-facts/`: six lessons, Practice (missed facts come back) or 60-second Sprint, number pad, counting dots, a number story per lesson, daily, resume; funnel Basic Math | **Live** 26 Nov | 95efa536, 9b24bbe3 |
-| 7 | Spanish option for buttons and instructions on `/read/` and the classroom games | **Waiting** on R6 data | — |
+| 7 | Spanish option for buttons and instructions on `/read/` and the classroom games | **Keep English** after the early R6 read (0 HN starts) | — |
 
 ---
 
@@ -92,6 +92,12 @@ ChromeHeadless. This describes site traffic before the rollout. Use
 GoatCounter to measure reading and play. The full Search Console title
 window is pending (R7), and the R5 tile PNGs have yet to be delivered.
 
+**27 Nov decisions brought forward at Mark’s request.** The available data
+supports keeping both titles and Hearts in the featured row. The Thirteen
+quick guide and reusable teacher daily links are ready to ship. The
+27 Nov decisions made use of the available data windows. Keep the longer
+windows on the calendar for measurement.
+
 ### R1. Re-pick the featured row — **done early, 26 Nov**
 - **Evidence:** Water Sort (10 starts, 6 wins) and Hearts (9, 9) are finished
   by adults; Snacky Worm and Pinball are in the row for the class.
@@ -105,7 +111,11 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
   Honduras, against Pinball's 7 in total, so the rule swaps Hearts in for
   Pinball. Water Sort (11 starts, ~8 outside Honduras) also cleared the bar;
   Hearts wins on the bigger margin. Pinball stays in the grid and in the
-  class's reach. Re-check on ~10 Dec with hub-click data.
+  class’s reach.
+- **27 Nov re-check:** Over 6–27 Nov, Hearts had 10 non-Honduras starts,
+  Water Sort had 8 and Pinball had 7 starts worldwide. Keep Hearts featured.
+  The new-event window had no hub-position events, so keep the current row
+  order and compare `together` with `1-5` when both have counts.
 
 ### R2. Put Snack Typer and Fact Sprint on the Daily page — **done 26 Nov**
 - **Evidence:** both have a daily; `/play/daily/` is where the daily habit
@@ -126,6 +136,11 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
 - **Measure:** starts, daily, time bands and HN share at 14 school days;
   `/go/arcade/math-facts/basicmath/` views in Cloudflare; Search Console
   "math facts practice" style queries after 28 days.
+- **27 Nov early read:** Fact Sprint had zero starts or daily finishes.
+  Snack Typer had one start outside Honduras, one worldwide `under-1m`
+  time event and zero daily finishes. Keep both activities available through
+  their homepage, Daily and classroom links. The finalized search window
+  ended 24 Nov, before either activity launched.
 
 ### R4. Stop adding soccer reflex games
 - **Evidence:** 10 soccer games, most with 1–2 starts in 19 days; no search
@@ -133,7 +148,7 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
 - **Work:** none to build. Do not port more. Keep them working; no new art.
 - **Revisit:** only if a World Cup or a search query appears for one.
 
-### R5. Codex art for the two new games and five interim social cards — **prompt ready**
+### R5. Codex art for the two new games and five interim social cards — **delivered 27 Nov**
 - **Evidence:** Snack Typer and Fact Sprint ship with interim generated art;
   Pyramid and TriPeaks still use placeholder social cards; brief items 12–16
   are interim cards.
@@ -146,7 +161,13 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
 - **Prompt:** `docs/CODEX-PROMPT-ARCADE-ART-2026-11-26.md` (paste as is).
   The delivery checklist now matches the file list (11 PNGs and 11 WebPs).
   The two tile PNGs are absent from main as of the 26 Nov verification.
-  Switch the references and regenerate related games and WebP after delivery.
+- **27 Nov delivery:** Snack Typer and Fact Sprint have painted transparent
+  tiles at 144×144 and 288×288 plus 1200×630 share cards. Rummy 500, Block
+  Puzzle, Brick Breaker, Chess and Killer Sudoku have matching painted share
+  cards. All 11 PNGs have quality-88 WebP siblings. The hub and Daily page
+  use the new tiles, and regenerated related-game cards use the same
+  images. Originals are in the companion workspace under
+  `shared-assets/game-ui/website-arcade/2026-11-27/`.
 - **Corrections found writing it:** (1) Pyramid and TriPeaks are **not**
   placeholders: Codex delivered them on 18 Oct, but their pages still shared
   the generic studio card. Both pages now use their own cards (26 Nov).
@@ -172,16 +193,27 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
   counts alongside the worldwide counts. Hub positions remain worldwide,
   including `together`. Checked against the live read-only API and a
   synthetic report with different start and finish country splits.
+- **27 Nov early read and decisions (26–27 Nov, GoatCounter site dates):**
+  15 book starts and 5 finishes worldwide (33%), all outside Honduras.
+  Honduras recorded 0 starts and 0 finishes. Its finish rate is undefined,
+  so keep English as the current option. The only game time event was
+  Snack Typer’s outside-Honduras `under-1m`, so there is no featured-game
+  first-screen change. There were zero clicks in all positions, including
+  `together` and `1-5`. Keep the friend row in place. Neither classroom game
+  recorded a daily finish. Cloudflare counted 134 HN visits and 829 other
+  visits for 22–26 Nov UTC after filtering ChromeHeadless. Use GoatCounter
+  for the event-based decisions above. The first GoatCounter request
+  returned HTTP 404 and succeeded on retry with the same date range.
 - **Done when:** findings and decisions are written into this file.
 
-### R7. Thirteen and 2048 title read — **read early, 26 Nov: keep both**
+### R7. Thirteen and 2048 title read — **early decision 27 Nov: keep both and ship the quick guide**
 - **Evidence:** both retitled 6 Nov. Baselines: `free thirteen` 265 impressions
   / 0 clicks and `play thirteen` 219 / 0; 2048 285 impressions at position 17.4
   over 90 days.
 - **Work:** Search Console 28 days after the change vs the 28 days before.
   Revert a title only if CTR fell at the same position.
 - **Full comparison:** 9 Oct–5 Nov vs 7 Nov–4 Dec (28 days each).
-  Wait until Search Console finalizes 4 Dec. Use the URL-prefix property
+  Use this follow-up window once Search Console finalizes 4 Dec, on the URL-prefix property
   `https://www.snackpackuniverse.com/`.
 - **Then:** if Thirteen holds, its next lever is position: a "How to play in
   60 seconds" box above the game and links to Big Two and Rummy 500 under it.
@@ -205,7 +237,19 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
   2048 still has too few clicks to judge. The guide row is a baseline
   from before its 26 Nov retitle. The same search read showed no new
   Pusoy Dos, typing practice or math facts practice query. Keep both game
-  titles in place pending the full read.
+  titles in place.
+- **27 Nov decision:** Data was still finalized through 24 Nov. Four of
+  the five tracked queries stayed at zero clicks after retitling. The
+  exception was `card game 13 online` with 1 click / 130 impressions at
+  position 3.32 (before: 0 / 112 at 2.84). The other four, before → after:
+  `free thirteen` 157 at 4.67 → 160 at 3.29,
+  `online thirteen` 62 at 4.34 → 82 at 4.32,
+  `thirteen game online` 73 at 3.62 → 47 at 3.40,
+  `play thirteen online` 44 at 3.77 → 21 at 4.24. The five totalled
+  0 / 448 before and 1 / 440 after. Keep the titles and put a collapsible
+  "How to play in 60 seconds" box above Thirteen’s board. The existing
+  related-game links below the game already include Big Two and Rummy 500.
+  Keep the full 28 days as a follow-up measurement.
 - **Per-query view for the 4 Dec read (Search Console 27 Oct–23 Nov, 28
   days, 139 clicks / 6,493 impressions / position 6.3).** The clicks come from
   `13 card game online` (20 clicks, 7.3% CTR, pos 4.2), `tien len online`
@@ -265,7 +309,7 @@ window is pending (R7), and the R5 tile PNGs have yet to be delivered.
   Copy button that copies the full URL. `tests/visual/teachers-links.spec.mjs`
   checks the dates, the copy and that every link resolves.
 
-### R10. Spanish option (step 7) only if R6 says so
+### R10. Spanish option (step 7) — **keep English after the early read**
 - **Work:** a Spanish toggle for buttons, instructions and hints (books stay
   English, it looks like an English class). Start with the friend row games,
   Snack Typer, Fact Sprint and the `/read/` reader controls.
@@ -351,7 +395,7 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
 - **Done:** the hero line reads "Read a story → Play a game → Practise typing →
   Practise maths →"; checked in `site-events.spec.mjs`.
 
-### R16. Watch the daily links from teachers
+### R16. Watch the daily links from teachers — **reusable links and source counts added 27 Nov**
 - **Evidence:** the class-links box makes daily links easy to share.
 - **Work:** At the ~16 Dec read, compare Honduras daily completions with
   Honduras starts for Snack Typer and Fact Sprint, alongside the worldwide
@@ -362,6 +406,18 @@ result. Nothing to build. Lesson: re-check a carried-over gap before planning it
   days of dailies) to `/for-teachers/`. If attribution matters to that
   decision, consider counting visits from a fixed, non-identifying
   classroom-link label.
+- **27 Nov decision:** The early read yielded zero daily finishes across
+  both games. Keep the two daily links and skip the weekly pack at this
+  stage. The original teacher URLs opened daily mode only on the exact UTC
+  date that a teacher copied them. Reusable classroom links now open the
+  current UTC daily each day. They count plays and current daily finishes
+  with a fixed classroom label and the same privacy controls as the
+  existing counts. The label measures traffic from a shared link.
+- **Bugs fixed while wiring the links:** Typing straight into the focused
+  Snack Typer field by keyboard or IME could miss a game start. The event script
+  now counts the first input from that field. Both classroom games now pass
+  an explicit non-daily value after switching to a practice lesson from a
+  daily link, so practice never registers as a daily finish. Opening the Thirteen guide by keyboard is excluded from game starts.
 
 ### R17. Say "no ads" where schools search for it
 - **Evidence:** R7's 2048 queries: "2048 no ads", "2048 without ads"
@@ -413,10 +469,10 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 
 | Date | What | Tool |
 | --- | --- | --- |
-| Once 4 Dec is finalized | Thirteen and 2048 titles (R7), incl. the five top-4 zero-click queries and the rules guide | Search Console |
-| ~10 Dec | First read of the new events (R6), featured row (R1) | `scripts/read-site-events.mjs` |
+| Once 4 Dec is finalized | Full 28-day follow-up for the two titles and the five tracked queries (R7) | Search Console |
+| ~10 Dec | Follow up on book finishes, game time, hub positions and the featured row (R6/R1) | `scripts/read-site-events.mjs` |
 | ~11 Dec | Sokoban + Chess Puzzles day 28 (separate plan) | Search Console |
-| ~16 Dec | Snack Typer and Fact Sprint at 14 school days, including class daily uptake (R16) | GoatCounter |
+| ~16 Dec | 14-school-day classroom practice follow-up, including the new teacher-link counts (R3/R16) | GoatCounter |
 | ~24 Dec | Snack Typer at 28 days in search | Search Console |
 
 ---

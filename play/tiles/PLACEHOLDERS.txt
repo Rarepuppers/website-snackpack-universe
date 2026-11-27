@@ -23,3 +23,5 @@ CODEX-ASSET-BRIEF-2026-10-17.md.
 
 Added 2026-10-22: chess.png and killer-sudoku.png (+ @2x) are Vol 3's own painted icons, not placeholders.
 Their social cards are interim composites; final art is items 15 and 16 of CODEX-ASSET-BRIEF-2026-10-17.md.
+
+Delivered 2026-11-27: typing, math-facts tiles and cards; social cards for rummy-500, block-puzzle, brick-breaker, chess, killer-sudoku (items 12-18).

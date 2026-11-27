@@ -12,6 +12,7 @@
 // page visit and a player can win several games in one, so this is not a win
 // rate; Asteroid Destroyer "wins" are new bests), dailies, friend tables and
 // play-time bands, with Honduras counts for starts, dailies and bands.
+// Teacher-link starts and daily finishes are shown for the classroom games.
 // Books show starts, finishes and finish rate worldwide and in Honduras,
 // plus read-to-me and PDF. Hub clicks are grouped by tile and position.
 
@@ -93,6 +94,8 @@ for (const [slug, g] of Object.entries(games)) {
   const paths = gamePaths[slug];
   if (paths.start) g.where = await honduras(paths.start);
   if (paths.daily) g.dailyWhere = await honduras(paths.daily);
+  if (paths["class-start"]) g.classStartWhere = await honduras(paths["class-start"]);
+  if (paths["class-daily"]) g.classDailyWhere = await honduras(paths["class-daily"]);
   g.bandWhere = {};
   for (const band of BANDS) {
     if (paths["time-" + band]) g.bandWhere[band] = await honduras(paths["time-" + band]);
@@ -117,6 +120,11 @@ for (const [slug, g] of Object.entries(games).sort((a, b) => b[1].start - a[1].s
     String(g.dailyWhere?.hn ?? 0).padStart(10) + "  " +
     BANDS.map((k) => g.bands[k] || 0).join(" / ") + " | " +
     BANDS.map((k) => g.bandWhere[k]?.hn ?? 0).join(" / "));
+}
+for (const slug of ["typing", "math-facts"]) {
+  const g = games[slug];
+  if (!g || (!g["class-start"] && !g["class-daily"])) continue;
+  console.log(`${slug} teacher links: ${g["class-start"] ?? 0} starts, ${g["class-daily"] ?? 0} daily finishes (HN: ${g.classStartWhere?.hn ?? 0} starts, ${g.classDailyWhere?.hn ?? 0} finishes)`);
 }
 if (Object.keys(books).length) {
   console.log("\nBOOK".padEnd(41) + "start finish  fin%  listen  pdf  HN start   HN%  HN finish  HN fin%");

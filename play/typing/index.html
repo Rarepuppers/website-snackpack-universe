@@ -343,7 +343,7 @@
         <h3>Atlas Quest</h3>
       </a>
       <a class="game-tile" href="../math-facts/">
-        <img class="game-icon" src="../tiles/math-facts.svg" alt="" aria-hidden="true" loading="lazy" width="72" height="72">
+        <picture><source srcset="../tiles/math-facts.webp" type="image/webp"><img class="game-icon" src="../tiles/math-facts.png" alt="" aria-hidden="true" loading="lazy" width="72" height="72"></picture>
         <h3>Fact Sprint</h3>
       </a>
       <a class="game-tile" href="../freecell/">
@@ -609,7 +609,7 @@
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Snack Typer",
         headline: (dailyIso ? "Daily" : LESSONS[lesson].label) + ": " + speed + " wpm, " + acc + "% " + "★".repeat(st),
-        dailyDate: dailyIso || undefined
+        dailyDate: dailyIso
       });
     }
     $("ty-again").focus();
@@ -670,7 +670,8 @@
 
   // ?daily=YYYY-MM-DD from the daily hub; only today's date plays as the daily.
   var q = new URLSearchParams(location.search).get("daily");
-  if (q && /^\d{4}-\d{2}-\d{2}$/.test(q) && q === todayIso()) dailyIso = q;
+  var today = todayIso();
+  if (q === "today" || q === today) dailyIso = today;
   start(false);
 
   function variantName() { return dailyIso ? "daily-" + dailyIso : lesson; }
