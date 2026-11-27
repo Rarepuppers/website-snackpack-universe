@@ -142,11 +142,20 @@ $("mute").addEventListener("click", () => { sound.muted = !sound.muted; store.se
 muteLabel();
 
 // ════ Input ═══════════════════════════════════════════════════════
-// Aim follows the finger or mouse; letting go drops. A press that starts on a
-// button never drops a snack.
+// Tap and hold: the snack follows the finger (or mouse) for as long as it is
+// held, and letting go drops it. A quick tap drops where you tapped. A press
+// that starts on a button never drops a snack.
+// Phones would otherwise turn a long press into a context menu (Android) or a
+// callout and text selection (iOS), which cancels the touch mid-hold, so those
+// are switched off and the pointer is captured for the whole press.
 let pressing = false, pendingDrop = false;
 const canvas = $("view");
-canvas.addEventListener("pointerdown", (e) => { if (paused) return; pressing = true; aimX = view.worldX(e.clientX, e.clientY); sound.wake(); });
+canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+canvas.addEventListener("pointerdown", (e) => {
+  if (paused) return;
+  pressing = true; aimX = view.worldX(e.clientX, e.clientY); sound.wake();
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ }
+});
 canvas.addEventListener("pointermove", (e) => { if (paused) return; if (pressing || e.pointerType === "mouse") aimX = view.worldX(e.clientX, e.clientY); });
 canvas.addEventListener("pointerup", (e) => { if (paused || !pressing) return; pressing = false; aimX = view.worldX(e.clientX, e.clientY); pendingDrop = true; });
 canvas.addEventListener("pointercancel", () => { pressing = false; });
