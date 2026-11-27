@@ -1,7 +1,7 @@
 {
  "version": 2,
- "books": 73,
- "bytes": 195612856,
+ "books": 75,
+ "bytes": 220134738,
  "shared": [
   "/read/",
   "/read/offline-manifest.json",
@@ -65,7 +65,7 @@
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p23.webp",
     "/read/nutmeg-and-the-tree-that-wouldnt-come/pages/p24.webp"
    ],
-   "html_sha256": "5bcbb7ce6ce4a3fc268816e918f0212fe3c4c709f567a1db4d2aee92c018d3ee",
+   "html_sha256": "ea3bef2549b30a946266f639d15f451eba9b13e72c229137797ed089ad1ff13b",
    "bytes": 10146370
   },
   {
@@ -99,7 +99,7 @@
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p23.webp",
     "/read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.webp"
    ],
-   "html_sha256": "089881406c9600def0c72f00ce2510fa4d08498673b31bafe9aaa9343135f27c",
+   "html_sha256": "d299d483135967981078277f8b74ac7c672e25f9c8b99d6f748ea1c31aef865e",
    "bytes": 9688408
   },
   {
@@ -133,7 +133,7 @@
     "/read/sub-zero-and-the-great-snowball-truce/pages/p23.webp",
     "/read/sub-zero-and-the-great-snowball-truce/pages/p24.webp"
    ],
-   "html_sha256": "2cbda2c38f8719fb77b40f6c55b1d4ed951ff0e8da05351033039a65eef91b67",
+   "html_sha256": "f009480da19e01ce27306e5ff5b9358bb1e8c7892f54aa8670d99995ff920c19",
    "bytes": 6113052
   },
   {
@@ -187,7 +187,7 @@
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p43.webp",
     "/read/captain-beakon-and-the-bell-across-the-bay/pages/p44.webp"
    ],
-   "html_sha256": "f1c1182d4678bf4dd7534fb5ee7ea8f2a57d27dd5755d4ba4e0647989c9849a5",
+   "html_sha256": "e3195614be19573337d1dc4bc635ae5ba1c2e9ecba418079495c89910b615ab5",
    "bytes": 18464118
   },
   {
@@ -221,7 +221,7 @@
     "/read/one-more-story-before-santa/pages/p23.webp",
     "/read/one-more-story-before-santa/pages/p24.webp"
    ],
-   "html_sha256": "cf3a803d308b7c666a42f9b8bab2e7116423d0e8b9ae218ac94d2bf0b8d2ffd7",
+   "html_sha256": "4594a13c4ff3059a8d57594949071f23a40d9475f5cd688eba26379375943ce2",
    "bytes": 5652364
   },
   {
@@ -257,7 +257,7 @@
     "/read/the-last-parcel-under-the-tree/pages/p25.webp",
     "/read/the-last-parcel-under-the-tree/pages/p26.webp"
    ],
-   "html_sha256": "5024615139bf8fc886c900854cf47a62bc43f16ed9ef5d84798fa1dc35a8bc14",
+   "html_sha256": "28050a235187d701fffc3bd703bd50e0e4c4e5ef4afb3831383f52e649d754b6",
    "bytes": 9806592
   },
   {
@@ -1303,7 +1303,7 @@
     "/read/twenty-four-letters-before-christmas/pages/p23.webp",
     "/read/twenty-four-letters-before-christmas/pages/p24.webp"
    ],
-   "html_sha256": "1f085f424ee513776f4058a6d7f69d99e25e25fe9867f294050e37d7d173a604",
+   "html_sha256": "fb024de8098af98d91038fe809a26b17b6ee05b6faebf8cb3e9a2ec29d766711",
    "bytes": 7487070
   },
   {
@@ -1337,7 +1337,7 @@
     "/read/the-angel-on-the-small-tree/pages/p23.webp",
     "/read/the-angel-on-the-small-tree/pages/p24.webp"
    ],
-   "html_sha256": "f7010eeeaab409e0b3c7ebc2215d2fab2b776c292a27c58cb90f30fb351c9378",
+   "html_sha256": "249fa081725e3ab5a206674d28d4645d04e080d8020e86a80979428a1526015e",
    "bytes": 9479402
   },
   {
@@ -1373,7 +1373,7 @@
     "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p25.webp",
     "/read/biscuit-bouncer-and-the-great-sledge-race/pages/p26.webp"
    ],
-   "html_sha256": "ebf3fa5f94a87823a678f911922b2c748c4e9c803f8dbf919a96fd828d719639",
+   "html_sha256": "df5830d18679513f8743a7e088445c46b0c67869f8b11e8317eda94b362e1562",
    "bytes": 10463982
   },
   {
@@ -1411,8 +1411,92 @@
     "/read/the-star-that-fell-on-the-longest-night/pages/p27.webp",
     "/read/the-star-that-fell-on-the-longest-night/pages/p28.webp"
    ],
-   "html_sha256": "a9c598b563a29f5c2eb82412a20bcbd1a496157d1b80a09ca37cddfa48de9877",
+   "html_sha256": "e55971b4f74ad60492e1fd0eef53f08d4ee8669008578449822de45e5ed7fd84",
    "bytes": 7084178
+  },
+  {
+   "slug": "the-great-christmas-un-robbery",
+   "title": "The Great Christmas Un-Robbery",
+   "urls": [
+    "/read/the-great-christmas-un-robbery/",
+    "/read/the-great-christmas-un-robbery/pages/cover.webp",
+    "/read/the-great-christmas-un-robbery/pages/p01.webp",
+    "/read/the-great-christmas-un-robbery/pages/p02.webp",
+    "/read/the-great-christmas-un-robbery/pages/p03.webp",
+    "/read/the-great-christmas-un-robbery/pages/p04.webp",
+    "/read/the-great-christmas-un-robbery/pages/p05.webp",
+    "/read/the-great-christmas-un-robbery/pages/p06.webp",
+    "/read/the-great-christmas-un-robbery/pages/p07.webp",
+    "/read/the-great-christmas-un-robbery/pages/p08.webp",
+    "/read/the-great-christmas-un-robbery/pages/p09.webp",
+    "/read/the-great-christmas-un-robbery/pages/p10.webp",
+    "/read/the-great-christmas-un-robbery/pages/p11.webp",
+    "/read/the-great-christmas-un-robbery/pages/p12.webp",
+    "/read/the-great-christmas-un-robbery/pages/p13.webp",
+    "/read/the-great-christmas-un-robbery/pages/p14.webp",
+    "/read/the-great-christmas-un-robbery/pages/p15.webp",
+    "/read/the-great-christmas-un-robbery/pages/p16.webp",
+    "/read/the-great-christmas-un-robbery/pages/p17.webp",
+    "/read/the-great-christmas-un-robbery/pages/p18.webp",
+    "/read/the-great-christmas-un-robbery/pages/p19.webp",
+    "/read/the-great-christmas-un-robbery/pages/p20.webp",
+    "/read/the-great-christmas-un-robbery/pages/p21.webp",
+    "/read/the-great-christmas-un-robbery/pages/p22.webp",
+    "/read/the-great-christmas-un-robbery/pages/p23.webp",
+    "/read/the-great-christmas-un-robbery/pages/p24.webp",
+    "/read/the-great-christmas-un-robbery/pages/p25.webp",
+    "/read/the-great-christmas-un-robbery/pages/p26.webp",
+    "/read/the-great-christmas-un-robbery/pages/p27.webp",
+    "/read/the-great-christmas-un-robbery/pages/p28.webp",
+    "/read/the-great-christmas-un-robbery/pages/p29.webp",
+    "/read/the-great-christmas-un-robbery/pages/p30.webp",
+    "/read/the-great-christmas-un-robbery/pages/p31.webp",
+    "/read/the-great-christmas-un-robbery/pages/p32.webp",
+    "/read/the-great-christmas-un-robbery/pages/p33.webp",
+    "/read/the-great-christmas-un-robbery/pages/p34.webp"
+   ],
+   "html_sha256": "81139beb2b9123b0978c9b5fd6ca02d9a47828e892f0a5d8c133b42f8b4592d9",
+   "bytes": 13008332
+  },
+  {
+   "slug": "dough-mino-and-the-parcel-mix-up",
+   "title": "Dough Mino and the Parcel Mix-Up",
+   "urls": [
+    "/read/dough-mino-and-the-parcel-mix-up/",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/cover.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p01.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p02.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p03.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p04.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p05.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p06.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p07.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p08.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p09.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p10.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p11.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p12.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p13.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p14.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p15.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p16.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p17.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p18.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p19.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p20.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p21.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p22.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p23.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p24.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p25.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p26.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p27.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p28.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p29.webp",
+    "/read/dough-mino-and-the-parcel-mix-up/pages/p30.webp"
+   ],
+   "html_sha256": "579535fdd5f8010ddafc7166e964bff95686991f484c5ab811a586fa057c56d5",
+   "bytes": 11513550
   },
   {
    "slug": "bark-b-q-and-the-long-christmas-table",
@@ -1453,7 +1537,7 @@
     "/read/bark-b-q-and-the-long-christmas-table/pages/p31.webp",
     "/read/bark-b-q-and-the-long-christmas-table/pages/p32.webp"
    ],
-   "html_sha256": "1a8af7d927e70fa7e9bd98a947f4e0c7ea242810766448e31448fb3724cc86f9",
+   "html_sha256": "a2fae8d1de15889d99ea03ecadfaf34fe1d4014e450f578b9c55894adc04cf56",
    "bytes": 11426006
   }
  ],
@@ -2269,6 +2353,74 @@
   "/read/the-star-that-fell-on-the-longest-night/pages/p26.webp",
   "/read/the-star-that-fell-on-the-longest-night/pages/p27.webp",
   "/read/the-star-that-fell-on-the-longest-night/pages/p28.webp",
+  "/read/the-great-christmas-un-robbery/",
+  "/read/the-great-christmas-un-robbery/pages/cover.webp",
+  "/read/the-great-christmas-un-robbery/pages/p01.webp",
+  "/read/the-great-christmas-un-robbery/pages/p02.webp",
+  "/read/the-great-christmas-un-robbery/pages/p03.webp",
+  "/read/the-great-christmas-un-robbery/pages/p04.webp",
+  "/read/the-great-christmas-un-robbery/pages/p05.webp",
+  "/read/the-great-christmas-un-robbery/pages/p06.webp",
+  "/read/the-great-christmas-un-robbery/pages/p07.webp",
+  "/read/the-great-christmas-un-robbery/pages/p08.webp",
+  "/read/the-great-christmas-un-robbery/pages/p09.webp",
+  "/read/the-great-christmas-un-robbery/pages/p10.webp",
+  "/read/the-great-christmas-un-robbery/pages/p11.webp",
+  "/read/the-great-christmas-un-robbery/pages/p12.webp",
+  "/read/the-great-christmas-un-robbery/pages/p13.webp",
+  "/read/the-great-christmas-un-robbery/pages/p14.webp",
+  "/read/the-great-christmas-un-robbery/pages/p15.webp",
+  "/read/the-great-christmas-un-robbery/pages/p16.webp",
+  "/read/the-great-christmas-un-robbery/pages/p17.webp",
+  "/read/the-great-christmas-un-robbery/pages/p18.webp",
+  "/read/the-great-christmas-un-robbery/pages/p19.webp",
+  "/read/the-great-christmas-un-robbery/pages/p20.webp",
+  "/read/the-great-christmas-un-robbery/pages/p21.webp",
+  "/read/the-great-christmas-un-robbery/pages/p22.webp",
+  "/read/the-great-christmas-un-robbery/pages/p23.webp",
+  "/read/the-great-christmas-un-robbery/pages/p24.webp",
+  "/read/the-great-christmas-un-robbery/pages/p25.webp",
+  "/read/the-great-christmas-un-robbery/pages/p26.webp",
+  "/read/the-great-christmas-un-robbery/pages/p27.webp",
+  "/read/the-great-christmas-un-robbery/pages/p28.webp",
+  "/read/the-great-christmas-un-robbery/pages/p29.webp",
+  "/read/the-great-christmas-un-robbery/pages/p30.webp",
+  "/read/the-great-christmas-un-robbery/pages/p31.webp",
+  "/read/the-great-christmas-un-robbery/pages/p32.webp",
+  "/read/the-great-christmas-un-robbery/pages/p33.webp",
+  "/read/the-great-christmas-un-robbery/pages/p34.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/cover.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p01.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p02.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p03.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p04.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p05.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p06.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p07.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p08.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p09.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p10.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p11.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p12.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p13.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p14.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p15.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p16.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p17.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p18.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p19.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p20.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p21.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p22.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p23.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p24.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p25.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p26.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p27.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p28.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p29.webp",
+  "/read/dough-mino-and-the-parcel-mix-up/pages/p30.webp",
   "/read/bark-b-q-and-the-long-christmas-table/",
   "/read/bark-b-q-and-the-long-christmas-table/pages/cover.webp",
   "/read/bark-b-q-and-the-long-christmas-table/pages/p01.webp",

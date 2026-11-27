@@ -5,10 +5,27 @@ const christmasPair = [
   'the-star-that-fell-on-the-longest-night',
 ];
 
+const villageBookCallbacks = [
+  'nutmeg-and-the-tree-that-wouldnt-come',
+  'vincent-van-mouse-and-the-christmas-shadow-show',
+  'sub-zero-and-the-great-snowball-truce',
+  'corgi-on-the-cob-and-the-harvest-table',
+  'shelly-pop-and-the-runaway-pumpkin',
+  'snack-spector-and-the-vanishing-thank-yous',
+  'biscuit-bouncer-and-the-great-sledge-race',
+];
+
 // Choices use the published shelf order and explicit groups; no reading history.
 export function nextChoices(shelf, slug, collections = []) {
   const index = shelf.findIndex(b => b.slug === slug), book = shelf[index];
   if (!book) return [];
+  if (slug === 'the-great-christmas-un-robbery') {
+    const published = new Map(shelf.map(entry => [entry.slug, entry]));
+    return villageBookCallbacks.filter(callback => published.has(callback)).map(callback => {
+      const related = published.get(callback);
+      return { book: related, label: `From the village book · ${related.readingLevel?.toLowerCase() ?? 'read together'}` };
+    });
+  }
   const peers = collections.find(c => c.id !== 'first-phonics' && c.books.includes(slug));
   const excluded = new Set([slug, ...(peers?.books || [])]);
   const ordered = shelf.slice(index + 1).concat(shelf.slice(0, index));

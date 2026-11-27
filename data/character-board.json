@@ -111,6 +111,11 @@
           "kind": "book",
           "id": "the-star-that-fell-on-the-longest-night",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "cameo"
         }
       ]
     },
@@ -372,6 +377,11 @@
           "kind": "book",
           "id": "the-star-that-fell-on-the-longest-night",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "cameo"
         }
       ]
     },
@@ -446,6 +456,11 @@
         {
           "kind": "book",
           "id": "ted-e-bear-and-the-jar-of-good-things",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
           "role": "cameo"
         }
       ]
@@ -646,6 +661,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "cameo"
         }
       ]
     },
@@ -1072,6 +1092,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "support"
         }
       ]
     },
@@ -1166,6 +1191,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "support"
         }
       ]
     },
@@ -1392,6 +1422,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "cameo"
         }
       ]
     },
@@ -1439,6 +1474,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "lead"
         }
       ]
     },
@@ -1727,6 +1767,16 @@
           "kind": "book",
           "id": "the-star-that-fell-on-the-longest-night",
           "role": "support"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "cameo"
         }
       ]
     },
@@ -2611,6 +2661,10 @@
       "kind": "Snake",
       "greeting": "Hello, reader. Shall we choose a book together?",
       "moment": "Library and word clues",
+      "book": [
+        "the-great-christmas-un-robbery",
+        "The Great Christmas Un-Robbery"
+      ],
       "alt": "The SnackPack portrait of Cynthia Book-Smart, snake",
       "animal": "snakes",
       "fact": "You may see my name shortened to Cynthia in the spelling app.",
@@ -2627,6 +2681,10 @@
         "Hello, reader. Shall we choose a book together?"
       ],
       "group": "reptiles",
+      "art": {
+        "page": "p07",
+        "caption": "Cynthia turns a library page with the tip of her tongue."
+      },
       "variant": {
         "caption": "Cynthia Book-Smart in the student version of the shared character art."
       },
@@ -2640,7 +2698,13 @@
         "snackpack-8-earth-science",
         "snackpack-11-prehistoric-pals"
       ],
-      "appearances": []
+      "appearances": [
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "support"
+        }
+      ]
     },
     {
       "id": "ham-and-cheese",
@@ -2679,6 +2743,11 @@
           "kind": "book",
           "id": "ham-and-cheeses-big-maze",
           "role": "lead"
+        },
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "cameo"
         }
       ]
     },
@@ -2793,6 +2862,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "the-great-christmas-un-robbery",
+          "role": "support"
         }
       ]
     },
@@ -2802,6 +2876,10 @@
       "kind": "Dinosaur",
       "greeting": "Hello! Let’s put these tiles in a row and see what comes next.",
       "moment": "Patterns and dominoes",
+      "book": [
+        "dough-mino-and-the-parcel-mix-up",
+        "Dough Mino and the Parcel Mix-Up"
+      ],
       "alt": "The SnackPack portrait of Dough Mino, dinosaur",
       "animal": "sauropods",
       "fact": "My name sounds like “domino”. Try hearing it in two parts.",
@@ -2816,6 +2894,10 @@
         "Hello! Let’s put these tiles in a row and see what comes next."
       ],
       "group": "reptiles",
+      "art": {
+        "page": "p01",
+        "caption": "Dough Mino sets out the wrapping paper in neat rows."
+      },
       "relationships": [],
       "webApps": [
         "snackpack-1-abcs-alphabet",
@@ -2830,6 +2912,11 @@
           "kind": "book",
           "id": "twenty-four-letters-before-christmas",
           "role": "cameo"
+        },
+        {
+          "kind": "book",
+          "id": "dough-mino-and-the-parcel-mix-up",
+          "role": "lead"
         }
       ]
     },
@@ -3782,30 +3869,31 @@
       "answer": "foxy-lox",
       "clues": [
         [
-          "I’m one of the faces on the SnackPack character board.",
+          "I was there when the friends rehearsed their library plan.",
           [
             "foxy-lox",
-            "quill-berry",
-            "pork-ulele",
-            "flutter-butter",
-            "biscuit-bouncer",
-            "booklava"
+            "polly-roger",
+            "cynthia-book-smart",
+            "ham-and-cheese",
+            "booklava",
+            "professor-hooten"
           ]
         ],
         [
-          "My card describes me as “fox”.",
+          "I wear a scarf on Lantern Evening.",
           [
-            "foxy-lox"
+            "foxy-lox",
+            "polly-roger"
           ]
         ],
         [
-          "I follow clues on a mystery trail.",
+          "I have a bushy fox tail.",
           [
             "foxy-lox"
           ]
         ]
       ],
-      "explanation": "Following clues."
+      "explanation": "Foxy-Lox wears the cranberry scarf."
     },
     {
       "answer": "quill-berry",
@@ -4602,30 +4690,31 @@
       "answer": "dough-mino",
       "clues": [
         [
-          "I’m one of the faces on the SnackPack character board.",
+          "I was part of the Wrapping Night story.",
           [
             "dough-mino",
-            "marmalade-whiskers",
-            "shepherds-pie-thon",
-            "professor-hooten",
-            "hen-berry",
-            "corgi-on-the-cob"
+            "vincent-van-mouse",
+            "belgian-waffle",
+            "booklava",
+            "cluck-oclock",
+            "coop-accino"
           ]
         ],
         [
-          "My card describes me as “dinosaur”.",
+          "I am wearing something around my neck.",
           [
-            "dough-mino"
+            "dough-mino",
+            "belgian-waffle"
           ]
         ],
         [
-          "My name sounds like “domino”. Try hearing it in two parts.",
+          "I have three toes on each of my storybook feet.",
           [
             "dough-mino"
           ]
         ]
       ],
-      "explanation": "Patterns and dominoes."
+      "explanation": "Dough Mino has a long neck, a chef’s hat and three-toed feet."
     },
     {
       "answer": "marmalade-whiskers",
