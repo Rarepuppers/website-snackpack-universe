@@ -1098,7 +1098,10 @@ export class World3D {
     this.setStage(t, game.regionIndex, game.delivery.id, game.delivery.snowy || game.delivery.winter, game.delivery.twist === "blizzard", game.delivery.light);
     const scene = this.scene, q = this.quality, theme = this.theme;
 
-    const model = buildTruck(game.spec, game.rail, q, this.look, true);
+    // Your own truck gets the detailed model on High graphics, the lighter one on
+    // Medium and Low (Auto steps down on its own when the frame rate drops). Ghosts
+    // always use the lighter one.
+    const model = buildTruck(game.spec, game.rail, q, this.look, q.level < 2);
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
     this.buildGhost(q);
