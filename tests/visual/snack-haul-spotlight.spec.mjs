@@ -35,6 +35,14 @@ test('Apps shows one Snack Haul spotlight before the rest of the lineup', async 
   await expect.poll(() => badge.evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
   await expect.poll(() => qr.evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
   await expect(qr).toBeVisible();
+  const appStoreLink = spotlight.getByRole('link', { name: 'Download on the App Store' });
+  await expect(appStoreLink).toHaveAttribute('href', 'https://apps.apple.com/app/id6839986643');
+  const appStoreBadge = appStoreLink.getByRole('img');
+  const appStoreQr = spotlight.getByRole('img', { name: 'QR code for the Snack Haul App Store listing' });
+  await appStoreQr.scrollIntoViewIfNeeded();
+  await expect.poll(() => appStoreBadge.evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
+  await expect.poll(() => appStoreQr.evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
+  await expect(appStoreQr).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
   await expect(spotlight.getByRole('link', { name: 'See the game' })).toHaveAttribute('href', '/apps/snack-haul/');
 });

@@ -37,6 +37,17 @@
   border-radius: var(--radius-sm);
 }
 
+.snack-haul-store-qrs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.snack-haul-store-qrs .featured-qr {
+  margin-top: 0;
+}
+
 @media (max-width: 700px) {
   .snack-haul-spotlight-card {
     grid-template-columns: minmax(0, 1fr);
