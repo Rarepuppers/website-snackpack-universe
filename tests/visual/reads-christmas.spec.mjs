@@ -17,6 +17,8 @@ books.push(...[
  ['the-angel-on-the-small-tree','The Angel on the Small Tree',24,'Ages 5–7 · Read together'],
  sledge,
  star,
+ ['dough-mino-and-the-parcel-mix-up','Dough Mino and the Parcel Mix-Up',30,'Ages 8–11 · Confident readers'],
+ ['the-great-christmas-un-robbery','The Great Christmas Un-Robbery',34,'Ages 9–12 · Confident readers'],
 ].filter(([slug])=>Object.hasOwn(webOriginals,slug)));
 for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});

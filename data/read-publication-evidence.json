@@ -2154,6 +2154,234 @@
       "pdf_sha256": "118c495cf432e2b3cede9d8a1f28659148e8d2b9f48ff45a1118f572b12d1bbb"
     },
     {
+      "slug": "dough-mino-and-the-parcel-mix-up",
+      "source_id": "web-christmas-dough-mino-and-the-parcel-mix-up",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/cover.png": "867271411501f187d47bf3ea2e6ee162ca7c21ba1ef56efbabdfb2869f0c47ba",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p01.png": "4583d40061a19d75396280b622c9a8693116e82e6d318f4aa10480c341efb5c2",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p02.png": "0cbf5f9f6e46e383a03df659772c7ad8e18f1aa2bf18166ca85a69d58a68c1b0",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p03.png": "9bc6efa2a6b1c800cc1046f39ea789e0b31196383b2f812bf87124ad8ec859ce",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p04.png": "1175aeddf854c57cac4459d99248076ae5a1ae5bfaabe1680cdaf903eb4b94e5",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p05.png": "22be4ebfa4387a5e89b57e6e2d405e811eb7f60d8f6d6763d16eb9bc2b305319",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p06.png": "b3433614cee62862b01baef4d2d6c091db7d2fc21468a5611fba2fd8b236aa2d",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p07.png": "76b2ddf0a0d2de0a134cd4941fe3b27cb1887b7a2be43c7ae3cc286b0fd5c154",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p08.png": "b0fc486a174d75def2ad4e431b26b48e400c601ede49d175f5807e555078b466",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p09.png": "2bec80ba5b154c1178f2bbb750ec8dfaef5dadfa4a916bfcf698eae3dd6d5e8d",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p10.png": "6e5973a6b36fb92a86ddc2dfe458d4bdf4ac8077494f70c7face3ac3453b06e3",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p11.png": "4dd2b0e622aa2079ba28a84a7adb0ee133a727cc9eca5dd636cbc2f0fba75757",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p12.png": "f2fcb34aae2b8823084686ddef6eab46a169be05c2b2515dde504736fe05426a",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p13.png": "3ab5983aaf0c9b395864b273eb787438952dbca49c8b202b206ec474287df594",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p14.png": "c918be1bcfb3515449201dce491078c096c37b1181f024ee36f126e6d9181c65",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p15.png": "672c6f9e158c02c76efbc2019c22098d05851dac2c2a6f222bb4c524c775cb85",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p16.png": "ea1bdc10dfa9347616b5a40d2684ee8f21f40a82c0c03732bd777a2f5cd0db17",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p17.png": "18c053c9103681ba5d5979d8e538e67eea90a6e3aae11c125967c76b792270bc",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p18.png": "a91a0dc42b23ea0df34b2a3d9d06ba4254e95f86df28fc8f73f35b8eb0e2bcb6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p19.png": "fad08be0f3515d80419866a6323a7669a68b531b49fb3d75e0235b455f11a680",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p20.png": "1f12f00eaab2b0b8f47f4c7f0fef7bc66ded0d63fc0444fae4a3bf25d75557b6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p21.png": "64a5a6eae96e81609b86bd2c9b6aab23fa98e3a6b9ed61dd1820c2b720cedb52",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p22.png": "c96d418cba71c4293c76d1d4208e6742e9457782062620b225d87aa90a52da27",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p23.png": "2645f77601258196d9c00468598f5c6b285459beab3e1871969b808b8fa718c7",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p24.png": "9b3320fb9a665610e5234ceffa8b38378661c9d28c05ec143e41a065ac08791f",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p25.png": "d56221d1095edca9c769cc3b583d4aae112a61b7b25dcef32e45387e3425b969",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p26.png": "17e42da5fc9b7852366b00bc5053c4b198c1c827869b2319d787e2e7652886e1",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p27.png": "d32bebe57501615fb04933038be7fbc18606f2033d14fbbf7de31008a1dc7f27",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p28.png": "f46380c761e0838e1d0bf08a15945eee8df789e5d6500a9dae8b987971580fa6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p29.png": "59a704dbbdd575e2c231b0006729b9ba320b655f9e1fc86961383885171f24d7",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p30.png": "1644d052d62902f7a8bf21e68240ea7eb42cbe069f9c510516cfb6969afcb291"
+      },
+      "text": [
+        "Chapter One: Wrapping Night Every year, on the twenty-third of December, the library hall became the Wrapping Table. Friends brought their presents in plain boxes. The wrappers wrapped them. And before Christmas Eve morning, Belgian-Waffle delivered every single one. This year, Dough Mino was in charge. Dough Mino loved two things more than anything: patterns, and things in neat rows.",
+        "His table was perfect. Rolls of paper in a row. Ribbons in a row. Scissors, tape and string, all in a row. Next to him, Vincent Van Mouse painted the gift tags. On each one he painted a tiny picture of who it was for, instead of a name, because pictures were more fun. And whenever there was a scrap of paper left over, Dough Mino tucked it into a neat pile under the table, when he thought nobody was looking.",
+        "The presents began to arrive. Booklava brought a box for Professor Hooten. \"It's a long one,\" she whispered. \"Don't let him see.\" Then Cluck O'Clock and Coop-Accino staggered in with a box for their mum, Hen-Berry. \"It's SO heavy,\" puffed Cluck. \"It took both of us.\"",
+        "Honey-Beats brought a small box for Pork-ulele. \"Don't shake it,\" she said. \"It jingles. That'll give it away.\" Last came Ted-E-Bear with a present for Luckybug. \"She's going to love it,\" he said, and smiled, and wouldn't say any more.",
+        "Dough Mino wrapped two of the presents. He folded the ends into neat, sharp points, the way he always did. Vincent wrapped the other two. He tucked the ends in flat and dabbed a tiny painted paw print on each one, the way he always did. The four papers were red with white dots, green and white stripes, blue with gold stars, and plain brown paper tied with green string.",
+        "Vincent laid each painted tag on top of its parcel, ready to tie on when the paint was dry. An owl for Hooten. A hen for Hen-Berry. A pig for Pork-ulele. A ladybird for Luckybug. Belgian-Waffle swooped in from his first round of deliveries, hung his old scarf on the peg to dry, and swooped out again. Dough Mino looked at the scarf for a long time. It was very frayed.",
+        "Chapter Two: The Gust At nine o'clock, the library door burst open. \"Second round!\" shouted Belgian-Waffle, and a gust of snowy wind came in with him. Four painted tags lifted off four parcels, whirled up into the air like leaves, and scattered all over the hall.",
+        "They found the tags under the paper tree, on the bookshelves and in the cocoa jug. Not one was damaged. But now nobody knew which tag belonged on which parcel. \"Easy!\" said Belgian-Waffle. He picked up the plain brown parcel and shook it. Chink, chink. \"It jingles! It's Pork-ulele's!\" He grabbed the pig tag.",
+        "\"Wait,\" said Dough Mino. He picked up the blue parcel with gold stars and shook it gently. Ching, ching. \"Two of them jingle,\" he said. \"Oh,\" said Belgian-Waffle. \"Well, then, the red one with white spots must be Luckybug's. Because she's red with spots.\" \"That's a guess,\" said Dough Mino. \"Not a clue. A guess can send the wrong present to the wrong door.\"",
+        "Chapter Three: Clues, Not Guesses Dough Mino lined the four parcels up in a row. Then he took a big sheet of brown paper and drew a grid on it: the four parcels across the top, and the four friends down the side. \"First,\" he said, \"what do we actually know?\" They remembered what everyone had said when they brought their presents. Booklava: Hooten's present is long. The twins: Hen-Berry's present is very heavy. Honey-Beats: Pork-ulele's present jingles. Ted: Luckybug's going to love it. \"That last one doesn't help much,\" said Belgian-Waffle.",
+        "\"I know something,\" said Vincent. \"I wrapped Luckybug's present myself. So it's got my paw print on it.\" They looked at the four parcels. The dots and the plain brown paper had tiny painted paw prints. The stripes and the stars had Dough Mino's sharp, pointed ends. \"So Luckybug's is the dots or the plain brown one,\" said Dough Mino. He made a mark on the grid.",
+        "\"Now we test,\" said Dough Mino. \"Shape first.\" Three of the parcels were boxes. Only one was long and thin: the green and white stripes. \"Hooten's present is long,\" said Vincent. \"And only one parcel is long,\" said Dough Mino. He drew a tick on the grid. \"Stripes for Hooten.\"",
+        "\"Sound next.\" Each of them shook each parcel gently, holding it close to an ear. The stripes made no sound. The dots made no sound. The stars went ching, ching. The plain brown parcel went chink, chink, a little lower. \"Pork-ulele's jingles,\" said Belgian-Waffle. \"So it's the stars or the brown one. Still two.\" \"Still two,\" agreed Dough Mino. \"So we need one more test.\"",
+        "In the corner of the library stood Professor Hooten's old brass scale, the one he used for weighing books before they went in the post. They weighed every parcel, one after another. The stars were light. The dots were light. The stripes were a bit heavier. And the plain brown parcel was so heavy that the scale went clunk all the way down.",
+        "Dough Mino put down his pencil. Your turn. You know what everyone said, and you've seen all three tests. Which parcel is Hen-Berry's? Which is Pork-ulele's? And which is Luckybug's? Work it out before you turn the page.",
+        "\"The plain brown parcel is by far the heaviest,\" said Dough Mino. \"Hen-Berry's present is very heavy. So the brown one is Hen-Berry's.\" \"But it jingles!\" said Belgian-Waffle. \"Lots of heavy things jingle,\" said Vincent. \"Then Pork-ulele's jingly present must be the stars,\" said Dough Mino. \"And Luckybug's has a paw print, so it's the dots or the brown. The brown is Hen-Berry's. So the dots are Luckybug's.\" Belgian-Waffle stared. \"So the red spotty one WAS Luckybug's!\" \"Yes,\" said Dough Mino. \"But now we know.\"",
+        "They tied every tag on with a double knot. The owl on the stripes. The hen on the plain brown paper. The pig on the stars. The ladybird on the dots. Dough Mino lined the four parcels up in a row by the door, in the order of the delivery route. It was the neatest row he had ever made.",
+        "Chapter Four: The Fifth Parcel \"Hang on,\" said Belgian-Waffle. He was peering under the table. \"There's another one.\" He pulled out a fifth parcel. It was wrapped in a patchwork of little pieces: red with dots, green with stripes, blue with stars and plain brown, all fitted together like a puzzle. Its ends were folded into sharp points. It had no tag at all.",
+        "\"A mystery!\" said Belgian-Waffle. \"Pointed ends, so Dough Mino wrapped it. Let's test it!\" He shook it. Not a sound. He squeezed it. It was soft. He weighed it. It was hardly heavier than nothing. \"So who's it for?\" he said. Dough Mino had gone pink from his nose to the tip of his tail. \"That one,\" he said, \"is not part of the puzzle.\"",
+        "Vincent looked at Dough Mino's pink face. He looked at the patchwork parcel. He looked at the frayed old scarf on the peg. \"Some parcels aren't puzzles,\" said Vincent. \"They're surprises. And you've got four deliveries to make before morning, Belgian-Waffle.\" He loaded the four tagged parcels into the post bag, and he didn't look at the fifth one again.",
+        "Belgian-Waffle put on his old frayed scarf, hitched up the heavy bag, and flew out into the snowy night. Behind him, in the warm library, Dough Mino let out a very long breath. \"Thank you,\" he said. \"I didn't see anything,\" said Vincent, and went back to his painting.",
+        "Chapter Five: Deliveries Belgian-Waffle flew through the falling snow. At the library's top window, he left the long striped parcel with the owl tag. Then he dragged the heavy brown parcel, chink, chink, all the way up Hen-Berry's path and left it on her mat.",
+        "At Pork-ulele's door, he set down the starry parcel very gently, so it hardly jingled at all. At Luckybug's house, which was very small, he had to leave the dotty parcel beside the door, because it was bigger than the door was. Then he flew home through the grey of early morning, so tired his wings creaked.",
+        "On his own doorstep, in the snow, there was a parcel. It was patchwork. Red with dots, green with stripes, blue with stars and plain brown, with sharp pointed ends. And now it had a tag: a tiny painting of a bluejay. Leading away from the step through the snow was a line of big, three-toed footprints.",
+        "The tag said, in Vincent's curly writing: Open now. You'll need it tonight. So Belgian-Waffle opened it. Inside was a long, soft scarf, knitted in a pattern of little squares like a waffle. It had stripes of red and green and blue and brown, the very same colours as the four papers.",
+        "Chapter Six: The Pattern Belgian-Waffle looked at the scarf. He looked at the footprints in the snow. Three toes. Very big. Very neat. In a perfectly straight line. Only one person in the village walked in a perfectly straight line. He put on the new scarf, and he flew.",
+        "Dough Mino was at home, lining his teacups up on the shelf, when there was a tap at the window. He opened it. Belgian-Waffle was on the sill, in the patchwork-coloured waffle scarf, with snow on his hat. \"Dough Mino,\" he said. \"How did you know my size?\"",
+        "\"Knitting is only patterns,\" said Dough Mino, \"and I like patterns.\" He looked a little shy. \"And I measured your old scarf last week, on the library peg, while you were sorting the post. I wrapped it tonight, out of the leftover scraps. I've been hiding it under the table all evening.\"",
+        "Belgian-Waffle was quiet for a moment. \"Every year, I deliver everybody's presents,\" he said. \"And nobody ever delivers anything to me.\" \"I know,\" said Dough Mino. \"That's why I delivered it myself.\"",
+        "That night was Christmas Eve. Belgian-Waffle flew one last loop over the village, warm all the way to the tips of his wings. And on the library wall, the puzzle grid was still pinned up, with four neat ticks. Somebody had added a fifth row at the bottom, in very neat writing, with a very small drawing of a bluejay. And beside it, the neatest tick of all."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/dough-mino-and-the-parcel-mix-up/pages/p01.jpg": "8da22ebed1f8ed7ed5577f561a21e2671042104fe524b7a20f4bf48429ad00a1",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p02.jpg": "65998745a8009ffe6db8067fc827f0928c85e93c6944d7e045190e1db1928a6f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p03.jpg": "90a03d2a1a667d462f4abca8285ecf4993d34cb81107b8d23c6af6daa9b8c506",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p04.jpg": "c92f9c1c489f5bfdd9a5796e958c9e6c8b48cfa77205e22b36b4b757becaba72",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p05.jpg": "536704c30277232970395d49c8277eba7c4e8509d82b6636f861e60501fb7498",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p06.jpg": "57570b4b922eae026ad314397396c65bc3426e256c7160cc6c55ae9df892bd53",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p07.jpg": "b2e0a51fd2a91d33314e8296920ea26f8dc4b7eb7555cd4d9fd2f2662182841f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p08.jpg": "53b927968a2d42ed17eb88ea60790dfbfa0332ea61d8d8c3974313fbf66d2bfa",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p09.jpg": "2cc40f019ff3c89c26d0f1f02615a06fbbbe5a184876309a7cd3519ff6501b1c",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p10.jpg": "62d0097b7832918537da9008f749f4969ac86fc5bfc5fe7152f5d8df2f63995f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p11.jpg": "d6d173e8a4dc58155a0d2361eb1f724773b0f6561021280edf76bc78e5ef40d5",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p12.jpg": "1c5eebc5dcb4dd884129ea7f1dbe304ba101657f88313699005db0ae2a2c0890",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p13.jpg": "dcc1d45768538c145fa40aace5b31e5baee65a6c0bb95d02bee7de93dbc15a56",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p14.jpg": "8d41bc9332d529f2f0bb51338d2d8cfe685de14f6eb66fde70cd5277f89da82e",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p15.jpg": "1dd08e9874d6123dfcc4dcb7fd327a2ddd7c7a6d91ff6254680ea852e2c49df1",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p16.jpg": "726736d63f25460eefb2ac0542f2e2b35737fc03abd97841264f9990ed83e90d",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p17.jpg": "134055d37cda203372e4ca11da3c24453b49c1417209ba06eed68b836fadfd5a",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p18.jpg": "fdf81270aa10ed33f71dc09767339407a52551081a7fe6cb886db4e929883f68",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p19.jpg": "3b09c8fb0dc758e76ebbb950150d50eca9d57ead94cea0044e2c131ea47ca8b3",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p20.jpg": "f24580eac5719ac11575ab2976454890427ab6e82e7693066d1184d877ecf432",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p21.jpg": "54cf1a2029e81fe5d71f1774ea6e2a1b8c9ae28e1e81b2b58a4c7ad72e593625",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p22.jpg": "04498d515e6e9afbca19fb08280b020b81a7b5e49f68add1349411561a9c6482",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p23.jpg": "547811dcb7c1c089f5256785330ed0fe3bc179e36996dc94a0ff77e371135ec6",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p24.jpg": "c05d07510392cf9f2dbc02c630931a80057aa72849323c71a2f66545d8904e2c",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p25.jpg": "68b6c9487f8b49e8b54c4de514aaa1c5b7295ee6190c1c02274d4c7227567ee7",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p26.jpg": "c9b694ac1a51810efce32f8bed634bbe4f050c310d1a267ef2b80f55095d0c15",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p27.jpg": "4232724536e4f3abf98e8e8b492c78108919089ba9862b841f7cb7c5cc4a7293",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p28.jpg": "70ee1bbd3ed9d692b0c724e14d0ed1ae16476c9f14669a6efc57f1c675886652",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p29.jpg": "d9e9e5b5d712cfb2b5fff80ad043c03c94c865de0846918f36e2b002f75e773a",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p30.jpg": "c416984760f87ab55ac65da19129156eb02a24f924ad25e74856d4aa061d2fbb"
+      },
+      "pdf": "read/dough-mino-and-the-parcel-mix-up/dough-mino-and-the-parcel-mix-up.pdf",
+      "pdf_sha256": "fe5e45c3ceea875fcf0beb140c5069413a99ac11d6441c738a1207260e7b77ce",
+      "cover_jpeg_sha256": "3c8859725c1111feb3779ebeb7581cc7bfc8d02790644759c9ca37196dcbe5d1"
+    },
+    {
       "slug": "everybody-brought-potatoes",
       "source_id": "web-thanksgiving-everybody-brought-potatoes",
       "source_art": {
@@ -6403,6 +6631,262 @@
       },
       "pdf": "read/the-cat-and-the-rat/the-cat-and-the-rat.pdf",
       "pdf_sha256": "3d00dbdd95dab6a01e569e4f99888f91131d22142c9a50822ff8ee8d1c712840"
+    },
+    {
+      "slug": "the-great-christmas-un-robbery",
+      "source_id": "web-christmas-the-great-christmas-un-robbery",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/cover.png": "a283ad1cabd94027ffa38cea8ac566dbf93b485fed26bdbde691f7a01f8581f8",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p01.png": "641339505d0cdef88c78576e52337080e91a881c062d8166200b4cb40fd9cd29",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p02.png": "40f193253047bb9ff3e68219a4d56ed982fd3fb48de9044c14b9e9b9827e8357",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p03.png": "983940cd7d4cae8bc898162a3db680581b338742527bc0d9911a035c1f8e475f",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p04.png": "6bfaa0da054bc9486b59bee612b438eccd237ba6f77ba64339e89803239ef0b9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p05.png": "f9d2b6f1b75f97df38ff51f19813d274c0096dcadb5de98ecb58fb826232aaf9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p06.png": "fdf832460c95e3b8bac5d925a7fcd09888dea0e7d569ed4dde9a08dbfa680ac6",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p07.png": "19c9d665e5190fea1862caa57034ac9afd98dc04eca4111c8dbe3eb323b01bc9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p08.png": "076b8c275544ae9ab188e044dc54471ed4fd563af438108bfb8f399a6fa4b43a",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p09.png": "a8a07a20c49c6a4e8a77b93d576ed52004b20852c10c57355a1344baf0a40f88",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p10.png": "476bf0a79982362a762a972d4e45fecd5c39c2070e70822551970688ad741b82",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p11.png": "0998c3788d72e29093df1310d977b8d457f7ef9da217706edf24dda4daf0240b",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p12.png": "48f3d51746ad60d09ebe67e4852d1ed54adeae46339a4271cd79df80eb090c18",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p13.png": "dd6a607e2c3c47614af8d844a3963e33b447feb34da0b14b6b9a0f416f0a0c3e",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p14.png": "c325909d50c469cd2add5aecff631a3fa4c778e298ac24c3b5bc6a831d52c5c3",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p15.png": "9a7a5b419a7b1270c8b7a0860cd71a45d5f7417921084783f47173fa3a668b40",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p16.png": "7f9a30695840407923833fe2fde400f95044aa88ca024ae13a1760d4a205e913",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p17.png": "fed9c7d531d1dca20e22510025cc0268cc10e6baa5a0c078a19a5c23aa899929",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p18.png": "aaf73d815690e3a3ef9a5628f8361c9996fe1e653e5682868e08260bf54fdbe9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p19.png": "f0d8cd78af8e2454389545e60aadf9718c9338e7761cc84d1284f38708647869",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p20.png": "06f50ef5505ef36bedbe2a3c475bef1724b315cf29a245e7cffd5140846ce799",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p21.png": "69548cbc45684a4aea10321809d828a25900209c5824b189715370eb771ace0c",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p22.png": "fa2f3a3afada064575afdd7479aeec4fa4c13acaa9c83fddc57ca569b8d27427",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p23.png": "049244b38d04ce0a8ebb12c37dd7429b83f190fba3672631d255d15ea35c3077",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p24.png": "9803bea459f0b34d0da9da89b7f0b0b025cdcef73255ae1df3c19969196862ff",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p25.png": "3d341adaed65531aac06c145d10402735cd5641c7dc0667f924f6d39d29bc613",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p26.png": "21fde236cd800ff15fff949303fd2fa1ee15c99e216229b05af1dc05fa2502f6",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p27.png": "a41293869857c60c2b7189d9869a8a3670e79b4ed741912c17ec0bc902f44cbf",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p28.png": "dede006b60bc0e4ff20d79c9243f01cc467068da30cec82ba24bd442acbfa042",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p29.png": "2aa7508af39844d3262d1678601efa47f94bca5f09c401f628db928c8529148c",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p30.png": "b0a4149321e2d7f06f921be093e601f449d7dfae6885ab61233906462c715345",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p31.png": "2c31c5e4260ef1ad4f29ff9c5a5c7a9045edb7cd2c0e2f6b32aa75db4232e0e7",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p32.png": "636e9f4c2bab138386ce4bd0dc98510aefdd8e5b88209e723bf6789fd399f6c0",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p33.png": "2a73eae91e82d7f8bb9fa62f087cfd80685fde1338c503cd810c2a2841ffd96b",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p34.png": "589a4f8a6c2eeec291d2d9975b58303d96815292e936dce30c4b1f6a558ca1c6"
+      },
+      "text": [
+        "Chapter One: The Gap Booklava lived in the library, and so she knew its secrets. She knew which stair creaked, which lamp flickered, and which dictionary was best for sleeping in. She knew that every morning, before anybody came, Professor Hooten dusted every single shelf. And she knew that on the oldest shelf, the First Shelf, right behind his armchair, there was a gap.",
+        "It was a narrow gap, just wide enough for one thin book. And every morning, Professor Hooten dusted it, very carefully, as if something were already there. \"What goes in the gap?\" Booklava asked him one December morning. Hooten smiled. \"That space,\" he said, \"is for the book that hasn't been written yet.\" And he would not say another word about it.",
+        "Booklava told Foxy-Lox, because Foxy-Lox was the cleverest person she knew. Foxy-Lox had won the Hide-and-Seek-and-Solve Championship three years running. Foxy-Lox's eyes narrowed. Her tail swished. \"Then we write it,\" she said. \"A book about the village, by everybody in the village. And we put it in the gap for Christmas. Without him seeing.\"",
+        "\"You can't,\" said Booklava. \"Nobody does anything in that library without him seeing.\" \"Nobody,\" said Foxy-Lox, \"has ever tried with a crew.\"",
+        "Booklava counted the problems on her wingtips. \"One. He can turn his head almost all the way round. Two. He can read in the pitch dark, so turning the lights off is no use. Three. He can hear a page turn from the other end of the library. Four. He never leaves, and he never naps. Not in the daytime. Not ever.\" Foxy-Lox grinned. \"Then it's the best puzzle I've ever had.\"",
+        "Chapter Two: The Crew The first person Foxy-Lox visited was Polly Roger. \"I hear you can copy any sound,\" said Foxy-Lox. Polly Roger fluffed her feathers. Then, without opening her beak very much, she made the sound of a kettle whistling, a door bell jingling, and Professor Hooten saying, \"Hmm, now, let me see.\" It was so like Hooten that Booklava turned round to look for him.",
+        "The second was Cynthia Book-Smart. \"I have no feet,\" said Cynthia, \"so I never make a floorboard creak. I can turn a page with my tongue without a whisper. And I know where every book in that library lives, because I have read every one of them.\" \"Even the dictionaries?\" said Booklava. \"Twice,\" said Cynthia.",
+        "The third was Ham-and-Cheese. \"Why me?\" he squeaked. He was sitting in a teacup. \"Because you're the smallest person in the village,\" said Foxy-Lox. \"And because you can hold perfectly still.\" Ham-and-Cheese held perfectly still to show her. It was very impressive.",
+        "Then came the book. Foxy-Lox went from door to door with a basket of blank pages. \"One page each,\" she said. \"Something good that happened this year. Write it or draw it. Don't tell Hooten.\" Nutmeg drew the tree that wouldn't come. Vincent painted his shadow show. Sub-Zero drew a snowball with a white flag on it. Corgi-on-the-Cob drew six cobs of corn, and then, after some thought, a seventh.",
+        "The pages kept coming. Shelly-Pop drew a pumpkin floating on a pond. Snack-Spector wrote about twelve pots of daffodils that hadn't come up yet. Biscuit-Bouncer drew a bathtub going extremely fast. When they had collected them all, Booklava stitched the pages together with red thread, and Cynthia painted the cover with the tip of her tail. It was a beautiful book. It had forty-seven pages. It was very, very fat.",
+        "Chapter Three: The Plan In Foxy-Lox's den, the crew gathered round a big map of the library, drawn by Cynthia from memory. Every shelf. Every lamp. Every floorboard. \"Here's Hooten's armchair,\" said Foxy-Lox, tapping it. \"And here, right behind it, is the First Shelf, and the gap.\"",
+        "\"Problem one,\" said Foxy-Lox. \"The head.\" She turned to Booklava. \"You're an owl. How far round can an owl's head go?\" \"A long way,\" said Booklava. \"But not all the way. There's always a bit right behind us that we can't see without turning our whole body.\" Foxy-Lox drew a narrow slice of pie on the map, behind Hooten's armchair. \"The Blind Spot,\" she said. \"And look what's in it.\" The First Shelf. \"He sits with his back to the very shelf we need,\" said Cynthia slowly. \"How careless of him.\"",
+        "\"Problem two: his ears.\" The library door had a brass bell above it that jingled whenever it opened. \"Ham-and-Cheese climbs inside the bell,\" said Foxy-Lox, \"and holds the clapper.\" The ninth floorboard from the door creaked like an old gate. \"Cynthia goes round it,\" said Foxy-Lox. \"She has no feet anyway.\" \"I take that as a compliment,\" said Cynthia.",
+        "\"Problem three. He never leaves and he never naps.\" Foxy-Lox held up one claw. \"But when he's thinking very hard about something, he hums. Booklava, you told me so.\" \"Like a radiator,\" said Booklava. \"Hmmmmm.\" \"And when he hums, does he hear anything else?\" Booklava thought about it. \"No. Nothing. Last week the twins knocked over a whole trolley of atlases while he was humming, and he didn't even blink.\" \"Then your job,\" said Foxy-Lox, \"is to ask him the hardest question in the world.\"",
+        "\"Problem four. He can see in the dark, so there's no point waiting for night.\" Foxy-Lox smiled her widest smile. \"So we'll do it in broad lamplight. On Lantern Evening, when the library's full of people and lanterns and singing. Polly and I will be carol singers, by the door. Loud ones.\"",
+        "She went through it, step by step, tapping the map. \"Polly and I sing at the door. Ham-and-Cheese holds the bell. Cynthia slides in with the book. Booklava asks the question. Hooten hums. Cynthia goes round the ninth board, into the Blind Spot, up the First Shelf, book in the gap, and out again. Thirty seconds.\" \"And if anything goes wrong?\" asked Ham-and-Cheese. \"Then,\" said Foxy-Lox, \"we make it up.\"",
+        "Chapter Four: The Rehearsal They practised in Foxy-Lox's den. Polly Roger played Professor Hooten, with a lampshade on her head for turning. The first time, Ham-and-Cheese sneezed inside the bell. (It was a spoon, for practice, but still.) The second time, Polly turned her lampshade head so far round that she fell off her chair. The third time, Cynthia tied herself in a knot behind the sofa, and it took twenty minutes to untie her.",
+        "\"It's not working,\" said Ham-and-Cheese. \"It's a rehearsal,\" said Foxy-Lox. \"It isn't supposed to work. It's supposed to go wrong here, so it doesn't go wrong there.\"",
+        "Booklava practised her question. \"It has to be so hard he hums for at least a minute,\" she said. She had been thinking about it all week. \"Professor, if there are so many stars that you can't count them, in every direction, for ever and ever, why is the sky dark at night? Why isn't it bright everywhere?\" Polly Roger, in the lampshade, went quiet. Then she said, in Hooten's voice, \"Hmm. Hmmmmm.\" \"That's the one,\" said Foxy-Lox.",
+        "The fourth time, nobody sneezed, nobody fell off a chair and nobody tied themselves in a knot. Twenty-eight seconds. \"Tomorrow,\" said Foxy-Lox.",
+        "Chapter Five: Lantern Evening On Lantern Evening, the library glowed. Lanterns hung from every bookcase. The paper tree glittered. The hall was full of friends drinking cocoa and singing. And in his armchair, with his back to the First Shelf, sat Professor Hooten, looking at everybody at once.",
+        "Foxy-Lox and Polly Roger stood by the door in scarves, singing as loudly as they could. Ham-and-Cheese was already inside the brass bell, both paws round the clapper. The door swung open. The bell did not ring. And through the gap, quiet as a ribbon, slid Cynthia Book-Smart, with the fat book wrapped in her coils.",
+        "Booklava hopped up onto the arm of Hooten's chair. \"Professor,\" she said. \"If there are so many stars that you can't count them, in every direction, for ever and ever, why is the sky dark at night?\" Hooten's eyes went very wide. \"Ah,\" he said. \"Now that is a very good question. Hmm.\" He closed his eyes. \"Hmmmmmmmm.\" The Hover-Hum had begun.",
+        "Cynthia slid round the ninth floorboard. She slid into the Blind Spot behind the armchair. She slid up the First Shelf, along the oldest books, to the gap. She lifted the fat book, all forty-seven pages of it, toward the gap. It did not fit. It was not even close.",
+        "By the door, Foxy-Lox saw Cynthia freeze. She saw the book. She saw the gap. She sang the next line louder, and made a tiny signal with her tail: Go. Ham-and-Cheese let go of the clapper (the door was shut now; the bell was safe) and dropped to the floor. He ran along the skirting board, behind the armchair and up the First Shelf. Then, one by one, he began to push every single book on the shelf along. Just a whisker each. Very, very quietly.",
+        "The hum stopped. \"Booklava,\" said Professor Hooten, opening his eyes. \"I think I may have it. You see, the light from-\" His head began to turn.",
+        "From the direction of the library kitchen came the sound of a kettle, whistling, louder and louder, as if it were about to boil dry. Hooten's head swung the other way. \"My kettle?\" \"It's fine, Professor,\" said Booklava quickly. \"But you didn't finish! Why isn't the sky bright everywhere?\" \"Ah. Yes. Hmm.\" Hooten's eyes closed again. \"Hmmmmmm.\" By the door, Polly Roger stopped being a kettle and went back to being a carol singer.",
+        "Ham-and-Cheese pushed the last book along. The gap was a little wider now. Just wide enough. Cynthia slid the fat book in. It fitted. Snugly. As if it had always belonged there. She slid down, round the ninth board, and out through the door, and Ham-and-Cheese rode out on the end of her tail.",
+        "Outside, in the snow, under the lanterns, the crew could not stop grinning. \"Did he see?\" whispered Ham-and-Cheese. \"Nobody sees everything,\" said Foxy-Lox.",
+        "Chapter Six: Volume Two The next morning, the crew happened to visit the library. All five of them. At once. By chance. Professor Hooten was in his armchair, wearing his reading glasses, with the fat book open on his knees. He was wiping his eyes with the corner of his robe.",
+        "\"Listen to this,\" he said, and read them Corgi-on-the-Cob's page about six cobs of corn, and then a seventh. Then he read Shelly-Pop's, and Snack-Spector's, and Nutmeg's, and Biscuit-Bouncer's. \"Forty-seven pages,\" he said. \"Everybody in the village. It's the book I've been waiting for.\"",
+        "\"Of course,\" he added, \"I saw you.\" The crew went very still. \"I can see in the dark, so I can certainly see in lamplight. And Polly, you do my kettle better than my kettle does.\" He looked at Foxy-Lox over his glasses. \"As for the Blind Spot... why do you think I put the First Shelf behind my chair? Every library needs one place where people can leave something without being watched.\"",
+        "\"So you knew,\" said Foxy-Lox. \"All of it.\" \"Nearly all of it,\" said Hooten. \"There's one thing I didn't see.\" His head turned slowly along the First Shelf. \"Who moved every single book on this shelf exactly one whisker to the left?\" Ham-and-Cheese put up a very small paw. Professor Hooten bowed to him, deeply, the way he bowed to nobody. \"Then you,\" he said, \"are the best of the lot.\"",
+        "He reached into his robe and brought out a new book, thin and empty, with a plain cover. \"This one is for next year,\" he said. \"There's room for it next to the first one. Volume Two.\" Booklava took it. Then she remembered. \"Professor, you never finished. Why is the sky dark at night?\" \"Because the light from most of the stars hasn't got here yet,\" said Hooten. \"It's still on its way.\" He looked at the empty book in her wings, and smiled. \"Like most of the best stories.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-great-christmas-un-robbery/pages/p01.jpg": "92d96a12a3abdda24ebfb04fbcc4ac9d574cc31c2cf902a67137aa7f192d1e22",
+        "read/the-great-christmas-un-robbery/pages/p02.jpg": "493fb0e62e6eda803c2dcd28dd9be0dde453f5e4818e2f405c2716a9d9ffe9bf",
+        "read/the-great-christmas-un-robbery/pages/p03.jpg": "8abc99427c094e744e1408f13d50bc4ff9530118def7f4edf2896f61017d69a8",
+        "read/the-great-christmas-un-robbery/pages/p04.jpg": "7fe998ab91d97ddeff7322c324b0c4af4acf4caa4e43be63e3c52113fe73b873",
+        "read/the-great-christmas-un-robbery/pages/p05.jpg": "97a3868c453e639e1511be5ee22c1f38638965e37ac254dadd8e743e5e597477",
+        "read/the-great-christmas-un-robbery/pages/p06.jpg": "797a85418c8ff0935bd9d7bd074a6f93163bedd1ccf3d5798d03915319a44823",
+        "read/the-great-christmas-un-robbery/pages/p07.jpg": "86ffd0cbaa704f08620d64d01fcf827b2afb51ece9c253b8fca0ab8e42e731f0",
+        "read/the-great-christmas-un-robbery/pages/p08.jpg": "3d8985a10f22df9f6290eb31fcbb69a7ca9a3142f1f5d5c32f05df2b58dcebc9",
+        "read/the-great-christmas-un-robbery/pages/p09.jpg": "78656b97768d90d99b489e9f7fe80319993bdb78c276bbb5278a730cff843a8a",
+        "read/the-great-christmas-un-robbery/pages/p10.jpg": "ee678f3f9e911e4c7705a6d573e13e0ee11fc76dab69bca7ca42d1271442adc1",
+        "read/the-great-christmas-un-robbery/pages/p11.jpg": "d917902365794522aa82a9d948df7694ba330c52e0444e9241e4598027b6025b",
+        "read/the-great-christmas-un-robbery/pages/p12.jpg": "b46453f7b23bd673160e7d6288aca32380aaaa5decad923126568fb6b4d20d64",
+        "read/the-great-christmas-un-robbery/pages/p13.jpg": "dc7a8ac871dbd8cec86a85723108b6c79f31ef8e5bd5a594480c317521741c50",
+        "read/the-great-christmas-un-robbery/pages/p14.jpg": "3a4cde29073c23422e385d23e16ceae9f0d123f06846febf666cf73527512306",
+        "read/the-great-christmas-un-robbery/pages/p15.jpg": "1ce8b3684b718b0224560cfe9cf9224919180b19b121fde983c65c2b6f668bbb",
+        "read/the-great-christmas-un-robbery/pages/p16.jpg": "be2252786e7abfa8d850e9b7b7bf5d2c3d7a34d17f78c8b8140ff22554697c28",
+        "read/the-great-christmas-un-robbery/pages/p17.jpg": "7f180a3f3babded0dda16adfa8766b22d687bf7f134b353359da88302be31a29",
+        "read/the-great-christmas-un-robbery/pages/p18.jpg": "8b95664ffc695d13ac608396540ef64f3761ad14d4924798d560476bf0787ead",
+        "read/the-great-christmas-un-robbery/pages/p19.jpg": "ff64dc5d7f9426278d5a7fb4f1b5b36b7dd5298c6245eee30f4fbe8f055a0b39",
+        "read/the-great-christmas-un-robbery/pages/p20.jpg": "230bc60094d496a5d52daf89e0e94b25406e0097e50c567463ffcb88eb2fa6d6",
+        "read/the-great-christmas-un-robbery/pages/p21.jpg": "eafad2d09dfc1cc6b67daab1b33b356fb7fd02ea1bd353cfd66456106d99a5ad",
+        "read/the-great-christmas-un-robbery/pages/p22.jpg": "e7eb05ab62c86e442ad5a685607fdc9129ea879792061a7a950beb3752c593af",
+        "read/the-great-christmas-un-robbery/pages/p23.jpg": "1eeb981dcaec269001994321f1f6d22d7f88044fc912f5fa8c3c837c91967523",
+        "read/the-great-christmas-un-robbery/pages/p24.jpg": "e0aaec73aa712ed2f9c917cb6f3a728304ac20deec3717791e0fd4984891bf3c",
+        "read/the-great-christmas-un-robbery/pages/p25.jpg": "74deef9fc929dc3e67a04dfd079089c249f109a5fa9d52969fb98cb0eda86503",
+        "read/the-great-christmas-un-robbery/pages/p26.jpg": "4d88f5c44979538f65f3731a5b54e27f2ead88468239eb45d39ed034a1f13b6f",
+        "read/the-great-christmas-un-robbery/pages/p27.jpg": "4ee2d5778f09c8dbf85605da2826a826e4125197efee712bec79461a29e68877",
+        "read/the-great-christmas-un-robbery/pages/p28.jpg": "0f1df78415de582d2b14c77edf395ac3335fd4293d836fc1db1d0ad3a93c8a73",
+        "read/the-great-christmas-un-robbery/pages/p29.jpg": "ff2a244ddbb008d5c27d52d92c1329b5519c4e4c3b9f42cb3306384583ef0d11",
+        "read/the-great-christmas-un-robbery/pages/p30.jpg": "ec4b5dfa8c0512d5a0c528301e31febc3525d86c179572264ff4b9f3959aafff",
+        "read/the-great-christmas-un-robbery/pages/p31.jpg": "7664100200d80fa8148a870b693347c105fe81a9c29ec30725a43440801c00db",
+        "read/the-great-christmas-un-robbery/pages/p32.jpg": "6754f0907c80c98f2cc8ec5338d112cd067c102ee7c3ec090ad4a82dee0cf54c",
+        "read/the-great-christmas-un-robbery/pages/p33.jpg": "95192c5f5f83d693d79028d157f413184515a22cccc0b8f4274a8468d3aed5b6",
+        "read/the-great-christmas-un-robbery/pages/p34.jpg": "78da8d2604e9a7d3095d2a095ff2f3181e956be03460d50e5a046fbc2cd82dc8"
+      },
+      "pdf": "read/the-great-christmas-un-robbery/the-great-christmas-un-robbery.pdf",
+      "pdf_sha256": "8a5c15d265959183f1cf3b0d2451974a825f038afbfbb1395f4fd57accc5afc8",
+      "cover_jpeg_sha256": "6f8c525979fd7d04b102060d659a87437fde126dfa7a7defb5cd12d7df2766e1"
     },
     {
       "slug": "the-last-parcel-under-the-tree",

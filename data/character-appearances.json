@@ -64,6 +64,11 @@
       "book": "the-star-that-fell-on-the-longest-night",
       "title": "The Star That Fell on the Longest Night",
       "role": "lead"
+    },
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "cameo"
     }
   ],
   "hen-berry": [
@@ -190,6 +195,11 @@
       "book": "the-star-that-fell-on-the-longest-night",
       "title": "The Star That Fell on the Longest Night",
       "role": "support"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "cameo"
     }
   ],
   "coop-accino": [
@@ -216,6 +226,11 @@
     {
       "book": "ted-e-bear-and-the-jar-of-good-things",
       "title": "Ted-E-Bear and the Jar of Good Things",
+      "role": "cameo"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
       "role": "cameo"
     }
   ],
@@ -341,6 +356,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "lead"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "cameo"
     }
   ],
   "nutmeg": [
@@ -515,6 +535,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "support"
     }
   ],
   "french-toast": [
@@ -539,6 +564,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "support"
     }
   ],
   "cereal-swimmer": [
@@ -622,6 +652,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "cameo"
     }
   ],
   "foxy-lox": [
@@ -634,6 +669,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "lead"
     }
   ],
   "quill-berry": [
@@ -744,6 +784,16 @@
       "book": "the-star-that-fell-on-the-longest-night",
       "title": "The Star That Fell on the Longest Night",
       "role": "support"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "cameo"
+    },
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "cameo"
     }
   ],
   "bottle-nose": [
@@ -978,11 +1028,23 @@
       "role": "cameo"
     }
   ],
+  "cynthia-book-smart": [
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "support"
+    }
+  ],
   "ham-and-cheese": [
     {
       "book": "ham-and-cheeses-big-maze",
       "title": "Ham-and-Cheese’s Big Maze",
       "role": "lead"
+    },
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "cameo"
     }
   ],
   "meow-inara": [
@@ -1032,6 +1094,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "the-great-christmas-un-robbery",
+      "title": "The Great Christmas Un-Robbery",
+      "role": "support"
     }
   ],
   "dough-mino": [
@@ -1039,6 +1106,11 @@
       "book": "twenty-four-letters-before-christmas",
       "title": "Twenty-Four Letters Before Christmas",
       "role": "cameo"
+    },
+    {
+      "book": "dough-mino-and-the-parcel-mix-up",
+      "title": "Dough Mino and the Parcel Mix-Up",
+      "role": "lead"
     }
   ]
 }

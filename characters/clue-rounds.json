@@ -363,18 +363,18 @@
     "answer": "foxy-lox",
     "candidates": [
       "foxy-lox",
-      "quill-berry",
-      "pork-ulele",
-      "flutter-butter",
-      "biscuit-bouncer",
-      "booklava"
+      "polly-roger",
+      "cynthia-book-smart",
+      "ham-and-cheese",
+      "booklava",
+      "professor-hooten"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “fox”.",
-      "I follow clues on a mystery trail."
+      "I was there when the friends rehearsed their library plan.",
+      "I wear a scarf on Lantern Evening.",
+      "I have a bushy fox tail."
     ],
-    "explanation": "Following clues.",
+    "explanation": "Foxy-Lox wears the cranberry scarf.",
     "name": "Foxy-Lox"
   },
   {
@@ -867,18 +867,18 @@
     "answer": "dough-mino",
     "candidates": [
       "dough-mino",
-      "marmalade-whiskers",
-      "shepherds-pie-thon",
-      "professor-hooten",
-      "hen-berry",
-      "corgi-on-the-cob"
+      "vincent-van-mouse",
+      "belgian-waffle",
+      "booklava",
+      "cluck-oclock",
+      "coop-accino"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “dinosaur”.",
-      "My name sounds like “domino”. Try hearing it in two parts."
+      "I was part of the Wrapping Night story.",
+      "I am wearing something around my neck.",
+      "I have three toes on each of my storybook feet."
     ],
-    "explanation": "Patterns and dominoes.",
+    "explanation": "Dough Mino has a long neck, a chef’s hat and three-toed feet.",
     "name": "Dough Mino"
   },
   {
