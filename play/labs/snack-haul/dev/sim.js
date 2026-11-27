@@ -506,6 +506,38 @@ function downhill() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// Snack Speedway (ROADMAP 4.12): three tracks, three laps, three rival bots in the race.
+// Rules: every rival finishes with its trophy; a careful driver at 8 m/s finishes with
+// the trophy; a fast careful driver wins; a slow one (7 m/s) does not; flat-out loses
+// the trophy on at least one track; a ghost replays the race exactly, rivals included.
+function speedway() {
+  let bad = 0, flatLosses = 0;
+  const up = SH.rivalUpgrades(3);
+  const race = (d, input) => { const g = SH.createGame({ delivery: d, truck: "pickup", upgrades: up }); for (let n = 0; g.status === "driving" && n < 400 * 60; n++) g.step(input(g)); return { g, r: SH.report(g) }; };
+  const flatOut = (g) => { const s = g.terrain.zoneStart - g.truck.getPosition().x, v = g.speed(); return s < v * v / 10 + 2 ? { brake: v > 0.3 } : { gas: true }; };
+  for (const d of SH.SPEEDWAY) {
+    const runs = [7, 8, 10, 12, 14].map((v) => race(d, (g) => SH.botInput(g, v)).r);
+    const rivals = runs[1].race.rivals, cells = runs.map((r) => (r.status === "done" ? "P" + r.race.place + " " + r.race.time.toFixed(0) + "s" : "lost").padEnd(10));
+    const errs = [];
+    if (rivals.some((x) => x.time == null)) errs.push("a rival lost its trophy");
+    if (runs[1].status !== "done") errs.push("careful 8 m/s loses the trophy");
+    if (!runs.some((r) => r.race.place === 1)) errs.push("no careful driver wins");
+    if (runs[0].race.place === 1) errs.push("7 m/s wins: too easy");
+    if (race(d, flatOut).r.status !== "done") flatLosses++;
+    bad += errs.length;
+    console.log(d.id.padEnd(18), cells.join(""), "rivals", rivals.map((x) => x.name.split(" ")[0] + " " + x.time + "s").join(", "), errs.length ? "FAIL: " + errs.join("; ") : "");
+  }
+  if (!flatLosses) { bad++; console.log("Speedway too easy: flat-out keeps the trophy on every track"); }
+  else console.log("Flat-out loses the trophy on", flatLosses, "of", SH.SPEEDWAY.length, "tracks");
+  const d = SH.SPEEDWAY[1], { g, r: a } = race(d, (gg) => SH.botInput(gg, 10));
+  const b = SH.ghostPath({ delivery: d, truck: "pickup", upgrades: up }, g.rec).report;
+  const same = a.status === b.status && Math.abs(a.time - b.time) < 1e-9 && a.race.place === b.race.place && a.race.boosts === b.race.boosts && a.race.slip === b.race.slip;
+  if (!same) bad++;
+  console.log(d.id.padEnd(18), same ? "ghost replays exactly (place " + a.race.place + ", boosts " + a.race.boosts + ", slipstream " + a.race.slip + "s)" : "GHOST DIFFERS");
+  console.log("speedway failing", bad);
+  process.exitCode = bad ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -524,6 +556,7 @@ else if (mode === "topup") topup();
 else if (mode === "lasso") lasso();
 else if (mode === "side") side();
 else if (mode === "downhill") downhill();
+else if (mode === "speedway") speedway();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }

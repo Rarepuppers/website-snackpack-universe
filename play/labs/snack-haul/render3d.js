@@ -138,6 +138,14 @@ function doorDecal(text, color) {
 }
 
 const GHOST_Z = -2.2;
+// Snack Speedway rivals: lanes behind your truck, and each racer's look.
+const RIVAL_Z = [-1.9, -3.6, -5.3];
+const RIVAL_LOOK = {
+  "Dash Dalloway": { paint: ["#ff8a2a", "#2d1b0c"], driver: "booklava", helmet: "#ff8a2a", tag: "#ff8a2ae0" },
+  "Penny Piston": { paint: ["#e2b13c", "#2f6b5a"], driver: "waffle", helmet: "#3fa58a", tag: "#2f8f74e0" },
+  "Miles Midnight": { paint: ["#4a3a8c", "#f2c94c"], driver: "barkbq", helmet: "#7a4fd0", tag: "#5b45a8e0" },
+  "Rusty Rolls": { paint: ["#b8693a", "#3a2a22"], driver: "corgi", helmet: "#c94a3a", tag: "#a8502ce0" }
+};
 function kitMesh(kit, shadows, glowing = false) {
   const material = glowing ? new THREE.MeshBasicMaterial({ vertexColors: true }) :
     new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .75 });
@@ -377,8 +385,15 @@ function buildTruck(spec, rail, quality, look = {}, driving = false) {
 
   // The driver: the Corgi from the SnackPack cast.
   const dx = spec.id === "buggy" ? cx + 0.02 : cx - 0.05, dy = spec.id === "hauler" ? 1.22 : spec.id === "buggy" ? 0.98 : 0.94;
-  let driver = model("driver/" + (look.driver || "corgi") + "_driver") || model("driver/corgi_driver");
+  // Snack Speedway: the driver wears a racing helmet in the truck's paint, on the
+  // Speedway variant of the driver (it has a separate head and a helmet_mount).
+  let driver = (look.helmet && model("driver/" + (look.driver || "corgi") + "_speedway")) || model("driver/" + (look.driver || "corgi") + "_driver") || model("driver/corgi_driver");
   if (driver) driver.position.copy(seat || new THREE.Vector3(dx, dy, 0.35));
+  const mount = look.helmet && driver && driver.getObjectByName && driver.getObjectByName("helmet_mount"), helmet = mount && model("driver/helmet");
+  if (helmet) {
+    helmet.traverse((o) => { if (o.isMesh && o.material.name === "paint") { o.material = o.material.clone(); o.material.color.set(look.helmet); } if (o.isMesh) o.castShadow = quality.shadows; });
+    mount.add(helmet);
+  }
   else {
     const drv = new Kit();
     drv.add(blob(0.2, 2), "#e8a050", m(dx, dy, 0.35));
@@ -877,7 +892,7 @@ export class World3D {
       if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((mat) => { if (mat.map && !Object.values(texCache).includes(mat.map)) mat.map.dispose(); if (mat !== texCache.crateMat) mat.dispose(); });
     });
     this.scene.clear();
-    this.sideActors = null;
+    this.sideActors = null; this.rivalModels = null;
     this.cargo = []; this.rope = null; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
   }
 
@@ -1147,6 +1162,7 @@ export class World3D {
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
     this.buildGhost(q);
+    this.buildRivals(q, game);
     this.cargo = game.cargo.map((c) => { const g = buildCargo(c.type, q, c.id); scene.add(g); return { info: c, group: g, age: 0, wob: 0 }; });
 
     // Coins
@@ -1278,6 +1294,9 @@ export class World3D {
       stand("road/warning_sign", sh.at - 14, -3.1);
       for (let x = sh.at - 6; x < sh.at + 2; x += 4) lay("road/guardrail_kit", x - 2, x + 2, -2.9);
     });
+    // Snack Speedway: the track's kit (county, speedway or night).
+    const raceKit = game.delivery.race ? "speedway_" + game.delivery.id.slice(9) : null;
+    if (raceKit) this.buildRaceDressing(game, raceKit, stand);
     // Authored pieces repeated along the road share one draw call each.
     const planks = [], posts = [], humps = [];
     const plankGeo = instanceGeometry("road/bridge_plank"), postGeo = instanceGeometry("road/bridge_post"), humpGeo = instanceGeometry("road/speed_bump");
@@ -1318,7 +1337,12 @@ export class World3D {
         [f.x0, f.x1].forEach((x) => [-2.6, 2.6].forEach((z) => { if (postGeo) posts.push(m(x, SH.heightAt(t, x), z)); else post(x, 2.4, "#6d4a2c", z); }));
           } else if (f.type === "wind") {
         [f.x0, f.x1].forEach((x) => { if (stand("road/wind_sock", x, -3.2)) return; post(x, 4, "#f2f2ee", -3.2); for (let i = 0; i < 4; i++) kit.add(box(0.45, 0.42 - i * 0.07, 0.42 - i * 0.07), i % 2 ? "#ffffff" : "#ff7a2f", m(x - 0.3 - i * 0.45, SH.heightAt(t, x) + 3.8 - i * 0.06, -3.2)); });
+      } else if (f.type === "boost") {
+        // Snack Speedway boost pad: the track's own, or a glowing chevron strip.
+        if (raceKit && lay("road/" + raceKit + "_boost_pad", f.x0, f.x1)) return;
+        strip(glow, f.x0, f.x1, "#ffd23a", 0.04, 2.6);
       } else if (f.type === "ramp") {
+        if (raceKit) stand("road/" + raceKit + "_jump_banner", f.x0 + 2, 0);
         for (let i = 0; i < 3; i++) kit.add(box(0.5, 0.06, 4.4), i % 2 ? "#2a2a2e" : "#ffcf3a", m(f.x0 + 1.5 + i * 1.3, SH.heightAt(t, f.x0 + 1.5 + i * 1.3) + 0.04, 0, 0, 0, 0.12 + i * 0.1));
       } else if (f.type === "pickup") {
         strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
@@ -1648,6 +1672,72 @@ export class World3D {
     this.ghostModel = gm;
   }
 
+  // Snack Speedway dressing: a start arch, a lap board at each lap line, the pit
+  // wall and grandstands by the line, barriers along the far side and floodlights.
+  buildRaceDressing(game, kit, stand) {
+    const t = game.terrain, d = game.delivery, S0 = 18;
+    stand("road/start_arch", S0, 0);
+    for (let k = 1; k < d.laps; k++) {
+      const x = S0 + k * d.lap, board = model("road/" + kit + "_lap_board");
+      if (!board) continue;
+      const sign = board.getObjectByName("sign"), text = "LAP " + (k + 1) + "/" + d.laps;
+      if (sign) {
+        const map = canvasTex(256, 128, (c, w, h) => { c.fillStyle = "#1d1a24"; c.fillRect(0, 0, w, h); c.fillStyle = "#ffd23a"; c.font = "900 62px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(text, w / 2, h / 2 + 3, w - 16); });
+        sign.traverse((o) => { if (o.isMesh) o.material = new THREE.MeshBasicMaterial({ map }); });
+      }
+      board.position.set(x - 3, SH.heightAt(t, x - 3), -6.6); this.scene.add(board);
+    }
+    [S0 - 8, t.zoneStart + 8].forEach((x) => { stand("road/" + kit + "_pit_wall", x, -6.4); stand("road/grandstand", x + 6, -9.5); });
+    for (let x = t.zoneEnd - 4; x > t.zoneEnd - 12; x -= 0.8) stand("road/tyre_wall", x + 6, 0);
+    const lane = (name, every, z) => {
+      const geo = instanceGeometry("road/" + name);
+      if (!geo) return;
+      const list = [];
+      for (let x = S0; x < t.zoneStart; x += every) { const ya = SH.heightAt(t, x - 1.5), yb = SH.heightAt(t, x + 1.5); list.push(m(x, (ya + yb) / 2, z, 0, 0, Math.atan2(yb - ya, 3))); }
+      // In chunks of 12, each culled on its own, so only the stretch on screen is drawn.
+      const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 });
+      for (let c = 0; c < list.length; c += 12) {
+        const part = list.slice(c, c + 12), mesh = new THREE.InstancedMesh(geo, mat, part.length);
+        part.forEach((mx, i) => mesh.setMatrixAt(i, mx));
+        mesh.computeBoundingSphere(); mesh.castShadow = this.quality.shadows;
+        this.scene.add(mesh);
+      }
+    };
+    lane(kit + "_barrier", 3.6, -6.4);
+    lane(kit + "_floodlight", 36, -7.6);
+    if (kit === "speedway_speedway") lane("kerb", 3, 2.5);
+  }
+
+  // Snack Speedway: the three rivals race in lanes behind you, solid, each with its
+  // own paint, driver, helmet and trophy crate, and a name tag.
+  buildRivals(q, game) {
+    this.rivalModels = (game.rivals || []).map((rg, i) => {
+      const r = rg.racer, lk = RIVAL_LOOK[r.name] || RIVAL_LOOK["Dash Dalloway"], z = RIVAL_Z[i % RIVAL_Z.length];
+      const gm = buildTruck(rg.spec, rg.rail, q, lk, true);
+      this.scene.add(gm.root); gm.wheels.forEach((w) => this.scene.add(w));
+      const trophy = buildCargo(rg.cargo[0].type, q, 0); this.scene.add(trophy);
+      const text = r.name, map = canvasTex(512, 112, (x, w, h) => {
+        x.clearRect(0, 0, w, h); x.font = "800 52px sans-serif";
+        const tw = Math.min(w - 8, x.measureText(text).width + 56);
+        x.fillStyle = lk.tag; x.beginPath(); x.roundRect((w - tw) / 2, 10, tw, h - 20, (h - 20) / 2); x.fill();
+        x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(text, w / 2, h / 2 + 2, w - 40);
+      });
+      const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthTest: false, depthWrite: false }));
+      tag.scale.set(3.4, 0.74, 1); tag.renderOrder = 20; this.scene.add(tag);
+      return { rg, gm, trophy, tag, z };
+    });
+  }
+  syncRivals() {
+    (this.rivalModels || []).forEach(({ rg, gm, trophy, tag, z }) => {
+      const p = this.pose(rg.truck);
+      gm.root.position.set(p.x, p.y, z); gm.root.rotation.z = p.a;
+      rg.wheels.forEach((w, i) => { const wp = this.pose(w); gm.wheels[i].position.set(wp.x, wp.y, z); gm.wheels[i].rotation.z = wp.a; });
+      const c = rg.cargo[0], cp = this.pose(c.body);
+      trophy.visible = !c.lost; trophy.position.set(cp.x, cp.y, z); trophy.rotation.z = cp.a;
+      tag.position.set(p.x, p.y + 2.5, z);
+    });
+  }
+
   // Where a body is drawn: between its last two physics steps, by alpha, so motion
   // is even on 90 and 120 Hz screens. Bodies app.js has not snapped draw as they are.
   pose(b) {
@@ -1667,6 +1757,7 @@ export class World3D {
       if (gm.tag) gm.tag.position.set(gp.x, gp.y + 2.5, GHOST_Z);
       gg.wheels.forEach((w, i) => { const wp = this.pose(w); gm.wheels[i].position.set(wp.x, wp.y, GHOST_Z); gm.wheels[i].rotation.z = wp.a; });
     }
+    this.syncRivals();
     const model = this.truckModel, truck = game.truck, p = this.pose(truck);
     model.root.position.set(p.x, p.y, 0);
     model.root.rotation.z = p.a;

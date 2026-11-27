@@ -267,3 +267,7 @@ img.face { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
 .nextup b { font-size: .7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--sun); }
 @media (max-height: 380px) { .nextup span:nth-of-type(n+2) { display: none; } }
 @media (max-width: 700px) { .nextup { display: none; } }
+/* Snack Speedway: rival faces on the menu, the field on the results card. */
+.customer .faces { display: flex; gap: 6px; margin-bottom: 6px; }
+ul.rivals { list-style: none; padding: 0; margin: 4px 0 8px; font-size: .9rem; opacity: .9; }
+ul.rivals li { display: flex; justify-content: space-between; gap: 12px; }

@@ -25,7 +25,7 @@
     canEvery: 110,
     passShare: 0.5,
     coinValue: 1,
-    cargoPay: { mail: 20, tyre: 10, toolbox: 12, coolant: 11, crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12, baguette: 9, cheese: 12, pizza: 7, soda: 9 },
+    cargoPay: { trophy: 25, mail: 20, tyre: 10, toolbox: 12, coolant: 11, crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12, baguette: 9, cheese: 12, pizza: 7, soda: 9 },
     baguetteDensity: 0.45,         // light, long loaves
     baguetteGrip: 0.55,            // crust on crate: steep climbs slide them off; Straps 1 (the farm gift) holds a start
     fizzPop: 1,                    // soda fizz that pops the crate; shake adds it, smooth driving bleeds it
@@ -55,6 +55,9 @@
     runawayTop: 1.55,              // Runaway Rig: the jammed engine drives towards this multiple of top speed
     runawayTorque: 0.9,            // and pulls this much harder than the pedal would
     surge: 1.6,                    // Gas in Runaway Rig: a kick of this many m/s
+    boostKick: 2.2,                // Snack Speedway: a boost pad's forward kick, m/s
+    slipTop: 1.1,                  // Snack Speedway: top speed in a rival's slipstream
+    slipGap: [1.5, 7],             // ...when the rival is this many metres ahead
     heatUp: 0.25,                  // brake heat gained per second of braking (1 = fade)
     heatDown: 0.35,                // and lost per second off the brake
     fadeSeconds: 1.5,              // brakes at half strength for this long after overheating
@@ -133,7 +136,7 @@
     ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
     ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
   ];
-  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21, gravel: 12, gate: 2, pothole: 1.5, truckstop: 14 };
+  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21, gravel: 12, gate: 2, pothole: 1.5, truckstop: 14, boost: 3 };
   // The seesaw bridge: a plank this long tips this far either way on a hinge.
   var SEESAW = { half: 4.5, tilt: 0.16, thick: 0.15, damp: 2 };
 
@@ -279,6 +282,7 @@
     if (type === "tyre") return { w: 0.54, h: 0.54, round: true };
     if (type === "toolbox") return { w: 0.5, h: 0.7 };
     if (type === "coolant") return { w: 0.5, h: 0.6 };
+    if (type === "trophy") return { w: 0.46, h: 0.5 };   // Snack Speedway: the trophy crate
     if (type === "cheese") return { w: 0.54, h: 0.54, round: true };
     if (type === "pizza") return { w: 0.62, h: 0.1 };
     if (type === "sack") return { w: 0.56, h: 0.5 };      // winter cargo, not yet in CARGO_TYPES
@@ -394,6 +398,8 @@
       { len: 13, amp: 0.55, ph: r() * 7 },
       { len: 5.5, amp: region.rough, ph: r() * 7 }
     ];
+    // Snack Speedway: every wave divides the lap, so each lap of the road is the same loop.
+    if (d.lap) layers.forEach(function (l) { l.len = d.lap / Math.max(1, Math.round(d.lap / l.len)); });
     var total = START_FLAT + d.len + END_FLAT, features = planFeatures(d);
     var pts = [], last = 0;
     function slopeAt(x) { return region.maxSlope * Math.min(d.long ? BALANCE.longSteep : 1, 0.65 + heatAt(d, x) * 0.4); }
@@ -667,12 +673,49 @@
       load: c.runaway.load.split("").map(function (ch) { return RUNAWAY_CARGO[ch]; }) }));
   });
 
+  // ════ Snack Speedway (ROADMAP 4.12) ═══════════════════════════════
+  // A closed track, three laps. A side-on road can't show an oval, so the road is
+  // one lap's loop laid three times: the same waves, kickers, boost pads and wet
+  // patches each lap. Race three rival bots at once (each its own world, stepped
+  // inside the race, so ghosts replay exactly); finish 1st to 4th with the trophy
+  // crate still on the bed. Boost pads kick; a rival 1.5 to 7 m ahead gives a
+  // slipstream (top speed +10%). `node dev/sim.js speedway`.
+  // SPEEDWAY-BEGIN
+  var SPEEDWAY_TRACKS = [
+    { id: "county", name: "County Fair Dirt Track", region: 1, light: "midday", lap: 230, heat: 0.45, seed: "speedway-county-A1",
+      boosts: [40, 150], kickers: [{at: 95, h: 0.5}], shapes: [{type: "rollers", at: 170, w: 36, n: 3, h: 1.1}], feats: [],
+      rivals: [{ name: "Rusty Rolls", truck: "tuktuk", v: 7, L: 1 }, { name: "Penny Piston", truck: "van", v: 8, L: 2 }, { name: "Dash Dalloway", truck: "pickup", v: 8.5, L: 2 }] },
+    { id: "speedway", name: "Snack Speedway", region: 0, light: "golden", lap: 260, heat: 0.35, seed: "speedway-tarmac-A1",
+      boosts: [30, 120, 200], kickers: [{at: 70, h: 0.55}, {at: 160, h: 0.6}], shapes: [{type: "hill", at: 215, w: 30, h: 2.5}], feats: [],
+      rivals: [{ name: "Penny Piston", truck: "van", v: 8.5, L: 3 }, { name: "Miles Midnight", truck: "hauler", v: 9, L: 3 }, { name: "Dash Dalloway", truck: "pickup", v: 9.5, L: 3 }] },
+    { id: "night", name: "Night Circuit", region: 5, light: "night", lap: 280, heat: 0.25, seed: "speedway-night-A1",
+      boosts: [35, 150, 205], kickers: [{at: 160, h: 0.5}], shapes: [{type: "rollers", at: 90, w: 40, n: 4, h: 1.0}], feats: [{type: "slick", at: 60, len: 24}, {type: "slick", at: 240, len: 18}],
+      rivals: [{ name: "Penny Piston", truck: "van", v: 8.5, L: 4 }, { name: "Miles Midnight", truck: "hauler", v: 9.5, L: 4 }, { name: "Dash Dalloway", truck: "pickup", v: 10, L: 4 }] }
+  ];
+  // SPEEDWAY-END
+  var RACE_LAPS = 3;
+  var SPEEDWAY = SPEEDWAY_TRACKS.map(function (c) {
+    var laps = [], feats = [], ramps = [], shapes = [];
+    for (var k = 0; k < RACE_LAPS; k++) {
+      var o = k * c.lap;
+      c.boosts.forEach(function (at) { feats.push({ type: "boost", at: o + at }); });
+      c.feats.forEach(function (f) { feats.push(Object.assign({}, f, { at: o + f.at })); });
+      c.kickers.forEach(function (r) { ramps.push({ at: o + r.at, h: r.h }); });
+      c.shapes.forEach(function (sh) { shapes.push(Object.assign({}, sh, { at: o + sh.at })); });
+      laps.push(o);
+    }
+    return { id: "speedway-" + c.id, track: "speedway", race: true, downhill: true, name: c.name, region: c.region, light: c.light, index: 3, len: c.lap * RACE_LAPS,
+      lap: c.lap, laps: RACE_LAPS, heat: c.heat, seed: c.seed, ramps: ramps, shapes: shapes, feats: feats, pickup: 0, feat: 0, rev: 1, event: null,
+      load: ["trophy"], rivals: c.rivals };
+  });
+
   // ════ Deliveries ═════════════════════════════════════════════════
   // The free game: all of Bakery Hills and the first roads of Dairy Dunes.
   var FREE_ROUTES = DELIVERIES.filter(function (d) { return d.region === 0 || d.id === "dunes-1" || d.id === "dunes-2"; }).map(function (d) { return d.id; });
+  FREE_ROUTES.push("speedway-county");
   function isFree(id) { return FREE_ROUTES.indexOf(id) >= 0; }
   function findDelivery(id) {
-    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || SIDE.filter(function (x) { return x.id === id; })[0] || DOWNHILL.filter(function (x) { return x.id === id; })[0] || null;
+    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || SIDE.filter(function (x) { return x.id === id; })[0] || DOWNHILL.filter(function (x) { return x.id === id; })[0] || SPEEDWAY.filter(function (x) { return x.id === id; })[0] || null;
   }
   // ════ Customers and Special Orders ══════════════════════════════
   // Each region has one customer. Stars in a region raise their reputation, and
@@ -960,7 +1003,7 @@
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "sack" ? 2.0 : type === "mail" ? BALANCE.mailDensity : type === "tyre" ? 1.4 : type === "toolbox" ? 1.5 : type === "coolant" ? 1.6 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
+        density: type === "sack" ? 2.0 : type === "mail" ? BALANCE.mailDensity : type === "tyre" ? 1.4 : type === "toolbox" ? 1.5 : type === "coolant" ? 1.6 : type === "trophy" ? 1.1 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
         friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? BALANCE.baguetteGrip : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
@@ -1007,8 +1050,14 @@
       brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false,
       clock: 0, hay: hay, seesaws: seesaws, crossings: crossings, honks: 0,
       lineTime: null, heat: 0, fadeUntil: -1, surges: 0, gates: 0,
-      snacks: pick.snacks || [], slot: null, effects: [], eaten: 0
+      snacks: pick.snacks || [], slot: null, effects: [], eaten: 0,
+      laps: [], boosts: 0, slip: false, slipTime: 0, usedPads: {}
     };
+    // Snack Speedway: three rival bots, each in its own world, stepped with this race.
+    g.rivals = d.race && !opts.rival ? d.rivals.map(function (r) {
+      var rg = createGame({ delivery: d, truck: r.truck, upgrades: rivalUpgrades(r.L), rival: true });
+      rg.racer = r; return rg;
+    }) : [];
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
     // Downhill courses run without fuel: the clock and the load are the test.
@@ -1016,7 +1065,7 @@
     var lastGas = false;
     // Downhill the brakes lean on the rear wheels, or a hard stop on a steep slope
     // pitches the truck over its nose.
-    var frontBrake = d.downhill ? BALANCE.downhillFrontBrake : 1;
+    var frontBrake = d.downhill && !d.race ? BALANCE.downhillFrontBrake : 1;
     var flipTimer = 0, stallTimer = 0, stopTimer = 0, loadTimer = 0, splash = 0;
     var need = d.long ? 1 : Math.ceil(g.total * BALANCE.passShare);
     var wasGrounded = true, dropTimer = 0;
@@ -1210,6 +1259,7 @@
 
     // One fixed physics step. input = { gas: bool, brake: bool }
     g.step = function (input) {
+      g.rivals.forEach(function (rg) { rg.step(rg.status === "driving" ? botInput(rg, rg.racer.v) : {}); });
       if (g.status !== "driving") { world.step(STEP); return; }
       g.time += STEP; g.clock += STEP;
       // Snacks: Eat empties the slot into a timed effect; ghosts record the press.
@@ -1252,6 +1302,7 @@
         lastGas = !!input.gas;
       } else if (gas && !brake) {
         var ts = rocket ? topSpeed * BALANCE.snackRocket.top : topSpeed, tq = rocket ? torque * BALANCE.snackRocket.torque : torque;
+        if (g.slip) ts *= BALANCE.slipTop;
         rearJoint.setMotorSpeed(-ts); rearJoint.setMaxMotorTorque(tq);
         frontJoint.setMotorSpeed(-ts); frontJoint.setMaxMotorTorque(tq * 0.5);
         g.fuel = Math.max(0, g.fuel - STEP * thirst);
@@ -1267,6 +1318,20 @@
         frontJoint.setMotorSpeed(0); frontJoint.setMaxMotorTorque(0.4);
       }
       var isGrounded = grounded();
+      if (d.race) {
+        // Boost pads kick once each; a rival just ahead pulls you along in its slipstream.
+        var px = truck.getPosition().x, pad = featureAt(terrain, px, "boost");
+        if (pad && isGrounded && !g.usedPads[pad.x0] && vx > 0.5) {
+          g.usedPads[pad.x0] = true; g.boosts += 1;
+          var bm = truck.getMass(), ba = truck.getAngle();
+          truck.applyLinearImpulse({ x: Math.cos(ba) * bm * BALANCE.boostKick, y: Math.sin(ba) * bm * BALANCE.boostKick }, truck.getWorldCenter(), true);
+          g.events.push({ type: "boost", x: px, y: truck.getPosition().y });
+        }
+        g.slip = g.rivals.some(function (rg) { var gap = rg.truck.getPosition().x - px; return gap > BALANCE.slipGap[0] && gap < BALANCE.slipGap[1]; });
+        if (g.slip) g.slipTime += STEP;
+        var nextLap = START_FLAT + (g.laps.length + 1) * d.lap;
+        if (g.laps.length < d.laps - 1 && px >= nextLap) { g.laps.push(g.time); g.events.push({ type: "lap", lap: g.laps.length + 1, x: px, y: truck.getPosition().y }); }
+      }
       if (!isGrounded) {
         if (gas && !brake) truck.applyTorque(BALANCE.airTorque * (spec.air || 1));
         else if (brake) truck.applyTorque(-BALANCE.airTorque * (spec.air || 1));
@@ -1504,6 +1569,20 @@
   }
 
   // ════ After a delivery ═══════════════════════════════════════════
+  // A race's finish: run each rival on to its line (it is the same bot, so this is
+  // where it would have been), then place by time. A rival that lost its trophy is out.
+  function raceResult(g) {
+    if (g.raceResult) return g.raceResult;
+    var d = g.delivery, mine = g.status === "done" && g.lineTime != null ? g.lineTime : null;
+    var rivals = g.rivals.map(function (rg) {
+      for (var n = 0; n < 60 * 240 && rg.status === "driving" && rg.lineTime == null; n++) rg.step(botInput(rg, rg.racer.v));
+      return { name: rg.racer.name, truck: rg.racer.truck, time: rg.lineTime != null && rg.live() > 0 ? Math.round(rg.lineTime * 10) / 10 : null };
+    });
+    var splits = g.laps.concat(mine != null ? [mine] : []), laps = splits.map(function (t, i) { return Math.round((t - (i ? splits[i - 1] : 0)) * 10) / 10; });
+    var place = mine == null ? 0 : 1 + rivals.filter(function (r) { return r.time != null && r.time < mine; }).length;
+    g.raceResult = { place: place, time: mine == null ? null : Math.round(mine * 10) / 10, laps: laps, bestLap: laps.length ? Math.min.apply(null, laps) : null, rivals: rivals, boosts: g.boosts, slip: Math.round(g.slipTime * 10) / 10 };
+    return g.raceResult;
+  }
   function report(g) {
     var clockTime = g.delivery.downhill && g.lineTime != null ? g.lineTime : g.time;
     var total = g.delivery.dropoffs || g.total, kept = g.delivery.dropoffs ? g.homes : g.live();
@@ -1538,8 +1617,11 @@
       if (medal) lines.push({ label: ["", "Bronze", "Silver", "Gold"][medal] + " time", coins: Math.round(BALANCE.expressPay * region.pay * medal / 3) });
       if (d.daily && !d.paid) lines.push({ label: "Daily delivery", coins: BALANCE.dailyPay });
     }
+    var race = d.race ? raceResult(g) : null;
+    if (race && race.place) lines.push({ label: ["", "1st place!", "2nd place", "3rd place", "4th place"][race.place], coins: Math.round([0, 60, 40, 25, 12][race.place] * region.pay) });
     if (coins) lines.push({ label: "Coins on the road", coins: coins });
     return {
+      race: race,
       status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, lassoUsed: !!g.lassoUsed, topup: !!d.topup, total: total, stars: stars, time: clockTime,
       surges: g.surges || 0, gates: g.gates || 0, eaten: g.eaten || 0, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
@@ -1907,7 +1989,7 @@
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
     heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng,
     routePreview: routePreview, medalTimes: medalTimes,
-    DOWNHILL: DOWNHILL, DOWNHILL_COURSES: DOWNHILL_COURSES, runawayInput: runawayInput,
+    SPEEDWAY: SPEEDWAY, SPEEDWAY_TRACKS: SPEEDWAY_TRACKS, DOWNHILL: DOWNHILL, DOWNHILL_COURSES: DOWNHILL_COURSES, runawayInput: runawayInput,
     SIDE: SIDE, SIDE_ROADS: SIDE_ROADS, SIDE_OPEN: SIDE_OPEN, sideTrack: sideTrack, sideStars: sideStars, duckState: duckState, SEESAW: SEESAW
   };
 });
