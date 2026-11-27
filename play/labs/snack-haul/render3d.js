@@ -481,7 +481,10 @@ function fillCargo(group, name, quality) {
   });
   return true;
 }
-const DAMAGED = { eggs: "_broken", cake: "_ruined", icecream: "_melted", present: "_crushed", pudding: "_ruined" };
+const DAMAGED = { eggs: "_broken", cake: "_ruined", icecream: "_melted", present: "_crushed", pudding: "_ruined",
+  mail: "_torn", tyre: "_flat", toolbox: "_spilled", coolant: "_burst" };
+// Downhill cargo never "breaks"; it shows its damaged model once it falls off.
+const DAMAGED_ON_LOSS = new Set(["mail", "tyre", "toolbox", "coolant"]);
 
 function buildCargo(type, quality, id = 0) {
   const group = new THREE.Group(), S = SH.DIM.crate - 0.02, zs = [-0.29, 0.29];
@@ -1189,13 +1192,14 @@ export class World3D {
       scene.add(o);
       return true;
     };
-    if (!place("road/depot", t.total + 4.5, zy, 0)) {
+    const downhill = game.delivery.downhill;
+    if (!(game.delivery.runaway && place("road/pit_garage", t.total + 6, SH.heightAt(t, t.total), -0.5)) && !place("road/depot", t.total + 4.5, zy, 0)) {
       depot.add(box(12, 6.4, 10), "#efe2c6", m(dx, zy + 3.2, 0));
       depot.add(box(12.6, 0.5, 10.6), "#b5482f", m(dx, zy + 6.6, 0));
       depot.add(box(0.9, 5.4, 7), "#463225", m(dx - 6, zy + 2.7, 0));
       for (let i = 0; i < 8; i++) depot.add(box(1.9, 0.18, 1.2), i % 2 ? "#e0483c" : "#fff6e6", m(dx - 7.1, zy + 4.8 + 0, -4.2 + i * 1.2, 0, 0, 0.5));
     }
-    if (!place("road/zone_gate", t.zoneStart, zy, 0)) {
+    if (!place(downhill ? "road/start_arch" : "road/zone_gate", t.zoneStart, zy, 0)) {
       depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, -3.2));
       depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, 3.2));
       depot.add(box(0.5, 1, 6.6), "#e0483c", m(t.zoneStart, zy + 10.6, 0));
@@ -1242,6 +1246,21 @@ export class World3D {
       this.scene.add(o);
       return true;
     };
+    // An authored piece laid along the road between x0 and x1, tilted to the slope.
+    const lay = (name, x0, x1, z = 0) => {
+      const o = model(name);
+      if (!o) return false;
+      const ya = SH.heightAt(t, x0), yb = SH.heightAt(t, x1);
+      o.position.set((x0 + x1) / 2, (ya + yb) / 2, z); o.rotation.z = Math.atan2(yb - ya, x1 - x0);
+      o.traverse((c) => { if (c.isMesh) c.receiveShadow = true; });
+      this.scene.add(o);
+      return true;
+    };
+    // Downhill cliffs: a warning sign before the edge and guardrail along the lip.
+    if (game.delivery.downhill) (t.shapes || []).filter((sh) => sh.type === "drop").forEach((sh) => {
+      stand("road/warning_sign", sh.at - 14, -3.1);
+      for (let x = sh.at - 6; x < sh.at + 2; x += 4) lay("road/guardrail_kit", x - 2, x + 2, -2.9);
+    });
     // Authored pieces repeated along the road share one draw call each.
     const planks = [], posts = [], humps = [];
     const plankGeo = instanceGeometry("road/bridge_plank"), postGeo = instanceGeometry("road/bridge_post"), humpGeo = instanceGeometry("road/speed_bump");
@@ -1259,11 +1278,13 @@ export class World3D {
         const x = (f.x0+f.x1)/2;
         if (!stand("winter/drift",x,0)) kit.add(blob(1,2),"#eef4fb",m(x,SH.heightAt(t,x)-.16,0,0,0,0,3.8,.37,2.2));
       } else if (f.type === "gravel") {
+        if (lay("road/gravel_bed", f.x0, f.x1)) return;
         // A gravel bed with a sand berm at its far end.
         strip(kit, f.x0, f.x1, "#9b8a74", 0.03, 4.6);
         for (let x = f.x0 + 0.4; x < f.x1; x += 0.9) kit.add(blob(0.09, 0), "#7d6e5c", m(x, SH.heightAt(t, x) + 0.06, ((x * 7.3) % 3) - 1.5));
         kit.add(blob(1, 1), "#c9b38a", m(f.x1 + 0.6, SH.heightAt(t, f.x1) - 0.1, 0, 0, 0, 0, 1.2, 0.35, 2.4));
       } else if (f.type === "gate") {
+        if (stand("road/speed_arch", f.x0, 0)) return;
         // A speed gate: posts and a lit bar over the road.
         const y = SH.heightAt(t, f.x0);
         [-2.6, 2.6].forEach((z) => kit.add(box(0.22, 5, 0.22), "#e8e0cc", m(f.x0, y + 2.5, z)));
@@ -1383,6 +1404,8 @@ export class World3D {
     });
     // Road snacks: a bobbing treat in a ring; the Truck Stop: a kiosk and a mat.
     actors.snacks = (game.snacks || []).map((sn) => {
+      const authored = model("road/snack_" + sn.kind);
+      if (authored) { authored.position.set(sn.x, sn.y, 0); this.scene.add(authored); return { sn, mesh: authored, y: sn.y }; }
       const k = new Kit(), c = sn.kind === "rocket" ? "#6b3a1e" : "#ff9fd0";
       k.add(new THREE.TorusGeometry(0.42, 0.06, 6, 18), "#ffc94d");
       k.add(sn.kind === "rocket" ? box(0.32, 0.46, 0.2) : blob(0.24, 1), c);
@@ -1391,11 +1414,14 @@ export class World3D {
     });
     t.features.forEach((f) => {
       if (f.type === "pothole") {
-        const x = (f.x0 + f.x1) / 2;
+        const x = (f.x0 + f.x1) / 2, o = model("road/pothole");
+        if (o) { const ya = SH.heightAt(t, f.x0), yb = SH.heightAt(t, f.x1); o.position.set(x, SH.heightAt(t, x) + 0.01, 0); o.rotation.z = Math.atan2(yb - ya, f.x1 - f.x0); this.scene.add(o); return; }
         kit.add(new THREE.CylinderGeometry(0.75, 0.75, 0.04, 12), "#3a2a20", m(x, SH.heightAt(t, x) + 0.02, 0, 0, 0, 0, 1, 1, 2.2));
       } else if (f.type === "truckstop") {
         const y = SH.heightAt(t, f.x0), cx = (f.x0 + f.x1) / 2;
         kit.add(box(f.x1 - f.x0, 0.04, 3.4), "#c94a3a", m(cx, y + 0.03, 0));
+        const stop = model("road/truck_stop");
+        if (stop) { stop.position.set(cx, y, -4.6); stop.traverse((c) => { if (c.isMesh) c.castShadow = this.quality.shadows; }); this.scene.add(stop); return; }
         kit.add(box(4.2, 2.6, 2.6), "#f2e2c4", m(cx, y + 1.3, -5.2));
         kit.add(box(4.6, 0.3, 3), "#d6342c", m(cx, y + 2.75, -5.0));
         kit.add(box(1.6, 1, 0.1), f.special === "rocket" ? "#6b3a1e" : "#ff9fd0", m(cx, y + 3.5, -3.6));
@@ -1672,7 +1698,7 @@ export class World3D {
         const s = 1 + Math.sin(c.wob) * Math.min(0.09, 0.02 + v * 0.008);
         c.group.scale.set(1 / s, s, 1 / s);
       }
-      if ((c.info.broken || c.info.ruined) && !c.swapped) {
+      if ((c.info.broken || c.info.ruined || (c.info.lost && DAMAGED_ON_LOSS.has(c.group.userData.type))) && !c.swapped) {
         c.swapped = true;
         const type = c.group.userData.type;
         if (DAMAGED[type]) fillCargo(c.group, "cargo/cargo_" + type + DAMAGED[type], this.quality);

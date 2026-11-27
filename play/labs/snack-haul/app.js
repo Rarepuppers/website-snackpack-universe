@@ -517,13 +517,17 @@ function snapBodies(g) {
   const keep = (b) => { const p = b.getPosition(); b.px = p.x; b.py = p.y; b.pa = b.getAngle(); };
   keep(g.truck); g.wheels.forEach(keep); g.cargo.forEach((c) => keep(c.body));
 }
-const LOST_SOUND = { melon: "melon_splat", jelly: "jelly_boing", milk: "milk_clink" };
+const LOST_SOUND = { melon: "melon_splat", jelly: "jelly_boing", milk: "milk_clink", coolant: "drum_hiss" };
 // Sounds that follow the road rather than an engine event: logs under the wheels,
 // and ice cream starting to melt once the gold time has gone.
 function roadSounds(g) {
   const x = g.truck.getPosition().x;
   const logs = state.logs || (state.logs = g.rocks.filter((r) => r.kind === "log").map((r) => r.x));
   while (logs.length && logs[0] < x - 1) { logs.shift(); if (g.grounded() && Math.abs(g.speed()) > 1.5) play("log_bump", 0.55, 0.9 + Math.random() * 0.2); }
+  // Downhill: a thunk in each pothole, a crunch into each gravel bed, a squeal from hot brakes.
+  const ruts = state.ruts || (state.ruts = g.terrain.features.filter((f) => f.type === "pothole" || f.type === "gravel").map((f) => ({ x: f.type === "pothole" ? (f.x0 + f.x1) / 2 : f.x0, gravel: f.type === "gravel" })).sort((a, b) => a.x - b.x));
+  while (ruts.length && ruts[0].x < x) { const r = ruts.shift(); if (g.grounded() && Math.abs(g.speed()) > 2) play(r.gravel ? "gravel_crunch" : "pothole_thunk", r.gravel ? 0.75 : 0.6, 0.9 + Math.random() * 0.2); }
+  if (g.delivery.runaway && g.brakeOn && (g.heat || 0) > 0.55 && Math.abs(g.speed()) > 4 && g.time - (state.squeal || -9) > 2.2) { state.squeal = g.time; play("brake_squeal", 0.35 + g.heat * 0.3, 0.95 + g.heat * 0.15); }
   if (!state.melted && g.time > g.par && g.cargo.some((c) => c.type === "icecream" && !c.lost && !c.broken)) { state.melted = true; play("icecream_melt", 0.6); toast("The ice cream is melting!", 1100); }
 }
 // Where each load was lost, as a tick on the progress bar, and in words on the results card.
@@ -557,7 +561,7 @@ function drainEvents(g) {
     else if (ev.type === "dropoff") { play("present_drop",.75) || (beep(680,.14,"sine",.08),beep(910,.18,"triangle",.06,.05)); toast("Porch delivered!",1000); }
     else if (ev.type === "missedDrop") { beep(247,.22,"triangle",.06); toast("Passed a porch",950); }
     else if (ev.type === "missed") { beep(247, 0.3, "triangle", 0.07); toast("Missed the pickup!", 1200); }
-    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : "Cake toppled!", 900); }
+    else if (ev.type === "ruined") { play("cake_squash", 0.8); toast(ev.cargo==="pudding" ? "Pudding toppled!" : ev.cargo==="toolbox" ? "Toolbox spilled!" : "Cake toppled!", 900); }
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
     else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
@@ -631,14 +635,14 @@ function startDelivery(delivery) {
   // Daily, the Weekly Cup, Test Drives or Winter Haul, where everyone drives the same setup.
   const lasso = lassoAllowed(delivery) && save.lassoAuto !== false && (save.lassos || 0) > 0;
   const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId, lasso });
-  state.logs = null; state.melted = false; state.losses = [];
+  state.logs = state.ruts = null; state.squeal = -9; state.melted = false; state.losses = [];
   document.querySelectorAll(".progress b").forEach((el) => el.remove());
   state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0; state.slow = 0;
   state.input.gas = state.input.brake = false;
   syncPedals();
   engineLoops(truckId);
   const region=SH.regionFor(delivery.region);
-  setMusic("music_" + region.id);
+  setMusic(delivery.runaway && Assets.sounds["music/music_runaway"] ? "music_runaway" : "music_" + region.id);
   roadLoops(region.id);
   state.hudLoad = state.hudCoins = state.hudClock = null;
   world.look = look(truckId);
@@ -955,6 +959,7 @@ function finishDelivery(g) {
   if (r.medal) setTimeout(() => play("medal", 0.7), 1150);
   if (goals.length) setTimeout(() => play("goal", 0.7), 1500);
   if (done.length) setTimeout(() => play("contract_done", 0.7), 1800);
+  if (d.runaway && r.status === "done") play("extinguisher_puff", 0.7); // Gus cools the brakes
   if (r.status === "done" || d.long) play("delivered", 0.9) || [523, 659, 784, 1047].forEach((f, i) => beep(f, 0.24, "triangle", 0.07, i * 0.1));
   else play("failed", 0.8) || [294, 247].forEach((f, i) => beep(f, 0.3, "triangle", 0.07, i * 0.16));
   $("drive").hidden = true;
@@ -1386,8 +1391,8 @@ function longScreen() {
     if (routePaid(d)) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-go="${d.id}"${regionOpen(d.region) ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(d.name)}</b><small>${best ? "Best " + best + "s" + (md ? " · " + ["", "bronze", "silver", "gold"][md] : "") : regionOpen(d.region) ? esc(r.name) : "Reach " + esc(r.name)}</small></button>`;
   }).join("");
-  const downhill = `<h3 class="small">Downhill Dash</h3><p class="sub">${save.trucks.includes("billy") ? "The Billy Cart is yours: pick it in the garage. " : "Gold on " + DASH_GOLDS_FOR_BILLY + " courses wins the Billy Cart (" + dashGolds() + " so far). "}A race to the valley with one mail sack. Snacks on the road: tap the slot to eat. Mind the potholes. Lift off the gas to tuck: you go faster. The clock stops at the line; then pull up before the wall.</p><div class="customer"><div class="orders">${hill("dash")}</div></div>
-    <h3 class="small">Runaway Rig</h3>${artUrl("runaway_bg") ? `<div class="banner" style="background-image:url('${artUrl("runaway_bg")}')"></div>` : ""}<p class="sub">The throttle's jammed and Gus Gasket is waiting at the bottom with an extinguisher. Brake in short bursts: hold it and the brakes fade. Gas is a surge that slides the load back off the cab. Hit the speed gates inside their window.</p><div class="customer"><div class="orders">${hill("runaway")}</div></div>`;
+  const downhill = `<h3 class="small">Downhill Dash</h3>${artUrl("dash_bg") ? `<div class="banner" style="background-image:url('${artUrl("dash_bg")}')"></div>` : ""}<p class="sub">${save.trucks.includes("billy") ? "The Billy Cart is yours: pick it in the garage. " : "Gold on " + DASH_GOLDS_FOR_BILLY + " courses wins the Billy Cart (" + dashGolds() + " so far). "}A race to the valley with one mail sack. Snacks on the road: tap the slot to eat. Mind the potholes. Lift off the gas to tuck: you go faster. The clock stops at the line; then pull up before the wall.</p><div class="customer"><div class="orders">${hill("dash")}</div></div>
+    <h3 class="small">${ico("mode_runaway")} Runaway Rig</h3>${artUrl("runaway_bg") ? `<div class="banner" style="background-image:url('${artUrl("runaway_bg")}')"></div>` : ""}<p class="sub">The throttle's jammed and Gus Gasket is waiting at the bottom with an extinguisher. Brake in short bursts: hold it and the brakes fade. Gas is a surge that slides the load back off the cab. Hit the speed gates inside their window.</p><div class="customer"><div class="orders">${hill("runaway")}</div></div>`;
   ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}${downhill}<h3 class="small">Top-Up Run</h3><p class="sub">Start with two crates. Every stop on the way adds one more, and the road keeps climbing. Three loads lost ends the run.</p><div class="customer"><div class="orders">${tops}</div></div>
     <h3 class="small">Long Haul</h3><p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
 }
