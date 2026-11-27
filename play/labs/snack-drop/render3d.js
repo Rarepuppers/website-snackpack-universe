@@ -1,7 +1,7 @@
 // Snack Drop renderer: draws the 2D physics plane in 3D with Three.js.
-// Every model is code-built for the prototype. Blender GLBs replace them in
-// phase 2 through the same per-tier template, so nothing else has to change.
+// Authored Blender GLBs and code-built fallbacks share the per-tier templates.
 import * as THREE from "./vendor/three.module.min.js";
+import { hasModel, model } from "./assets.js";
 
 const SD = window.SnackDrop;
 const { CRATE, TIERS } = SD;
@@ -175,6 +175,11 @@ const BUILD = {
   }
 };
 
+function withShadows(group) {
+  group.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  return group;
+}
+
 export class Renderer {
   constructor(canvas) {
     this.canvas = canvas;
@@ -188,7 +193,8 @@ export class Renderer {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#f6e3c8");
     this.camera = new THREE.PerspectiveCamera(30, 1, 1, 200);
-    this.templates = TIERS.map((t) => { const m = BUILD[t.id](t); m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); return m; });
+    this.fallbacks = TIERS.map((t) => withShadows(BUILD[t.id](t)));
+    this.templates = this.fallbacks.slice();
     this.meshes = new Map();
     this.pops = new Map();
     this.crumbs = [];
@@ -208,23 +214,27 @@ export class Renderer {
     sun.shadow.bias = -0.0008;
     s.add(sun, sun.target);
 
+    this.kitchenGroup = new THREE.Group();
+    this.crateGroup = new THREE.Group();
+    s.add(this.kitchenGroup, this.crateGroup);
+
     // Kitchen wall with soft tiles, and a counter top.
-    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat("#f3dcc0", { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; s.add(wall);
-    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat("#e6c9a6"), i * 1.6, 8, -3.19); l.castShadow = false; s.add(l); }
-    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat("#e6c9a6"), 0, -1 + j * 1.6, -3.19); l.castShadow = false; s.add(l); }
-    const counter = mesh(new THREE.BoxGeometry(40, 1, 8), mat("#9c6b43", { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0); s.add(counter);
+    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat("#f3dcc0", { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; this.kitchenGroup.add(wall);
+    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat("#e6c9a6"), i * 1.6, 8, -3.19); l.castShadow = false; this.kitchenGroup.add(l); }
+    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat("#e6c9a6"), 0, -1 + j * 1.6, -3.19); l.castShadow = false; this.kitchenGroup.add(l); }
+    const counter = mesh(new THREE.BoxGeometry(40, 1, 8), mat("#9c6b43", { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0); this.kitchenGroup.add(counter);
 
     // The crate: back boards, sides, floor. The front stays open.
     const wood = mat("#c8955c", { roughness: 0.85 }), dark = mat("#a7743f", { roughness: 0.85 });
     const depth = 2.0;
-    s.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), dark, 0, -Wl, 0));
+    this.crateGroup.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), dark, 0, -Wl, 0));
     for (let i = 0; i < 6; i++) {
       const board = mesh(new THREE.BoxGeometry(2 * H, ht / 6 - 0.06, 0.16), i % 2 ? wood : dark, 0, (i + 0.5) * ht / 6, -depth / 2 - 0.08);
-      s.add(board);
+      this.crateGroup.add(board);
     }
     [-1, 1].forEach((side) => {
-      s.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), wood, side * (H + Wl), ht / 2, 0));
-      const cap = mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), dark, side * (H + Wl), ht + Wl + 0.05, 0); s.add(cap);
+      this.crateGroup.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), wood, side * (H + Wl), ht / 2, 0));
+      const cap = mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), dark, side * (H + Wl), ht + Wl + 0.05, 0); this.crateGroup.add(cap);
     });
 
     // The line snacks must stay under.
@@ -254,6 +264,102 @@ export class Renderer {
     this.dist = Math.max(distH, distW);
     this.focusY = CRATE.height / 2 + 1.1;
     this.camera.updateProjectionMatrix();
+    if (this.gallery) this.drawGallery();
+  }
+
+  refreshTemplates() {
+    let changed = false;
+    TIERS.forEach((t, i) => {
+      const name = "snacks/snack_" + t.id;
+      if (this.templates[i] === this.fallbacks[i] && hasModel(name)) {
+        this.templates[i] = withShadows(model(name));
+        changed = true;
+      }
+    });
+    if (changed) {
+      for (const m of this.meshes.values()) this.scene.remove(m);
+      this.meshes.clear();
+      this.heldTier = this.nextTier = -1;
+      if (this.gallery) this.populateGallery();
+    }
+    for (const [key, name] of [["crate", "crates/crate_wood"], ["kitchen", "kitchens/kitchen_farmhouse"]]) {
+      if (this[key + "Model"] || !hasModel(name)) continue;
+      const stage = withShadows(model(name));
+      this[key + "Model"] = stage;
+      this[key + "Group"].visible = false;
+      this.scene.add(stage);
+    }
+    if (this.gallery) {
+      const anchor = this.kitchenModel?.getObjectByName("anchor_floor_r");
+      const name = "cameos/cameo_corgi-on-the-cob";
+      if (anchor && !this.gallery.corgi && hasModel(name)) {
+        this.gallery.corgi = withShadows(model(name));
+        anchor.getWorldPosition(this.gallery.corgi.position);
+        this.scene.add(this.gallery.corgi);
+      }
+      this.drawGallery();
+    }
+  }
+
+  startGallery() {
+    this.line.visible = this.guide.visible = this.held.visible = this.nextShow.visible = false;
+    for (const d of this.dashes) d.visible = false;
+    const objects = new THREE.Group();
+    this.scene.add(objects);
+    this.gallery = {
+      objects, camera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100),
+      outline: new THREE.LineBasicMaterial({ color: "#38232c", transparent: true, opacity: 0.88, depthTest: false }),
+    };
+    // Extend the crate floor for the proof display and add the upper row's shelf.
+    const wood = mat("#a7743f", { roughness: 0.85 });
+    this.scene.add(mesh(new THREE.BoxGeometry(10.1, 0.16, 2.3), wood, -1.2, -0.08, 2));
+    this.scene.add(mesh(new THREE.BoxGeometry(11.4, 0.16, 2.3), wood, 0, 3.02, 2));
+    this.populateGallery();
+    this.drawGallery();
+  }
+
+  populateGallery() {
+    const { objects, outline } = this.gallery;
+    objects.traverse((o) => { if (o.isLine) o.geometry.dispose(); });
+    objects.clear();
+    for (const [row, tiers] of [TIERS.slice(0, 7), TIERS.slice(7)].entries()) {
+      const gap = 0.26;
+      const width = tiers.reduce((sum, t) => sum + 2 * (t.r || t.w / 2), gap * (tiers.length - 1));
+      let x = -width / 2 - (row === 0 ? 1 : 0);
+      for (const t of tiers) {
+        const minX = t.points ? Math.min(...t.points.map((p) => p.x)) : -t.halfW;
+        const minY = t.points ? Math.min(...t.points.map((p) => p.y)) : -t.halfH;
+        const snack = this.templates[t.tier].clone();
+        snack.position.set(x - minX, row * 3.1 - minY, 2.19);
+        objects.add(snack);
+        let points = t.points;
+        if (t.shape === "circle") {
+          points = Array.from({ length: 80 }, (_, i) => {
+            const a = i / 80 * Math.PI * 2;
+            return { x: t.r * Math.cos(a), y: t.r * Math.sin(a) };
+          });
+        } else if (t.shape === "box") {
+          points = [[-t.halfW, -t.halfH], [t.halfW, -t.halfH], [t.halfW, t.halfH], [-t.halfW, t.halfH]].map(([x, y]) => ({ x, y }));
+        }
+        const geo = new THREE.BufferGeometry().setFromPoints(points.map(({ x, y }) => new THREE.Vector3(x, y, 0)));
+        const line = new THREE.LineLoop(geo, outline);
+        line.position.copy(snack.position);
+        line.renderOrder = 1;
+        objects.add(line);
+        x += (t.r ? 2 * t.r : t.w) + gap;
+      }
+    }
+  }
+
+  drawGallery() {
+    const { camera } = this.gallery;
+    const aspect = this.camera.aspect;
+    const h = Math.max(15.6, 12.5 / aspect), w = h * aspect;
+    Object.assign(camera, { left: -w / 2, right: w / 2, top: h / 2, bottom: -h / 2 });
+    camera.position.set(0, 6.4, 24);
+    camera.lookAt(0, 6.4, 0);
+    camera.updateProjectionMatrix();
+    this.renderer.render(this.scene, camera);
   }
 
   // Screen point to the game plane's x. Used for aiming.

@@ -1,0 +1,25 @@
+{
+ "version": "bc8fc984c3",
+ "files": [
+  "audio/sfx/drop_clack.ogg",
+  "audio/sfx/drop_soft.ogg",
+  "audio/sfx/merge_big.ogg",
+  "audio/sfx/merge_small.ogg",
+  "models/cameos/cameo_corgi-on-the-cob.glb",
+  "models/crates/crate_wood.glb",
+  "models/kitchens/kitchen_farmhouse.glb",
+  "models/snacks/snack_cake.glb",
+  "models/snacks/snack_cheese.glb",
+  "models/snacks/snack_cookie.glb",
+  "models/snacks/snack_donut.glb",
+  "models/snacks/snack_pizza.glb",
+  "ui/pause.webp",
+  "ui/snack_cake.webp",
+  "ui/snack_cheese.webp",
+  "ui/snack_cookie.webp",
+  "ui/snack_donut.webp",
+  "ui/snack_pizza.webp",
+  "ui/sound_off.webp",
+  "ui/sound_on.webp"
+ ]
+}
