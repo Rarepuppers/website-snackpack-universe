@@ -262,3 +262,8 @@ html.big-text .sheet, html.big-text .panel { font-size: 1.05em; }
 .snackslot .ico { width: 40px; height: 40px; }
 .pedals-swap .snackslot, .pedals-one .snackslot { left: auto; right: max(22px, env(safe-area-inset-right)); bottom: calc(max(14px, env(safe-area-inset-bottom)) + min(30vh, 130px) + 104px); }
 img.face { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
+/* Next up (Q16): the three closest rewards, top right under the counters (clear of the truck). */
+.nextup { position: absolute; right: max(18px, env(safe-area-inset-right)); top: calc(max(14px, env(safe-area-inset-top)) + 52px); max-width: min(300px, 36vw); background: #2b1d14cc; color: #fff3df; border-radius: 12px; padding: 7px 10px; font-size: .78rem; display: flex; flex-direction: column; gap: 2px; }
+.nextup b { font-size: .7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--sun); }
+@media (max-height: 380px) { .nextup span:nth-of-type(n+2) { display: none; } }
+@media (max-width: 700px) { .nextup { display: none; } }
