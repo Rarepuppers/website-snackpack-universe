@@ -45,6 +45,39 @@ const outline = tips.flatMap((tip, i) => [tip, valleys[i]]).map(coord).join(' ')
 const star = `<svg class="piece-star" viewBox="0 0 500 465" role="img" aria-label="A cutting template with 24 numbered pieces, including a round centre">
   <polygon points="${outline}"/>${pointCuts}${centreCuts}<circle cx="250" cy="250" r="22"/>${centreLabels}${number(centre, 24)}
 </svg>`;
+const paperStar = 'M0 -4 1.1 -1.3 4 -1.3 1.9 .5 2.7 3.5 0 1.8 -2.7 3.5 -1.9 .5 -4 -1.3 -1.1 -1.3Z';
+const parcelPapers = [
+  ['Stripes', '#edf4ec', '<path d="M14 13v22m8-22v22m8-22v22m8-22v22m8-22v22" stroke="#386a49" stroke-width="3"/>'],
+  ['Stars', '#28527b', [[17, 20], [31, 20], [45, 20], [24, 29], [38, 29]].map(([x, y]) =>
+    `<path d="${paperStar}" fill="#f4cd70" transform="translate(${x} ${y})"/>`).join('')],
+  ['Dots', '#9a454b', [[17, 20], [31, 20], [45, 20], [24, 29], [38, 29]].map(([x, y]) =>
+    `<circle cx="${x}" cy="${y}" r="2.4" fill="#fff"/>`).join('')],
+  ['Plain', '#dbc5a8', '<path d="M8 24h46m-23-11v22m0-22c-9-2-10-9-5-7 3 1 5 7 5 7m0 0c9-2 10-9 5-7-3 1-5 7-5 7" fill="none" stroke="#386a49" stroke-width="1.7"/>'],
+];
+const parcelFriends = [
+  ['Professor Hooten', '<path d="M10 32V13l8 4q13-9 26 0l8-4v19q-5 10-21 10T10 32Z"/><circle cx="23" cy="26" r="5"/><circle cx="39" cy="26" r="5"/><path d="m28 32 3 4 3-4"/>'],
+  ['Hen-Berry', '<path d="M13 36q-4-20 11-21c-3-8 5-10 7-4 4-7 12-3 10 5q5 4 5 10l8 3-8 5q-3 9-16 9-12 0-17-7Z"/><circle cx="39" cy="25" r="2"/>'],
+  ['Pork-ulele', '<path d="M12 32 9 14q8-1 13 4 9-5 18 0 5-5 13-4l-3 18q-2 10-19 10T12 32Z"/><ellipse cx="31" cy="33" rx="8" ry="5"/><path d="M21 26h2m16 0h2m-13 7h1m4 0h1"/>'],
+  ['Luckybug', '<path d="M24 18q-6-11-10-9m24 9q6-11 10-9"/><circle cx="31" cy="20" r="7"/><ellipse cx="31" cy="32" rx="14" ry="11"/><path d="M31 22v21"/><circle cx="24" cy="30" r="2"/><circle cx="38" cy="30" r="2"/><circle cx="26" cy="36" r="1.5"/><circle cx="36" cy="36" r="1.5"/>'],
+];
+const puzzleGrid = `<table class="parcel-grid" aria-label="Match each friend to one parcel">
+  <thead><tr><td></td>${parcelPapers.map(([label, fill, design]) => `<th scope="col">
+    <svg viewBox="0 0 62 48" aria-hidden="true"><rect x="8" y="13" width="46" height="22" rx="2" fill="${fill}" stroke="#211e1a"/>${design}</svg>${label}</th>`).join('')}</tr></thead>
+  <tbody>${parcelFriends.map(([friend, portrait]) => `<tr><th scope="row">
+    <svg viewBox="0 0 62 48" aria-hidden="true"><g fill="none" stroke="#211e1a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${portrait}</g></svg>${friend}</th>
+    <td></td><td></td><td></td><td></td></tr>`).join('')}</tbody>
+</table>`;
+const parcelPuzzle = `<section class="parcel-clues" aria-label="Four clues">
+  <h2>Four clues</h2><ol>
+    <li>Professor Hooten’s present is long.</li><li>Hen-Berry’s present is very heavy.</li>
+    <li>Pork-ulele’s present jingles.</li><li>Vincent wrapped Luckybug’s present and painted a paw print on it.</li>
+  </ol></section>${puzzleGrid}
+  <section class="parcel-tests" aria-label="Three tests">
+    <div><h2>Shape</h2><p>Stripes is long and thin. Stars and Dots are small boxes. Plain is a large box. Dots and Plain have paw prints.</p></div>
+    <div><h2>Sound</h2><p>Stars and Plain jingle. Stripes and Dots are silent.</p></div>
+    <div><h2>Weight</h2><p>Stars and Dots are light. Stripes is a bit heavier. Plain is the heaviest by far.</p></div>
+  </section>
+  <p class="parcel-answer"><strong>Answer</strong> · Professor Hooten: Stripes · Hen-Berry: Plain · Pork-ulele: Stars · Luckybug: Dots</p>`;
 const worksheet = [
   ['thank-you-leaves.pdf', 'Thank-you Leaves',
     'Write a name on each leaf. Colour and cut out the leaves, then put them on the branch.',
@@ -54,6 +87,8 @@ const worksheet = [
     `<svg class="jar" viewBox="0 0 190 210" aria-hidden="true"><g fill="none" stroke="#211e1a" stroke-width="2.5"><rect x="40" y="14" width="110" height="24" rx="7"/><path d="M49 38v15C49 67 20 66 20 90v83c0 18 12 24 25 24h100c13 0 25-6 25-24V90c0-24-29-23-29-37V38M40 26h110M49 52h92M37 91c0-8 8-10 13-13"/></g></svg><div class="slips">${slips}</div>`],
   ['twenty-four-piece-star.pdf', 'Twenty-Four Piece Star',
     'Cut one piece each day. The middle is yours.', star],
+  ['parcel-puzzle.pdf', 'Parcel Puzzle',
+    'Read the clues and use all three tests. Cross out parcels that can’t belong to each friend. Put one tick in each row and each column.', parcelPuzzle],
 ];
 
 const browser = await chromium.launch();
@@ -82,6 +117,22 @@ p { margin: 2mm 0 4mm; }
 .piece-star { display: block; width: 100%; margin: 12mm auto 0; }
 .piece-star polygon, .piece-star path, .piece-star circle { fill: none; stroke: #211e1a; stroke-width: 1.5; }
 .piece-star text { fill: #211e1a; font-size: 13px; text-anchor: middle; dominant-baseline: central; }
+.parcel-clues, .parcel-tests, .parcel-grid { break-inside: avoid; }
+.parcel-clues h2, .parcel-tests h2 { font: 700 15pt Fraunces, Georgia, serif; margin: 0 0 2mm; }
+.parcel-clues ol { margin: 0 0 6mm; padding-left: 6mm; }
+.parcel-clues li { margin-bottom: 1.5mm; padding-left: 2mm; }
+.parcel-grid { border-collapse: collapse; table-layout: fixed; width: 100%; text-align: center; }
+.parcel-grid th { font-size: 10.5pt; }
+.parcel-grid thead th { padding-bottom: 2mm; }
+.parcel-grid thead td { width: 47mm; }
+.parcel-grid svg { display: block; width: 12mm; height: 10mm; margin: 0 auto .6mm; }
+.parcel-grid tbody th { text-align: left; padding-right: 2mm; white-space: nowrap; }
+.parcel-grid tbody th svg { display: inline-block; vertical-align: middle; margin: 0 .8mm 0 0; width: 9mm; }
+.parcel-grid tbody td { border: 1pt solid #211e1a; height: 18mm; }
+.parcel-tests { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 6mm; }
+.parcel-tests div { border: 1pt solid #211e1a; border-radius: 2mm; padding: 3mm; }
+.parcel-tests p { font-size: 10.5pt; margin: 0; }
+.parcel-answer { transform: rotate(180deg); text-align: center; font-size: 9pt; margin: 35mm 0 0; }
 </style><header><h1>${title}</h1><p>${directions}</p></header><main>${body}</main></html>`);
     await page.goto(pathToFileURL(preview).href);
     await page.evaluate(() => document.fonts.ready);

@@ -261,6 +261,8 @@ function nextBlock(i) {
   const ev = eventForBook(book.slug);
   const isSummer = book.group === "summer-christmas";
   const partOf = isSummer ? '\n<p class="story-event-link">Part of <a href="/read/events/christmas/#summer-christmas">Summer Christmas</a>.</p>' : ev ? `\n<p class="story-event-link">Part of <a href="/read/events/${ev.id}/">${ev.heading}</a>: ${ev.timeline.length} books in the order they happen.</p>` : "";
+  const activity = ev?.endActivities?.[book.slug];
+  const activityLink = activity ? `\n<p class="story-event-link"><a href="${activity.href}" download>${activity.label}</a></p>` : "";
   const entries = castByBook.get(book.slug) ?? [];
   const selection = [...entries.filter(entry => entry.role === "lead"),
     ...entries.filter(entry => entry.role === "support")].slice(0, 3);
@@ -268,7 +270,7 @@ function nextBlock(i) {
   const escapeName = name => name.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const castLinks = selection.map(({ id }) => `<a href="/characters/${id}/">${escapeName(castNames.get(id))}</a>`).join(" · ");
   const cast = castLinks ? `\n<p class="story-cast"><strong>Meet the cast</strong> · ${castLinks}</p>` : "";
-  return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + cast + `\n${share}`;
+  return choices.map(({book:next,label}) => `<p class="story-next"><span class="eyebrow">${label}</span><a class="story-next-link" href="../${next.slug}/">${next.title} <span aria-hidden="true">→</span></a></p>`).join("\n") + partOf + activityLink + cast + `\n${share}`;
 }
 
 // The homepage section: a few books spread across the reading path, so the

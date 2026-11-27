@@ -24,6 +24,7 @@ export function readAdvent(slug) {
 }
 const released = timeline => timeline.filter(({ slug }) => originalRegistry[slug]);
 const publishedSlugs = (slugs) => slugs.filter(slug => originalRegistry[slug]);
+const parcelPuzzle = { href: "/read/events/christmas/parcel-puzzle.pdf", label: "Parcel Puzzle activity sheet" };
 
 export const READ_EVENTS = [
   {
@@ -49,6 +50,8 @@ export const READ_EVENTS = [
       ...released([
         { when: "The first snowy Saturday", slug: "biscuit-bouncer-and-the-great-sledge-race" },
         { when: "The longest night, 21 December", slug: "the-star-that-fell-on-the-longest-night" },
+        { when: "Lantern Evening, 22 December · older readers", slug: "the-great-christmas-un-robbery" },
+        { when: "Wrapping Night, 23 December", slug: "dough-mino-and-the-parcel-mix-up" },
       ]),
       { when: "Christmas week · older readers", slug: "captain-beakon-and-the-bell-across-the-bay" },
       { when: "Christmas Eve", slug: "one-more-story-before-santa" },
@@ -74,7 +77,15 @@ export const READ_EVENTS = [
       ...(originalRegistry["the-star-that-fell-on-the-longest-night"] ? [
         { href: "/read/events/christmas/colouring-the-star-that-fell-on-the-longest-night.pdf", label: "Colour The Star That Fell on the Longest Night" },
       ] : []),
+      ...(originalRegistry["dough-mino-and-the-parcel-mix-up"] ? [
+        parcelPuzzle,
+        { href: "/read/events/christmas/colouring-dough-mino-and-the-parcel-mix-up.pdf", label: "Colour Dough Mino and the Parcel Mix-Up" },
+      ] : []),
+      ...(originalRegistry["the-great-christmas-un-robbery"] ? [
+        { href: "/read/events/christmas/colouring-the-great-christmas-un-robbery.pdf", label: "Colour The Great Christmas Un-Robbery" },
+      ] : []),
     ],
+    endActivities: { "dough-mino-and-the-parcel-mix-up": parcelPuzzle },
     // Read-alouds that "Read together tonight" rotates through, in order.
     tonight: publishedSlugs([
       "the-angel-on-the-small-tree",
