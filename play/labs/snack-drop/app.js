@@ -15,7 +15,7 @@ const PERF = query.get("perf") === "1" ? [] : null;  // ?perf=1: main-thread mil
 // read and back up. Bests and saved games carry the rules version, so results
 // from older rules are never mixed with new ones.
 const SAVE_KEY = "sp_snackdrop_v1";
-function blankSave() { return { v: 1, bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
+function blankSave() { return { v: 1, container: "pantry", bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
 function loadSave() {
   try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.v === 1) return Object.assign(blankSave(), d); } catch (e) { /* fall through */ }
   // First run on this version: bring over the prototype's separate keys.
@@ -37,10 +37,18 @@ function writeSave() {
   while (days.length > 60) delete save.daily[days.shift()];
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* private mode or full */ }
 }
-const CONTAINER = "pantry";  // one container until build step 3
-function bestOf(m) {
+// Containers (PLAN 4a). The Daily Drop uses a different one each day, the
+// unlock containers included, so every player tries each of them once a week.
+const BOXES = SD.CONTAINERS, ORDER = SD.CONTAINER_ORDER;
+if (!BOXES[save.container]) save.container = "pantry";
+function dailyContainer(key = dayKey()) {
+  const [y, m, d] = key.split("-").map(Number);
+  return ORDER[Math.floor(Date.UTC(y, m - 1, d) / 86400000) % ORDER.length];
+}
+function containerFor(m) { return m === "daily" ? dailyContainer() : save.container; }
+function bestOf(m, c = containerFor(m)) {
   if (m === "daily") { const d = save.daily[dayKey()]; return d ? d.best : 0; }
-  const b = save.bests[CONTAINER + ":" + m]; return b && b.rules === SD.RULES_VERSION ? b.score : 0;
+  const b = save.bests[c + ":" + m]; return b && b.rules === SD.RULES_VERSION ? b.score : 0;
 }
 
 // Local calendar day, not UTC, so the Daily Drop changes at the player's midnight.
@@ -127,11 +135,11 @@ function toast(text) {
 function start(m, resume) {
   mode = m; realGame = true;
   if (resume) {
-    game = SD.createGame({ seed: resume.snap.seed, mode: m, restore: resume.snap });
+    game = SD.createGame({ seed: resume.snap.seed, mode: m, container: resume.snap.container || "pantry", restore: resume.snap });
     steps = resume.steps; dropLog = resume.log.slice();
   } else {
     const seed = m === "daily" ? SD.hash("snackdrop-" + dayKey()) : (Math.random() * 2 ** 31) | 0;
-    game = SD.createGame({ seed, mode: m });
+    game = SD.createGame({ seed, mode: m, container: containerFor(m) });
     steps = 0; dropLog = [];
     if (!BOT) {
       const c = save.counters, d = dayKey();
@@ -141,6 +149,7 @@ function start(m, resume) {
   }
   save.resume = null; writeSave();
   view.reset();
+  view.setContainer(game.container);
   aimX = 0; acc = 0; overShown = false; paused = false;
   timeScale = 1; hitStop = 0; slowFor = 0; maxChain = resume ? resume.maxChain : 0; overAt = 0;
   chainEl.classList.remove("on");
@@ -182,9 +191,10 @@ function home() {
     <p>Drop snacks in the crate. Two of the same make the next snack up. Keep the pile under the red line.</p>
     ${tiersHtml()}
     <div class="stack">
-      ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${resume.mode === "daily" ? "Daily Drop" : "Classic"} · ${resume.snap.score} points</small></button>` : ""}
-      <button class="btn${resume ? "" : " primary"}" data-go="classic">${resume ? "New game" : "Play"}<small>Best ${bestOf("classic")}</small></button>
-      <button class="btn" data-go="daily">Daily Drop<small>${daily || "Everyone gets the same snacks today"}</small></button>
+      ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${resume.mode === "daily" ? "Daily Drop" : "Classic"} · ${BOXES[resume.snap.container || "pantry"].name} · ${resume.snap.score} points</small></button>` : ""}
+      <button class="btn${resume ? "" : " primary"}" data-go="classic">${resume ? "New game" : "Play"}<small>${BOXES[save.container].name} · best ${bestOf("classic")}</small></button>
+      <div class="boxes" role="radiogroup" aria-label="Container">${ORDER.map((id) => `<button class="box${id === save.container ? " on" : ""}" role="radio" aria-checked="${id === save.container}" data-box="${id}"><b>${BOXES[id].name}</b><small>${BOXES[id].blurb}</small>${BOXES[id].free ? "" : '<i>Full game</i>'}</button>`).join("")}</div>
+      <button class="btn" data-go="daily">Daily Drop<small>${daily || "Today in the " + BOXES[dailyContainer()].name + ", same snacks for everyone"}</small></button>
     </div>
     <p class="how">Prototype. Move to aim, let go to drop. Keyboard: ← → and Space.</p>`);
 }
@@ -228,7 +238,7 @@ function makeCard(isBest) {
   x.textAlign = "center"; x.fillStyle = "#3a2414";
   x.font = "700 64px Fraunces, Georgia, serif"; x.fillText("Snack Drop", W / 2, 110);
   x.font = "700 34px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40";
-  x.fillText(MODE_NAME[mode] + " · Pantry Box · " + dayKey(), W / 2, 170);
+  x.fillText(MODE_NAME[mode] + " · " + BOXES[game.container].name + " · " + dayKey(), W / 2, 170);
   if (isBest) { x.fillStyle = "#f7b73d"; roundRect(x, W / 2 - 150, 196, 300, 48, 24); x.fill(); x.fillStyle = "#33210a"; x.font = "800 28px 'DM Sans', system-ui, sans-serif"; x.fillText("New best!", W / 2, 230); }
   x.fillStyle = "#3a2414"; x.font = "700 150px Fraunces, Georgia, serif"; x.fillText(String(game.score), W / 2, 1120);
   const stats = [["Best snack", SD.TIERS[game.best].name], ["Longest chain", maxChain >= 2 ? "×" + maxChain : "—"], ["Drops", String(game.drops)]];
@@ -244,17 +254,17 @@ function makeCard(isBest) {
 function roundRect(x, l, t, w, h, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + h, r); x.arcTo(l + w, t + h, l, t + h, r); x.arcTo(l, t + h, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); }
 
 function shareText() {
-  return `Snack Drop ${mode === "daily" ? "Daily " + dayKey() : "Classic"}: ${game.score} points, made a ${SD.TIERS[game.best].name}${maxChain >= 2 ? ", chain ×" + maxChain : ""}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
+  return `Snack Drop ${mode === "daily" ? "Daily " + dayKey() : "Classic"} in the ${BOXES[game.container].name}: ${game.score} points, made a ${SD.TIERS[game.best].name}${maxChain >= 2 ? ", chain ×" + maxChain : ""}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
 }
 
 function overSheet() {
-  const prev = bestOf(mode), isBest = game.score > prev && game.score > 0;
+  const prev = bestOf(mode, game.container), isBest = game.score > prev && game.score > 0;
   if (mode === "daily") {
     // The first finished game of the day is the one that counts; replays are practice.
     const d = save.daily[dayKey()] || (save.daily[dayKey()] = { best: 0, first: 0, rules: SD.RULES_VERSION });
     if (!d.first) d.first = game.score;
     d.best = Math.max(d.best, game.score);
-  } else if (isBest) save.bests[CONTAINER + ":" + mode] = { score: game.score, rules: SD.RULES_VERSION };
+  } else if (isBest) save.bests[game.container + ":" + mode] = { score: game.score, rules: SD.RULES_VERSION };
   if (game.best > save.biggest) save.biggest = game.best;
   save.counters.finished++; save.resume = null; writeSave();
   view.release();
@@ -277,11 +287,12 @@ $("sheet").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
   sound.wake();
   if (b.dataset.go) return start(b.dataset.go);
+  if (b.dataset.box) { save.container = b.dataset.box; writeSave(); demo(save.container); home(); const f = $("sheet").querySelector(`[data-box="${save.container}"]`); if (f) f.focus(); return; }
   const act = b.dataset.act;
   if (act === "resume") { closeSheet(); paused = false; }
   if (act === "continue") { const r = savedGame(); if (r) start(r.mode, r); return; }
   if (act === "code" && navigator.clipboard) navigator.clipboard.writeText(gameCode()).then(() => { b.textContent = "Copied"; });
-  if (act === "home") home();
+  if (act === "home") { saveGame(); home(); }
   if (act === "share") {
     const text = shareText();
     const file = cardBlob && typeof File === "function" ? new File([cardBlob], "snack-drop-" + game.score + ".png", { type: "image/png" }) : null;
@@ -431,10 +442,17 @@ function frame(now) {
 }
 
 buildLadder();
-// A demo crate behind the menu, so the first thing you see is the game.
-game = SD.createGame({ seed: 7 });
-for (let i = 0; i < 60 * 14; i++) { if (game.canDrop() && game.snacks.every((s) => s.landed)) game.step({ drop: SD.botAim(game, "careful", botRand) }); else game.step({}); }
-game.events.length = 0;
+// A demo crate behind the menu, so the first thing you see is the game, in
+// the container the player has picked.
+function demo(c) {
+  realGame = false;
+  game = SD.createGame({ seed: 7, container: c });
+  const r = SD.rng(99);
+  for (let i = 0; i < 60 * 14; i++) { if (game.canDrop() && game.snacks.every((s) => s.landed)) game.step({ drop: SD.botAim(game, "careful", r) }); else game.step({}); }
+  game.events.length = 0;
+  view.reset(); view.setContainer(c);
+}
+demo(save.container);
 if (BOT) start("classic"); else home();
 requestAnimationFrame(frame);
 window.__snackdrop = { get game() { return game; }, view, save, gameCode, perf: PERF };

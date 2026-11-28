@@ -44,6 +44,15 @@ function scatter(count, seed, fn) {
   for (let i = 0; i < count; i++) fn(r(), r(), r(), i);
 }
 
+// Code-built looks per container (PLAN 4a). Authored models replace them:
+// assets/models/containers/container_<id>.glb and backdrops/backdrop_<id>.glb.
+const LOOKS = {
+  pantry:    { bg: "#f6e3c8", wall: "#f3dcc0", tile: "#e6c9a6", counter: "#9c6b43", side: "#c8955c", cap: "#a7743f", boards: ["#a7743f", "#c8955c"], floor: "#a7743f", rough: 0.85 },
+  toybox:    { bg: "#f1e4f4", wall: "#efe1f3", tile: "#dcc7e6", counter: "#8fb8de", side: "#e98080", cap: "#4f8fd6", boards: ["#f6d55c", "#7cc6e8"], floor: "#4f8fd6", rough: 0.55, fillet: "#f6d55c" },
+  icecooler: { bg: "#dcf0f8", wall: "#d9eef7", tile: "#bcdcea", counter: "#e7cf9f", side: "#f4f8fb", cap: "#5ab0e6", boards: ["#dff1fb", "#c9e7f7"], floor: "#bfe3f5", rough: 0.25 },
+  market:    { bg: "#dcebe7", wall: "#d7eae6", tile: "#b9d6d0", counter: "#8a6a4a", side: "#b98a57", cap: "#8d6438", boards: ["#b98a57", "#a37445"], floor: "#8d6438", rough: 0.95, slats: true }
+};
+
 const BUILD = {
   crumb(t) {
     const g = new THREE.Group();
@@ -217,36 +226,16 @@ export class Renderer {
     sun.shadow.bias = -0.0008;
     s.add(sun, sun.target);
 
-    // Code-built stand-ins, each in its own group so an authored model can
-    // replace it (assets/models/backdrops/backdrop_pantry.glb and
-    // containers/container_pantry.glb). The line, guide and held snack stay code-built.
-    const K = this.kitchenGroup = new THREE.Group(), C = this.crateGroup = new THREE.Group();
-    s.add(K, C);
-    // Kitchen wall with soft tiles, and a counter top.
-    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat("#f3dcc0", { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; K.add(wall);
-    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat("#e6c9a6"), i * 1.6, 8, -3.19); l.castShadow = false; K.add(l); }
-    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat("#e6c9a6"), 0, -1 + j * 1.6, -3.19); l.castShadow = false; K.add(l); }
-    const counter = mesh(new THREE.BoxGeometry(40, 1, 8), mat("#9c6b43", { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0); K.add(counter);
-
-    // The crate: back boards, sides, floor. The front stays open.
-    const wood = mat("#c8955c", { roughness: 0.85 }), dark = mat("#a7743f", { roughness: 0.85 });
     const depth = 2.0;
-    C.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), dark, 0, -Wl, 0));
-    for (let i = 0; i < 6; i++) {
-      const board = mesh(new THREE.BoxGeometry(2 * H, ht / 6 - 0.06, 0.16), i % 2 ? wood : dark, 0, (i + 0.5) * ht / 6, -depth / 2 - 0.08);
-      C.add(board);
-    }
-    [-1, 1].forEach((side) => {
-      C.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), wood, side * (H + Wl), ht / 2, 0));
-      const cap = mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), dark, side * (H + Wl), ht + Wl + 0.05, 0); C.add(cap);
-    });
+    this.containerId = "";
+    this.setContainer("pantry");
 
     // The line snacks must stay under.
-    this.line = mesh(new THREE.BoxGeometry(2 * H, 0.06, 0.06), new THREE.MeshBasicMaterial({ color: "#ee6b5f", transparent: true, opacity: 0.45 }), 0, CRATE.line, depth / 2);
+    this.line = mesh(new THREE.BoxGeometry(2 * H, 0.06, 0.06), new THREE.MeshBasicMaterial({ color: "#ee6b5f", transparent: true, opacity: 0.45 }), 0, SD.CONTAINERS[this.containerId].line, depth / 2);
     this.line.castShadow = false; s.add(this.line);
     const dash = new THREE.BoxGeometry(0.3, 0.07, 0.07);
     this.dashes = [];
-    for (let x = -H + 0.3; x < H; x += 0.6) { const d = mesh(dash, this.line.material, x, CRATE.line, -depth / 2 + 0.05); d.castShadow = false; s.add(d); this.dashes.push(d); }
+    for (let x = -H + 0.3; x < H; x += 0.6) { const d = mesh(dash, this.line.material, x, SD.CONTAINERS[this.containerId].line, -depth / 2 + 0.05); d.castShadow = false; s.add(d); this.dashes.push(d); }
 
     // The aiming guide and the snack held over the crate.
     this.guide = mesh(new THREE.PlaneGeometry(0.06, 1), new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.55 }), 0, 0, 0.02);
@@ -325,6 +314,53 @@ export class Renderer {
     this.crumbMesh.instanceColor.needsUpdate = true;
   }
 
+  // Builds the code-built container and backdrop for a container id, or the
+  // authored models when they have loaded. Called on start and when a game
+  // in another container begins.
+  setContainer(id) {
+    if (!LOOKS[id]) id = "pantry";
+    if (id === this.containerId) return;
+    this.containerId = id;
+    const s = this.scene, H = CRATE.half, Wl = CRATE.wall, ht = CRATE.height, depth = 2.0, L = LOOKS[id];
+    for (const o of [this.kitchenGroup, this.crateGroup, this.crateModel, this.kitchenModel]) if (o) s.remove(o);
+    this.crateModel = this.kitchenModel = null;
+    s.background = new THREE.Color(L.bg);
+    const K = this.kitchenGroup = new THREE.Group(), C = this.crateGroup = new THREE.Group();
+    s.add(K, C);
+    // Back wall with soft tiles, and a counter top (y = -0.6).
+    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat(L.wall, { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; K.add(wall);
+    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat(L.tile), i * 1.6, 8, -3.19); l.castShadow = false; K.add(l); }
+    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat(L.tile), 0, -1 + j * 1.6, -3.19); l.castShadow = false; K.add(l); }
+    K.add(mesh(new THREE.BoxGeometry(40, 1, 8), mat(L.counter, { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0));
+
+    // The container: back boards, sides, floor. The front stays open.
+    const side = mat(L.side, { roughness: L.rough }), cap = mat(L.cap, { roughness: L.rough });
+    C.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), mat(L.floor, { roughness: L.rough }), 0, -Wl, 0));
+    if (L.slats) {
+      // Rough market crate: narrow slats with dark gaps between them.
+      C.add(mesh(new THREE.PlaneGeometry(2 * H, ht), mat("#3a2414"), 0, ht / 2, -depth / 2 - 0.17));
+      for (let i = 0; i < 8; i++) C.add(mesh(new THREE.BoxGeometry(2 * H, ht / 8 - 0.22, 0.14), mat(L.boards[i % 2], { roughness: L.rough }), 0, (i + 0.5) * ht / 8, -depth / 2 - 0.08));
+    } else {
+      for (let i = 0; i < 6; i++) C.add(mesh(new THREE.BoxGeometry(2 * H, ht / 6 - 0.06, 0.16), mat(L.boards[i % 2], { roughness: L.rough }), 0, (i + 0.5) * ht / 6, -depth / 2 - 0.08));
+    }
+    [-1, 1].forEach((sd) => {
+      C.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), side, sd * (H + Wl), ht / 2, 0));
+      C.add(mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), cap, sd * (H + Wl), ht + Wl + 0.05, 0));
+    });
+    const box = SD.CONTAINERS[id];
+    if (box.fillet) {
+      // Rounded inside corners: a square with a quarter circle cut out, matching the physics.
+      const R = box.fillet, sh = new THREE.Shape();
+      sh.moveTo(0, 0); sh.lineTo(R, 0); sh.absarc(R, R, R, -Math.PI / 2, -Math.PI, true); sh.lineTo(0, 0);
+      const geo = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false, curveSegments: 12 });
+      geo.translate(0, 0, -depth / 2);
+      [-1, 1].forEach((sd) => { const f = mesh(geo, mat(L.fillet, { roughness: L.rough, side: THREE.DoubleSide }), sd * H, 0, 0); f.scale.x = -sd; C.add(f); });
+    }
+    // The line sits where this container's rules put it.
+    if (this.line) { this.line.position.y = box.line; for (const d of this.dashes) d.position.y = box.line; }
+    this.refreshAssets();
+  }
+
   // A tier's template: the authored model when it has loaded, otherwise the code-built one.
   buildTemplate(i) {
     const t = TIERS[i], authored = model("snacks/snack_" + t.id);
@@ -355,8 +391,8 @@ export class Renderer {
       m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
       this[key] = m; group.visible = false; this.scene.add(m);
     };
-    swap("containers/container_pantry", this.crateGroup, "crateModel");
-    swap("backdrops/backdrop_pantry", this.kitchenGroup, "kitchenModel");
+    swap("containers/container_" + this.containerId, this.crateGroup, "crateModel");
+    swap("backdrops/backdrop_" + this.containerId, this.kitchenGroup, "kitchenModel");
   }
 
   // Called by the game loop before each physics step: remembers where every

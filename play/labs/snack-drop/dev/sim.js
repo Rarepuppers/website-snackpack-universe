@@ -1,6 +1,7 @@
 // Plays whole games with bots through the real physics.
 // node play/labs/snack-drop/dev/sim.js            careful and random bots, 40 games each
-// node play/labs/snack-drop/dev/sim.js 100        more games
+// node play/labs/snack-drop/dev/sim.js 100 [id]   more games, in one container (default pantry)
+// node play/labs/snack-drop/dev/sim.js band       every container inside the bot band
 // node play/labs/snack-drop/dev/sim.js same       the same seed and drops must give the same game
 // node play/labs/snack-drop/dev/sim.js restore    a saved snapshot puts the crate back exactly and plays on (resume)
 // node play/labs/snack-drop/dev/sim.js replay     a saved drop log replays to exactly the same crate (resume)
@@ -9,8 +10,8 @@
 const SD = require("../engine.js");
 if (process.env.BAL) Object.assign(SD.BALANCE, JSON.parse(process.env.BAL));
 
-function play(seed, style, maxDrops = 2000) {
-  const g = SD.createGame({ seed });
+function play(seed, style, container, maxDrops = 2000) {
+  const g = SD.createGame({ seed, container });
   const rand = SD.rng(seed * 7 + 3);
   let frames = 0;
   while (g.status === "playing" && g.drops < maxDrops && frames < 60 * 60 * 120) {
@@ -31,7 +32,7 @@ if (arg === "restore") {
   // JSON, and plays on without errors or snacks flying off.
   let bad = 0;
   for (let k = 1; k <= 12; k++) {
-    const seed = k * 613, g = SD.createGame({ seed }), rand = SD.rng(seed);
+    const seed = k * 613, container = SD.CONTAINER_ORDER[k % SD.CONTAINER_ORDER.length], g = SD.createGame({ seed, container }), rand = SD.rng(seed);
     const cut = 600 + Math.floor(rand() * 15000);
     for (let step = 0; g.status === "playing" && step < cut; step++) {
       const drop = g.canDrop() && (g.snacks.every((s) => s.landed) || g.wait < -0.6) ? SD.botAim(g, "careful", rand) : null;
@@ -39,7 +40,7 @@ if (arg === "restore") {
     }
     if (g.status !== "playing") continue;
     const snap = JSON.parse(JSON.stringify(g.snapshot()));
-    const r = SD.createGame({ seed, restore: snap });
+    const r = SD.createGame({ seed, container: snap.container, restore: snap });
     const exact = r.score === g.score && r.next === g.next && r.current === g.current && r.snacks.length === g.snacks.length &&
       r.snacks.every((s, j) => { const a = s.body.getPosition(), b = g.snacks[j].body.getPosition(); return s.id === g.snacks[j].id && a.x === b.x && a.y === b.y; });
     // Same queue afterwards: the next five drops bring the same snacks.
@@ -51,7 +52,7 @@ if (arg === "restore") {
     const inside = r.snacks.every((s) => { const p = s.body.getPosition(); return Math.abs(p.x) < SD.CRATE.half + 0.1 && p.y > -0.1; });
     const ok = exact && inside && String(qa) === String(qb);
     if (!ok) bad++;
-    console.log(`  seed ${seed}: ${r.snacks.length} snacks, exact ${exact}, queue ${String(qa) === String(qb)}, drift after 5 s ${drift.toFixed(3)} m, inside ${inside}`);
+    console.log(`  seed ${seed} ${container}: ${r.snacks.length} snacks, exact ${exact}, queue ${String(qa) === String(qb)}, drift after 5 s ${drift.toFixed(3)} m, inside ${inside}`);
   }
   console.log(bad ? `restore: ${bad} FAILED` : "restore: OK");
   process.exit(bad ? 1 : 0);
@@ -91,13 +92,28 @@ if (arg === "same") {
   console.log(ok ? "same: OK" : "same: DIFFERENT", a.score, b.score, a.drops, b.drops);
   process.exit(ok ? 0 : 1);
 }
+// node dev/sim.js band [n]   every container: the careful bot's median must sit
+// inside 150 to 280 drops and the random bot must stay clearly worse (PLAN 4a).
+if (arg === "band") {
+  const n = Number(process.argv[3]) || 30;
+  let bad = 0;
+  for (const id of SD.CONTAINER_ORDER) {
+    const med = (style) => pct(Array.from({ length: n }, (_, i) => play(i * 101, style, id).drops), 0.5);
+    const c = med("careful"), r = med("random"), ok = c >= 150 && c <= 280 && r <= c * 0.8;
+    if (!ok) bad++;
+    console.log(`  ${id.padEnd(10)} careful median ${c}  random median ${r}  ${ok ? "in band" : "OUT OF BAND"}`);
+  }
+  console.log(bad ? `band: ${bad} container(s) out` : "band: OK");
+  process.exit(bad ? 1 : 0);
+}
 const n = Number(arg) || 40;
-for (const style of ["careful", "random"]) {
+const only = process.argv[3];
+for (const id of only ? [only] : ["pantry"]) for (const style of ["careful", "random"]) {
   const runs = [];
-  for (let i = 1; i <= n; i++) runs.push(play(i * 101, style));
+  for (let i = 1; i <= n; i++) runs.push(play(i * 101, style, id));
   const drops = runs.map((r) => r.drops), scores = runs.map((r) => r.score);
   const reach = SD.TIERS.map((t, i) => runs.filter((r) => r.best >= i).length);
-  console.log(`\n${style}: ${n} games`);
+  console.log(`\n${id} ${style}: ${n} games`);
   console.log(`  drops   median ${pct(drops, 0.5)}  p10 ${pct(drops, 0.1)}  p90 ${pct(drops, 0.9)}   ≈ ${(pct(drops, 0.5) * 2 / 60).toFixed(1)} min for a person`);
   console.log(`  score   median ${pct(scores, 0.5)}  p90 ${pct(scores, 0.9)}  max ${Math.max(...scores)}`);
   console.log("  reached " + SD.TIERS.map((t, i) => `${t.id} ${Math.round(100 * reach[i] / n)}%`).slice(4).join("  "));
