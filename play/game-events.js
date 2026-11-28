@@ -8,6 +8,8 @@
  *   start             first real input in the game area (a page view is not a game)
  *   win               SnackPack.celebrate was called (losses are not counted)
  *   daily             today's daily puzzle completed (daily-state.js)
+ *   class-start      play began after opening a teacher link
+ *   class-daily      today's daily was completed after opening a teacher link
  *   friends           a Thirteen friend table was used (rooms.js)
  *   time-<bucket>     after a start, how long the page was in view, sent once
  *                     when the page is hidden: under-1m, 1-5m, 5-15m, 15m-plus
@@ -49,6 +51,9 @@
   var RESERVED = { daily: 1, stats: 1, "last-bastion": 1, docs: 1 };
   if (!match || RESERVED[match[1]]) return;
   var game = match[1];
+  var query = new URLSearchParams(location.search);
+  var classroom = (game === "typing" || game === "math-facts") &&
+    query.get("daily") === "today" && query.get("classroom") === "1";
   function count(action) { send(game + "/" + action, game + " " + action); }
 
   // ── start ──
@@ -59,18 +64,22 @@
     var target = event.target;
     if (event.type === "keydown") {
       if (event.ctrlKey || event.metaKey || event.altKey || event.key === "Tab") return;
-      if (target && target.closest && target.closest("input, textarea, select, a, nav, .site-header")) return;
+      if (target && target.closest && target.closest("input, textarea, select, summary, a, nav, .site-header")) return;
     } else if (!target || !target.closest || !target.closest(".game-stage") || target.closest("a")) {
       return;
     }
     started = true;
     visibleSince = document.hidden ? 0 : Date.now();
     count("start");
+    if (classroom) count("class-start");
     document.removeEventListener("pointerdown", onInput, true);
     document.removeEventListener("keydown", onInput, true);
+    document.removeEventListener("input", onInput, true);
   }
   document.addEventListener("pointerdown", onInput, true);
   document.addEventListener("keydown", onInput, true);
+  // Snack Typer takes keystrokes and IME text through its game textarea.
+  if (game === "typing") document.addEventListener("input", onInput, true);
 
   // ── time in view after the start, sent once ──
   function bucket(ms) {
@@ -91,7 +100,12 @@
   // ── friends, daily ──
   window.SnackPack.countFriends = function () { count("friends"); };
   var dailySent = false;
-  window.SnackPack.countDaily = function () { if (!dailySent) { dailySent = true; count("daily"); } };
+  window.SnackPack.countDaily = function () {
+    if (dailySent) return;
+    dailySent = true;
+    count("daily");
+    if (classroom) count("class-daily");
+  };
 
   // ── win: every game that has a win calls SnackPack.celebrate, however it renders ──
   var wonAt = 0;

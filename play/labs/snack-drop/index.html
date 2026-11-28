@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Snack Drop</title>
+<!-- PROTOTYPE: unlisted labs page, no sitemap or hub entry. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Snack Drop is a 3D snack-merging physics puzzle prototype from SnackPack Studios.">
+<meta name="theme-color" content="#f6e3c8">
+<link rel="canonical" href="https://www.snackpackuniverse.com/play/labs/snack-drop/">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="view" aria-label="Snack Drop crate. Move to aim, release to drop a snack."></canvas>
+
+<div class="hud" id="hud" hidden>
+  <div class="score"><b id="score">0</b><small id="bestline">Best 0</small></div>
+  <div class="hud-right">
+    <span class="next-label">Next</span>
+    <button class="icon" id="mute" aria-label="Sound on">🔊</button>
+    <button class="icon" id="pause" aria-label="Pause">II</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="chain" id="chain" aria-hidden="true"></div>
+<div class="pops" id="pops" aria-hidden="true"></div>
+<ol class="ladder" id="ladder" aria-label="Snack ladder" hidden></ol>
+
+<div class="veil" id="veil"><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div></div>
+
+<script src="vendor/planck-1.5.1.min.js"></script>
+<script src="engine.js"></script>
+<script type="module" src="app.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "0e57cfb3eb86422ca40e5fac02b1cf94"}'></script>
+</body>
+</html>

@@ -10,10 +10,11 @@
 //
 // Prints, per game: starts, wins, wins per visit (a start is counted once per
 // page visit and a player can win several games in one, so this is not a win
-// rate; Asteroid Destroyer "wins" are new bests), dailies, friend tables, play-time
-// bands and the share of starts from Honduras (the classroom); per book:
-// starts, finishes, finish rate, read-to-me and PDF; and hub tile/position
-// clicks. Small numbers are small: a 3-vs-1 split is not a finding.
+// rate; Asteroid Destroyer "wins" are new bests), dailies, friend tables and
+// play-time bands, with Honduras counts for starts, dailies and bands.
+// Teacher-link starts and daily finishes are shown for the classroom games.
+// Books show starts, finishes and finish rate worldwide and in Honduras,
+// plus read-to-me and PDF. Hub clicks are grouped by tile and position.
 
 import fs from "node:fs";
 import os from "node:os";
@@ -72,7 +73,8 @@ async function honduras(pathId) {
 const hits = await allHits();
 const games = {}, books = {}, hub = {}, hubPosition = {};
 const BANDS = ["under-1m", "1-5m", "5-15m", "15m-plus"];
-const ids = {};
+const gamePaths = {};
+const bookPaths = {};
 for (const h of hits) {
   const p = h.path.replace(/^\//, "").split("/");
   if (p[0] === "arcade" && p[1] === "hub") hub[p[2]] = (hub[p[2]] || 0) + h.count;
@@ -81,32 +83,64 @@ for (const h of hits) {
     const g = (games[p[1]] ||= { start: 0, win: 0, daily: 0, friends: 0, bands: {} });
     if (p[2].startsWith("time-")) g.bands[p[2].slice(5)] = h.count;
     else g[p[2]] = h.count;
-    if (p[2] === "start") ids["g:" + p[1]] = h.path_id;
+    (gamePaths[p[1]] ||= {})[p[2]] = h.path_id;
   } else if (p[0] === "books" && p.length === 3) {
     const b = (books[p[1]] ||= { start: 0, finish: 0, listen: 0, pdf: 0 });
     b[p[2]] = h.count;
-    if (p[2] === "start") ids["b:" + p[1]] = h.path_id;
+    (bookPaths[p[1]] ||= {})[p[2]] = h.path_id;
   }
 }
-for (const [slug, g] of Object.entries(games)) if (ids["g:" + slug]) g.where = await honduras(ids["g:" + slug]);
-for (const [slug, b] of Object.entries(books)) if (ids["b:" + slug]) b.where = await honduras(ids["b:" + slug]);
+for (const [slug, g] of Object.entries(games)) {
+  const paths = gamePaths[slug];
+  if (paths.start) g.where = await honduras(paths.start);
+  if (paths.daily) g.dailyWhere = await honduras(paths.daily);
+  if (paths["class-start"]) g.classStartWhere = await honduras(paths["class-start"]);
+  if (paths["class-daily"]) g.classDailyWhere = await honduras(paths["class-daily"]);
+  g.bandWhere = {};
+  for (const band of BANDS) {
+    if (paths["time-" + band]) g.bandWhere[band] = await honduras(paths["time-" + band]);
+  }
+}
+for (const [slug, b] of Object.entries(books)) {
+  const paths = bookPaths[slug];
+  if (paths.start) b.where = await honduras(paths.start);
+  if (paths.finish) b.finishWhere = await honduras(paths.finish);
+}
 
 if (JSON_OUT) { console.log(JSON.stringify({ from: FROM, to: TO, games, books, hub, hubPosition }, null, 2)); process.exit(0); }
 
 const pct = (a, b) => (b ? Math.round((100 * a) / b) + "%" : "–");
 console.log(`GoatCounter events ${FROM} → ${TO} (time bands, daily, hub and books only exist from 2026-11-26)\n`);
-console.log("GAME".padEnd(24) + "start  win win/vis daily friends  HN%   " + BANDS.join(" / "));
+console.log("GAME".padEnd(24) + "start  win win/vis daily friends  HN start   HN%  HN daily  time bands (all | HN)");
+console.log("Time bands: " + BANDS.join(" / "));
 for (const [slug, g] of Object.entries(games).sort((a, b) => b[1].start - a[1].start)) {
   console.log(slug.padEnd(24) + String(g.start).padStart(5) + String(g.win).padStart(5) + pct(g.win, g.start).padStart(6) +
-    String(g.daily).padStart(6) + String(g.friends).padStart(8) + (g.where ? pct(g.where.hn, g.where.total) : "–").padStart(6) + "   " +
-    BANDS.map((k) => g.bands[k] || 0).join(" / "));
+    String(g.daily).padStart(6) + String(g.friends).padStart(8) +
+    String(g.where?.hn ?? 0).padStart(10) + pct(g.where?.hn ?? 0, g.where?.total).padStart(6) +
+    String(g.dailyWhere?.hn ?? 0).padStart(10) + "  " +
+    BANDS.map((k) => g.bands[k] || 0).join(" / ") + " | " +
+    BANDS.map((k) => g.bandWhere[k]?.hn ?? 0).join(" / "));
+}
+for (const slug of ["typing", "math-facts"]) {
+  const g = games[slug];
+  if (!g || (!g["class-start"] && !g["class-daily"])) continue;
+  console.log(`${slug} teacher links: ${g["class-start"] ?? 0} starts, ${g["class-daily"] ?? 0} daily finishes (HN: ${g.classStartWhere?.hn ?? 0} starts, ${g.classDailyWhere?.hn ?? 0} finishes)`);
 }
 if (Object.keys(books).length) {
-  console.log("\nBOOK".padEnd(41) + "start finish  fin%  listen  pdf  HN%");
+  console.log("\nBOOK".padEnd(41) + "start finish  fin%  listen  pdf  HN start   HN%  HN finish  HN fin%");
+  let hnStarts = 0;
+  let hnFinishes = 0;
   for (const [slug, b] of Object.entries(books).sort((a, c) => c[1].start - a[1].start)) {
+    const starts = b.where?.hn ?? 0;
+    const finishes = b.finishWhere?.hn ?? 0;
+    hnStarts += starts;
+    hnFinishes += finishes;
     console.log(slug.slice(0, 39).padEnd(40) + String(b.start).padStart(5) + String(b.finish).padStart(7) + pct(b.finish, b.start).padStart(6) +
-      String(b.listen).padStart(8) + String(b.pdf).padStart(5) + (b.where ? pct(b.where.hn, b.where.total) : "–").padStart(6));
+      String(b.listen).padStart(8) + String(b.pdf).padStart(5) +
+      String(starts).padStart(10) + pct(starts, b.where?.total).padStart(6) +
+      String(finishes).padStart(11) + pct(finishes, starts).padStart(9));
   }
+  console.log(`Honduras books: ${hnFinishes} finishes / ${hnStarts} starts (${pct(hnFinishes, hnStarts)})`);
 }
 if (Object.keys(hub).length) {
   console.log("\nHUB TILES: " + Object.entries(hub).sort((a, b) => b[1] - a[1]).map(([k, v]) => k + " " + v).join(", "));

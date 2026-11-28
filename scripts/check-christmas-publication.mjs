@@ -11,7 +11,7 @@ const source=sourceArg && path.resolve(sourceArg.slice(14));
 const requested = process.argv.filter(a => a.startsWith('--book=')).map(a => a.slice(7));
 if(write) assert(source,'A reviewed local source directory is required to refresh evidence');
 const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-const visible = (s, event) => event && event !== 'christmas'
+const visible = (s, book) => ((book.event && book.event !== 'christmas') || book.sourceFolder?.startsWith('christmas/'))
  ? s.replace(/^> /gm, '').replace(/\*\*([^*]+)\*\*|\*([^*]+)\*/g, (_, bold, italic) => bold ?? italic)
  : s;
 const norm=s=>s.replace(/&#x27;|&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[‑–—−]/g,'-').replace(/\s+/g,' ').trim();
@@ -36,9 +36,9 @@ for(const [slug,manifest] of selected){
  });
  assert.deepEqual(chapters,(book.chapters??[]).map(c=>({firstPage:c.firstPage,title:norm(c.title)})),`${slug}: published chapters differ`);
  const paragraphs=cards.map(c=>[...c.split('story-page-copy')[1].split('<div class="math-question">')[0].matchAll(/<p>([\s\S]*?)<\/p>/g)].map(p=>norm(p[1].replace(/<\/?(?:em|strong)>/g, ''))));
- assert.deepEqual(paragraphs,book.pages.map(p=>p.text.split(/\n\s*\n/).map(text => norm(visible(text, book.event)))),`${slug}: paragraph breaks differ from the manuscript`);
+ assert.deepEqual(paragraphs,book.pages.map(p=>p.text.split(/\n\s*\n/).map(text => norm(visible(text, book)))),`${slug}: paragraph breaks differ from the manuscript`);
  const text=paragraphs.map(page=>page.join(' '));
- assert.deepEqual(text,owner.pages.map(p=>norm(visible(p.text, book.event))),`${slug}: published prose differs`);
+ assert.deepEqual(text,owner.pages.map(p=>norm(visible(p.text, book))),`${slug}: published prose differs`);
  const questions=cards.flatMap((card,i)=>{
   const matches=[...card.matchAll(/<div class="math-question"><p class="math-q"><strong>Count together:<\/strong> ([\s\S]+?)<\/p><ul class="math-choices" data-answer="([^"]+)" aria-label="Choices">([\s\S]+?)<\/ul><details class="story-answer math-answer"><summary>Show the answer<\/summary><p><strong>([\s\S]+?)\.<\/strong> ([\s\S]+?)<\/p><\/details><\/div>/g)];
   assert.equal(matches.length,(card.match(/class="math-question"/g) ?? []).length,`${slug}: invalid question markup on page ${i+1}`);

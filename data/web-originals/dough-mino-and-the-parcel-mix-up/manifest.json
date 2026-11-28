@@ -1,0 +1,1254 @@
+{
+  "schemaVersion": 1,
+  "id": "dough-mino-and-the-parcel-mix-up",
+  "title": "Dough Mino and the Parcel Mix-Up",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "8–11",
+  "readingLevel": "Confident readers",
+  "readingMode": "confident-readers",
+  "publicationStatus": "published",
+  "storyPageCount": 30,
+  "wordCount": 1750,
+  "blurb": "On Wrapping Night, Dough Mino likes everything in neat rows. Then the door bursts open, and four painted gift tags blow off four wrapped parcels. Belgian-Waffle has to deliver them all by morning. Guessing isn’t good enough. Can you work out whose parcel is whose before Dough Mino does? And who is the fifth parcel for, the one that was never supposed to be part of the puzzle?",
+  "pages": [
+    {
+      "number": 1,
+      "text": "**Chapter One: Wrapping Night**\n\nEvery year, on the twenty-third of December, the library hall became the Wrapping Table.\n\nFriends brought their presents in plain boxes. The wrappers wrapped them. And before Christmas Eve morning, Belgian-Waffle delivered every single one.\n\nThis year, Dough Mino was in charge. Dough Mino loved two things more than anything: patterns, and things in neat rows.",
+      "illustrationDirection": "The library hall turned into the Wrapping Table: a long trestle table, paper rolls, the paper tree, snow at the window. Dough Mino at the head of the table, beaming.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4583d40061a19d75396280b622c9a8693116e82e6d318f4aa10480c341efb5c2",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 398800,
+            "sha256": "de1ce73c30f88ae73d690366b559dde09d838c13d8346af812ad36cebfdb2b67"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 237810,
+            "sha256": "7be88a60d53f2eaab56e2780683f5d8fd6ed6f532e7735311fde699e882ebaa6"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103148,
+            "sha256": "ab360f4461308260c87b090293e04afdbdce8758ed8c6bebc51e96004f24cb89"
+          }
+        ],
+        "review": "Dough Mino is the original orange long-necked dinosaur with cream belly, white chef’s hat, gingham scarf and his cooking backpack. The four paper rolls are in the locked order, with the folded paper tree and cocoa table behind.",
+        "generator": "built-in imagegen",
+        "alt": "The library hall is set up for Wrapping Night, with Dough Mino in charge."
+      },
+      "alt": "The library hall is set up for Wrapping Night, with Dough Mino in charge."
+    },
+    {
+      "number": 2,
+      "text": "His table was perfect. Rolls of paper in a row. Ribbons in a row. Scissors, tape and string, all in a row.\n\nNext to him, Vincent Van Mouse painted the gift tags. On each one he painted a tiny picture of who it was for, instead of a name, because pictures were more fun.\n\nAnd whenever there was a scrap of paper left over, Dough Mino tucked it into a neat pile under the table, when he thought nobody was looking.",
+      "illustrationDirection": "Close on Dough Mino’s perfectly ordered table. Vincent painting a tiny tag. Dough Mino slipping a scrap of paper into a neat pile under the table, glancing sideways.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0cbf5f9f6e46e383a03df659772c7ad8e18f1aa2bf18166ca85a69d58a68c1b0",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 409536,
+            "sha256": "4da9f004dfd0d831aabe4cdcbf8ed664514a1e91fa3e98c88b7041e15528805e"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246596,
+            "sha256": "0afc223e755662d38d3a55c809a9897cf2c1daa0febb0e87adcda0df3e1976d4"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110512,
+            "sha256": "a463eb70681d63e52adeebaedf5650df8c453a0f5e04046ff6cd4ea11412eb5d"
+          }
+        ],
+        "review": "Vincent paints a loose card while Dough Mino puts a paper cutting into the scrap pile. Only the four established paper rolls and loose scraps are visible; the fifth parcel is not made yet.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino’s table is perfectly neat. He secretly tucks a paper scrap under the table."
+      },
+      "alt": "Dough Mino’s table is perfectly neat. He secretly tucks a paper scrap under the table."
+    },
+    {
+      "number": 3,
+      "text": "The presents began to arrive.\n\nBooklava brought a box for Professor Hooten. “It’s a long one,” she whispered. “Don’t let him see.”\n\nThen Cluck O’Clock and Coop-Accino staggered in with a box for their mum, Hen-Berry. “It’s SO heavy,” puffed Cluck. “It took both of us.”",
+      "illustrationDirection": "At the door: Booklava holding a long box behind her back, whispering; the twins staggering in together under a big heavy box.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9bc6efa2a6b1c800cc1046f39ea789e0b31196383b2f812bf87124ad8ec859ce",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 425718,
+            "sha256": "3e845dce9f1bdfcfdba7f53ccb453b11ae644b4ec14719c76b78fbf44e24f312"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 251916,
+            "sha256": "74455eea46f1787b7fb99e5f36fd942a9920104a665d933241cdd2bb9ec48303"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111242,
+            "sha256": "e7a3328fad395425260e68151cfb8bdf78fe342ae872d363d26685bc8a706410"
+          }
+        ],
+        "review": "Exactly two plain unopened boxes. Booklava hides a long thin one, while the two recognisable twins strain under their single large box together. No parcel paper is matched to a box.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava brings a long box, and the twins struggle in with a heavy one."
+      },
+      "alt": "Booklava brings a long box, and the twins struggle in with a heavy one."
+    },
+    {
+      "number": 4,
+      "text": "Honey-Beats brought a small box for Pork-ulele. “Don’t shake it,” she said. “It jingles. That’ll give it away.”\n\nLast came Ted-E-Bear with a present for Luckybug. “She’s going to love it,” he said, and smiled, and wouldn’t say any more.",
+      "illustrationDirection": "Honey-Beats holding a small box very still, eyes wide; Ted-E-Bear handing over a box with a secret smile.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1175aeddf854c57cac4459d99248076ae5a1ae5bfaabe1680cdaf903eb4b94e5",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 383330,
+            "sha256": "99364bdaca466c3b1074a7a0bcb7ad2351557123d705264403c1a1bb5025593b"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 236230,
+            "sha256": "0e0854f0bf4aa39f61df0f892936bd0c7b929919f7b47b67a5efd8e9f4ad7688"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108746,
+            "sha256": "3cf2cb94c35670b3e2b8744dc9e4d1ec04bd9cea58d6d6296f7fa873f149c91a"
+          }
+        ],
+        "review": "Honey-Beats and Ted each hold a distinct plain closed package. No paper pattern, gift contents or ownership tag is visible.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats carries a small box carefully, and Ted-E-Bear smiles as he hands over his present."
+      },
+      "alt": "Honey-Beats carries a small box carefully, and Ted-E-Bear smiles as he hands over his present."
+    },
+    {
+      "number": 5,
+      "text": "Dough Mino wrapped two of the presents. He folded the ends into neat, sharp points, the way he always did.\n\nVincent wrapped the other two. He tucked the ends in flat and dabbed a tiny painted paw print on each one, the way he always did.\n\nThe four papers were red with white dots, green and white stripes, blue with gold stars, and plain brown paper tied with green string.",
+      "illustrationDirection": "Wrapping in progress, seen so that the boxes are hidden by paper, arms and tails: Dough Mino folding a sharp point; Vincent dabbing a tiny paw print. The four papers visible on the rolls.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "22be4ebfa4387a5e89b57e6e2d405e811eb7f60d8f6d6763d16eb9bc2b305319",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 296122,
+            "sha256": "b9ffcaf88a902212ffc8a87f867485125becb37a4b84608dc55b34c3bdfc3806"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 181742,
+            "sha256": "da3bb95d61c1fffeec6af502cf061f6b05eb27a06dbabf136a0ec34c4d3da800"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82226,
+            "sha256": "1eb25e825f3201020bf49ad0e56b7acb780fb0bb7e0643997af832aa5e020ec5"
+          }
+        ],
+        "review": "The four rolls are in the locked order. The tight crop shows one point and one paw stamp, but no complete box or tag that could tie a wrapping paper to a donor.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino folds sharp pointed ends while Vincent paints tiny paw prints on his parcels."
+      },
+      "alt": "Dough Mino folds sharp pointed ends while Vincent paints tiny paw prints on his parcels."
+    },
+    {
+      "number": 6,
+      "text": "Vincent laid each painted tag on top of its parcel, ready to tie on when the paint was dry.\n\nAn owl for Hooten. A hen for Hen-Berry. A pig for Pork-ulele. A ladybird for Luckybug.\n\nBelgian-Waffle swooped in from his first round of deliveries, hung his old scarf on the peg to dry, and swooped out again. Dough Mino looked at the scarf for a long time. It was very frayed.",
+      "illustrationDirection": "Four finished parcels in a row, each with a painted tag lying on top (owl, hen, pig, ladybird). Belgian-Waffle hanging a very frayed grey scarf on the peg. Dough Mino looking at the scarf. A corner of patchwork under the table.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b3433614cee62862b01baef4d2d6c091db7d2fc21468a5611fba2fd8b236aa2d",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 407796,
+            "sha256": "3fcac9c50224352f34070ce888610ce4c187cd33b405eb26ed9d6023cf13989a"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246232,
+            "sha256": "fff271ce9667fb5bf16228ffeb36c3d6b3ea6a78607cf5afe7737fd68f400b51"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108016,
+            "sha256": "f5d678b34f537564945aa108838514c02db8f8424fdb20ad93dfb17c2709705d"
+          }
+        ],
+        "review": "Four loose blank tag backs hide all four ownership links. The four packages and two stamps match the table, the old scarf is visibly frayed and a single patchwork corner shows under the table.",
+        "generator": "built-in imagegen",
+        "alt": "Four parcels sit in a row with their tags on top. Dough Mino looks at Belgian-Waffle’s frayed scarf."
+      },
+      "alt": "Four parcels sit in a row with their tags on top. Dough Mino looks at Belgian-Waffle’s frayed scarf."
+    },
+    {
+      "number": 7,
+      "text": "**Chapter Two: The Gust**\n\nAt nine o’clock, the library door burst open.\n\n“Second round!” shouted Belgian-Waffle, and a gust of snowy wind came in with him.\n\nFour painted tags lifted off four parcels, whirled up into the air like leaves, and scattered all over the hall.",
+      "illustrationDirection": "The door bursting open, Belgian-Waffle flying in with a swirl of snow. The four tags lifting off and whirling into the air.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "76b2ddf0a0d2de0a134cd4941fe3b27cb1887b7a2be43c7ae3cc286b0fd5c154",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 405678,
+            "sha256": "37da751ae220dfad1513c720371019ecd53f8d204e2520c728e35d8b7117f0a9"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 260820,
+            "sha256": "25ad0b1998a3461c00fbbbda5e445e05cb685276006d361f711922a8f7e6edec"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 122950,
+            "sha256": "564860cb83e06b6e0de251ceeef1e09797a3cb0fd4311acb8526ea92628f83a9"
+          }
+        ],
+        "review": "Exactly four blank-backed tags are blowing away in the gust. Exactly four finished parcels remain on the table with no tag on them. The old frayed scarf stays on its peg.",
+        "generator": "built-in imagegen",
+        "alt": "The door bursts open and the wind blows the four tags off the parcels."
+      },
+      "alt": "The door bursts open and the wind blows the four tags off the parcels."
+    },
+    {
+      "number": 8,
+      "text": "They found the tags under the paper tree, on the bookshelves and in the cocoa jug. Not one was damaged.\n\nBut now nobody knew which tag belonged on which parcel.\n\n“Easy!” said Belgian-Waffle. He picked up the plain brown parcel and shook it. *Chink, chink.* “It jingles! It’s Pork-ulele’s!” He grabbed the pig tag.",
+      "illustrationDirection": "Hunting for tags: one under the paper tree, one on a bookshelf, Vincent fishing one out of the cocoa jug. Belgian-Waffle shaking the plain brown parcel, about to grab the pig tag.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b0fc486a174d75def2ad4e431b26b48e400c601ede49d175f5807e555078b466",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 415662,
+            "sha256": "7d6d0b2192c70b7dcd6ea804f12ced436941131e33840833198d56f6a1d61321"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 250318,
+            "sha256": "2862eeac4bbbc1a526b68b771066ecf86e617f4c6da0624e8e9f142f3a30310d"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112636,
+            "sha256": "ffcf06d4e90db2681fd11d9673a3693f7c7d642d4951a916b7c9ceb4c8e55598"
+          }
+        ],
+        "review": "There are four loose tag cards: on the shelf, under the paper tree, at the cocoa jug, and the pig card on the table. The bluejay shakes the large plain parcel without tying the pig tag to it.",
+        "generator": "built-in imagegen",
+        "alt": "The friends find the tags around the hall while Belgian-Waffle shakes the brown parcel."
+      },
+      "alt": "The friends find the tags around the hall while Belgian-Waffle shakes the brown parcel."
+    },
+    {
+      "number": 9,
+      "text": "“Wait,” said Dough Mino. He picked up the blue parcel with gold stars and shook it gently.\n\n*Ching, ching.*\n\n“Two of them jingle,” he said.\n\n“Oh,” said Belgian-Waffle. “Well, then, the red one with white spots must be Luckybug’s. Because she’s red with spots.”\n\n“That’s a guess,” said Dough Mino. “Not a clue. A guess can send the wrong present to the wrong door.”",
+      "illustrationDirection": "Dough Mino gently shaking the starry parcel, one ear-hole turned to it; Belgian-Waffle pointing at the dotty parcel, then at a ladybird tag.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2bec80ba5b154c1178f2bbb750ec8dfaef5dadfa4a916bfcf698eae3dd6d5e8d",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 418306,
+            "sha256": "108fd876d6529a43ec95b6baf08e31fd4fddb4877a84730b3945839615af75ad"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 248876,
+            "sha256": "581431631290b652cee0e4268b92deb45b352d891811441ad3355808d74b24e8"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 111200,
+            "sha256": "273aac8a18948858cfb4972d1bace4e0c769145cdad1329470875aedfe78affa"
+          }
+        ],
+        "review": "The small blue-star parcel jingles. The red-dot parcel and the loose ladybird card stay separated, and none of the four packages has a tag tied on.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino shakes the starry parcel and finds it jingles too."
+      },
+      "alt": "Dough Mino shakes the starry parcel and finds it jingles too."
+    },
+    {
+      "number": 10,
+      "text": "**Chapter Three: Clues, Not Guesses**\n\nDough Mino lined the four parcels up in a row. Then he took a big sheet of brown paper and drew a grid on it: the four parcels across the top, and the four friends down the side.\n\n“First,” he said, “what do we actually know?”\n\nThey remembered what everyone had said when they brought their presents.\n\nBooklava: Hooten’s present is long. The twins: Hen-Berry’s present is very heavy. Honey-Beats: Pork-ulele’s present jingles. Ted: Luckybug’s going to love it.\n\n“That last one doesn’t help much,” said Belgian-Waffle.",
+      "illustrationDirection": "Dough Mino drawing a grid on brown paper: four little coloured rectangles across the top, four little faces down the side. The parcels lined up behind.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6e5973a6b36fb92a86ddc2dfe458d4bdf4ac8077494f70c7face3ac3453b06e3",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 329286,
+            "sha256": "beb9b5df8b2209914c0db7aef1f8d11b2900185e47a5862b017f42258790fc9e"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 186352,
+            "sha256": "9cecc7d641d6619c781f1db18cf1785ee00777ec0d2970ea175091981a7ef064"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78664,
+            "sha256": "721a9a410bd8780cc57a83d3ba0510d1ebb4217cf3d79b3b22e33c206c9946f5"
+          }
+        ],
+        "review": "Counted four parcel columns and four face rows with sixteen empty cells. Four parcels and their two paw prints match the table. Only a corner of patchwork shows below the table, and there are no tied tags.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino draws a puzzle grid on a big sheet of brown paper."
+      },
+      "alt": "Dough Mino draws a puzzle grid on a big sheet of brown paper."
+    },
+    {
+      "number": 11,
+      "text": "“I know something,” said Vincent. “I wrapped Luckybug’s present myself. So it’s got my paw print on it.”\n\nThey looked at the four parcels. The dots and the plain brown paper had tiny painted paw prints. The stripes and the stars had Dough Mino’s sharp, pointed ends.\n\n“So Luckybug’s is the dots or the plain brown one,” said Dough Mino. He made a mark on the grid.",
+      "illustrationDirection": "Close on the four parcel ends: two with sharp points (stripes, stars), two with flat tucked ends and tiny painted paw prints (dots, plain). Vincent pointing at his paw print.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4dd2b0e622aa2079ba28a84a7adb0ee133a727cc9eca5dd636cbc2f0fba75757",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 207134,
+            "sha256": "6eff0433354b740752eba4d009aafe94131ffaddd46f716967c278e3984363a5"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 120498,
+            "sha256": "977d8ce9eb05d1514cd50e854db1db04e04a52b6c20be299183fbe88808e8390"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 53062,
+            "sha256": "f31aa8ac81d11679cfaff0cb8ade4ecb31c4832e18b10e1012730661d968b258"
+          }
+        ],
+        "review": "Exactly four papers and correct sizes. The long Stripes parcel and small Stars parcel have pointed ends. The small Dots parcel and large Plain parcel have flat ends with one paw print each. No tags are visible.",
+        "generator": "built-in imagegen",
+        "alt": "Two parcels have pointed ends and two have tiny painted paw prints."
+      },
+      "alt": "Two parcels have pointed ends and two have tiny painted paw prints."
+    },
+    {
+      "number": 12,
+      "text": "“Now we test,” said Dough Mino. “Shape first.”\n\nThree of the parcels were boxes. Only one was long and thin: the green and white stripes.\n\n“Hooten’s present is long,” said Vincent.\n\n“And only one parcel is long,” said Dough Mino. He drew a tick on the grid. “Stripes for Hooten.”",
+      "illustrationDirection": "The four parcels side by side: three boxes and one long thin striped parcel. Dough Mino ticking the grid.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f2fcb34aae2b8823084686ddef6eab46a169be05c2b2515dde504736fe05426a",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 376696,
+            "sha256": "16157f083cce2adfd169dc1ddbb557c158772f7b21edbe70ac95b61490a07af8"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 232006,
+            "sha256": "03e9ecc7219ee840bfe5fcdb89919c2ab605445daa8ece35e98f0b53eced777f"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103024,
+            "sha256": "8010167490661d3524fa767854f9eaf0e8932a529f6e90ecb36fab39e7a914fd"
+          }
+        ],
+        "review": "Only Stripes is long and thin. The three boxes, paw stamps and parcel ends match the clue table. The grid is turned away and ownership remains hidden.",
+        "generator": "built-in imagegen",
+        "alt": "Only the striped parcel is long and thin. Dough Mino ticks the grid."
+      },
+      "alt": "Only the striped parcel is long and thin. Dough Mino ticks the grid."
+    },
+    {
+      "number": 13,
+      "text": "“Sound next.”\n\nEach of them shook each parcel gently, holding it close to an ear. The stripes made no sound. The dots made no sound. The stars went *ching, ching*. The plain brown parcel went *chink, chink*, a little lower.\n\n“Pork-ulele’s jingles,” said Belgian-Waffle. “So it’s the stars or the brown one. Still two.”\n\n“Still two,” agreed Dough Mino. “So we need one more test.”",
+      "illustrationDirection": "The three friends each holding a parcel to their ears and shaking gently; musical-note-like sound marks only near the stars and the brown parcel.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3ab5983aaf0c9b395864b273eb787438952dbca49c8b202b206ec474287df594",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 401010,
+            "sha256": "4ff99d3f3c93ce88b8aeefef0842c77f6858e2f33ba4165b606a7293cc689f95"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246556,
+            "sha256": "c1f456a40833ac4465c757dffbd45799e6ba9e08b4b667831b4c34b08ed4de4d"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112930,
+            "sha256": "82da49419a2badcb5f75695b97b74312988eea34b27c8804f01102c4bf4436c8"
+          }
+        ],
+        "review": "Two separate sound marks are visible by the blue-star and plain-brown parcels only. The green-striped and red-dot parcels remain silent. There are four packages and no ownership tags.",
+        "generator": "built-in imagegen",
+        "alt": "The friends shake each parcel. Only the stars and the brown paper jingle."
+      },
+      "alt": "The friends shake each parcel. Only the stars and the brown paper jingle."
+    },
+    {
+      "number": 14,
+      "text": "In the corner of the library stood Professor Hooten’s old brass scale, the one he used for weighing books before they went in the post.\n\nThey weighed every parcel, one after another.\n\nThe stars were light. The dots were light. The stripes were a bit heavier. And the plain brown parcel was so heavy that the scale went *clunk* all the way down.",
+      "illustrationDirection": "Hooten’s old brass scale: the plain brown parcel on the pan, the needle swung all the way round, the scale tipped with a clunk. The other parcels waiting in a row.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c918be1bcfb3515449201dce491078c096c37b1181f024ee36f126e6d9181c65",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 339562,
+            "sha256": "ef9c639a23ac08d13b584b80f2393dfd783dc2ea58b2af6edd2cd3c44be2da4c"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 206414,
+            "sha256": "789597c9d32e1eae5624067d1158296762d3ab554234d5146f299d617b70abaa"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93500,
+            "sha256": "68a6ff88c00bd74a9ea02555f014ce845eb6be83881c7846a904bf26ec879c31"
+          }
+        ],
+        "review": "The large plain brown parcel alone sits on the pan and the needle reaches the far end of the numeral-free dial. The other three parcels retain their sizes and patterns, and no tag is visible.",
+        "generator": "built-in imagegen",
+        "alt": "On the brass scale, the plain brown parcel is by far the heaviest."
+      },
+      "alt": "On the brass scale, the plain brown parcel is by far the heaviest."
+    },
+    {
+      "number": 15,
+      "text": "Dough Mino put down his pencil.\n\n> **Your turn.** You know what everyone said, and you’ve seen all three tests. Which parcel is Hen-Berry’s? Which is Pork-ulele’s? And which is Luckybug’s? Work it out before you turn the page.",
+      "illustrationDirection": "Puzzle page: the grid on the table, pencil beside it, the four parcels in a row, and the four tags laid out below them, not yet matched. Calm, clear, top-down view so readers can study it.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "672c6f9e158c02c76efbc2019c22098d05851dac2c2a6f222bb4c524c775cb85",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 266990,
+            "sha256": "8eef5a68f65924fc30cfbf0935d02980a3918deeed75559e083a5cdb140a0f34"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 159726,
+            "sha256": "855e40bb4e64264d0b9afa3678c70afb9f28c5239377f3ef8022decd630c3407"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 64646,
+            "sha256": "ee6b497ab586f2152825e050f95053e06ad91342ce0d06819add20e74daedd64"
+          }
+        ],
+        "review": "All sixteen grid cells are empty. The four parcel motifs and four faces are in the right grid headings. Four separate tags are grouped diagonally away from the parcels, at uneven angles without a visible match.",
+        "generator": "built-in imagegen",
+        "alt": "The puzzle grid and four parcels wait for the reader to solve them."
+      },
+      "alt": "The puzzle grid and four parcels wait for the reader to solve them."
+    },
+    {
+      "number": 16,
+      "text": "“The plain brown parcel is by far the heaviest,” said Dough Mino. “Hen-Berry’s present is very heavy. So the brown one is Hen-Berry’s.”\n\n“But it jingles!” said Belgian-Waffle.\n\n“Lots of heavy things jingle,” said Vincent.\n\n“Then Pork-ulele’s jingly present must be the stars,” said Dough Mino. “And Luckybug’s has a paw print, so it’s the dots or the brown. The brown is Hen-Berry’s. So the dots are Luckybug’s.”\n\nBelgian-Waffle stared. “So the red spotty one WAS Luckybug’s!”\n\n“Yes,” said Dough Mino. “But now we know.”",
+      "illustrationDirection": "Dough Mino explaining with his pencil, Belgian-Waffle open-beaked in surprise, Vincent nodding.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ea1bdc10dfa9347616b5a40d2684ee8f21f40a82c0c03732bd777a2f5cd0db17",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 379488,
+            "sha256": "96cc794b3bc783efe6ef589cf95afe079866dbad57aaf2cc6c67baad5316eafe"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 235936,
+            "sha256": "05986a94a7aee3881d05d8973213e0dcec78d80931216eeccb1287870475eea2"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 105164,
+            "sha256": "03175e5887f52943e278dd5f33e852c46423908777fbc6a4af86a1b9567ffb8d"
+          }
+        ],
+        "review": "Dough Mino explains to Vincent and Belgian-Waffle. The unmarked back of the grid is visible, and no ownership tag is tied to the packages behind them.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino explains the answer while Belgian-Waffle stares in surprise."
+      },
+      "alt": "Dough Mino explains the answer while Belgian-Waffle stares in surprise."
+    },
+    {
+      "number": 17,
+      "text": "They tied every tag on with a double knot. The owl on the stripes. The hen on the plain brown paper. The pig on the stars. The ladybird on the dots.\n\nDough Mino lined the four parcels up in a row by the door, in the order of the delivery route. It was the neatest row he had ever made.",
+      "illustrationDirection": "The four parcels in a neat row by the door, each tag tied on with a double knot: owl on stripes, hen on brown, pig on stars, ladybird on dots.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "18c053c9103681ba5d5979d8e538e67eea90a6e3aae11c125967c76b792270bc",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 322572,
+            "sha256": "69e0ed6df75c999eb6545c76f8b82e41b1fb62c69f7f6c46969efbe933f4618f"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 204602,
+            "sha256": "2b28b57433438055a89ab3c1abcb5a39c895c6cc8ff1702b7fb844fe6ad124f1"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 92360,
+            "sha256": "0bd365f198a97016dd7cd61b400c94f6524cf29146b2a62d63fb86fef4417150"
+          }
+        ],
+        "review": "The four tied illustrations are correct for the first reveal: owl on long Stripes, pig on small Stars, ladybird on Dots, hen on large Plain. Two points and two paw stamps are clear.",
+        "generator": "built-in imagegen",
+        "alt": "Four parcels with their correct tags stand in a neat row by the door."
+      },
+      "alt": "Four parcels with their correct tags stand in a neat row by the door."
+    },
+    {
+      "number": 18,
+      "text": "**Chapter Four: The Fifth Parcel**\n\n“Hang on,” said Belgian-Waffle. He was peering under the table. “There’s another one.”\n\nHe pulled out a fifth parcel. It was wrapped in a patchwork of little pieces: red with dots, green with stripes, blue with stars and plain brown, all fitted together like a puzzle. Its ends were folded into sharp points.\n\nIt had no tag at all.",
+      "illustrationDirection": "Belgian-Waffle under the table pulling out a patchwork parcel with sharp pointed ends and no tag.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a91a0dc42b23ea0df34b2a3d9d06ba4254e95f86df28fc8f73f35b8eb0e2bcb6",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403794,
+            "sha256": "ac9d7e8184c70a550ff6236138238f71273e004ba1b3b5f0489df28078a004d2"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 243768,
+            "sha256": "3aa7088853a5e31ceff3d1d3d081f3e5dd9525655b062529e41f49ba96523b70"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 109998,
+            "sha256": "424db816d73258e0807a5eb8ef955605c67f31e564177f994cd7608ea24effb7"
+          }
+        ],
+        "review": "The bluejay finds a fifth patchwork parcel with pointed ends, made from offcuts of all four papers, and no tag. The original four remain above the table.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle finds a fifth patchwork parcel under the table."
+      },
+      "alt": "Belgian-Waffle finds a fifth patchwork parcel under the table."
+    },
+    {
+      "number": 19,
+      "text": "“A mystery!” said Belgian-Waffle. “Pointed ends, so Dough Mino wrapped it. Let’s test it!”\n\nHe shook it. Not a sound. He squeezed it. It was soft. He weighed it. It was hardly heavier than nothing.\n\n“So who’s it for?” he said.\n\nDough Mino had gone pink from his nose to the tip of his tail. “That one,” he said, “is not part of the puzzle.”",
+      "illustrationDirection": "Belgian-Waffle squeezing the soft patchwork parcel; Dough Mino blushing pink from nose to tail.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fad08be0f3515d80419866a6323a7669a68b531b49fb3d75e0235b455f11a680",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 395408,
+            "sha256": "0c680b646623287c3196eab76d847320b92c4366d4a8a1167f6eb8b52ea1a542"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 242918,
+            "sha256": "9f149d59774006d90b8c543d2792d0924cc0c245cb75d76bf4bfb39ccc7f4df0"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 109674,
+            "sha256": "cb4dea876412117b0552dc55f2c1889b864b27e4d446ee5bb7e225728aef6667"
+          }
+        ],
+        "review": "The patchwork gift remains closed and untagged, and Dough Mino blushes pink from nose to tail.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle squeezes the soft parcel as Dough Mino blushes pink."
+      },
+      "alt": "Belgian-Waffle squeezes the soft parcel as Dough Mino blushes pink."
+    },
+    {
+      "number": 20,
+      "text": "Vincent looked at Dough Mino’s pink face. He looked at the patchwork parcel. He looked at the frayed old scarf on the peg.\n\n“Some parcels aren’t puzzles,” said Vincent. “They’re surprises. And you’ve got four deliveries to make before morning, Belgian-Waffle.”\n\nHe loaded the four tagged parcels into the post bag, and he didn’t look at the fifth one again.",
+      "illustrationDirection": "Vincent looking from Dough Mino’s face to the frayed scarf on the peg; loading the four parcels into the post bag.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1f12f00eaab2b0b8f47f4c7f0fef7bc66ded0d63fc0444fae4a3bf25d75557b6",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403304,
+            "sha256": "c572a39bea89c18cf29883277881717823dd5f69b98ea7d4db8eadf0dcd424d7"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 245212,
+            "sha256": "322e5fcbf70c95246c4e378d4a3cd5c628a5aad6f895dd9540b2044a01209e7a"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110766,
+            "sha256": "79820b7068437eb6e39c89d926f4d0a5d643d36751cfee88bc0cf05e042529fe"
+          }
+        ],
+        "review": "The worn grey scarf stays on the peg and the four correct packages go into the brown postbag. The patchwork parcel is out of sight.",
+        "generator": "built-in imagegen",
+        "alt": "Vincent notices the frayed scarf and packs the four parcels into the post bag."
+      },
+      "alt": "Vincent notices the frayed scarf and packs the four parcels into the post bag."
+    },
+    {
+      "number": 21,
+      "text": "Belgian-Waffle put on his old frayed scarf, hitched up the heavy bag, and flew out into the snowy night.\n\nBehind him, in the warm library, Dough Mino let out a very long breath.\n\n“Thank you,” he said.\n\n“I didn’t see anything,” said Vincent, and went back to his painting.",
+      "illustrationDirection": "Belgian-Waffle flying out into the snowy night in his old scarf. Inside, Dough Mino sighing with relief; Vincent painting, not looking.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "64a5a6eae96e81609b86bd2c9b6aab23fa98e3a6b9ed61dd1820c2b720cedb52",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 430572,
+            "sha256": "60163d7686b5d189aeb2d96fabd28b38eaa42ea0cf5e572e6e9accd4c33c7f93"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 260136,
+            "sha256": "f87a5bed134e15aaab11db12f3c28f91898f515cc0ed2d833fbd6ab38c7c0673"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115630,
+            "sha256": "d2ca88c48f9ef543c6bffca718b83737d4a4656d0d7591901bb377da3144d3d7"
+          }
+        ],
+        "review": "Belgian-Waffle is flying out in his frayed grey scarf with his brown postbag. Vincent paints inside with Dough Mino. No hidden gift is revealed.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle flies off into the snow while Dough Mino sighs with relief."
+      },
+      "alt": "Belgian-Waffle flies off into the snow while Dough Mino sighs with relief."
+    },
+    {
+      "number": 22,
+      "text": "**Chapter Five: Deliveries**\n\nBelgian-Waffle flew through the falling snow.\n\nAt the library’s top window, he left the long striped parcel with the owl tag. Then he dragged the heavy brown parcel, *chink, chink*, all the way up Hen-Berry’s path and left it on her mat.",
+      "illustrationDirection": "Night deliveries: Belgian-Waffle leaving the long parcel at the library’s top window; then dragging the heavy brown parcel up Hen-Berry’s snowy path.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c96d418cba71c4293c76d1d4208e6742e9457782062620b225d87aa90a52da27",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 398626,
+            "sha256": "1622754b096b21b1af281f4dc62f9df4bf6d85effac638c0d210444f8e941f12"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 240708,
+            "sha256": "415c9a59d23dfd8c15ef9b0e1fe0e432652beebb2b8be27b9694f49ebad17679"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113110,
+            "sha256": "d75823e0a5bbe825eb2d319ee138c1bbdbb617a6f0871e90fad8afbbcc3201f8"
+          }
+        ],
+        "review": "The bluejay alone delivers the long striped parcel with its owl tag at the high library window, then drags the large brown parcel with green string and the hen tag up the snowy lane. He wears his old scarf in both moments.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle delivers the long parcel and drags the heavy one up Hen-Berry’s path."
+      },
+      "alt": "Belgian-Waffle delivers the long parcel and drags the heavy one up Hen-Berry’s path."
+    },
+    {
+      "number": 23,
+      "text": "At Pork-ulele’s door, he set down the starry parcel very gently, so it hardly jingled at all.\n\nAt Luckybug’s house, which was very small, he had to leave the dotty parcel beside the door, because it was bigger than the door was.\n\nThen he flew home through the grey of early morning, so tired his wings creaked.",
+      "illustrationDirection": "The starry parcel set down gently at Pork-ulele’s round-windowed door; the dotty parcel beside Luckybug’s tiny root door, bigger than the door. Grey dawn beginning.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2645f77601258196d9c00468598f5c6b285459beab3e1871969b808b8fa718c7",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 405386,
+            "sha256": "0bc6b832cdc9f500485b27425323598ba88aba9694f65a2e0dbffcb878ec7914"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 247780,
+            "sha256": "3265fcbb40d57ec9674ca5f93e5c5284e646e82d007bba204256de910934dbee"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 114270,
+            "sha256": "1f49c9bfda5c8e88c696bb384d27df171ea43e8b7a32b1eaea8e66dc6f8d40c8"
+          }
+        ],
+        "review": "Belgian-Waffle is alone on both stops in his old grey scarf. The starred parcel with its pig tag sits under the round window. The dot parcel with its ladybird tag is larger than the tiny root door.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle delivers to Pork-ulele and to Luckybug, whose door is smaller than her present."
+      },
+      "alt": "Belgian-Waffle delivers to Pork-ulele and to Luckybug, whose door is smaller than her present."
+    },
+    {
+      "number": 24,
+      "text": "On his own doorstep, in the snow, there was a parcel.\n\nIt was patchwork. Red with dots, green with stripes, blue with stars and plain brown, with sharp pointed ends. And now it had a tag: a tiny painting of a bluejay.\n\nLeading away from the step through the snow was a line of big, three-toed footprints.",
+      "illustrationDirection": "Dawn at Belgian-Waffle’s little house on a post: the patchwork parcel on his doorstep with a bluejay tag; big three-toed footprints leading away in a perfectly straight line.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9b3320fb9a665610e5234ceffa8b38378661c9d28c05ec143e41a065ac08791f",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 348472,
+            "sha256": "dab67016b130e4503e7e831c0a6ce7fb0231647ecca8d580128c5e7a9c899ee0"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 196922,
+            "sha256": "412939c5e168649b27fa10ea9570f4288420a5471533473eb9e7ac8ae452d8b5"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86922,
+            "sha256": "802ea2b5ff61d17dda05969c651adf1d6b8465cef1e22f191c96ebf9706d4ff3"
+          }
+        ],
+        "review": "The one pointed un-stamped patchwork parcel and one bluejay tag sit on the doorstep. The straight line of prints starts at the doorstep and every full impression shows exactly three toes.",
+        "generator": "built-in imagegen",
+        "alt": "A patchwork parcel waits on Belgian-Waffle’s doorstep, with big footprints leading away."
+      },
+      "alt": "A patchwork parcel waits on Belgian-Waffle’s doorstep, with big footprints leading away."
+    },
+    {
+      "number": 25,
+      "text": "The tag said, in Vincent’s curly writing: *Open now. You’ll need it tonight.*\n\nSo Belgian-Waffle opened it.\n\nInside was a long, soft scarf, knitted in a pattern of little squares like a waffle. It had stripes of red and green and blue and brown, the very same colours as the four papers.",
+      "illustrationDirection": "Belgian-Waffle holding up a long knitted scarf in a waffle-square pattern with stripes of red, green, blue and brown. Paper and tag at his feet.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d56221d1095edca9c769cc3b583d4aae112a61b7b25dcef32e45387e3425b969",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 403962,
+            "sha256": "42291d1a20f08ed0522c001467c6282e84943e8592aa77c7e785e06703e977df"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 244486,
+            "sha256": "2e8568f0c3354d09eccb146cdb9b4d562707de41c0a8a8f4162e2774dd23d3ce"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 108728,
+            "sha256": "e954390fa2512665234f06db41998fabfb1b1ab01f2ad3ae3e049d2e559f9cc2"
+          }
+        ],
+        "review": "Belgian-Waffle opens the gift alone at his door. The scarf has the small waffle squares and the four broad red, green, blue and brown bands. The discarded patchwork, bluejay tag and frayed grey scarf are visible.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle opens the parcel and finds a waffle-patterned scarf."
+      },
+      "alt": "Belgian-Waffle opens the parcel and finds a waffle-patterned scarf."
+    },
+    {
+      "number": 26,
+      "text": "**Chapter Six: The Pattern**\n\nBelgian-Waffle looked at the scarf. He looked at the footprints in the snow. Three toes. Very big. Very neat. In a perfectly straight line.\n\nOnly one person in the village walked in a perfectly straight line.\n\nHe put on the new scarf, and he flew.",
+      "illustrationDirection": "Belgian-Waffle in his new scarf looking at the straight line of three-toed prints, then taking off.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "17e42da5fc9b7852366b00bc5053c4b198c1c827869b2319d787e2e7652886e1",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 267950,
+            "sha256": "fdbb15dafc90ba87d4d8a310f7243279e4e45fde9ce1ba54d85be9b649456c09"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 170016,
+            "sha256": "95167abdeaa6fd9abc13d7f9f7fc87aed4997a910cf2c8a1194e5a0e99b97af0"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78260,
+            "sha256": "f95364e5f84a39b72c98e257d36471b495d6a7f197ff6e75fadaffdd183b1b95"
+          }
+        ],
+        "review": "Belgian-Waffle takes off wearing his new scarf. The unopened gift is gone, and the straight trail of three-toed prints begins below the same doorstep.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle looks at the straight line of footprints and takes off."
+      },
+      "alt": "Belgian-Waffle looks at the straight line of footprints and takes off."
+    },
+    {
+      "number": 27,
+      "text": "Dough Mino was at home, lining his teacups up on the shelf, when there was a tap at the window.\n\nHe opened it. Belgian-Waffle was on the sill, in the patchwork-coloured waffle scarf, with snow on his hat.\n\n“Dough Mino,” he said. “How did you know my size?”",
+      "illustrationDirection": "Dough Mino’s tall, narrow cottage: Dough Mino at his shelf of teacups in a perfect row, turning to a tap at the high window, where Belgian-Waffle perches in the new scarf.",
+      "art": {
+        "status": "accepted",
+        "master": "p27.png",
+        "webp": "p27.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "d32bebe57501615fb04933038be7fbc18606f2033d14fbbf7de31008a1dc7f27",
+        "derivatives": [
+          {
+            "path": "p27.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 343288,
+            "sha256": "dd974004dee19bc7d4efd27fbd512530fd41e5e18dc8d0d9a2918590545e6a6f"
+          },
+          {
+            "path": "p27-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 210560,
+            "sha256": "2e39a82edfd60cd9f7d03763a80412d6939aeca99a21699c232dec42648f2684"
+          },
+          {
+            "path": "p27-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 94516,
+            "sha256": "9634a54af881bad6d9a9f86b284fa26f61672759c97093e3bd26348aea437cef"
+          }
+        ],
+        "review": "The very tall window fits the narrow cottage and the teacups sit in a single neat row. Belgian-Waffle taps at the window wearing the four-colour waffle-knit scarf.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle taps at Dough Mino’s window wearing the new scarf."
+      },
+      "alt": "Belgian-Waffle taps at Dough Mino’s window wearing the new scarf."
+    },
+    {
+      "number": 28,
+      "text": "“Knitting is only patterns,” said Dough Mino, “and I like patterns.”\n\nHe looked a little shy. “And I measured your old scarf last week, on the library peg, while you were sorting the post. I wrapped it tonight, out of the leftover scraps. I’ve been hiding it under the table all evening.”",
+      "illustrationDirection": "Close: Dough Mino at the open window, shy, a tape measure and knitting needles on the sill beside him.",
+      "art": {
+        "status": "accepted",
+        "master": "p28.png",
+        "webp": "p28.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f46380c761e0838e1d0bf08a15945eee8df789e5d6500a9dae8b987971580fa6",
+        "derivatives": [
+          {
+            "path": "p28.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 390926,
+            "sha256": "f4d2e2d82afbbb883f83c07a2ea70c5d56eca4a68de35affff1d526f5be2188e"
+          },
+          {
+            "path": "p28-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 236250,
+            "sha256": "91f26c19b17c7197973a9292696548559ed6720de2ff5d00c0af8cda7dca8754"
+          },
+          {
+            "path": "p28-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103622,
+            "sha256": "e026eb199cea4e03d8cce3a147eed93ad45373ad0fae6404b7321e5f9c1b7f0b"
+          }
+        ],
+        "review": "Dough Mino leans at the open window with two knitting needles and one rolled tape on the sill. Belgian-Waffle wears the new four-colour waffle-knit scarf.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino shyly explains how he knew the size."
+      },
+      "alt": "Dough Mino shyly explains how he knew the size."
+    },
+    {
+      "number": 29,
+      "text": "Belgian-Waffle was quiet for a moment.\n\n“Every year, I deliver everybody’s presents,” he said. “And nobody ever delivers anything to me.”\n\n“I know,” said Dough Mino. “That’s why I delivered it myself.”",
+      "illustrationDirection": "The two of them at the window, snow falling softly, Belgian-Waffle’s feathers fluffed, Dough Mino smiling.",
+      "art": {
+        "status": "accepted",
+        "master": "p29.png",
+        "webp": "p29.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "59a704dbbdd575e2c231b0006729b9ba320b655f9e1fc86961383885171f24d7",
+        "derivatives": [
+          {
+            "path": "p29.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 406370,
+            "sha256": "8b3baadd90f3c79df204405819373a8693954b75a42e28b5cbed408bd0fce23c"
+          },
+          {
+            "path": "p29-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 232384,
+            "sha256": "3151031cadc35be8ea4f1ac318048e2db26a8e833bde4cb8ac59797c5256d7f8"
+          },
+          {
+            "path": "p29-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 102522,
+            "sha256": "d564e2ac4756b62ba36dd9576171fa7a192823f313b46efce8ba5df596646aaa"
+          }
+        ],
+        "review": "Dough Mino and Belgian-Waffle share a quiet view at the tall open window in light early snow. The bird wears the new scarf.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle and Dough Mino talk quietly at the window."
+      },
+      "alt": "Belgian-Waffle and Dough Mino talk quietly at the window."
+    },
+    {
+      "number": 30,
+      "text": "That night was Christmas Eve. Belgian-Waffle flew one last loop over the village, warm all the way to the tips of his wings.\n\nAnd on the library wall, the puzzle grid was still pinned up, with four neat ticks. Somebody had added a fifth row at the bottom, in very neat writing, with a very small drawing of a bluejay. And beside it, the neatest tick of all.",
+      "illustrationDirection": "Christmas Eve night: Belgian-Waffle flying over the snowy village in the bright scarf. Inset or foreground: the puzzle grid pinned on the library wall with four ticks and a fifth row with a tiny bluejay and the neatest tick.",
+      "art": {
+        "status": "accepted",
+        "master": "p30.png",
+        "webp": "p30.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1644d052d62902f7a8bf21e68240ea7eb42cbe069f9c510516cfb6969afcb291",
+        "derivatives": [
+          {
+            "path": "p30.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 388876,
+            "sha256": "79e6d8d0779022501447d6ff977fa31cf011f7026eec9cb7de6873f2d1664855"
+          },
+          {
+            "path": "p30-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 239674,
+            "sha256": "243be87226a2aad5f20a18066deffd203f4b7b046a81ed373ef199ade4723394"
+          },
+          {
+            "path": "p30-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107294,
+            "sha256": "67c399e373e48f0e397f727b21833fe5b03cf84aac2847b4976e09e506c2072f"
+          }
+        ],
+        "review": "The completed grid has the four correct checks: owl on Stripes, hen on Plain, pig on Stars and ladybird on Dots. The fifth bluejay row has one large tick, and Belgian-Waffle flies in the four-colour scarf.",
+        "generator": "built-in imagegen",
+        "alt": "On Christmas Eve, Belgian-Waffle flies over the village in his new scarf. On the library wall, the puzzle grid has a fifth tick."
+      },
+      "alt": "On Christmas Eve, Belgian-Waffle flies over the village in his new scarf. On the library wall, the puzzle grid has a fifth tick."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "867271411501f187d47bf3ea2e6ee162ca7c21ba1ef56efbabdfb2869f0c47ba",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 342930,
+        "sha256": "c73fce113943a3912b015bbdc0f9be714cf385eefa40974392865d93457cd185"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 212664,
+        "sha256": "b997c67c1c81c667264ec4333151894fcfbba23084754d9e244f0515f5f0e74b"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 98068,
+        "sha256": "69afe9157aa3cdca62d287637e414be9e45da06318352c9a1c6dcf950cdc6d6e"
+      }
+    ],
+    "review": "The orange dinosaur, four correctly shaped parcels and four unpaired floating picture tags dominate the cover. Two paw prints are visible, and the fifth patchwork is only a corner under the table.",
+    "generator": "built-in imagegen",
+    "alt": "Dough Mino studies four wrapped parcels while their gift tags float loose in the air."
+  },
+  "sourceFolder": "christmas/dough-mino-and-the-parcel-mix-up",
+  "webSlug": "dough-mino-and-the-parcel-mix-up",
+  "reviewedPrintableSha256": "fe5e45c3ceea875fcf0beb140c5069413a99ac11d6441c738a1207260e7b77ce"
+}

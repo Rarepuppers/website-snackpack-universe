@@ -577,7 +577,7 @@
         game: "Fact Sprint",
         headline: dailyIso ? "Daily: " + fmt(ms) + ", " + slips + " slips " + "★".repeat(st) :
           sprinting() ? LESSONS[lesson].label + " sprint: " + correct + " in 60s" : LESSONS[lesson].label + ": " + "★".repeat(st) + " in " + fmt(ms),
-        dailyDate: dailyIso || undefined
+        dailyDate: dailyIso
       });
     }
     $("mf-again").focus();
@@ -671,7 +671,8 @@
   });
 
   var q = new URLSearchParams(location.search).get("daily");
-  if (q && /^\d{4}-\d{2}-\d{2}$/.test(q) && q === todayIso()) dailyIso = q;
+  var today = todayIso();
+  if (q === "today" || q === today) dailyIso = today;
   start(false);
 
   function validFact(f) {

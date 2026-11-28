@@ -5,6 +5,39 @@ names the commit that shipped it. These notes start on 2026-10-15; for earlier
 changes see the git history and the plans at the repository root (finished ones
 are in [`docs/archive/`](archive/README.md)).
 
+## 2026-11-26 - Credit footer on every printed book page
+
+Plan: [`READ-PLAN-2026-10.md`](../READ-PLAN-2026-10.md) "Printable credit footer".
+
+- This release: 63 book PDFs print "title · © 2026 SnackPack Studios · Free at
+  snackpackuniverse.com/read" on every page, and the cover adds "Free to copy
+  for home and classroom use. Not for resale." The three collections were
+  rebuilt from them. Page counts are unchanged. The five packager-built event
+  books and Captain Beakon's Bell are unchanged and listed as remaining work.
+  `docs/ART-BRIEF-WEB-BOOKS-2026-11-06.md` archived (all delivered).
+
+## 2026-11-27 - Thirteen quick guide and reusable classroom dailies
+
+Shipped in `49f722bd` and `88e959ae`.
+[Check website](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45927005045)
+passed 426 browser checks. The
+[completed art brief](archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md) is archived.
+
+- [Thirteen](../play/thirteen/) has a collapsible "How to play in 60 seconds"
+  box in the title strip, keeping the hand on screen. Thirteen and 2048 keep
+  their titles after the early matched-window Search Console read.
+- [Teacher links](../for-teachers/) can be copied once and used for the new
+  Snack Typer and Fact Sprint daily each day. GoatCounter reports starts
+  and daily finishes from those links using a fixed classroom label.
+- Snack Typer counts keyboard and IME input in its typing box as a start.
+  Practice rounds launched from a daily link stay out of the daily count.
+- The early GoatCounter read supports keeping Hearts featured. The
+  26–27 November data had zero Honduras book starts and zero classroom-game
+  daily finishes, so the Spanish option and weekly pack stay off the release.
+- The arcade, Daily page and related-game cards use painted Snack Typer and
+  Fact Sprint tiles. Both games plus Rummy 500, Block Puzzle, Brick Breaker,
+  Chess and Killer Sudoku have new share cards.
+
 ## 2026-11-26 - Classroom arcade: event counts, Snack Typer and Fact Sprint
 
 Plan of record: [`ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md`](../ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md).
@@ -31,6 +64,26 @@ The site's biggest real audience is a Honduran school; the top Cloudflare
   two starter books, Copy buttons); the site header no longer stays pinned on
   screens under 480 px tall, where it covered most of the page; the Snack Haul
   spotlight tests now match the launched page.
+- Generator catch-up: breadcrumbs on 79 pages that had none (characters,
+  animals and others) and WebP for 181 images on 66 pages, ~3 MB lighter.
+- 2048 gains 3×3 and 5×5 boards, a best per size and a daily 4×4 (no undo);
+  tiles now line up exactly with their cells (they sat 7.5 px short).
+- Snack Typer and Fact Sprint are on the Daily page (29 dailies) and the
+  homepage hero; Hearts replaces Pinball in the featured row.
+- Pyramid and TriPeaks now share their own painted cards (delivered 18 Oct,
+  never switched on). Codex prompt for the next art batch:
+  [arcade art brief](archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md).
+- `ff0c14b0` adopted the six 2048 screenshots (size switch) from CI. Then the
+  two 4K Last Bastion review tests get a longer timeout: they timed out twice
+  on CI's software renderer while every check in them passed. Plan updated
+  with the 26 Nov Search Console detail for the 4 Dec title read.
+- `9689fe37` passed [all website checks](https://github.com/Rarepuppers/website-snackpack-universe/actions/runs/45768097321).
+  All six shipped 2048 baselines matched the original CI artifact. The hub
+  screenshots passed with their existing baselines, and the deployed arcade
+  pages and share images matched Git.
+- The GoatCounter reader now reports Honduras book starts, finishes and
+  finish rates, plus Honduras game time bands and daily completions. The
+  plan records the interim Search Console comparison and the December reads.
 
 ## 2026-11-20 - Thanksgiving, Christmas, and New Year on the homepage
 

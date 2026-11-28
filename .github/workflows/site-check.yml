@@ -9,6 +9,11 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "**/*.pdf"
+      - "characters/**"
+      - "animals/**"
+      - "guides/**"
+      - "for-teachers/**"
       - "read/**"
       - "scripts/**/*.py"
       - "assets/**"
@@ -28,6 +33,11 @@ on:
       - "**/*.mjs"
       - "**/*.json"
       - "**/*.xml"
+      - "**/*.pdf"
+      - "characters/**"
+      - "animals/**"
+      - "guides/**"
+      - "for-teachers/**"
       - "read/**"
       - "scripts/**/*.py"
       - "assets/**"
@@ -44,6 +54,53 @@ permissions:
   contents: read
 
 jobs:
+  # Site integrity runs for every site change. Browser and game suites
+  # run only for the surfaces their inputs can affect.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      last_bastion: ${{ steps.filter.outputs.last_bastion }}
+      visual: ${{ steps.filter.outputs.visual }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Classify changed files
+        id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            files=$(git diff --name-only "$PR_BASE...$PR_HEAD")
+          elif [ "$EVENT" = push ] && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then
+            files=$(git diff --name-only "$PUSH_BEFORE" "$SHA")
+          else
+            echo "last_bastion=true" >> "$GITHUB_OUTPUT"
+            echo "visual=all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          printf '%s\n' "$files"
+          lb=false
+          visual=none
+          if grep -Eq '^(play/last-bastion/|playwright\.last-bastion|tests/visual/last-bastion|tests/visual/helpers/|package(-lock)?\.json$|scripts/serve-static\.mjs$)' <<< "$files"; then
+            lb=true
+          fi
+          if grep -vE '^(play/last-bastion/|tests/visual/last-bastion|tests/visual/(character-board|reads[^/]*|teachers-links|homepage-events|site-events)\.spec\.mjs$)' <<< "$files" |
+              grep -Eq '^(play/|assets/|tests/|[^/]+\.(css|js|mjs)$|package(-lock)?\.json$|scripts/serve-static\.mjs$)'; then
+            visual=all
+          elif grep -Eq '^(index\.html$|read/|guides/|for-teachers/|characters/|animals/|data/(character-|read-|web-books|web-originals)|tests/visual/(character-board|reads[^/]*|teachers-links|homepage-events|site-events)\.spec\.mjs$)' <<< "$files"; then
+            visual=reads
+          fi
+          echo "last_bastion=$lb visual=$visual"
+          echo "last_bastion=$lb" >> "$GITHUB_OUTPUT"
+          echo "visual=$visual" >> "$GITHUB_OUTPUT"
+
   integrity:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -136,6 +193,15 @@ jobs:
       - name: Check /read/ bookshelf
         run: node scripts/build-read-shelf.mjs --check
 
+      - name: Check generated character board
+        run: node scripts/build-character-board.mjs --check
+
+      - name: Check reviewed book appearances
+        run: node scripts/build-character-appearances.mjs --check
+
+      - name: Check generated breadcrumbs
+        run: node scripts/build-breadcrumbs.mjs --check
+
       # Every /read/ picture offers 480/800/960 px WebP sizes via srcset. A book
       # imported without re-running the generator would ship one big image to
       # every phone, so assert every page is responsive and every size exists.
@@ -149,6 +215,8 @@ jobs:
         run: node scripts/check-contrast.mjs
 
   last-bastion:
+    needs: changes
+    if: needs.changes.outputs.last_bastion == 'true'
     # The game's 1,626 unit tests, its typechecker and its content/combat audits
     # ran only on one developer's machine until 11 September 2026: the sole
     # Last Bastion step in CI was the five-scenario browser lane below. The
@@ -206,6 +274,8 @@ jobs:
         working-directory: play/last-bastion/desktop
 
   visual-regression:
+    needs: changes
+    if: needs.changes.outputs.visual != 'none' || needs.changes.outputs.last_bastion == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -220,9 +290,14 @@ jobs:
         run: npm ci
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Compare arcade screenshots
+      - name: Compare arcade and site screenshots
+        if: needs.changes.outputs.visual == 'all'
         run: npm run test:visual
+      - name: Check Reads and character journeys
+        if: needs.changes.outputs.visual == 'reads'
+        run: npx playwright test 'tests/visual/(reads[^/]*|character-board|teachers-links|homepage-events|site-events)\.spec\.mjs$'
       - name: Exercise Last Bastion browser journeys
+        if: needs.changes.outputs.last_bastion == 'true'
         run: npx playwright test --config playwright.last-bastion.config.mjs
       - name: Upload visual diff on failure
         if: failure()

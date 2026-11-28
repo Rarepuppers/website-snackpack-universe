@@ -111,14 +111,22 @@ test("story sentences need capitals and link back to their book", async ({ page 
 
 test("today's daily is the same for everyone and counts on the daily hub", async ({ page, browser }) => {
   const today = new Date().toISOString().slice(0, 10);
-  await page.goto("/play/typing/?daily=" + today);
+  await page.addInitScript(() => { window.SP_EVENTS_DEBUG = []; });
+  await page.goto("/play/typing/?daily=today&classroom=1");
+  await page.waitForFunction(() => window.__spGameEvents === true);
   const a = await page.locator("#ty-chars").textContent();
   const other = await browser.newPage();
   await other.goto("/play/typing/?daily=" + today);
   expect(await other.locator("#ty-chars").textContent()).toBe(a);
   await other.close();
-  await typeRun(page);
+  await page.locator("#ty-input").focus();
+  await page.keyboard.type(a, { delay: 5 });
   await expect(page.locator("#ty-result")).toBeVisible();
+  const events = await page.evaluate(() => window.SP_EVENTS_DEBUG);
+  expect(events).toEqual(expect.arrayContaining([
+    "/arcade/typing/start", "/arcade/typing/class-start",
+    "/arcade/typing/daily", "/arcade/typing/class-daily",
+  ]));
   const done = await page.evaluate(() => window.SnackPackDaily.state().games);
   expect(Object.keys(done)).toContain("typing");
 });

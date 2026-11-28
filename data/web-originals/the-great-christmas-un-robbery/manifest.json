@@ -1,0 +1,1414 @@
+{
+  "schemaVersion": 1,
+  "id": "the-great-christmas-un-robbery",
+  "title": "The Great Christmas Un-Robbery",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "9–12",
+  "readingLevel": "Confident readers",
+  "readingMode": "confident-readers",
+  "publicationStatus": "published",
+  "storyPageCount": 34,
+  "wordCount": 1992,
+  "blurb": "On the oldest shelf in the library there is a gap, and Professor Hooten dusts it every morning. It’s for “the book that hasn’t been written yet”. Foxy-Lox has a plan: write that book, and put it in the gap for Christmas without Hooten seeing. There’s just one problem. Professor Hooten sees everything. A crew, a map, a rehearsal and a plan that goes wrong in the middle: this is a heist where nothing gets stolen.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "**Chapter One: The Gap**\n\nBooklava lived in the library, and so she knew its secrets.\n\nShe knew which stair creaked, which lamp flickered, and which dictionary was best for sleeping in. She knew that every morning, before anybody came, Professor Hooten dusted every single shelf.\n\nAnd she knew that on the oldest shelf, the First Shelf, right behind his armchair, there was a gap.",
+      "illustrationDirection": "Early morning in the library. Booklava peeping out of a big dictionary; Hooten dusting a shelf. The First Shelf behind his armchair, with a narrow gap in it.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "641339505d0cdef88c78576e52337080e91a881c062d8166200b4cb40fd9cd29",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 408630,
+            "sha256": "3381f8557060de4d75fc351bbfe1d752b57a4cc1033972b32386fc6d9ea23c60"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 252230,
+            "sha256": "a93cf98f04fd833a47e7ba7e4cb8e5579b2448c9efd50331254114c2873d2ae8"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112266,
+            "sha256": "07aab0e86200336abffabd49e0bc965ce6b8b06e95726ccb83afad50d211efc3"
+          }
+        ],
+        "review": "Booklava peeps out behind a large dictionary. The entrance bell is to the left, the green armchair faces the door and the First Shelf is behind it. At full size a single slim black gap one thin book wide is visible on the middle shelf, just above the duster.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava watches Professor Hooten dust the shelves. There is a gap on the oldest shelf."
+      },
+      "alt": "Booklava watches Professor Hooten dust the shelves. There is a gap on the oldest shelf."
+    },
+    {
+      "number": 2,
+      "text": "It was a narrow gap, just wide enough for one thin book. And every morning, Professor Hooten dusted it, very carefully, as if something were already there.\n\n“What goes in the gap?” Booklava asked him one December morning.\n\nHooten smiled. “That space,” he said, “is for the book that hasn’t been written yet.”\n\nAnd he would not say another word about it.",
+      "illustrationDirection": "Hooten carefully dusting the empty gap with a feather duster; Booklava looking up at him, curious.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "40f193253047bb9ff3e68219a4d56ed982fd3fb48de9044c14b9e9b9827e8357",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 326816,
+            "sha256": "7114efae2dda1fce648da67ca686daecace1c096ae815a47a33ad018d64e4c1f"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 207906,
+            "sha256": "320822820fec328aeaa670fbd557cd1982543ef59407065f6f6350c3eb16848f"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97146,
+            "sha256": "43b8584d46ee012a029ef39ea8d437fb402b5feb00e4005dae5feb326db94fe0"
+          }
+        ],
+        "review": "Hooten reaches towards a single distinct dark slim gap at eye height between the upright leather books, with Booklava watching below.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten dusts the empty gap on the First Shelf."
+      },
+      "alt": "Professor Hooten dusts the empty gap on the First Shelf."
+    },
+    {
+      "number": 3,
+      "text": "Booklava told Foxy-Lox, because Foxy-Lox was the cleverest person she knew. Foxy-Lox had won the Hide-and-Seek-and-Solve Championship three years running.\n\nFoxy-Lox’s eyes narrowed. Her tail swished.\n\n“Then we write it,” she said. “A book about the village, by everybody in the village. And we put it in the gap for Christmas. Without him seeing.”",
+      "illustrationDirection": "Booklava telling Foxy-Lox outside in the snow; Foxy-Lox’s eyes narrowed, tail mid-swish, an idea forming.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "983940cd7d4cae8bc898162a3db680581b338742527bc0d9911a035c1f8e475f",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 487848,
+            "sha256": "45177aa6bf96c4b7314495d9df284c1503f572aee28db4b5398c123d9943ff09"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 278570,
+            "sha256": "e3067066e4f562cdfdbffe72b426be2d63294ad1d7791875b84a8098412e9ec0"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 128808,
+            "sha256": "337208d527d9ad86ec53d97c9a707fd49a1ba733aca6fa13e99255a20647d573"
+          }
+        ],
+        "review": "Booklava in her purple jumper talks to Foxy-Lox outside the same library door. Foxy-Lox wears her original outfit without the later cranberry scarf and looks as though she is forming an idea.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava tells Foxy-Lox about the gap, and Foxy-Lox gets an idea."
+      },
+      "alt": "Booklava tells Foxy-Lox about the gap, and Foxy-Lox gets an idea."
+    },
+    {
+      "number": 4,
+      "text": "“You can’t,” said Booklava. “Nobody does anything in that library without him seeing.”\n\n“Nobody,” said Foxy-Lox, “has ever tried with a crew.”",
+      "illustrationDirection": "Foxy-Lox grinning in close-up; Booklava doubtful beside her.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6bfaa0da054bc9486b59bee612b438eccd237ba6f77ba64339e89803239ef0b9",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 355244,
+            "sha256": "7b90bc8e740ab0fb62bd77453ed757432ab15c271e4366ed8db1e021d528a503"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 209032,
+            "sha256": "bb315ce29321170a5a18a25f0e6651f9629c301c94489170fef824bbb6224079"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95684,
+            "sha256": "1ede000582c042ce3a3cdf1577dd15de73e8af39842d841fe5c7599e49adab11"
+          }
+        ],
+        "review": "Foxy-Lox grins while Booklava looks doubtful. Their clothing and sizes are consistent, and the scene remains before Lantern Evening.",
+        "generator": "built-in imagegen",
+        "alt": "Foxy-Lox grins as she decides they need a crew."
+      },
+      "alt": "Foxy-Lox grins as she decides they need a crew."
+    },
+    {
+      "number": 5,
+      "text": "Booklava counted the problems on her wingtips.\n\n“One. He can turn his head almost all the way round. Two. He can read in the pitch dark, so turning the lights off is no use. Three. He can hear a page turn from the other end of the library. Four. He never leaves, and he never naps. Not in the daytime. Not ever.”\n\nFoxy-Lox grinned. “Then it’s the best puzzle I’ve ever had.”",
+      "illustrationDirection": "Booklava counting on her wingtips; behind her, four little thought-pictures of Hooten: head turned round, reading in the dark, ear cupped, sitting up wide awake.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f9d2b6f1b75f97df38ff51f19813d274c0096dcadb5de98ecb58fb826232aaf9",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 377234,
+            "sha256": "60aa69011aa9e222f4559b03cb1febe05b60d7d9d1a5bd655b8e8a6d04aeee8a"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 239570,
+            "sha256": "fa2dc73930feecb969339ae1852e29a1a7e4bde90088e6ba2d6fab06e69cbc04"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112866,
+            "sha256": "b2b92899c01b8174e4e9492777f4925f5bbdd772d2be646b77a1b48a1989b5bb"
+          }
+        ],
+        "review": "Booklava counts on a wing. The four separate thought pictures show the same spectacled professor turning, reading, cupping his ear and sitting awake.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava counts the reasons it can’t be done."
+      },
+      "alt": "Booklava counts the reasons it can’t be done."
+    },
+    {
+      "number": 6,
+      "text": "**Chapter Two: The Crew**\n\nThe first person Foxy-Lox visited was Polly Roger.\n\n“I hear you can copy any sound,” said Foxy-Lox.\n\nPolly Roger fluffed her feathers. Then, without opening her beak very much, she made the sound of a kettle whistling, a door bell jingling, and Professor Hooten saying, “Hmm, now, let me see.”\n\nIt was so like Hooten that Booklava turned round to look for him.",
+      "illustrationDirection": "Polly Roger mid-mimic, beak barely open; small sound-picture bubbles (kettle, bell, Hooten’s face). Booklava turning round to look for Hooten.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fdf832460c95e3b8bac5d925a7fcd09888dea0e7d569ed4dde9a08dbfa680ac6",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 369184,
+            "sha256": "9c60754eeb5215b914d8acb373355ec36b7a444abae4df882ce2587c388a74aa"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 235058,
+            "sha256": "5b19ef270a9dba1d64f6274cece3d6422394af36d554876ad9d1450edef0733c"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112396,
+            "sha256": "5b7a12d81f8e9663b459c66fe5ae174540f1e20a877a3170d912df8f43075771"
+          }
+        ],
+        "review": "Polly’s three separate sound pictures show a kettle, a brass bell, and Professor Hooten with his green collar and glasses. Booklava looks back to see who spoke.",
+        "generator": "built-in imagegen",
+        "alt": "Polly Roger copies the sound of a kettle, a bell and Professor Hooten’s voice."
+      },
+      "alt": "Polly Roger copies the sound of a kettle, a bell and Professor Hooten’s voice."
+    },
+    {
+      "number": 7,
+      "text": "The second was Cynthia Book-Smart.\n\n“I have no feet,” said Cynthia, “so I never make a floorboard creak. I can turn a page with my tongue without a whisper. And I know where every book in that library lives, because I have read every one of them.”\n\n“Even the dictionaries?” said Booklava.\n\n“Twice,” said Cynthia.",
+      "illustrationDirection": "Cynthia Book-Smart coiled on a pile of books, turning a page with her tongue. Foxy-Lox impressed.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "19c9d665e5190fea1862caa57034ac9afd98dc04eca4111c8dbe3eb323b01bc9",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 322844,
+            "sha256": "4e3603392c893d147bc2afd709f1b8db14ae0ad46ac42cc3f3897e4dbf6c1860"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 189770,
+            "sha256": "d63c3f083b15b5594ca111ba015fe842b082a8699ce2f878dbdcae78a5d6b744"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85958,
+            "sha256": "efdaf635c84c8c7be8820d7b9c028805fcaf6e68cdf319ad564d08a107ea89ad"
+          }
+        ],
+        "review": "Cynthia is a coiled green snake with no limbs. She turns a page with her tongue while Foxy-Lox watches.",
+        "generator": "built-in imagegen",
+        "alt": "Cynthia Book-Smart turns a page silently with her tongue."
+      },
+      "alt": "Cynthia Book-Smart turns a page silently with her tongue."
+    },
+    {
+      "number": 8,
+      "text": "The third was Ham-and-Cheese.\n\n“Why me?” he squeaked. He was sitting in a teacup.\n\n“Because you’re the smallest person in the village,” said Foxy-Lox. “And because you can hold perfectly still.”\n\nHam-and-Cheese held perfectly still to show her. It was very impressive.",
+      "illustrationDirection": "Ham-and-Cheese sitting in a teacup, holding perfectly still, eyes shut in concentration; Foxy-Lox and Booklava admiring.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "076b8c275544ae9ab188e044dc54471ed4fd563af438108bfb8f399a6fa4b43a",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 264826,
+            "sha256": "3757a86eb474d88cd635e2b3bb1bc483921afc16a925214d6a1bd0989826cb65"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 171292,
+            "sha256": "9a6897713794990f0cf6abad1848a09bdd3300cd7a0ccb4936eae65a882cb703"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83844,
+            "sha256": "bc98a4a73c0ba49c013a8aabbd454de34af94adf1aff89eadffc9a8941c2309e"
+          }
+        ],
+        "review": "Ham-and-Cheese sits snugly in one teacup, eyes closed. Foxy-Lox and Booklava watch in the warm den.",
+        "generator": "built-in imagegen",
+        "alt": "Ham-and-Cheese sits perfectly still in a teacup."
+      },
+      "alt": "Ham-and-Cheese sits perfectly still in a teacup."
+    },
+    {
+      "number": 9,
+      "text": "Then came the book.\n\nFoxy-Lox went from door to door with a basket of blank pages. “One page each,” she said. “Something good that happened this year. Write it or draw it. Don’t tell Hooten.”\n\nNutmeg drew the tree that wouldn’t come. Vincent painted his shadow show. Sub-Zero drew a snowball with a white flag on it. Corgi-on-the-Cob drew six cobs of corn, and then, after some thought, a seventh.",
+      "illustrationDirection": "Foxy-Lox at a cottage door with a basket of blank pages. Inset drawings arriving: a rooted fir, a shadow screen, a snowball with a white flag, six cobs and a seventh.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a8a07a20c49c6a4e8a77b93d576ed52004b20852c10c57355a1344baf0a40f88",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 390724,
+            "sha256": "c45f3d905ac63dbdd6a90d1ad75d4799112ba3c609d7a05a4c6393c496a757fa"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 220268,
+            "sha256": "967fc2e298b7b985bde1a63b6933873931f1e03aa39dbc476fdd63ce724f635f"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 97768,
+            "sha256": "98858530d07d411079d95f6ba5628ebaedf171797d2103c4b2a2dceb4fb8df91"
+          }
+        ],
+        "review": "Four separate drawings: a rooted fir, shadow screen, a snowball with white flag, and exactly six gold crayon cobs with a seventh in a distinct darker crayon. Foxy-Lox carries the blank pages.",
+        "generator": "built-in imagegen",
+        "alt": "Foxy-Lox collects pages from her friends for the village book."
+      },
+      "alt": "Foxy-Lox collects pages from her friends for the village book."
+    },
+    {
+      "number": 10,
+      "text": "The pages kept coming. Shelly-Pop drew a pumpkin floating on a pond. Snack-Spector wrote about twelve pots of daffodils that hadn’t come up yet. Biscuit-Bouncer drew a bathtub going extremely fast.\n\nWhen they had collected them all, Booklava stitched the pages together with red thread, and Cynthia painted the cover with the tip of her tail.\n\nIt was a beautiful book. It had forty-seven pages.\n\nIt was very, very fat.",
+      "illustrationDirection": "Booklava stitching a huge pile of pages with red thread; Cynthia painting the cover with the tip of her tail. The finished book, very fat.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "476bf0a79982362a762a972d4e45fecd5c39c2070e70822551970688ad741b82",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 429586,
+            "sha256": "d96e75fa78b75e021f9aecdfc1e72d4170343267019079e57605212c152c5c0e"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 259510,
+            "sha256": "1fc19250f6662da32089337216944f972627f0994f5e93f06e0ff4ec718fade7"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117398,
+            "sha256": "2de873afe77b0ad5d72bc73a0054808c02fdb43f2cd6470fa59ed9b1d8101418"
+          }
+        ],
+        "review": "The village book has one red stitching thread and a roof-and-stars cover painted by Cynthia’s tail. Three crayon pictures show a floating pumpkin, exactly twelve empty pots in two rows of six, and a fast tin bathtub.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava stitches the pages together and Cynthia paints the cover with her tail."
+      },
+      "alt": "Booklava stitches the pages together and Cynthia paints the cover with her tail."
+    },
+    {
+      "number": 11,
+      "text": "**Chapter Three: The Plan**\n\nIn Foxy-Lox’s den, the crew gathered round a big map of the library, drawn by Cynthia from memory. Every shelf. Every lamp. Every floorboard.\n\n“Here’s Hooten’s armchair,” said Foxy-Lox, tapping it. “And here, right behind it, is the First Shelf, and the gap.”",
+      "illustrationDirection": "Foxy-Lox’s den in firelight: the crew round a big hand-drawn map of the library. Foxy-Lox’s claw on the armchair.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0998c3788d72e29093df1310d977b8d457f7ef9da217706edf24dda4daf0240b",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 293152,
+            "sha256": "25dc558cbaaab8da421439c6a2c83e98c81a2360b398747fde4d2deda48a4bff"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 181516,
+            "sha256": "eccfdf184bec75b638ce1bcdb29de3b6c29845886e2ebd0a6ee495cda31c8429"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83804,
+            "sha256": "a1d78d4c68c8cea5721cfe743c96a69f242ed60209f2b5f579651e6e904c1608"
+          }
+        ],
+        "review": "Counted eight light boards from the left entrance and the next, darker strip is the ninth. The green armchair faces the door. A pale Blind Spot opens to the dark First Shelf, which contains a single dark gap. The five crew gather around the wordless plan.",
+        "generator": "built-in imagegen",
+        "alt": "The crew gathers round a map of the library in Foxy-Lox’s den."
+      },
+      "alt": "The crew gathers round a map of the library in Foxy-Lox’s den."
+    },
+    {
+      "number": 12,
+      "text": "“Problem one,” said Foxy-Lox. “The head.”\n\nShe turned to Booklava. “You’re an owl. How far round can an owl’s head go?”\n\n“A long way,” said Booklava. “But not all the way. There’s always a bit right behind us that we can’t see without turning our whole body.”\n\nFoxy-Lox drew a narrow slice of pie on the map, behind Hooten’s armchair. “The Blind Spot,” she said. “And look what’s in it.”\n\nThe First Shelf.\n\n“He sits with his back to the very shelf we need,” said Cynthia slowly. “How careless of him.”",
+      "illustrationDirection": "Close on the map: a pale pie-slice wedge drawn behind the armchair, covering the First Shelf. Booklava demonstrating how far an owl’s head turns.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "48f3d51746ad60d09ebe67e4852d1ed54adeae46339a4271cd79df80eb090c18",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 282338,
+            "sha256": "03d885b6cc319c2c51483960112b414e2087386fb8a40b2af4050b4a61d7cf69"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 176664,
+            "sha256": "6acab87773f33dd84c99218166bc4d4ff36eabb826c5fcd680fed3ba10257b1a"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83124,
+            "sha256": "bbe3457289432426d3cc7af0fa642b77c5d3ceb83201c382d9d15258dd851c7e"
+          }
+        ],
+        "review": "The exact eight pale boards and dark ninth remain. The unobscured pale wedge sits directly behind the chair and terminates at the First Shelf’s one gap. Booklava demonstrates the partial head turn.",
+        "generator": "built-in imagegen",
+        "alt": "On the map, Foxy-Lox marks the blind spot behind Hooten’s chair."
+      },
+      "alt": "On the map, Foxy-Lox marks the blind spot behind Hooten’s chair."
+    },
+    {
+      "number": 13,
+      "text": "“Problem two: his ears.”\n\nThe library door had a brass bell above it that jingled whenever it opened. “Ham-and-Cheese climbs inside the bell,” said Foxy-Lox, “and holds the clapper.”\n\nThe ninth floorboard from the door creaked like an old gate. “Cynthia goes round it,” said Foxy-Lox. “She has no feet anyway.”\n\n“I take that as a compliment,” said Cynthia.",
+      "illustrationDirection": "The map again with the bell above the door and the darker ninth floorboard circled. Ham-and-Cheese miming holding a clapper; Cynthia looking smug.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dd6a607e2c3c47614af8d844a3963e33b447feb34da0b14b6b9a0f416f0a0c3e",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 300230,
+            "sha256": "72f503a7a6436cb8aa1f9449e6f18d3158a0d793845f61b64b6c56af91457f41"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 184752,
+            "sha256": "3d6842beab89489365757f42b0103f3276624357d2907c5af706c076de5de7e0"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 84072,
+            "sha256": "02280af885ff557c9b0e421737c6762e79d7cd92309bfd175c3ecb1abb50d2fe"
+          }
+        ],
+        "review": "One bell is on the plan. Counted eight pale boards before the single dark ninth, circled in chalk as planned. The hamster mimes holding a clapper below the map.",
+        "generator": "built-in imagegen",
+        "alt": "The crew plans how to stop the bell and avoid the creaky board."
+      },
+      "alt": "The crew plans how to stop the bell and avoid the creaky board."
+    },
+    {
+      "number": 14,
+      "text": "“Problem three. He never leaves and he never naps.” Foxy-Lox held up one claw. “But when he’s thinking very hard about something, he hums. Booklava, you told me so.”\n\n“Like a radiator,” said Booklava. “Hmmmmm.”\n\n“And when he hums, does he hear anything else?”\n\nBooklava thought about it. “No. Nothing. Last week the twins knocked over a whole trolley of atlases while he was humming, and he didn’t even blink.”\n\n“Then your job,” said Foxy-Lox, “is to ask him the hardest question in the world.”",
+      "illustrationDirection": "Booklava humming with her eyes closed to demonstrate; the others leaning in. A tiny memory-picture of the twins and a toppled atlas trolley.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c325909d50c469cd2add5aecff631a3fa4c778e298ac24c3b5bc6a831d52c5c3",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 356420,
+            "sha256": "bb15af3dc225bf4b5caa2e122d438a25fd2b5a0401fb028e00976d0358ce9813"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 223662,
+            "sha256": "a8ac67d7afcfd4e028e8ea8e071a27cfb99e9dd1ec98673da0ff61cd10ed2d85"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103428,
+            "sha256": "3fc23020f5443d8ad4d927fd2c0d5e571685e66141457a0ecb406f3a442b251e"
+          }
+        ],
+        "review": "Booklava hums with her eyes closed as all four crew members listen. A separate small imagined scene shows the two feathered twins and the overturned trolley of atlases.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava shows how Hooten hums when he thinks."
+      },
+      "alt": "Booklava shows how Hooten hums when he thinks."
+    },
+    {
+      "number": 15,
+      "text": "“Problem four. He can see in the dark, so there’s no point waiting for night.”\n\nFoxy-Lox smiled her widest smile. “So we’ll do it in broad lamplight. On Lantern Evening, when the library’s full of people and lanterns and singing. Polly and I will be carol singers, by the door. Loud ones.”",
+      "illustrationDirection": "Foxy-Lox standing on the table, arms wide, describing Lantern Evening; the map below her.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9a7a5b419a7b1270c8b7a0860cd71a45d5f7417921084783f47173fa3a668b40",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 299378,
+            "sha256": "a0fcde928cc769682253d2be8d9d4250c12254ed68e4b0b899c5a14cb100b18f"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 182532,
+            "sha256": "478f0dbe8f482ee09d948a3f3f2330c3ad1401ebe19bc6c604c5d8154b4640d6"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 84422,
+            "sha256": "475c74cce87d38397f19c9b8fa26975bd1d7a610041f8ffc2f839485b2be4689"
+          }
+        ],
+        "review": "The fox stands above the wordless map, all hands stay clear of its landmarks, and eight pale boards precede the dark ninth.",
+        "generator": "built-in imagegen",
+        "alt": "Foxy-Lox explains that they’ll do it on Lantern Evening."
+      },
+      "alt": "Foxy-Lox explains that they’ll do it on Lantern Evening."
+    },
+    {
+      "number": 16,
+      "text": "She went through it, step by step, tapping the map.\n\n“Polly and I sing at the door. Ham-and-Cheese holds the bell. Cynthia slides in with the book. Booklava asks the question. Hooten hums. Cynthia goes round the ninth board, into the Blind Spot, up the First Shelf, book in the gap, and out again. Thirty seconds.”\n\n“And if anything goes wrong?” asked Ham-and-Cheese.\n\n“Then,” said Foxy-Lox, “we make it up.”",
+      "illustrationDirection": "The whole plan in one picture: a dotted path on the map from the door, round the ninth board, behind the armchair, up the shelf. The crew’s small figures placed at their stations.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7f9a30695840407923833fe2fde400f95044aa88ca024ae13a1760d4a205e913",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 290516,
+            "sha256": "63e2e3c9be84de7a083864bfc306ee326668dfa0d63964b6c6958b1295c24b1d"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 183488,
+            "sha256": "568b7ccd393718f2135931f72f16edda8167226e80f7c6f376b066ad96bc6df6"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85818,
+            "sha256": "f9cc200f062518df3982c2629069df24e680b96e14c8c0ed62b94d8a2b9e77f6"
+          }
+        ],
+        "review": "Counted eight pale floorboards and the darker ninth. The chair faces left, and the dotted route from the entrance bends around the ninth board and runs through the pale wedge to the black gap.",
+        "generator": "built-in imagegen",
+        "alt": "The full plan is drawn out on the map, step by step."
+      },
+      "alt": "The full plan is drawn out on the map, step by step."
+    },
+    {
+      "number": 17,
+      "text": "**Chapter Four: The Rehearsal**\n\nThey practised in Foxy-Lox’s den. Polly Roger played Professor Hooten, with a lampshade on her head for turning.\n\nThe first time, Ham-and-Cheese sneezed inside the bell. (It was a spoon, for practice, but still.)\n\nThe second time, Polly turned her lampshade head so far round that she fell off her chair.\n\nThe third time, Cynthia tied herself in a knot behind the sofa, and it took twenty minutes to untie her.",
+      "illustrationDirection": "Rehearsal chaos: Polly in a lampshade turned so far she’s falling off a chair; Ham-and-Cheese sneezing inside a hanging spoon; Cynthia tied in a knot behind the sofa.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fed9c7d531d1dca20e22510025cc0268cc10e6baa5a0c078a19a5c23aa899929",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 411542,
+            "sha256": "8c98bdd0384e82ebc15f9969ad3607a3ec03853e238c55bbe430e5719a84b9cd"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 246822,
+            "sha256": "f37bdf3def9601225e0e737cdc82b0b750a391e6d8cba1163644b02115de3b55"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 113918,
+            "sha256": "3c59eb93c9199a6d425c39c36d00e0b82e82146419044932e50ad83ed5738efc"
+          }
+        ],
+        "review": "The one eye-patched parrot, small hamster and green snake each have a separate rehearsal mishap: lampshade, swinging spoon and loose knot, respectively.",
+        "generator": "built-in imagegen",
+        "alt": "The rehearsal goes wrong in every possible way."
+      },
+      "alt": "The rehearsal goes wrong in every possible way."
+    },
+    {
+      "number": 18,
+      "text": "“It’s not working,” said Ham-and-Cheese.\n\n“It’s a rehearsal,” said Foxy-Lox. “It isn’t supposed to work. It’s supposed to go wrong here, so it doesn’t go wrong there.”",
+      "illustrationDirection": "Ham-and-Cheese slumped in his teacup; Foxy-Lox kneeling to encourage him.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "aaf73d815690e3a3ef9a5628f8361c9996fe1e653e5682868e08260bf54fdbe9",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 370870,
+            "sha256": "ee29c9c3e0c52f16bd4d464e311e882e3e415572c7ba63fb48a06c08f3914004"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 220804,
+            "sha256": "ee1d503d3328b3b6919c1ee1d3cbea7afdebb22b76ebb5a3ec812c8f305ff6c1"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 100166,
+            "sha256": "ed88eecc9b4dd9f8a9daaf4c5d5678124a465218aa992d139e8f73a12cb8987a"
+          }
+        ],
+        "review": "Foxy-Lox without her later scarf kneels at the level of the small hamster’s teacup. Only those two friends are in the frame.",
+        "generator": "built-in imagegen",
+        "alt": "Foxy-Lox encourages Ham-and-Cheese after the rehearsal goes wrong."
+      },
+      "alt": "Foxy-Lox encourages Ham-and-Cheese after the rehearsal goes wrong."
+    },
+    {
+      "number": 19,
+      "text": "Booklava practised her question.\n\n“It has to be so hard he hums for at least a minute,” she said. She had been thinking about it all week. “Professor, if there are so many stars that you can’t count them, in every direction, for ever and ever, why is the sky dark at night? Why isn’t it bright everywhere?”\n\nPolly Roger, in the lampshade, went quiet. Then she said, in Hooten’s voice, “Hmm. Hmmmmm.”\n\n“That’s the one,” said Foxy-Lox.",
+      "illustrationDirection": "Booklava asking her question; Polly in the lampshade going still, eyes closed, humming.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f0d8cd78af8e2454389545e60aadf9718c9338e7761cc84d1284f38708647869",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 259386,
+            "sha256": "1240500ea783b70c6e1238f77950deae9e2cf5e62531ed33a0db8021c433551e"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 163252,
+            "sha256": "9facfc319a55d56e8854686af6b0d4ef2504a0c954c754c573a96c48cbfb0639"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 76864,
+            "sha256": "effad8bd86f8bafb10ad19734bd82b90b99e67058bbb53b3a5c2567a34dfdd9e"
+          }
+        ],
+        "review": "Booklava practises her question while the single pirate parrot wears an inverted lampshade and hums with eyes closed. The other three crew sit behind them.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava practises her hard question, and Polly starts humming like Hooten."
+      },
+      "alt": "Booklava practises her hard question, and Polly starts humming like Hooten."
+    },
+    {
+      "number": 20,
+      "text": "The fourth time, nobody sneezed, nobody fell off a chair and nobody tied themselves in a knot.\n\nTwenty-eight seconds.\n\n“Tomorrow,” said Foxy-Lox.",
+      "illustrationDirection": "The perfect fourth run in silhouette against the fire; Foxy-Lox holding up a pocket watch.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "06f50ef5505ef36bedbe2a3c475bef1724b315cf29a245e7cffd5140846ce799",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 258796,
+            "sha256": "dc1f7e577b2e510fa1802c92e0a0f715a5c75e3522d85e4fef49631a69c4629c"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 164560,
+            "sha256": "0d07dbb5f7e988120d92da2867f7670743ff9d31600f706ccfa04cadbbe4220b"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 76590,
+            "sha256": "cf136b719f46d13f60ad3bfc788d4ef79d5f7dcdd0a010e468ee50ded09d4fe6"
+          }
+        ],
+        "review": "All five silhouettes are distinct. Polly wears the small lampshade and Foxy-Lox holds one pocket watch in amber firelight.",
+        "generator": "built-in imagegen",
+        "alt": "The crew finally gets the rehearsal right."
+      },
+      "alt": "The crew finally gets the rehearsal right."
+    },
+    {
+      "number": 21,
+      "text": "**Chapter Five: Lantern Evening**\n\nOn Lantern Evening, the library glowed. Lanterns hung from every bookcase. The paper tree glittered. The hall was full of friends drinking cocoa and singing.\n\nAnd in his armchair, with his back to the First Shelf, sat Professor Hooten, looking at everybody at once.",
+      "illustrationDirection": "Lantern Evening: the library glowing with paper lanterns on every bookcase, friends singing and drinking cocoa. Hooten in his armchair facing the door, the First Shelf behind him.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "69548cbc45684a4aea10321809d828a25900209c5824b189715370eb771ace0c",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 528556,
+            "sha256": "5a07803c471cc83ffb86d3436948cdc83c0c1339e6a32ff20bd5cdae70281763"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 315532,
+            "sha256": "373c804c2b60a4aed03175204844213bb94a87b22c5715d2b7f45b6443989f60"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 136898,
+            "sha256": "135282778b63917b90223f219c055de7ef32ac8edf5564bf5d5f1a6d19170400"
+          }
+        ],
+        "review": "The paper lanterns and the cocoa friends establish Lantern Evening. Hooten sits in his green chair facing the left entrance. The First Shelf remains immediately behind him.",
+        "generator": "built-in imagegen",
+        "alt": "On Lantern Evening, the library glows with lanterns, and Hooten sits in his armchair."
+      },
+      "alt": "On Lantern Evening, the library glows with lanterns, and Hooten sits in his armchair."
+    },
+    {
+      "number": 22,
+      "text": "Foxy-Lox and Polly Roger stood by the door in scarves, singing as loudly as they could.\n\nHam-and-Cheese was already inside the brass bell, both paws round the clapper.\n\nThe door swung open. The bell did not ring. And through the gap, quiet as a ribbon, slid Cynthia Book-Smart, with the fat book wrapped in her coils.",
+      "illustrationDirection": "By the door: Foxy-Lox and Polly singing in scarves; Ham-and-Cheese inside the brass bell gripping the clapper; Cynthia sliding in with the fat book in her coils.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fa2f3a3afada064575afdd7479aeec4fa4c13acaa9c83fddc57ca569b8d27427",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 409248,
+            "sha256": "180db8cb2fb82a363bbed8355f1c2be4a4437ba81697efcd0223ebfd04da8415"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 262998,
+            "sha256": "62a3930defc7476a9ac1d82461689bf47f7756d31d19a2a588cf7f81bfbfbba9"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 120910,
+            "sha256": "b18fa39856ed2e52a9b99109d8ba59415cf12a8abbaecf51d993d4270a52ea6c"
+          }
+        ],
+        "review": "The fox and parrot sing by the door in cranberry and green scarves. The small hamster holds the clapper from inside the single brass bell, while Cynthia carries the fat village book wrapped in her coils.",
+        "generator": "built-in imagegen",
+        "alt": "Ham-and-Cheese holds the bell silent as Cynthia slides in with the book."
+      },
+      "alt": "Ham-and-Cheese holds the bell silent as Cynthia slides in with the book."
+    },
+    {
+      "number": 23,
+      "text": "Booklava hopped up onto the arm of Hooten’s chair.\n\n“Professor,” she said. “If there are so many stars that you can’t count them, in every direction, for ever and ever, why is the sky dark at night?”\n\nHooten’s eyes went very wide.\n\n“Ah,” he said. “Now that is a very good question. Hmm.” He closed his eyes. “Hmmmmmmmm.”\n\nThe Hover-Hum had begun.",
+      "illustrationDirection": "Booklava on the arm of the armchair asking her question; Hooten’s eyes wide, then closed, humming.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "049244b38d04ce0a8ebb12c37dd7429b83f190fba3672631d255d15ea35c3077",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 413682,
+            "sha256": "2106bc19feae6db421b7d1f208a245e9faaea00d293b1d625a66a08f2eb0a68d"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 259734,
+            "sha256": "bdd9e3baaaa56edb687edb2f0317a446f41b540d50e10df7f35da14620a209cb"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118196,
+            "sha256": "9b783ecb10ee7e9b6dc6e4a817f35de0c27a4e2409958b7dbb74ddfb2aac4edf"
+          }
+        ],
+        "review": "Booklava asks from the chair arm. Hooten closes his eyes in the green chair, with the entrance to the left and the First Shelf behind him.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava asks her question and Professor Hooten closes his eyes to think."
+      },
+      "alt": "Booklava asks her question and Professor Hooten closes his eyes to think."
+    },
+    {
+      "number": 24,
+      "text": "Cynthia slid round the ninth floorboard. She slid into the Blind Spot behind the armchair. She slid up the First Shelf, along the oldest books, to the gap.\n\nShe lifted the fat book, all forty-seven pages of it, toward the gap.\n\nIt did not fit. It was not even close.",
+      "illustrationDirection": "Behind the armchair in the Blind Spot: Cynthia stretched up the First Shelf, holding the fat book against the thin gap. It obviously doesn’t fit.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9803bea459f0b34d0da9da89b7f0b0b025cdcef73255ae1df3c19969196862ff",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 325236,
+            "sha256": "9c7bb2b04cd340927dc599f10b9d107bbbf3baf280d06cdd20c2dc1bed168060"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 210834,
+            "sha256": "f572069b20b62499d28c195735e0884088cca0126fc3b9a43786a790333b8063"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 98436,
+            "sha256": "4fb9d952538337663252dd09b4b08cd61a47c2a707be97e24db2cc8624e977c1"
+          }
+        ],
+        "review": "The large volume is held clear of the single dark gap. Its spine is roughly five to six times the framed gap, with red stitches and gold village windows clearly visible.",
+        "generator": "built-in imagegen",
+        "alt": "Cynthia reaches the shelf, but the fat book is far too big for the gap."
+      },
+      "alt": "Cynthia reaches the shelf, but the fat book is far too big for the gap."
+    },
+    {
+      "number": 25,
+      "text": "By the door, Foxy-Lox saw Cynthia freeze. She saw the book. She saw the gap.\n\nShe sang the next line louder, and made a tiny signal with her tail: *Go.*\n\nHam-and-Cheese let go of the clapper (the door was shut now; the bell was safe) and dropped to the floor. He ran along the skirting board, behind the armchair and up the First Shelf.\n\nThen, one by one, he began to push every single book on the shelf along. Just a whisker each. Very, very quietly.",
+      "illustrationDirection": "Ham-and-Cheese dashing along the skirting board and up the shelf, pushing the first old book a whisker to the left. Foxy-Lox signalling from the door with her tail.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "3d341adaed65531aac06c145d10402735cd5641c7dc0667f924f6d39d29bc613",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 432868,
+            "sha256": "4162ef2324b3772bf4ee37eb7051a7dd7cbdbfa8fb3f21bc3a1ba870468910ca"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 269824,
+            "sha256": "50e25b26ba4c93576ff2aba27b0f84774ca179dce8464be4386417e7c24d70f7"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 123256,
+            "sha256": "7bd29940c93852332fb0b84048248253aa329c0803f983b070f78074763098b0"
+          }
+        ],
+        "review": "The tiny hamster pushes an upright spine at shelf height, with the narrow gap beside him. Foxy-Lox signals from the far door and Hooten sits in the centre chair in lantern light.",
+        "generator": "built-in imagegen",
+        "alt": "Ham-and-Cheese runs up the shelf and starts pushing the books along."
+      },
+      "alt": "Ham-and-Cheese runs up the shelf and starts pushing the books along."
+    },
+    {
+      "number": 26,
+      "text": "The hum stopped.\n\n“Booklava,” said Professor Hooten, opening his eyes. “I think I may have it. You see, the light from—”\n\nHis head began to turn.",
+      "illustrationDirection": "Hooten opening his eyes, beak open to answer, his head beginning to turn toward the back of the chair. Tense.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "21fde236cd800ff15fff949303fd2fa1ee15c99e216229b05af1dc05fa2502f6",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 377908,
+            "sha256": "8878683fbecc8392f0e83e23339a42e4aac757d0d9c244911fe96d2c549247f6"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 240048,
+            "sha256": "d2e6d6b2747f782f56314138ca85dea6f44735039ec7ec8edfa1301a8a3dc163"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 112332,
+            "sha256": "59bcdd8f77d6a34d7d78d2aca79585a4d74f392088e91142a18a742f7964dd3c"
+          }
+        ],
+        "review": "Hooten opens his eyes and starts to turn toward the First Shelf. The younger owl watches from beside his arm, and no rehearsal or dusting prop is in frame.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten stops humming and begins to turn his head."
+      },
+      "alt": "Professor Hooten stops humming and begins to turn his head."
+    },
+    {
+      "number": 27,
+      "text": "From the direction of the library kitchen came the sound of a kettle, whistling, louder and louder, as if it were about to boil dry.\n\nHooten’s head swung the other way. “My kettle?”\n\n“It’s fine, Professor,” said Booklava quickly. “But you didn’t finish! Why isn’t the sky bright everywhere?”\n\n“Ah. Yes. Hmm.” Hooten’s eyes closed again. “Hmmmmmm.”\n\nBy the door, Polly Roger stopped being a kettle and went back to being a carol singer.",
+      "illustrationDirection": "Polly Roger at the door making the kettle sound; Hooten’s head swinging the other way toward the kitchen door; Booklava leaning in with her question again.",
+      "art": {
+        "status": "accepted",
+        "master": "p27.png",
+        "webp": "p27.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a41293869857c60c2b7189d9869a8a3670e79b4ed741912c17ec0bc902f44cbf",
+        "derivatives": [
+          {
+            "path": "p27.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 443184,
+            "sha256": "7e1777ab087d3a29b608b0669e108cbe5f798038c469ee297833ea35e962e16e"
+          },
+          {
+            "path": "p27-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 277860,
+            "sha256": "c2d5da44292dadbef96e248d6a980f321694f0e9dc328689b35ec91cdb941036"
+          },
+          {
+            "path": "p27-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 124024,
+            "sha256": "32e53f26773885c8aedecf75844a2c7cfe7871615d24b476bcc289521daaaa6c"
+          }
+        ],
+        "review": "Polly whistles with her green scarf on at the main door. Hooten turns toward the small kitchen door, while Booklava keeps his attention from the chair arm.",
+        "generator": "built-in imagegen",
+        "alt": "Polly copies a whistling kettle, and Hooten turns toward the kitchen."
+      },
+      "alt": "Polly copies a whistling kettle, and Hooten turns toward the kitchen."
+    },
+    {
+      "number": 28,
+      "text": "Ham-and-Cheese pushed the last book along. The gap was a little wider now. Just wide enough.\n\nCynthia slid the fat book in. It fitted. Snugly. As if it had always belonged there.\n\nShe slid down, round the ninth board, and out through the door, and Ham-and-Cheese rode out on the end of her tail.",
+      "illustrationDirection": "Cynthia sliding the fat book into the widened gap, snug; Ham-and-Cheese on the next shelf, puffed. Then Cynthia slipping out with Ham-and-Cheese riding her tail.",
+      "art": {
+        "status": "accepted",
+        "master": "p28.png",
+        "webp": "p28.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dede006b60bc0e4ff20d79c9243f01cc467068da30cec82ba24bd442acbfa042",
+        "derivatives": [
+          {
+            "path": "p28.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 413688,
+            "sha256": "33ae16aeeb898b0b452a5167ff50e0b224621e712ee4183ef703f522034a070c"
+          },
+          {
+            "path": "p28-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 261198,
+            "sha256": "222596c9ff4258ecd60173c82daab00c0dee819c712e592a212753141fdbe141"
+          },
+          {
+            "path": "p28-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 117700,
+            "sha256": "7bd4bd4d13ad2791dc7cfad6340866ad8f7ca29fc128f65fc5d41479955636bc"
+          }
+        ],
+        "review": "A single Cynthia and a single hamster flank the fat book snugly fitted on the middle shelf in Lantern Evening light.",
+        "generator": "built-in imagegen",
+        "alt": "The book fits snugly into the gap, and Cynthia slips away with Ham-and-Cheese."
+      },
+      "alt": "The book fits snugly into the gap, and Cynthia slips away with Ham-and-Cheese."
+    },
+    {
+      "number": 29,
+      "text": "Outside, in the snow, under the lanterns, the crew could not stop grinning.\n\n“Did he see?” whispered Ham-and-Cheese.\n\n“Nobody sees everything,” said Foxy-Lox.",
+      "illustrationDirection": "Outside in the snow under the lanterns, the crew huddled and grinning.",
+      "art": {
+        "status": "accepted",
+        "master": "p29.png",
+        "webp": "p29.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2aa7508af39844d3262d1678601efa47f94bca5f09c401f628db928c8529148c",
+        "derivatives": [
+          {
+            "path": "p29.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 364730,
+            "sha256": "ae62cdd92f5ce56d97d3506fa5b37819d03d1c25e8a7f1f585309d5a6d9d24ac"
+          },
+          {
+            "path": "p29-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 224462,
+            "sha256": "8f23538a71866e5f6b51d0868888b21cb97fc8855226a4662946397589b53ee1"
+          },
+          {
+            "path": "p29-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 103938,
+            "sha256": "9a3428e3d583463ef779d50262b931c82bd84efc9e26b631341937c73b3ec370"
+          }
+        ],
+        "review": "Counted all five crew in the snowy yard. Foxy-Lox wears her cranberry scarf and Polly her green scarf, with amber lanterns behind them.",
+        "generator": "built-in imagegen",
+        "alt": "Outside in the snow, the crew grin at each other."
+      },
+      "alt": "Outside in the snow, the crew grin at each other."
+    },
+    {
+      "number": 30,
+      "text": "**Chapter Six: Volume Two**\n\nThe next morning, the crew happened to visit the library. All five of them. At once. By chance.\n\nProfessor Hooten was in his armchair, wearing his reading glasses, with the fat book open on his knees. He was wiping his eyes with the corner of his robe.",
+      "illustrationDirection": "Next morning: Hooten in his armchair in reading glasses, the fat book open on his knees, wiping his eye with his robe. The crew arriving all at once, trying to look casual.",
+      "art": {
+        "status": "accepted",
+        "master": "p30.png",
+        "webp": "p30.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b0a4149321e2d7f06f921be093e601f449d7dfae6885ab61233906462c715345",
+        "derivatives": [
+          {
+            "path": "p30.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 441628,
+            "sha256": "be4fa0d5a9d4beb89586297079f22f5abac4ce4d488ff2cc7fc5a4b1798226d1"
+          },
+          {
+            "path": "p30-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 279456,
+            "sha256": "53ccc75b73f7bdd3c5ec2e238efd917b744f7740a5520884138af95880a507f6"
+          },
+          {
+            "path": "p30-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 127872,
+            "sha256": "3d17a208e14a779b4711ae8b1f26b8d5d34b98103dcb7cb55a8ac7811c34a1f3"
+          }
+        ],
+        "review": "Hooten reads the fat village book in his armchair in morning light. All five identifiable crew members arrive together, without extra guests.",
+        "generator": "built-in imagegen",
+        "alt": "The next morning, Professor Hooten reads the village book while the crew arrives."
+      },
+      "alt": "The next morning, Professor Hooten reads the village book while the crew arrives."
+    },
+    {
+      "number": 31,
+      "text": "“Listen to this,” he said, and read them Corgi-on-the-Cob’s page about six cobs of corn, and then a seventh. Then he read Shelly-Pop’s, and Snack-Spector’s, and Nutmeg’s, and Biscuit-Bouncer’s.\n\n“Forty-seven pages,” he said. “Everybody in the village. It’s the book I’ve been waiting for.”",
+      "illustrationDirection": "Hooten reading aloud; on the open page, a child’s drawing of six cobs of corn and a seventh. The crew gathered at his feet.",
+      "art": {
+        "status": "accepted",
+        "master": "p31.png",
+        "webp": "p31.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2c31c5e4260ef1ad4f29ff9c5a5c7a9045edb7cd2c0e2f6b32aa75db4232e0e7",
+        "derivatives": [
+          {
+            "path": "p31.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 278962,
+            "sha256": "49d072f674aed619bc930ecdcb74ca7b79ef50cca0b4994f1c9d428e64e7bc7f"
+          },
+          {
+            "path": "p31-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 185162,
+            "sha256": "17f3c210da3544b5e74ca0e25ae47e74c96bf9bd8a99140c1ca4014a32fde13b"
+          },
+          {
+            "path": "p31-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91086,
+            "sha256": "1fa7f7e03428bc676bb62eb629c7cd1437093c6c90dbf162cd00ab322c0a0ac1"
+          }
+        ],
+        "review": "The open book shows six matching golden corn cobs and a seventh drawn in a different crayon. The five recognisable crew listen by the chair.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten reads the pages aloud to the crew."
+      },
+      "alt": "Hooten reads the pages aloud to the crew."
+    },
+    {
+      "number": 32,
+      "text": "“Of course,” he added, “I saw you.”\n\nThe crew went very still.\n\n“I can see in the dark, so I can certainly see in lamplight. And Polly, you do my kettle better than my kettle does.” He looked at Foxy-Lox over his glasses. “As for the Blind Spot... why do you think I put the First Shelf behind my chair? Every library needs one place where people can leave something without being watched.”",
+      "illustrationDirection": "Hooten looking over his glasses at Foxy-Lox; the crew frozen mid-step, caught.",
+      "art": {
+        "status": "accepted",
+        "master": "p32.png",
+        "webp": "p32.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "636e9f4c2bab138386ce4bd0dc98510aefdd8e5b88209e723bf6789fd399f6c0",
+        "derivatives": [
+          {
+            "path": "p32.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 439992,
+            "sha256": "e4bc2bcb4b1e84a521a4b558989e5c8932522de42e7907de333427f5553af656"
+          },
+          {
+            "path": "p32-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 267418,
+            "sha256": "ea7c857bb2fc87dbae16074faf0f62fe355ab83a76a2bcca744268071306b9c5"
+          },
+          {
+            "path": "p32-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 118480,
+            "sha256": "e6452787af123fa2f26a79a9a057e19dc6d17194fbec220d0f366c7d446b063f"
+          }
+        ],
+        "review": "Hooten looks over his glasses at Foxy-Lox. She stops mid-step, with Booklava and Cynthia reacting beside her.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten tells the crew that he saw them all along."
+      },
+      "alt": "Professor Hooten tells the crew that he saw them all along."
+    },
+    {
+      "number": 33,
+      "text": "“So you knew,” said Foxy-Lox. “All of it.”\n\n“Nearly all of it,” said Hooten. “There’s one thing I didn’t see.” His head turned slowly along the First Shelf. “Who moved every single book on this shelf exactly one whisker to the left?”\n\nHam-and-Cheese put up a very small paw.\n\nProfessor Hooten bowed to him, deeply, the way he bowed to nobody. “Then you,” he said, “are the best of the lot.”",
+      "illustrationDirection": "Hooten bowing deeply to tiny Ham-and-Cheese, who has one paw up; behind them, the First Shelf with every book bunched a whisker to the left.",
+      "art": {
+        "status": "accepted",
+        "master": "p33.png",
+        "webp": "p33.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2a73eae91e82d7f8bb9fa62f087cfd80685fde1338c503cd810c2a2841ffd96b",
+        "derivatives": [
+          {
+            "path": "p33.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 436220,
+            "sha256": "524d56b8adcef87b3aaa23e3c896a29a94e9a876c438da7e0e25a68879abc70a"
+          },
+          {
+            "path": "p33-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 272770,
+            "sha256": "24be15c32cb489373c8cc6dd60bcc375b66445345986e79137e9a956e86967f7"
+          },
+          {
+            "path": "p33-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 121510,
+            "sha256": "5bf05c4d9b44400c62b2597ef68f2a72d561d253a8a6e7800937eb45035eeb04"
+          }
+        ],
+        "review": "Hooten bows to the little hamster. The wide navy rooftops book is visible on the middle shelf behind them.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten bows to Ham-and-Cheese, the one thing he didn’t see."
+      },
+      "alt": "Professor Hooten bows to Ham-and-Cheese, the one thing he didn’t see."
+    },
+    {
+      "number": 34,
+      "text": "He reached into his robe and brought out a new book, thin and empty, with a plain cover.\n\n“This one is for next year,” he said. “There’s room for it next to the first one. Volume Two.”\n\nBooklava took it. Then she remembered. “Professor, you never finished. Why is the sky dark at night?”\n\n“Because the light from most of the stars hasn’t got here yet,” said Hooten. “It’s still on its way.”\n\nHe looked at the empty book in her wings, and smiled. “Like most of the best stories.”",
+      "illustrationDirection": "Hooten handing Booklava a thin, empty book with a plain cover. Through the window, the last stars fading in a pale morning sky.",
+      "art": {
+        "status": "accepted",
+        "master": "p34.png",
+        "webp": "p34.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "589a4f8a6c2eeec291d2d9975b58303d96815292e936dce30c4b1f6a558ca1c6",
+        "derivatives": [
+          {
+            "path": "p34.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 390288,
+            "sha256": "b9a97806d3bbc4c6a056ad57afb56a94bdf64e435663f5e530c6fe0c17e0d3dd"
+          },
+          {
+            "path": "p34-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 241862,
+            "sha256": "7e5efb4d33a707ed0da0095f22800925409eaff551223499af18077f3d42f84e"
+          },
+          {
+            "path": "p34-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 107294,
+            "sha256": "bf46e0d7024efbc478eb75de9d64f3a670de2351ef23e00a01d1142a35d609b4"
+          }
+        ],
+        "review": "Hooten hands Booklava a thin empty blue book with visibly blank pages. The established chair, library entrance and warm lamp frame the handoff in pale winter daylight.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten gives Booklava an empty book for next year."
+      },
+      "alt": "Hooten gives Booklava an empty book for next year."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "a283ad1cabd94027ffa38cea8ac566dbf93b485fed26bdbde691f7a01f8581f8",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 456578,
+        "sha256": "0f5fec1942cf9bac0f4266263e7644bebf5aa4b9cf1d1d176fd163c3259271bf"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 283164,
+        "sha256": "c664510d429724417b66049485a32cc445e752b569d7544597b423b38ee834f3"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 126384,
+        "sha256": "29980e584aaf1678e614a96acbc14bfd65ebb5fbd679f98537492bc2ff4cb339"
+      }
+    ],
+    "review": "The fat red-stitched volume and the empty slit are readable together at 160 px and in greyscale. Cynthia, the small hamster, the green chair and the two singers have distinct roles in the composition.",
+    "generator": "built-in imagegen",
+    "alt": "Cynthia Book-Smart sneaks a fat book onto the library shelf behind Professor Hooten’s armchair while he turns his head."
+  },
+  "sourceFolder": "christmas/the-great-christmas-un-robbery",
+  "webSlug": "the-great-christmas-un-robbery",
+  "reviewedPrintableSha256": "8a5c15d265959183f1cf3b0d2451974a825f038afbfbb1395f4fd57accc5afc8"
+}

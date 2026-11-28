@@ -345,36 +345,36 @@
     "answer": "honey-beats",
     "candidates": [
       "honey-beats",
+      "candy-nut",
       "ted-e-bear",
-      "foxy-lox",
-      "quill-berry",
-      "pork-ulele",
-      "flutter-butter"
+      "booklava",
+      "nutmeg",
+      "hen-berry"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “bear”.",
-      "I help find the numbers next to each other."
+      "I have a part in the story about the angel.",
+      "I am one of the two children decorating the small tree.",
+      "I think with my drumsticks."
     ],
-    "explanation": "Rhythms and number neighbours.",
+    "explanation": "Honey-Beats is the baby bear with the drumsticks.",
     "name": "Honey-Beats"
   },
   {
     "answer": "foxy-lox",
     "candidates": [
       "foxy-lox",
-      "quill-berry",
-      "pork-ulele",
-      "flutter-butter",
-      "biscuit-bouncer",
-      "booklava"
+      "polly-roger",
+      "cynthia-book-smart",
+      "ham-and-cheese",
+      "booklava",
+      "professor-hooten"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “fox”.",
-      "I follow clues on a mystery trail."
+      "I was there when the friends rehearsed their library plan.",
+      "I wear a scarf on Lantern Evening.",
+      "I have a bushy fox tail."
     ],
-    "explanation": "Following clues.",
+    "explanation": "Foxy-Lox wears the cranberry scarf.",
     "name": "Foxy-Lox"
   },
   {
@@ -435,18 +435,18 @@
     "answer": "biscuit-bouncer",
     "candidates": [
       "biscuit-bouncer",
-      "plate-retriever",
-      "booklava",
-      "bottle-nose",
-      "captain-beakon",
-      "tick-tusk"
+      "tick-tusk",
+      "sail-affe",
+      "horse-doeuvre",
+      "sub-zero",
+      "eggs-benedict"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “puppy”.",
-      "I have parcels to deliver along a route."
+      "I was there for the sledge race on Snowdrop Hill.",
+      "My team uses a tin bath as a sledge.",
+      "I am the puppy who helps push it."
     ],
-    "explanation": "Finding a better route.",
+    "explanation": "Biscuit-Bouncer is the team’s pusher.",
     "name": "Biscuit-Bouncer"
   },
   {
@@ -722,19 +722,19 @@
   {
     "answer": "candy-nut",
     "candidates": [
+      "honey-beats",
       "candy-nut",
+      "ted-e-bear",
+      "booklava",
       "nutmeg",
-      "stripe-scout",
-      "pita-pan",
-      "fe-line-mignon",
-      "cynthia-book-smart"
+      "hen-berry"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “squirrel”.",
-      "My name has two snack words, “candy” and “nut”."
+      "I have a part in the story about the angel.",
+      "I am one of the two children decorating the small tree.",
+      "I am a small squirrel wearing a green scarf."
     ],
-    "explanation": "Exploring with the crew.",
+    "explanation": "Candy-Nut wears a green knitted scarf.",
     "name": "Candy-Nut"
   },
   {
@@ -867,18 +867,18 @@
     "answer": "dough-mino",
     "candidates": [
       "dough-mino",
-      "marmalade-whiskers",
-      "shepherds-pie-thon",
-      "professor-hooten",
-      "hen-berry",
-      "corgi-on-the-cob"
+      "vincent-van-mouse",
+      "belgian-waffle",
+      "booklava",
+      "cluck-oclock",
+      "coop-accino"
     ],
     "clues": [
-      "I’m one of the faces on the SnackPack character board.",
-      "My card describes me as “dinosaur”.",
-      "My name sounds like “domino”. Try hearing it in two parts."
+      "I was part of the Wrapping Night story.",
+      "I am wearing something around my neck.",
+      "I have three toes on each of my storybook feet."
     ],
-    "explanation": "Patterns and dominoes.",
+    "explanation": "Dough Mino has a long neck, a chef’s hat and three-toed feet.",
     "name": "Dough Mino"
   },
   {
@@ -916,5 +916,23 @@
     ],
     "explanation": "A spelling-app character.",
     "name": "Shepherd’s Pie-thon"
+  },
+  {
+    "answer": "dune-anna",
+    "candidates": [
+      "dune-anna",
+      "foxy-lox",
+      "corgi-on-the-cob",
+      "biscuit-bouncer",
+      "hop-tart",
+      "candy-nut"
+    ],
+    "clues": [
+      "I am one of these friends with pointed or upright ears.",
+      "I am a fox.",
+      "I brought a map of the Ténéré desert."
+    ],
+    "explanation": "Dune-Anna is the fennec fox who explores the Ténéré story with Professor Hooten.",
+    "name": "Dune-Anna"
   }
 ]

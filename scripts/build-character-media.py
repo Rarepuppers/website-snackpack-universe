@@ -3,7 +3,8 @@ import argparse
 import json
 from pathlib import Path
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4, LETTER
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
@@ -26,12 +27,19 @@ def square_portrait(path, width=960):
 
 def draw_sheet(pdf, art, title, paper):
     width, height = paper
-    scaled = min((width - 84) / art.width, (height - 116) / art.height)
+    scaled = min((width - 84) / art.width, (height - 132) / art.height)
     art_width, art_height = art.width * scaled, art.height * scaled
     pdf.setFont('Helvetica-Bold', 16)
     pdf.drawCentredString(width / 2, height - 47, title)
     pdf.drawImage(ImageReader(art), (width - art_width) / 2, (height - art_height) / 2 - 10,
                   width=art_width, height=art_height)
+    credit = f'{title} · © 2026 SnackPack Studios · Free at snackpackuniverse.com/characters/colouring/'
+    pdf.setFont('Helvetica', 8)
+    pdf.setFillColor(HexColor('#635950'))
+    pdf.drawCentredString(width / 2, 36, credit)
+    url_width = pdf.stringWidth(credit, 'Helvetica', 8)
+    pdf.linkURL('https://www.snackpackuniverse.com/characters/colouring/',
+                (width / 2 - url_width / 2, 34, width / 2 + url_width / 2, 44))
     pdf.showPage()
 
 
@@ -49,6 +57,43 @@ def write_preview(media, slug, art):
     preview.save(media / f'{slug}-preview.webp', quality=88)
 
 
+def share_card(site, slug, title, kind, portrait):
+    media = site / 'characters/media'
+    fonts = site / 'assets/fonts'
+    image = Image.new('RGB', (1200, 630), '#fbf5e8')
+    draw = ImageDraw.Draw(image)
+    with Image.open(media / f'{portrait}-960.webp') as source:
+        image.paste(source.resize((490, 490), Image.Resampling.LANCZOS), (64, 70))
+    with Image.open(site / 'assets/snackpack-mark-96.png') as mark:
+        mark = mark.convert('RGBA').resize((64, 64), Image.Resampling.LANCZOS)
+        image.paste(mark, (1072, 496), mark)
+
+    ink = '#473126'
+    sans = ImageFont.truetype(str(fonts / 'dmsans-ed656a5d.woff2'), 34)
+    for size in (64, 56, 48, 40, 34):
+        heading = ImageFont.truetype(str(fonts / 'fraunces-36024e18.woff2'), size)
+        lines = ['']
+        for word in title.split():
+            trial = f'{lines[-1]} {word}'.strip()
+            if lines[-1] and draw.textlength(trial, font=heading) > 540:
+                lines.append(word)
+            else:
+                lines[-1] = trial
+        if len(lines) <= 2 and all(draw.textlength(line, font=heading) <= 540 for line in lines):
+            break
+    y = 240 - (len(lines) - 1) * 36
+    for line in lines:
+        draw.text((600, y), line, fill=ink, font=heading)
+        y += 76
+    draw.text((600, y + 12), kind, fill=ink, font=sans)
+    destination = media / f'{slug}-share.jpg'
+    for quality in (82, 76, 70):
+        image.save(destination, quality=quality, optimize=True, progressive=True)
+        if destination.stat().st_size <= 120_000:
+            return
+    raise ValueError(f'Sharing card exceeds 120 KB: {destination}')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('monorepo', type=Path)
@@ -62,7 +107,11 @@ def main():
 
     shared = args.monorepo / 'shared-assets'
     catalog = json.loads((shared / 'text/characters/catalog.json').read_text())
-    for character in catalog['characters']:
+    characters = [
+        character for character in catalog['characters']
+        if character.get('status', 'public' if catalog.get('version', 1) == 1 else None) == 'public'
+    ]
+    for character in characters:
         square = square_portrait(args.monorepo / character['portrait'])
         for width in (240, 480, 960):
             square.resize((width, width), Image.Resampling.LANCZOS).save(
@@ -70,6 +119,13 @@ def main():
         if 'variant' in character:
             square_portrait(args.monorepo / character['variant']['source'], 480).save(
                 media / f"{character['id']}-variant.webp", quality=81, method=6)
+
+    for character in characters:
+        share_card(site, character['id'], character['name'], character['kind'], character['id'])
+    for animal in catalog['animals']:
+        match = next((character for character in characters if character.get('animal') == animal['id']), None)
+        if match:
+            share_card(site, animal['id'], animal['name'], 'Meet the animals', match['id'])
 
     if args.portraits_only:
         return
@@ -95,7 +151,7 @@ def main():
             for size, paper in paper_sizes:
                 write_sheet(sheets / f'{slug}-{size}.pdf', art, title, paper)
 
-    collection = [character for character in catalog['characters'] if character.get('colouring')]
+    collection = [character for character in characters if character.get('colouring')]
     if collection:
         packs = {}
         for size, paper in paper_sizes:

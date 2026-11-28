@@ -78,7 +78,7 @@
         "read/animal-architects/pages/animal-architects-p9.jpg": "1fa2b841d3e0df074c35728773be71ec29b5d8c2f2477e99536c2ec02f3a981e"
       },
       "pdf": "read/animal-architects/animal-architects.pdf",
-      "pdf_sha256": "ca5442d87100ba5649ffe8a4db5a40ca2d15e04fd75a5fd2856781343ceb0626"
+      "pdf_sha256": "d0d97dd0301f7c4be05b343e8bb967c9573b842c978f8c33141af399a30854b8"
     },
     {
       "slug": "baby-bulldogs-at-the-playground",
@@ -141,7 +141,7 @@
         "read/baby-bulldogs-at-the-playground/pages/baby-bulldogs-playground-p4-r2.jpg": "81e4adb070596e2a5868fd11c27b2e08c2d864d734680827d7a3bd6a3bc37de8"
       },
       "pdf": "read/baby-bulldogs-at-the-playground/baby-bulldogs-at-the-playground.pdf",
-      "pdf_sha256": "845a3e5c9291e46b150caa088a70cf625788f8e0bc393f37bc712036bcf80dd3"
+      "pdf_sha256": "79ad5a01ba8f1e7c0e7e5485c834e0ea6bfc953352ba6a63de792e0753befc7f"
     },
     {
       "slug": "bark-b-q-and-the-long-christmas-table",
@@ -386,6 +386,206 @@
       "cover_jpeg_sha256": "3f21888692894c429416e5e92e59704a16a6ea2ab264b1045fcd237beb399d36"
     },
     {
+      "slug": "biscuit-bouncer-and-the-great-sledge-race",
+      "source_id": "web-christmas-biscuit-bouncer-and-the-great-sledge-race",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/cover.png": "16abf0dfd041237db053e46d2abd98ad5c3bb6dc13b4a303a966a08ae97b5bc9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p01.png": "28a8ffd23989323e9cb41e4c9b2105987391fd6561d6c0b5f3f6664138945b51",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p02.png": "f6468924fc0aef478fc0a797e272aa9fdd825ab9b609170c566c3e73e174b16f",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p03.png": "1e995a0d04fe0583982fb3b3ed827daf9b404ec4382cee29fb00f1daf3c3d28e",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p04.png": "d34b1943be5a4d4b3d6fd7868638d986c469c381243a4c9a7961111119497764",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p05.png": "aaef6dd826cfaab73b90c229259d0417b33e5bacae6e5c10a23f0baff03ab0ae",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p06.png": "f1b7a78984d748725563eca353e03877be81a34bb183ba7f1cecf5c415645d2c",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p07.png": "845b02b85d942a9556a48ad2c5c11b7b93778194f891aa0038e708ede5509e8b",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p08.png": "f6ebebd7453860bbcffb23cfe99739b8abf4b5d20e5c4ed9ff388721fe232cdb",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p09.png": "a372f43c2d32ba5f0bd93eb7c945b44bcf1115ec66bdf3f5aac4485815be9e00",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p10.png": "dffb25bd6627b1abf15b4d8d7c5a6eda90b2f42ae82adfc5dca6135fcbf68f69",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p11.png": "f1f445e7b6fb72bcf12a24ee89dd2ecfc6a65204a1ee6c6e73b302928b0b1ade",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p12.png": "9a07fd37cd323d2d9b16475b6df0170127f84234b7817ff5ad5f74c91520d641",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p13.png": "784c35f4f03d0c971d01651917dfc9b52508365f7c34cdde9e00b7c78a46d9f9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p14.png": "058e36d9c3c45fbe55dd95ba357775aca1c237f3b48f9260121a7895affeb3fb",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p15.png": "aa85a07c579a5f4fe0f8251b876340094d6a8a18cdd5f383b0c269dd91e818f9",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p16.png": "46a48c182075565166cdb1de59984bd0dbbfe82ff4ffefe772aa777407db3026",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p17.png": "7fc7849feec6f3cc62b2d083e251723caffe3d9c4770fc0ba8c3133476b4075a",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p18.png": "9cf2d189f28a5589683232c095fd94925cc49390a0485c3fe9574c3f56efd1cc",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p19.png": "d1dc8cbe62feb47fd7253e7bae8907dda39af74c9bb26bb42f364bb9187ede4f",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p20.png": "5e0e688848f3be15248450d56f4930af155fc6b28350ce5eb0d559d11eefcb87",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p21.png": "c8b6d34f423c790c0e4e7e7b05555d44cf177be5a060f0fff4fceba28bacca35",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p22.png": "1507f94572d78e950dba71a320fc179b4018692c3935083fd8a7017833c59550",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p23.png": "77268490befd7d1d464089a6a395285b650d6ae06cc4937372942b3b8c08e3ed",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p24.png": "fa020a7ffbcc9cfa531f5ef980248dc04f2003305dcbbbe58aa8fa71bf227446",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p25.png": "4513a7f5aeddc6d3c7bd06fa28010ab2b89f81a488f380a7011c0eda8bb8f951",
+        "../docs/reads-events-bookshelf/christmas/biscuit-bouncer-and-the-great-sledge-race/p26.png": "2cace35630dd770e031099691a1e84e861f692a7501557b34e1ebc3c3d383e71"
+      },
+      "text": [
+        "On the first snowy Saturday of the Christmas holidays, everybody in the village climbed Snowdrop Hill for the Great Sledge Race. At the bottom, beside a wall of straw bales, Bark-B-Q held up the prize. It was a small golden bell on a red ribbon. Ding-a-ling, went the Golden Bell.",
+        "Biscuit-Bouncer had raced every year. Every year, he had bounced off. \"I can't help it,\" he said. \"When I'm excited, my legs go boing.\" This year, he wanted that bell more than anything.",
+        "The race was for teams of two. Sail-Affe and Horse d'Oeuvre had the Red Flash, the fastest, shiniest sledge on the hill. The Baby Bulldogs had a long wooden toboggan. They were so small that all four counted as one team. Everybody already had a partner. Everybody except Biscuit-Bouncer.",
+        "And Tick-Tusk. She sat on a tree stump, polishing her gold pocket watch. Somebody had told her she was too heavy for a sledge. \"You'll sink,\" they'd said. Biscuit-Bouncer bounced over. \"Do you want to race with me?\" \"I've never been on a sledge,\" said Tick-Tusk. \"I've never stayed on one,\" said Biscuit-Bouncer. \"So we're even.\"",
+        "They didn't have a sledge. But in the back of Ted-E-Bear's shed, they found an old tin bathtub. \"It's a bath,\" said Tick-Tusk. \"It's a sledge now,\" said Biscuit-Bouncer. They rubbed candle wax all over the bottom to make it slippery. They tied a rope to the front. Then they dragged it up the hill.",
+        "The first practice went like this. Biscuit-Bouncer pushed the bathtub, ran, and jumped in. \"Ready... steady... BOUNCE!\" The bathtub slid away down the hill. Biscuit-Bouncer bounced straight out of the back of it into the snow. Tick-Tusk clicked her pocket watch. \"Very fast,\" she said. \"For a bathtub with nobody in it.\"",
+        "Tick-Tusk walked all the way down the course and back up again. She looked at the snow very carefully. \"The middle of the hill is soft,\" she said. \"We'd sink. But the snow by the fence is packed hard. That's the fast way. Then there's the bend round the Big Fir. We have to lean into it together.\" \"You've been watching,\" said Biscuit-Bouncer. \"Every year,\" said Tick-Tusk. \"From the stump.\"",
+        "\"So here's the plan,\" she said. \"You push. You're the best pusher on the hill. I steer. And then, Biscuit-Bouncer, you sit still.\" Biscuit-Bouncer's legs went boing just hearing it. \"When you want to bounce,\" said Tick-Tusk, \"hold on to my trunk.\"",
+        "They practised all afternoon. Push. Jump in. Hold on. Sit still. Lean. Biscuit-Bouncer fell out four times. Then three times. Then once. Then not at all. Tick-Tusk clicked her watch. \"Eleven seconds faster,\" she said. Her ears flapped. She was smiling.",
+        "On race day, the whole village lined the hill. Eggs-Benedict stood at the top with her stopwatch and a red flag. Bark-B-Q stood at the bottom by the straw bales, with the Golden Bell. Sub-Zero waddled up to the start line with no sledge at all. \"I'll just slide on my tummy,\" he said. \"Sledges only, Sub-Zero,\" said Eggs-Benedict. So Sub-Zero borrowed a tea tray.",
+        "Four teams lined up: the Red Flash, the Bulldogs' toboggan, Sub-Zero's tea tray and the bathtub. Eggs-Benedict raised her flag. \"Ready... steady... GO!\" \"BOUNCE!\" shouted Biscuit-Bouncer, and pushed with all four legs.",
+        "The bathtub shot off the line. Sub-Zero's tea tray spun round and round and went down backwards. The Bulldogs' toboggan wiggled like a puppy's tail. And the Red Flash went straight to the front, red and shiny and fast.",
+        "Tick-Tusk steered the bathtub over to the hard snow by the fence. Whoosh! They began to catch up. Biscuit-Bouncer's legs went boing. He grabbed Tick-Tusk's trunk and held on tight. He sat still.",
+        "Ahead of them was the Big Fir and the bend. The Red Flash took the bend too fast. Sail-Affe's long scarf flew up over Horse d'Oeuvre's eyes. \"I can't see!\" cried Horse d'Oeuvre. \"How do you stop?\"",
+        "The Red Flash spun round twice and ploughed into a deep snowdrift. Nobody was hurt. But one of its runners had snapped, and Sail-Affe and Horse d'Oeuvre were sitting in the snow, up to their noses, with a broken sledge.",
+        "Tick-Tusk looked at her pocket watch. \"If we stop now,\" she said quietly, \"we lose.\" Biscuit-Bouncer looked down the hill at the Golden Bell, shining by the straw bales. Then he looked at his friends in the snowdrift.",
+        "\"Lean, Tick-Tusk!\" he said. \"Lean and stop!\" Tick-Tusk leaned. She put down her big, flat feet, and the bathtub ploughed to a stop right beside the drift. Behind them, the Bulldogs' toboggan whizzed past, yipping. Then Sub-Zero went by, still backwards, waving.",
+        "\"Are you hurt?\" asked Biscuit-Bouncer. \"No,\" said Sail-Affe. \"But the Red Flash is broken. We're out.\" Her long neck drooped. \"Then come with us,\" said Biscuit-Bouncer. Horse d'Oeuvre stared. \"In a BATH?\"",
+        "\"It's a big bath,\" said Tick-Tusk. So Sail-Affe climbed in at the front, with her long neck sticking up like the mast of a ship. Horse d'Oeuvre squeezed in behind her, knees up to his nose. Tick-Tusk sat behind him, to steer. That left a tiny space at the very back for Biscuit-Bouncer, if he sat very, very still.",
+        "They left the Red Flash safe in the drift, to fetch later. Biscuit-Bouncer got behind the bathtub. It was much heavier now. He dug in all four paws. \"Ready... steady... BOUNCE!\"",
+        "The bathtub began to slide. Then it began to slide fast. Then it began to go faster than anything had ever gone down Snowdrop Hill. Whoooooosh! They shot past Sub-Zero. \"Hello again!\" he called, spinning.",
+        "On the last long straight, there was only one sledge ahead: the Bulldogs' toboggan. The bathtub drew level. Then it was side by side. Biscuit-Bouncer's legs went boing, boing, BOING. He held Tick-Tusk's trunk with both paws. \"Sit still,\" he told himself. \"Lean together.\" Everybody leaned forward at once.",
+        "WHUMP! The bathtub and the toboggan hit the straw bales at exactly the same moment. Straw flew up into the air and came down again like golden snow.",
+        "Eggs-Benedict came running down the hill with her stopwatch. \"The bathtub,\" she puffed, \"and the toboggan... crossed the line... at exactly the same time!\" Bark-B-Q looked at the Golden Bell. \"But there's only one bell.\"",
+        "The Bulldogs looked at Biscuit-Bouncer. Biscuit-Bouncer looked at the Bulldogs. \"You were in front all the way down the straight,\" said Biscuit-Bouncer. \"You stopped for your friends,\" said the biggest Bulldog. \"We saw.\" So Bark-B-Q handed over the Golden Bell on its long red ribbon, and both teams held an end. The smallest Bulldog rang it. Ding-a-ling-a-ling!",
+        "Then everybody climbed back up the hill and pulled the Red Flash out of the drift together. \"I'll fix the runner,\" said Horse d'Oeuvre. \"And next year, we'll race you.\" Tick-Tusk clicked her watch. \"Fourteen seconds faster than practice,\" she said. \"With four of us.\" Biscuit-Bouncer didn't answer. He had sat still for long enough. He bounced all the way home."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p01.jpg": "bcb2e854100ca37944837a4e8b3d1024f1ce8a0554b363cbb44a39c7d130608d",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p02.jpg": "8286f30f3e023596aebd7a4d3e68cc3d1a971646aa8ac98232ab1af152f74fee",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p03.jpg": "be82f514e0a03c704702e186ce9fd31c9eb2ebe6a38615c12b87caed2b29efd1",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p04.jpg": "67c709468a89184f9955966f684aa4c361fdf716f7fd57fc4c7cd68d7cd1895c",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p05.jpg": "3d08d72cd3dc414eb0e7dc2bd77688a904e8ffdcf2bd8d1a96912d33db04704e",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p06.jpg": "b4cea98687db6aa4396be04888cafcafbf02f6f388eceb44e246ab9d2b3e15ba",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p07.jpg": "157a4a0e956a4071f103d2624478ff301aec5741c43e3e060eb5726e26c93162",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p08.jpg": "85864d68f8a36457ee3d10b3c38ec4da0b2b4c7ae1d295c726778c9062959647",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p09.jpg": "a0828d1a6f367d2a176182404dca494300474bb14606bd0511cb37b1daf077cb",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p10.jpg": "29422dbd2e4d6aa84d53df83a7b8544be2fe908d16d6a78bed4f79460b8ebfd9",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p11.jpg": "c11a20abd3507f482c3010193148a826d3c5d8fb422b5713af0592f9c047552c",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p12.jpg": "8be7ae82b143e68eb4a8bea6ae737dcd007fa682c7f820d6963e73b1b0399b2d",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p13.jpg": "7a44d66dbdb558bd47b224e026067577982ac1485d05b30213fbe735ba0b25db",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p14.jpg": "f539d567fb5a218c4c8c9cba06b07ea0deb8c6ff9834c749eda1cd71cd85aa6a",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p15.jpg": "fe92636d180b7494595b1462aa6e5f412758d8a6c1be777c3d046844f68ba30a",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p16.jpg": "cc11e908c30c012c7817b777cd3a70c9ed881fabfc695ae068f013456f757a77",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p17.jpg": "b0501a6f49d147866d37d1cd6ab1d02c523c896f7f5a35263463a82c11da9f16",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p18.jpg": "1b198584bb904ff50bddfbc5a0b6b982bb2e0329968d4b3c7afdd03230f4c583",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p19.jpg": "01224070e030d1ed2fc650095309bef8140fe0ec9e6c1750d2d13dd02e7367dc",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p20.jpg": "802969ee8ca2209d4a258216f57b8db64ebbd07af582093755b13f7307595557",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p21.jpg": "d2702e0aa96887d0042d144e4fd2ebbc24636f3b62a99fa6d69c663d95d56348",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p22.jpg": "7507f892b43c3a9031faa91db8d6eba80d05ed6423027eaa078b0055286bb2bb",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p23.jpg": "8c835a8ec14b7db3527496b6b85077cc270f1946684d52ab805e4807284c9505",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p24.jpg": "7c33b47667f817d2f5705968cb18c412ac44fd6fac42339166bfd33536f7b45e",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p25.jpg": "e7cc624b3aab96e2869d123587be923676af6945deb97cd90abd2d12883abc74",
+        "read/biscuit-bouncer-and-the-great-sledge-race/pages/p26.jpg": "73c81f61d77caaaefce50df0e923a2f72f6eea7c017e80791646727b3ba8425e"
+      },
+      "pdf": "read/biscuit-bouncer-and-the-great-sledge-race/biscuit-bouncer-and-the-great-sledge-race.pdf",
+      "pdf_sha256": "4c120a96513c8dc781e660c22d9c03cf697425113d2d8a609af822f6f9bd6e4a",
+      "cover_jpeg_sha256": "20403cfd60d69f55d2bff387b45952735a82b208e1f8cae423afbe0e84edb1ad"
+    },
+    {
       "slug": "biscuit-bouncers-parcel-parade",
       "source_id": "biscuit-bouncer-parcel-parade",
       "source_art": {
@@ -482,7 +682,7 @@
         "read/biscuit-bouncers-parcel-parade/pages/page-9-r2.jpg": "0f9ea90eeda75c4a04e43e64f8b19c8432edcd797a50a2a8fce9a97d70983cb6"
       },
       "pdf": "read/biscuit-bouncers-parcel-parade/biscuit-bouncers-parcel-parade.pdf",
-      "pdf_sha256": "c8ffd555b68ee41e8049ec979cffa85a54df84de89c13625288ccfbb14c61d96"
+      "pdf_sha256": "a705af6259cf13d9685d26e66e4c58b141b4de8e9bd25f7757c36896444baee2"
     },
     {
       "slug": "booklava-and-the-number-that-lost-its-place",
@@ -563,7 +763,7 @@
         "read/booklava-and-the-number-that-lost-its-place/pages/page-7.jpg": "d060557a0b75780f659466c96ded1a6102efca27a1832f547fdf15e4918795f5"
       },
       "pdf": "read/booklava-and-the-number-that-lost-its-place/booklava-and-the-number-that-lost-its-place.pdf",
-      "pdf_sha256": "9a0b3309660454d5079f0b5e380d2e534b4eca242cb8a4eaec9a551e76aecef7"
+      "pdf_sha256": "c79ae5aee3a675cf2ec0fee6988f96f27c31a62d1c1d46b4e8fc9766f1440ed3"
     },
     {
       "slug": "bug-in-a-cup",
@@ -636,7 +836,7 @@
         "read/bug-in-a-cup/pages/bug-in-a-cup-page-8.jpg": "f615114e3ad22a2bdca02f6544b92b78ad1c32547f3e8456a60ca1bcc077ad0a"
       },
       "pdf": "read/bug-in-a-cup/bug-in-a-cup.pdf",
-      "pdf_sha256": "a0f427b9a337be98ef1212ed376d846007bfdfd0583ce0826a119e2434a6aba0"
+      "pdf_sha256": "a3fb9469dfa768c2b499b0f732ae713fd38746248fecbc81a832ef48d1f8bf8d"
     },
     {
       "slug": "captain-beakon-and-the-bell-across-the-bay",
@@ -1023,7 +1223,7 @@
         "read/captain-beakons-air-show/pages/captain-beakon-air-show-p4.jpg": "3a380cec32688ec074aa07051c6535cff3d20f3f42fbea0325cabe30691fa008"
       },
       "pdf": "read/captain-beakons-air-show/captain-beakons-air-show.pdf",
-      "pdf_sha256": "56a7ea3726789d075cd69b7a1bdd262785390d14d4318112d6bd45f627ec0cbf"
+      "pdf_sha256": "86c14e0ea48d96d87580fe0178bea6b58bac56cd8a518b38320764d39ea1c885"
     },
     {
       "slug": "captain-beakons-star-watch",
@@ -1086,7 +1286,7 @@
         "read/captain-beakons-star-watch/pages/captain-beakon-star-watch-p4.jpg": "1f273188859b3f7b3ba196ff1c9c0fd75c55a40b1b5a745584fc7562cb15d7bc"
       },
       "pdf": "read/captain-beakons-star-watch/captain-beakons-star-watch.pdf",
-      "pdf_sha256": "4ecd4f25a8548e9c0b328f23ccdb7aede32d0af07652885151d49ca05ed482ac"
+      "pdf_sha256": "fc5a4125b375b8d22f2e17e59716c93172620fea81091c3352d200781e415830"
     },
     {
       "slug": "centi-peeds-below-zero-burrow",
@@ -1140,7 +1340,7 @@
         "read/centi-peeds-below-zero-burrow/pages/page-4.jpg": "3bb96f2f366c70c8e5a3f3369b36070fcb87a5841a67024482dd4f3d6f3bb92b"
       },
       "pdf": "read/centi-peeds-below-zero-burrow/centi-peeds-below-zero-burrow.pdf",
-      "pdf_sha256": "57e5dd0ce06956463248a1dd4cb740f8604c7ab5f5253ee35c4adac6f403c47a"
+      "pdf_sha256": "37df2d19e70b739714402de0a18fcdea52b829d5d91732fa04d87d98a8d9cfea"
     },
     {
       "slug": "centi-peeds-garden-race",
@@ -1202,7 +1402,7 @@
         "read/centi-peeds-garden-race/pages/centi-peed-garden-race-p4-r2.jpg": "f186ee5f32496edff80c51f22689c0e63fbb01c000e2a9203024404374a9d00a"
       },
       "pdf": "read/centi-peeds-garden-race/centi-peeds-garden-race.pdf",
-      "pdf_sha256": "8162502965fae0d029a1cbd2a4901672d24f49832fcd07f03cdd001e698b0af0"
+      "pdf_sha256": "184152731a5071deb2293635e3bb9f2152bc07376c58b39450f797e76c3489d6"
     },
     {
       "slug": "cereal-swimmer-and-the-number-line-lagoon",
@@ -1301,7 +1501,7 @@
         "read/cereal-swimmer-and-the-number-line-lagoon/pages/page-6.jpg": "791cf15e370b1d4b69160a55f1e59e34b46c87b796021980a8d7fffacee06a50"
       },
       "pdf": "read/cereal-swimmer-and-the-number-line-lagoon/cereal-swimmer-and-the-number-line-lagoon.pdf",
-      "pdf_sha256": "a7be04fe1c0fe336c4b4a6b5557bac58ab58942b413251ba845670e6dd4be2af"
+      "pdf_sha256": "01f94581108f17fe74306c4d9d95618045e360dd53e1cccbfa066a56ec632e3a"
     },
     {
       "slug": "cluck-oclock-and-the-midnight-that-came-early",
@@ -1789,7 +1989,7 @@
         "read/corgi-on-the-cobs-countryside-run/pages/corgi-on-the-cob-countryside-p4.jpg": "705fbf86e4f1053b472a3ea8bbb5a2900495ba4214dc4b170cec3cf2f1993699"
       },
       "pdf": "read/corgi-on-the-cobs-countryside-run/corgi-on-the-cobs-countryside-run.pdf",
-      "pdf_sha256": "dcbf0f82536acb51e01388c784b330e77fa20936ec13fbb503c3329ab08b94f6"
+      "pdf_sha256": "1b778983fb975931a1d275a03447c8fa439aa31c3c9b5aa725c429ef18634d98"
     },
     {
       "slug": "corgi-on-the-cobs-ten-frame-picnic",
@@ -1878,7 +2078,7 @@
         "read/corgi-on-the-cobs-ten-frame-picnic/pages/page-6.jpg": "f7719805c329d31e27311e048f3de20330f99e467615d53ec200209ae3f75544"
       },
       "pdf": "read/corgi-on-the-cobs-ten-frame-picnic/corgi-on-the-cobs-ten-frame-picnic.pdf",
-      "pdf_sha256": "75f0cad5caae0f5a0e0e5dec366b135bc0ab550ab19a5fd08d66ba7c3626df11"
+      "pdf_sha256": "c81476aa61b815cc6d8cfd43195ec40ac901bc23fd6f942a24ef7e7f5cbddda6"
     },
     {
       "slug": "dog-in-the-fog",
@@ -1951,7 +2151,235 @@
         "read/dog-in-the-fog/pages/dog-in-the-fog-page-8.jpg": "fbf947222e576fabbcc12f2e4131cf1a809badb6c185a6e8075067d829b5c115"
       },
       "pdf": "read/dog-in-the-fog/dog-in-the-fog.pdf",
-      "pdf_sha256": "d598a684bce78a8b91f554b3c50ad0dbee0cae08bf9910373da83381a80677a6"
+      "pdf_sha256": "118c495cf432e2b3cede9d8a1f28659148e8d2b9f48ff45a1118f572b12d1bbb"
+    },
+    {
+      "slug": "dough-mino-and-the-parcel-mix-up",
+      "source_id": "web-christmas-dough-mino-and-the-parcel-mix-up",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/cover.png": "867271411501f187d47bf3ea2e6ee162ca7c21ba1ef56efbabdfb2869f0c47ba",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p01.png": "4583d40061a19d75396280b622c9a8693116e82e6d318f4aa10480c341efb5c2",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p02.png": "0cbf5f9f6e46e383a03df659772c7ad8e18f1aa2bf18166ca85a69d58a68c1b0",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p03.png": "9bc6efa2a6b1c800cc1046f39ea789e0b31196383b2f812bf87124ad8ec859ce",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p04.png": "1175aeddf854c57cac4459d99248076ae5a1ae5bfaabe1680cdaf903eb4b94e5",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p05.png": "22be4ebfa4387a5e89b57e6e2d405e811eb7f60d8f6d6763d16eb9bc2b305319",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p06.png": "b3433614cee62862b01baef4d2d6c091db7d2fc21468a5611fba2fd8b236aa2d",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p07.png": "76b2ddf0a0d2de0a134cd4941fe3b27cb1887b7a2be43c7ae3cc286b0fd5c154",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p08.png": "b0fc486a174d75def2ad4e431b26b48e400c601ede49d175f5807e555078b466",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p09.png": "2bec80ba5b154c1178f2bbb750ec8dfaef5dadfa4a916bfcf698eae3dd6d5e8d",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p10.png": "6e5973a6b36fb92a86ddc2dfe458d4bdf4ac8077494f70c7face3ac3453b06e3",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p11.png": "4dd2b0e622aa2079ba28a84a7adb0ee133a727cc9eca5dd636cbc2f0fba75757",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p12.png": "f2fcb34aae2b8823084686ddef6eab46a169be05c2b2515dde504736fe05426a",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p13.png": "3ab5983aaf0c9b395864b273eb787438952dbca49c8b202b206ec474287df594",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p14.png": "c918be1bcfb3515449201dce491078c096c37b1181f024ee36f126e6d9181c65",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p15.png": "672c6f9e158c02c76efbc2019c22098d05851dac2c2a6f222bb4c524c775cb85",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p16.png": "ea1bdc10dfa9347616b5a40d2684ee8f21f40a82c0c03732bd777a2f5cd0db17",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p17.png": "18c053c9103681ba5d5979d8e538e67eea90a6e3aae11c125967c76b792270bc",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p18.png": "a91a0dc42b23ea0df34b2a3d9d06ba4254e95f86df28fc8f73f35b8eb0e2bcb6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p19.png": "fad08be0f3515d80419866a6323a7669a68b531b49fb3d75e0235b455f11a680",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p20.png": "1f12f00eaab2b0b8f47f4c7f0fef7bc66ded0d63fc0444fae4a3bf25d75557b6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p21.png": "64a5a6eae96e81609b86bd2c9b6aab23fa98e3a6b9ed61dd1820c2b720cedb52",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p22.png": "c96d418cba71c4293c76d1d4208e6742e9457782062620b225d87aa90a52da27",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p23.png": "2645f77601258196d9c00468598f5c6b285459beab3e1871969b808b8fa718c7",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p24.png": "9b3320fb9a665610e5234ceffa8b38378661c9d28c05ec143e41a065ac08791f",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p25.png": "d56221d1095edca9c769cc3b583d4aae112a61b7b25dcef32e45387e3425b969",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p26.png": "17e42da5fc9b7852366b00bc5053c4b198c1c827869b2319d787e2e7652886e1",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p27.png": "d32bebe57501615fb04933038be7fbc18606f2033d14fbbf7de31008a1dc7f27",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p28.png": "f46380c761e0838e1d0bf08a15945eee8df789e5d6500a9dae8b987971580fa6",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p29.png": "59a704dbbdd575e2c231b0006729b9ba320b655f9e1fc86961383885171f24d7",
+        "../docs/reads-events-bookshelf/christmas/dough-mino-and-the-parcel-mix-up/p30.png": "1644d052d62902f7a8bf21e68240ea7eb42cbe069f9c510516cfb6969afcb291"
+      },
+      "text": [
+        "Chapter One: Wrapping Night Every year, on the twenty-third of December, the library hall became the Wrapping Table. Friends brought their presents in plain boxes. The wrappers wrapped them. And before Christmas Eve morning, Belgian-Waffle delivered every single one. This year, Dough Mino was in charge. Dough Mino loved two things more than anything: patterns, and things in neat rows.",
+        "His table was perfect. Rolls of paper in a row. Ribbons in a row. Scissors, tape and string, all in a row. Next to him, Vincent Van Mouse painted the gift tags. On each one he painted a tiny picture of who it was for, instead of a name, because pictures were more fun. And whenever there was a scrap of paper left over, Dough Mino tucked it into a neat pile under the table, when he thought nobody was looking.",
+        "The presents began to arrive. Booklava brought a box for Professor Hooten. \"It's a long one,\" she whispered. \"Don't let him see.\" Then Cluck O'Clock and Coop-Accino staggered in with a box for their mum, Hen-Berry. \"It's SO heavy,\" puffed Cluck. \"It took both of us.\"",
+        "Honey-Beats brought a small box for Pork-ulele. \"Don't shake it,\" she said. \"It jingles. That'll give it away.\" Last came Ted-E-Bear with a present for Luckybug. \"She's going to love it,\" he said, and smiled, and wouldn't say any more.",
+        "Dough Mino wrapped two of the presents. He folded the ends into neat, sharp points, the way he always did. Vincent wrapped the other two. He tucked the ends in flat and dabbed a tiny painted paw print on each one, the way he always did. The four papers were red with white dots, green and white stripes, blue with gold stars, and plain brown paper tied with green string.",
+        "Vincent laid each painted tag on top of its parcel, ready to tie on when the paint was dry. An owl for Hooten. A hen for Hen-Berry. A pig for Pork-ulele. A ladybird for Luckybug. Belgian-Waffle swooped in from his first round of deliveries, hung his old scarf on the peg to dry, and swooped out again. Dough Mino looked at the scarf for a long time. It was very frayed.",
+        "Chapter Two: The Gust At nine o'clock, the library door burst open. \"Second round!\" shouted Belgian-Waffle, and a gust of snowy wind came in with him. Four painted tags lifted off four parcels, whirled up into the air like leaves, and scattered all over the hall.",
+        "They found the tags under the paper tree, on the bookshelves and in the cocoa jug. Not one was damaged. But now nobody knew which tag belonged on which parcel. \"Easy!\" said Belgian-Waffle. He picked up the plain brown parcel and shook it. Chink, chink. \"It jingles! It's Pork-ulele's!\" He grabbed the pig tag.",
+        "\"Wait,\" said Dough Mino. He picked up the blue parcel with gold stars and shook it gently. Ching, ching. \"Two of them jingle,\" he said. \"Oh,\" said Belgian-Waffle. \"Well, then, the red one with white spots must be Luckybug's. Because she's red with spots.\" \"That's a guess,\" said Dough Mino. \"Not a clue. A guess can send the wrong present to the wrong door.\"",
+        "Chapter Three: Clues, Not Guesses Dough Mino lined the four parcels up in a row. Then he took a big sheet of brown paper and drew a grid on it: the four parcels across the top, and the four friends down the side. \"First,\" he said, \"what do we actually know?\" They remembered what everyone had said when they brought their presents. Booklava: Hooten's present is long. The twins: Hen-Berry's present is very heavy. Honey-Beats: Pork-ulele's present jingles. Ted: Luckybug's going to love it. \"That last one doesn't help much,\" said Belgian-Waffle.",
+        "\"I know something,\" said Vincent. \"I wrapped Luckybug's present myself. So it's got my paw print on it.\" They looked at the four parcels. The dots and the plain brown paper had tiny painted paw prints. The stripes and the stars had Dough Mino's sharp, pointed ends. \"So Luckybug's is the dots or the plain brown one,\" said Dough Mino. He made a mark on the grid.",
+        "\"Now we test,\" said Dough Mino. \"Shape first.\" Three of the parcels were boxes. Only one was long and thin: the green and white stripes. \"Hooten's present is long,\" said Vincent. \"And only one parcel is long,\" said Dough Mino. He drew a tick on the grid. \"Stripes for Hooten.\"",
+        "\"Sound next.\" Each of them shook each parcel gently, holding it close to an ear. The stripes made no sound. The dots made no sound. The stars went ching, ching. The plain brown parcel went chink, chink, a little lower. \"Pork-ulele's jingles,\" said Belgian-Waffle. \"So it's the stars or the brown one. Still two.\" \"Still two,\" agreed Dough Mino. \"So we need one more test.\"",
+        "In the corner of the library stood Professor Hooten's old brass scale, the one he used for weighing books before they went in the post. They weighed every parcel, one after another. The stars were light. The dots were light. The stripes were a bit heavier. And the plain brown parcel was so heavy that the scale went clunk all the way down.",
+        "Dough Mino put down his pencil. Your turn. You know what everyone said, and you've seen all three tests. Which parcel is Hen-Berry's? Which is Pork-ulele's? And which is Luckybug's? Work it out before you turn the page.",
+        "\"The plain brown parcel is by far the heaviest,\" said Dough Mino. \"Hen-Berry's present is very heavy. So the brown one is Hen-Berry's.\" \"But it jingles!\" said Belgian-Waffle. \"Lots of heavy things jingle,\" said Vincent. \"Then Pork-ulele's jingly present must be the stars,\" said Dough Mino. \"And Luckybug's has a paw print, so it's the dots or the brown. The brown is Hen-Berry's. So the dots are Luckybug's.\" Belgian-Waffle stared. \"So the red spotty one WAS Luckybug's!\" \"Yes,\" said Dough Mino. \"But now we know.\"",
+        "They tied every tag on with a double knot. The owl on the stripes. The hen on the plain brown paper. The pig on the stars. The ladybird on the dots. Dough Mino lined the four parcels up in a row by the door, in the order of the delivery route. It was the neatest row he had ever made.",
+        "Chapter Four: The Fifth Parcel \"Hang on,\" said Belgian-Waffle. He was peering under the table. \"There's another one.\" He pulled out a fifth parcel. It was wrapped in a patchwork of little pieces: red with dots, green with stripes, blue with stars and plain brown, all fitted together like a puzzle. Its ends were folded into sharp points. It had no tag at all.",
+        "\"A mystery!\" said Belgian-Waffle. \"Pointed ends, so Dough Mino wrapped it. Let's test it!\" He shook it. Not a sound. He squeezed it. It was soft. He weighed it. It was hardly heavier than nothing. \"So who's it for?\" he said. Dough Mino had gone pink from his nose to the tip of his tail. \"That one,\" he said, \"is not part of the puzzle.\"",
+        "Vincent looked at Dough Mino's pink face. He looked at the patchwork parcel. He looked at the frayed old scarf on the peg. \"Some parcels aren't puzzles,\" said Vincent. \"They're surprises. And you've got four deliveries to make before morning, Belgian-Waffle.\" He loaded the four tagged parcels into the post bag, and he didn't look at the fifth one again.",
+        "Belgian-Waffle put on his old frayed scarf, hitched up the heavy bag, and flew out into the snowy night. Behind him, in the warm library, Dough Mino let out a very long breath. \"Thank you,\" he said. \"I didn't see anything,\" said Vincent, and went back to his painting.",
+        "Chapter Five: Deliveries Belgian-Waffle flew through the falling snow. At the library's top window, he left the long striped parcel with the owl tag. Then he dragged the heavy brown parcel, chink, chink, all the way up Hen-Berry's path and left it on her mat.",
+        "At Pork-ulele's door, he set down the starry parcel very gently, so it hardly jingled at all. At Luckybug's house, which was very small, he had to leave the dotty parcel beside the door, because it was bigger than the door was. Then he flew home through the grey of early morning, so tired his wings creaked.",
+        "On his own doorstep, in the snow, there was a parcel. It was patchwork. Red with dots, green with stripes, blue with stars and plain brown, with sharp pointed ends. And now it had a tag: a tiny painting of a bluejay. Leading away from the step through the snow was a line of big, three-toed footprints.",
+        "The tag said, in Vincent's curly writing: Open now. You'll need it tonight. So Belgian-Waffle opened it. Inside was a long, soft scarf, knitted in a pattern of little squares like a waffle. It had stripes of red and green and blue and brown, the very same colours as the four papers.",
+        "Chapter Six: The Pattern Belgian-Waffle looked at the scarf. He looked at the footprints in the snow. Three toes. Very big. Very neat. In a perfectly straight line. Only one person in the village walked in a perfectly straight line. He put on the new scarf, and he flew.",
+        "Dough Mino was at home, lining his teacups up on the shelf, when there was a tap at the window. He opened it. Belgian-Waffle was on the sill, in the patchwork-coloured waffle scarf, with snow on his hat. \"Dough Mino,\" he said. \"How did you know my size?\"",
+        "\"Knitting is only patterns,\" said Dough Mino, \"and I like patterns.\" He looked a little shy. \"And I measured your old scarf last week, on the library peg, while you were sorting the post. I wrapped it tonight, out of the leftover scraps. I've been hiding it under the table all evening.\"",
+        "Belgian-Waffle was quiet for a moment. \"Every year, I deliver everybody's presents,\" he said. \"And nobody ever delivers anything to me.\" \"I know,\" said Dough Mino. \"That's why I delivered it myself.\"",
+        "That night was Christmas Eve. Belgian-Waffle flew one last loop over the village, warm all the way to the tips of his wings. And on the library wall, the puzzle grid was still pinned up, with four neat ticks. Somebody had added a fifth row at the bottom, in very neat writing, with a very small drawing of a bluejay. And beside it, the neatest tick of all."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/dough-mino-and-the-parcel-mix-up/pages/p01.jpg": "8da22ebed1f8ed7ed5577f561a21e2671042104fe524b7a20f4bf48429ad00a1",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p02.jpg": "65998745a8009ffe6db8067fc827f0928c85e93c6944d7e045190e1db1928a6f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p03.jpg": "90a03d2a1a667d462f4abca8285ecf4993d34cb81107b8d23c6af6daa9b8c506",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p04.jpg": "c92f9c1c489f5bfdd9a5796e958c9e6c8b48cfa77205e22b36b4b757becaba72",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p05.jpg": "536704c30277232970395d49c8277eba7c4e8509d82b6636f861e60501fb7498",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p06.jpg": "57570b4b922eae026ad314397396c65bc3426e256c7160cc6c55ae9df892bd53",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p07.jpg": "b2e0a51fd2a91d33314e8296920ea26f8dc4b7eb7555cd4d9fd2f2662182841f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p08.jpg": "53b927968a2d42ed17eb88ea60790dfbfa0332ea61d8d8c3974313fbf66d2bfa",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p09.jpg": "2cc40f019ff3c89c26d0f1f02615a06fbbbe5a184876309a7cd3519ff6501b1c",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p10.jpg": "62d0097b7832918537da9008f749f4969ac86fc5bfc5fe7152f5d8df2f63995f",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p11.jpg": "d6d173e8a4dc58155a0d2361eb1f724773b0f6561021280edf76bc78e5ef40d5",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p12.jpg": "1c5eebc5dcb4dd884129ea7f1dbe304ba101657f88313699005db0ae2a2c0890",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p13.jpg": "dcc1d45768538c145fa40aace5b31e5baee65a6c0bb95d02bee7de93dbc15a56",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p14.jpg": "8d41bc9332d529f2f0bb51338d2d8cfe685de14f6eb66fde70cd5277f89da82e",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p15.jpg": "1dd08e9874d6123dfcc4dcb7fd327a2ddd7c7a6d91ff6254680ea852e2c49df1",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p16.jpg": "726736d63f25460eefb2ac0542f2e2b35737fc03abd97841264f9990ed83e90d",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p17.jpg": "134055d37cda203372e4ca11da3c24453b49c1417209ba06eed68b836fadfd5a",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p18.jpg": "fdf81270aa10ed33f71dc09767339407a52551081a7fe6cb886db4e929883f68",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p19.jpg": "3b09c8fb0dc758e76ebbb950150d50eca9d57ead94cea0044e2c131ea47ca8b3",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p20.jpg": "f24580eac5719ac11575ab2976454890427ab6e82e7693066d1184d877ecf432",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p21.jpg": "54cf1a2029e81fe5d71f1774ea6e2a1b8c9ae28e1e81b2b58a4c7ad72e593625",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p22.jpg": "04498d515e6e9afbca19fb08280b020b81a7b5e49f68add1349411561a9c6482",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p23.jpg": "547811dcb7c1c089f5256785330ed0fe3bc179e36996dc94a0ff77e371135ec6",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p24.jpg": "c05d07510392cf9f2dbc02c630931a80057aa72849323c71a2f66545d8904e2c",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p25.jpg": "68b6c9487f8b49e8b54c4de514aaa1c5b7295ee6190c1c02274d4c7227567ee7",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p26.jpg": "c9b694ac1a51810efce32f8bed634bbe4f050c310d1a267ef2b80f55095d0c15",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p27.jpg": "4232724536e4f3abf98e8e8b492c78108919089ba9862b841f7cb7c5cc4a7293",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p28.jpg": "70ee1bbd3ed9d692b0c724e14d0ed1ae16476c9f14669a6efc57f1c675886652",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p29.jpg": "d9e9e5b5d712cfb2b5fff80ad043c03c94c865de0846918f36e2b002f75e773a",
+        "read/dough-mino-and-the-parcel-mix-up/pages/p30.jpg": "c416984760f87ab55ac65da19129156eb02a24f924ad25e74856d4aa061d2fbb"
+      },
+      "pdf": "read/dough-mino-and-the-parcel-mix-up/dough-mino-and-the-parcel-mix-up.pdf",
+      "pdf_sha256": "fe5e45c3ceea875fcf0beb140c5069413a99ac11d6441c738a1207260e7b77ce",
+      "cover_jpeg_sha256": "3c8859725c1111feb3779ebeb7581cc7bfc8d02790644759c9ca37196dcbe5d1"
     },
     {
       "slug": "everybody-brought-potatoes",
@@ -2212,7 +2640,7 @@
         "read/fe-line-mignons-moonlit-cafe/pages/fe-line-mignon-moonlit-cafe-p4-r2.jpg": "3287efaf541608914e53e6ca441ecaf191fb1298f5969c1641416eef6bcd4315"
       },
       "pdf": "read/fe-line-mignons-moonlit-cafe/fe-line-mignons-moonlit-cafe.pdf",
-      "pdf_sha256": "91f746cf843c6ea77c050a8d8395053c0af9082dfff3608e54d6a90005febe09"
+      "pdf_sha256": "841cc25f4d005c051bf3725351994418e8186769c441574d9c914eb230ab502b"
     },
     {
       "slug": "foxy-loxs-mystery-trail",
@@ -2274,7 +2702,7 @@
         "read/foxy-loxs-mystery-trail/pages/foxy-lox-mystery-trail-p4.jpg": "5df9eebc211cd3e5b89a2d4fdfcf72a94d423338dec67b917c6f40a29a6ec16f"
       },
       "pdf": "read/foxy-loxs-mystery-trail/foxy-loxs-mystery-trail.pdf",
-      "pdf_sha256": "7cc6b8767e22fe19dd39e8801725bc584f54deae3a87326f7125836a443611aa"
+      "pdf_sha256": "2488f8c5a4311a731ec385f4a8a30645d6f5a364688a20bf9e73d6d02a643de8"
     },
     {
       "slug": "ham-and-cheeses-big-maze",
@@ -2336,7 +2764,7 @@
         "read/ham-and-cheeses-big-maze/pages/ham-and-cheese-maze-p4.jpg": "368f8d0e42f1ec42a2cfda1834456b47f526182e41999881b2ed7e9139d4c63a"
       },
       "pdf": "read/ham-and-cheeses-big-maze/ham-and-cheeses-big-maze.pdf",
-      "pdf_sha256": "687189529553a656f452b3554bb9f777262c457fcde19dcc8b27d3a4b08b2f5a"
+      "pdf_sha256": "39124c685cc30883e801169138acf25079e3d02ca773fabe379d1fa857916699"
     },
     {
       "slug": "hen-berrys-digraph-dash",
@@ -2408,7 +2836,7 @@
         "read/hen-berrys-digraph-dash/pages/reading-trail-hen-berry-digraph-dash-p5.jpg": "ce489a96ecba20568eaa276ee3cab39a5cf6f83deab23fc3f32e4696e5bc658c"
       },
       "pdf": "read/hen-berrys-digraph-dash/hen-berrys-digraph-dash.pdf",
-      "pdf_sha256": "2b7f6d626e6c201e7794a33f31ce991cd83ed65a5ca234bd5f5bcf11d8e27e4f"
+      "pdf_sha256": "0ae5d8e39167c3b9cfde40194df09478bedc84a6352bfcf44874f7cea12abecc"
     },
     {
       "slug": "hen-berrys-helping-day",
@@ -2471,7 +2899,7 @@
         "read/hen-berrys-helping-day/pages/hen-berry-helping-day-p4.jpg": "190f6565fd69d2434cbaeaba18f3f74d0c5ccee9ff4523864fa4fc75f88871e5"
       },
       "pdf": "read/hen-berrys-helping-day/hen-berrys-helping-day.pdf",
-      "pdf_sha256": "045ae6c23a7b7e2ad8b29973682abb0f2eb7416908889a4e0c9169f4a5ffb785"
+      "pdf_sha256": "e864037e5270d6c92182699fcb893371d3888cdc74a6f798a5f0f5a284e15a39"
     },
     {
       "slug": "honey-beats-and-the-number-neighbours",
@@ -2584,7 +3012,7 @@
         "read/honey-beats-and-the-number-neighbours/pages/page-6.jpg": "72cde029c4919be9bfbc4911c6ae0f07d4e3e10896b2046051ff5db1cb0cfadb"
       },
       "pdf": "read/honey-beats-and-the-number-neighbours/honey-beats-and-the-number-neighbours.pdf",
-      "pdf_sha256": "b2e64d2d2cff5ca5f2c42e5c84b4ded778fd4d2122cbcbec4b1fa88cb1294276"
+      "pdf_sha256": "456db89fd2708c48972b6313088a1eaf1a460be5e8414943ddb9849d088d5263"
     },
     {
       "slug": "hop-tarts-stepping-stone-switch",
@@ -2638,7 +3066,7 @@
         "read/hop-tarts-stepping-stone-switch/pages/page-4.jpg": "ce73e6f5d6ad2ffa0160a0c4050c64a01c3bde7857850fb4dce81cb2541eee2c"
       },
       "pdf": "read/hop-tarts-stepping-stone-switch/hop-tarts-stepping-stone-switch.pdf",
-      "pdf_sha256": "d4aac1edbab9d4860f374aded0aa2f2143c4b5868ca4744bedce69325462bb76"
+      "pdf_sha256": "ea769ee404911f1599fe5421e1ba2de98fc095ebd8f42a8fdd5142590bea8978"
     },
     {
       "slug": "lionnaise-and-the-dragon",
@@ -2701,7 +3129,7 @@
         "read/lionnaise-and-the-dragon/pages/lionnaise-dragon-quest-p4.jpg": "b6a99b1772c3744aed412d2b10322d4125ae4759c8a957678a814d5b9c240368"
       },
       "pdf": "read/lionnaise-and-the-dragon/lionnaise-and-the-dragon.pdf",
-      "pdf_sha256": "b78b7d67b556e60f20b97d84158910df0d5c3f46394640c9b424228e031765d2"
+      "pdf_sha256": "614148c16a1908ee8e993805997ba811d8d8a62b6bb1d87cb312bd38e2a7d4df"
     },
     {
       "slug": "luckybugs-art-gallery",
@@ -2763,7 +3191,7 @@
         "read/luckybugs-art-gallery/pages/luckybug-art-gallery-p4.jpg": "793920d648d4fbe404287d9a01fd95697065ce5abae08c0699f4000480773b11"
       },
       "pdf": "read/luckybugs-art-gallery/luckybugs-art-gallery.pdf",
-      "pdf_sha256": "d8bd6d35d1f3f98262d6cf5736170f17d4efa68d5d284431700991b89735da0a"
+      "pdf_sha256": "693b0853323cd0d33043696cf05899d9ef3a0466ffa663276e7011b7156a72aa"
     },
     {
       "slug": "luckybugs-market-morning",
@@ -2844,7 +3272,7 @@
         "read/luckybugs-market-morning/pages/page-7-r2.jpg": "2e935748c612c2f87df372906eac886f5011dcd1dbfa5f22d0170058813562fe"
       },
       "pdf": "read/luckybugs-market-morning/luckybugs-market-morning.pdf",
-      "pdf_sha256": "db4f6d34a5f6234dbace38184e83b3fce2071d2b141da60a765e3359c868949c"
+      "pdf_sha256": "ca0c013d807af0d9783f813add1b2b0f1ac7994655e0f2506a3861f8fe891eae"
     },
     {
       "slug": "luckybugs-pairing-parade",
@@ -2935,7 +3363,7 @@
         "read/luckybugs-pairing-parade/pages/page-6.jpg": "96e78b5b6dbb7652c8efd6315ffdbb4c7af121ddb31263b3a53c127deb26d77d"
       },
       "pdf": "read/luckybugs-pairing-parade/luckybugs-pairing-parade.pdf",
-      "pdf_sha256": "d3c0411d256bc9ca0ef6a076470ac71dd0a94ecbfbece9a0619759f7874172db"
+      "pdf_sha256": "5469eea0566ef2d71e5fdec66deca177888ec8455038b22c0fd479accc3db296"
     },
     {
       "slug": "meow-inaras-moonlight-story",
@@ -2998,7 +3426,7 @@
         "read/meow-inaras-moonlight-story/pages/meow-inara-moonlight-p4-r2.jpg": "7f68b155b3ae882a921e1f8dd5deaed759062824bf0a47a13eaeef2138c27fc1"
       },
       "pdf": "read/meow-inaras-moonlight-story/meow-inaras-moonlight-story.pdf",
-      "pdf_sha256": "c0bc12061423134e8305567d7e5afabc7a51de4ef55059cdc2bd30210a53f26a"
+      "pdf_sha256": "3e1096bd55cffa2942064c31a83917b23b950a78e74e61708af03a739a89af94"
     },
     {
       "slug": "meow-inaras-vowel-team-duet",
@@ -3070,7 +3498,7 @@
         "read/meow-inaras-vowel-team-duet/pages/reading-trail-meow-inara-vowel-team-duet-p5.jpg": "12bae94bea5ff4c89b9f00277c8e60ff62936a716b65415d3c6657d527e8b9b0"
       },
       "pdf": "read/meow-inaras-vowel-team-duet/meow-inaras-vowel-team-duet.pdf",
-      "pdf_sha256": "22b58c13d05a29a1b317acf057d95ecd0fb6502e77cb61e5726d38d29fb4dd79"
+      "pdf_sha256": "a30d9b8ac521070e75566b4e513e919b351ee2b085696fb4d35bef277aedf8ed"
     },
     {
       "slug": "nan-and-pip",
@@ -3129,7 +3557,7 @@
         "read/nan-and-pip/pages/nan-and-pip-page-6.jpg": "d592bd02a655df9f3a027f8544e450aeec8a5984eac2bb088406065cb404d48c"
       },
       "pdf": "read/nan-and-pip/nan-and-pip.pdf",
-      "pdf_sha256": "8304e33b6e31f2b0681b4af2d2ad62e00b9a080cd0c2e7c4f51e8f83df560f12"
+      "pdf_sha256": "1daeb2db6c7334749733e3c414f4ffc77069f869b0d4068b724acb7aa88a1f2a"
     },
     {
       "slug": "nutmeg-and-the-tree-that-wouldnt-come",
@@ -3314,7 +3742,7 @@
         "read/nutmeg-and-the-tree-that-wouldnt-come/pages/p24.jpg": "1f8b46d4998b6f0783df521073909e086d6d71fbb023c5fc346a382c3f10189a"
       },
       "pdf": "read/nutmeg-and-the-tree-that-wouldnt-come/nutmeg-and-the-tree-that-wouldnt-come.pdf",
-      "pdf_sha256": "45f1547b0ebe30742f19376d17c47fbc41ba905e7be293569fb02b2d66c84c1b"
+      "pdf_sha256": "0635d1d4c6e96bf0b5e070ea093bbb3bab7f863646e25cfd4b006723854642bf"
     },
     {
       "slug": "nutmegs-four-seasons",
@@ -3376,7 +3804,7 @@
         "read/nutmegs-four-seasons/pages/nutmeg-four-seasons-p4.jpg": "5773682f2e11ff7ded1ad2141ec16c5cb1e86b782ede84f9dad5b30407e379a5"
       },
       "pdf": "read/nutmegs-four-seasons/nutmegs-four-seasons.pdf",
-      "pdf_sha256": "5347073f99ac1abec541cc23aa5ab0d2575f445d4c6476dcb8d68efc0e89f48c"
+      "pdf_sha256": "63c24b2002e9a28046ab67531f0e96c7ad8ab6cec38e7df2473944351f8cfd7b"
     },
     {
       "slug": "nutmegs-garden-morning",
@@ -3439,7 +3867,7 @@
         "read/nutmegs-garden-morning/pages/nutmeg-garden-morning-p4.jpg": "30dbd2bc086d57175e1538101ccaa9f525526438edf6782dc42f73c5c79d838e"
       },
       "pdf": "read/nutmegs-garden-morning/nutmegs-garden-morning.pdf",
-      "pdf_sha256": "e0080604b5cc9561a0a7ca3ed4e3ca7b8aa12b3de7d9bb92b0a579e4a42820ed"
+      "pdf_sha256": "bf96aab2fa17f3f7c6b27d3a9bd34c88239712dbfc1d8bc33e5cef25f7f23bad"
     },
     {
       "slug": "nutmegs-stormy-barn",
@@ -3509,7 +3937,7 @@
         "read/nutmegs-stormy-barn/pages/nutmeg-stormy-barn-p5.jpg": "bfd811d35b5d5a4798482470b7dfe52bb88d6f2d7fa0889e786cfda77e4a17d6"
       },
       "pdf": "read/nutmegs-stormy-barn/nutmegs-stormy-barn.pdf",
-      "pdf_sha256": "ff940c02c0b0e6050095872477d8a61885d9e2b56baf5223dd915012076f71c6"
+      "pdf_sha256": "6feef14a06062682f0970249a95501002b9820b968ce3dce15b67d88a606b85f"
     },
     {
       "slug": "octo-pops-coral-reef",
@@ -3571,7 +3999,7 @@
         "read/octo-pops-coral-reef/pages/octo-pop-coral-reef-p4-r2.jpg": "26fd3fbc1c2a705b9bb7baa80ca3acb0ef2aa67212806a2e54462d8e04b6ad46"
       },
       "pdf": "read/octo-pops-coral-reef/octo-pops-coral-reef.pdf",
-      "pdf_sha256": "72f0704a5e057a39f500c6262e4fe54169d49f75e993e815b6b46e9f53915d76"
+      "pdf_sha256": "70df8399b8290460e7da46fa62149ac107722b633e3a5d70c8a23e0b990ab4c1"
     },
     {
       "slug": "octo-pops-ocean-adventure",
@@ -3634,7 +4062,7 @@
         "read/octo-pops-ocean-adventure/pages/octo-pop-ocean-adventure-p4.jpg": "bc3bb006e073d717ae7f2b7dcd0496b5fdc91f03448d4c08db49ff191d6ec323"
       },
       "pdf": "read/octo-pops-ocean-adventure/octo-pops-ocean-adventure.pdf",
-      "pdf_sha256": "01190259fd1e533412e78ea3c3ea9e99db32b1ff181ecc68a278f3ebe8edd0be"
+      "pdf_sha256": "256d249942b593e8efd691e8b4a36fbbbc95907df58eb2785df75690dd06cca0"
     },
     {
       "slug": "one-more-story-before-santa",
@@ -3819,7 +4247,7 @@
         "read/one-more-story-before-santa/pages/p24.jpg": "60a16f1ba12f549c8f875788da9bf39d2b30ae7b11a9f745f7cf525d574a057d"
       },
       "pdf": "read/one-more-story-before-santa/one-more-story-before-santa.pdf",
-      "pdf_sha256": "735f001aec984ce80d8bdce0d2a7a8413dbed6cea26d01c15ad4b3c6cb67ab42"
+      "pdf_sha256": "4ae55e899f7df617bc3bea2c3b5bf50ba6c796ed478f8457bc191f42c8563025"
     },
     {
       "slug": "panda-cake-discovers-her-abcs",
@@ -4017,7 +4445,7 @@
         "read/panda-cake-discovers-her-abcs/pages/letter-z.jpg": "1d7360ebdb7a514a2e55cb486b467e8361f4bf629ecd1ae108a664f95e8f84eb"
       },
       "pdf": "read/panda-cake-discovers-her-abcs/panda-cake-discovers-her-abcs.pdf",
-      "pdf_sha256": "ae2b93a60fef372e51dac6e097a06f1bee53da77c33827d3ed2a8fa924084fe5"
+      "pdf_sha256": "4cabccc1bc253a307d8e0939c45588c9953e6443cc69e2186c4e4ca141234e5b"
     },
     {
       "slug": "panda-cakes-market-basket",
@@ -4111,7 +4539,7 @@
         "read/panda-cakes-market-basket/pages/page-6.jpg": "506379d6d5c2ce555756597bd0d5748dd9405d2ae0196ca64666cb1bccf778b5"
       },
       "pdf": "read/panda-cakes-market-basket/panda-cakes-market-basket.pdf",
-      "pdf_sha256": "925ed8b4640ca0be4573d2a987a7a6192c5ec9b72f5d4ed8b0d72021daa04ae7"
+      "pdf_sha256": "ed786140182026e83d7e2ca1f4d336c6d070e8fab3cc9d2c20319dd238bc040a"
     },
     {
       "slug": "panda-cakes-puddle-party",
@@ -4181,7 +4609,7 @@
         "read/panda-cakes-puddle-party/pages/panda-cake-puddle-party-p5.jpg": "036696daaa95115dc4ee072b28f367a1b036cb6139070fe9435fdbeb855c7370"
       },
       "pdf": "read/panda-cakes-puddle-party/panda-cakes-puddle-party.pdf",
-      "pdf_sha256": "423fce1f0b652cb223c38bb3ddb463f1c248d76ad83960250c4fb5bb7cd385e7"
+      "pdf_sha256": "c454080e9f62b240902725aff0a879a8f533f3165053e63d78b11ec608fc8029"
     },
     {
       "slug": "pip-sits",
@@ -4240,7 +4668,7 @@
         "read/pip-sits/pages/pip-sits-page-6.jpg": "0d9dc994568be68485de0eb418c5282fe9ee6a4e41502233467595abbb95ee9b"
       },
       "pdf": "read/pip-sits/pip-sits.pdf",
-      "pdf_sha256": "ece655cd768a4c343eaf3c436049cc90161c8ec113490f74de153d5f52156102"
+      "pdf_sha256": "69ea3f857c112d8b12be0c634d9e73865fe56ca22b351d987cf8d140978187c9"
     },
     {
       "slug": "pita-pans-mountain-climb",
@@ -4302,7 +4730,7 @@
         "read/pita-pans-mountain-climb/pages/pita-pan-mountain-climb-p4-r2.jpg": "88a3462b139038e5e55790733fe5118be800e24bfae548c73a9a8e43bba0fc8b"
       },
       "pdf": "read/pita-pans-mountain-climb/pita-pans-mountain-climb.pdf",
-      "pdf_sha256": "672af6151f506e22d18828e25fbc56a903ef51ad9732b7adceb008892440289a"
+      "pdf_sha256": "3f48c1ea1f8203444d91943ea224da4ecfa5ee68699b7c277a511f0cba975331"
     },
     {
       "slug": "polly-roger-and-the-red-wings-of-copan",
@@ -4380,7 +4808,7 @@
         "read/polly-roger-and-the-red-wings-of-copan/pages/polly-roger-copan-p6.jpg": "7bc5e9bf129fc457ff0a6c2a869077fb506a1ce31ef8f52d9de24d986af0934b"
       },
       "pdf": "read/polly-roger-and-the-red-wings-of-copan/polly-roger-and-the-red-wings-of-copan.pdf",
-      "pdf_sha256": "7eb7a19d3d3b0118322ef110257f24cde66eb123bfb54d11de2aa391561e0172"
+      "pdf_sha256": "bf3a402512eb8ba7ec3e1d8d333bfa6ccf465e3e8c214b5995fd5d1d088f4549"
     },
     {
       "slug": "polly-rogers-pirate-cove",
@@ -4442,7 +4870,7 @@
         "read/polly-rogers-pirate-cove/pages/polly-roger-pirate-cove-p4.jpg": "dfe14dea79ea22b309614bba2ac9310eb6ce76ab1c8a338b7430cec2ac4a4c01"
       },
       "pdf": "read/polly-rogers-pirate-cove/polly-rogers-pirate-cove.pdf",
-      "pdf_sha256": "7b53b3911e9b5adb1b598728b6e98b1c608a79baf99f4765a33ddf4e9a4612f9"
+      "pdf_sha256": "231b7ea8ac5b105232d200d9e188b78562c9e30fc6199548988479a907dbf67d"
     },
     {
       "slug": "pork-ulele-and-the-clockwork-concert",
@@ -4523,7 +4951,7 @@
         "read/pork-ulele-and-the-clockwork-concert/pages/page-7.jpg": "2b6986f972f214763055a5bdd21681b700132149a220e9795f9347f8d7de7450"
       },
       "pdf": "read/pork-ulele-and-the-clockwork-concert/pork-ulele-and-the-clockwork-concert.pdf",
-      "pdf_sha256": "ef01fdb80637ba321adaca8f7fdf18c93c3840003c4f184e5f502d4dcc47b10d"
+      "pdf_sha256": "e38eb31e91564279dd6e3a3a8f43c33f24d412be96fa7a6511378244159c70a2"
     },
     {
       "slug": "pork-uleles-picnic-song",
@@ -4585,7 +5013,7 @@
         "read/pork-uleles-picnic-song/pages/pork-ulele-picnic-song-p4.jpg": "783dc951b92a729b00eb64e26fd92d4accded4c000d6e8ae7acdcb0faa9c56d4"
       },
       "pdf": "read/pork-uleles-picnic-song/pork-uleles-picnic-song.pdf",
-      "pdf_sha256": "c4bf3a189201a7948c5bf9e3757331df6e3d43f10ebfab28a2cfbeb645385360"
+      "pdf_sha256": "0f2e2e278589a81c7126a25ceba647f5fbed0590bd8b049b624eab08a6ae2d89"
     },
     {
       "slug": "quill-berrys-ending-clues",
@@ -4657,7 +5085,7 @@
         "read/quill-berrys-ending-clues/pages/reading-trail-quill-berry-ending-clues-p5.jpg": "8baa93e22256078a66a750d7c89a8e84e84e14941493d3e65eeb05e5df1f922c"
       },
       "pdf": "read/quill-berrys-ending-clues/quill-berrys-ending-clues.pdf",
-      "pdf_sha256": "a1c0259148957473bfdf9c3e9b2f390a80315a9a03225137f0f07e2c9d47a21d"
+      "pdf_sha256": "881f457e7f4b36155324ac55972949361ded61559c3bed8431cb1aaeabe0cbb7"
     },
     {
       "slug": "rosas-copan-report",
@@ -4741,7 +5169,7 @@
         "read/rosas-copan-report/pages/rosa-copan-report-p6.jpg": "3e4e7f72e51497fa090490d9c96ba32232b5fd45369c6e747ca1efe6987b8f1d"
       },
       "pdf": "read/rosas-copan-report/rosas-copan-report.pdf",
-      "pdf_sha256": "529c613f8588bd7c05aae28a183b8f1da7f6ee7094f17ca987d1c64d69dc6ad8"
+      "pdf_sha256": "a8dbcccd1911529fe228c3ec220d5b73f9a3e34f1b255cb391d681ceed707f36"
     },
     {
       "slug": "shelly-pops-slow-and-steady",
@@ -4803,7 +5231,7 @@
         "read/shelly-pops-slow-and-steady/pages/shelly-pop-slow-and-steady-p4-r2.jpg": "45527dfca0be35e0f71d65d4932ebfe2dbb36125562fbff5b33239ed6f4c46e1"
       },
       "pdf": "read/shelly-pops-slow-and-steady/shelly-pops-slow-and-steady.pdf",
-      "pdf_sha256": "411ae358b7689ca9d52db707676a8f4fffc2857031eb2edda1b38406ac1c8b24"
+      "pdf_sha256": "ee8eaae899b7433d07cecdfc485256f3a7219ad54b5951d09424c471426fe4b4"
     },
     {
       "slug": "stripe-scouts-blend-bridge",
@@ -4875,7 +5303,7 @@
         "read/stripe-scouts-blend-bridge/pages/reading-trail-stripe-scout-blend-bridge-p5.jpg": "a10679717020003d896105580194f4bfa7c36d2210bbbd02b71b0fcc0ff0ffc1"
       },
       "pdf": "read/stripe-scouts-blend-bridge/stripe-scouts-blend-bridge.pdf",
-      "pdf_sha256": "5cdeb5be58dc0c111ea1644238f2bb795184be0c9bd8ac03639cdd0f2bd1fbf3"
+      "pdf_sha256": "a63afe70a78a0def6603cf55d7671802eebde13acaf6ccf46a7263669343fb46"
     },
     {
       "slug": "stripe-scouts-trail-clues",
@@ -4938,7 +5366,7 @@
         "read/stripe-scouts-trail-clues/pages/stripe-scout-trail-p4.jpg": "03ca7560c5d172340fcaaf92ab6de3a2b31e0cbbf6b7e9b3c2e3b8fdc32860e9"
       },
       "pdf": "read/stripe-scouts-trail-clues/stripe-scouts-trail-clues.pdf",
-      "pdf_sha256": "b001612db5425a3c2af317752d0062a5f286b4e39967912fe5d9448a1fe11ba3"
+      "pdf_sha256": "d433778c5a23bc85e318ef14d8c4dd9c4b54bcefd9c2c7949c5af3a5c2c45000"
     },
     {
       "slug": "sub-zero-and-the-great-snowball-truce",
@@ -5123,7 +5551,7 @@
         "read/sub-zero-and-the-great-snowball-truce/pages/p24.jpg": "d05191b93f8d1974afe9035df61d6e39b78da9e33c4d39c4520687faf6b3b9d0"
       },
       "pdf": "read/sub-zero-and-the-great-snowball-truce/sub-zero-and-the-great-snowball-truce.pdf",
-      "pdf_sha256": "aa0b203278b80562033d1439c4d76801c6610f3e99285105f43b4ab188ec20af"
+      "pdf_sha256": "2fa859b775609e17d0c5de97eb56db2996480720da088a71c6de49d2da34dfe1"
     },
     {
       "slug": "sub-zero-and-the-snowflake-post",
@@ -5217,7 +5645,7 @@
         "read/sub-zero-and-the-snowflake-post/pages/page-6.jpg": "02e638449b4dd57e7515c7fdcd0ab479a1eecca8f1308011fdd1182bddba0cce"
       },
       "pdf": "read/sub-zero-and-the-snowflake-post/sub-zero-and-the-snowflake-post.pdf",
-      "pdf_sha256": "f87bb7c8c5e03fa9bd6a416c700856a4bbcd11a6973c409d946dba5c8b254a1a"
+      "pdf_sha256": "04f899ad218b09b348c96907841de05363bb835fd6722b39356fd2730e586b3f"
     },
     {
       "slug": "sub-zeros-magic-e-lantern",
@@ -5289,7 +5717,7 @@
         "read/sub-zeros-magic-e-lantern/pages/reading-trail-sub-zero-magic-e-lantern-p5.jpg": "bc245bfb498d96b1cb5fad3cea8c75b7dc80a0abb3a97c2cbb5aa848a1d0e535"
       },
       "pdf": "read/sub-zeros-magic-e-lantern/sub-zeros-magic-e-lantern.pdf",
-      "pdf_sha256": "9fb321dc6e15f25c4b0c35a3576b74103db3fcbddac0ce1343bf974847a4cfce"
+      "pdf_sha256": "f8c31d3cf3a178aee824020e36f30ace3be700a01c64edf9e416bdafdef880ba"
     },
     {
       "slug": "ted-e-bear-and-the-button-trail",
@@ -5383,7 +5811,7 @@
         "read/ted-e-bear-and-the-button-trail/pages/page-6-r2.jpg": "1a166c3b82ca776b8c9f5e1a4c70299bbd5d5f657e06532a40d3d7c0fa1eb455"
       },
       "pdf": "read/ted-e-bear-and-the-button-trail/ted-e-bear-and-the-button-trail.pdf",
-      "pdf_sha256": "e13e6d5398683842e083a74f8547701e7c41c2d7ab3ecd0553c7c31c73a91580"
+      "pdf_sha256": "93d8ae71c469d75af6f3ae36fc2197e21ef2c3eab77a4c895261858edc0f04e4"
     },
     {
       "slug": "ted-e-bear-and-the-jar-of-good-things",
@@ -5663,7 +6091,7 @@
         "read/ted-e-bear-and-the-lantern-that-needed-a-half/pages/page-7.jpg": "a1e437b338457558311a05d4d681442673c3659c19a8aac1144301332080bafd"
       },
       "pdf": "read/ted-e-bear-and-the-lantern-that-needed-a-half/ted-e-bear-and-the-lantern-that-needed-a-half.pdf",
-      "pdf_sha256": "67de9775ed31e628988505f85d846d144277d941e0c7602ae263d5a885b9b9f2"
+      "pdf_sha256": "9a9e49dfc303f1894b284d90854a5fa00f38678500919f0ee3f0bbfa5440e9a8"
     },
     {
       "slug": "ted-e-bear-and-the-pocketful-of-sounds",
@@ -5735,7 +6163,7 @@
         "read/ted-e-bear-and-the-pocketful-of-sounds/pages/page-8.jpg": "729d8f8f0d2f56ec641715039ca6e60d8786576d80654cb5e192693b6f174b55"
       },
       "pdf": "read/ted-e-bear-and-the-pocketful-of-sounds/ted-e-bear-and-the-pocketful-of-sounds.pdf",
-      "pdf_sha256": "f5173e1f34933c303dc2d78977f8ab7e3391dfd8eb55f518153114caf3848c93"
+      "pdf_sha256": "868ac779b99dec13009980f2a201883a8093c8d60b1a8e1e9c79797950ff6f22"
     },
     {
       "slug": "ted-e-bears-blanket-fort",
@@ -5798,7 +6226,7 @@
         "read/ted-e-bears-blanket-fort/pages/ted-blanket-fort-p4-r2.jpg": "c4c77ced7ebf8b63dfc8a9a07fd5b01123713a2de0dd616d5dd3858c153db678"
       },
       "pdf": "read/ted-e-bears-blanket-fort/ted-e-bears-blanket-fort.pdf",
-      "pdf_sha256": "e63d9051ae22f02cffab2c51641096b35d059d59a2d804f0bd90a1b9e9e00bb0"
+      "pdf_sha256": "1df2b0fbcc11d002682f3c6bb0e0e1f3aec6b471609443de302e7b312b441aee"
     },
     {
       "slug": "ted-e-bears-short-vowel-kit",
@@ -5870,7 +6298,7 @@
         "read/ted-e-bears-short-vowel-kit/pages/reading-trail-ted-short-vowel-kit-p5.jpg": "960521c4a1ead6174d09e5823b858bdae9dd16ede6de28a645c8a3ef7a91afca"
       },
       "pdf": "read/ted-e-bears-short-vowel-kit/ted-e-bears-short-vowel-kit.pdf",
-      "pdf_sha256": "63145f24b7fa58b6d852d085d690358236842ac36390253580bd5bbe621e8845"
+      "pdf_sha256": "e6d558a5fc7f7b8ee83a813df52143cec0b41b14cd08282b50a71691eac92d2e"
     },
     {
       "slug": "ten-red-hens",
@@ -5943,7 +6371,193 @@
         "read/ten-red-hens/pages/ten-red-hens-page-8.jpg": "565597400374fabbcc81017611800a1bbe5815d8da7f2c3ed2d11822c9299bea"
       },
       "pdf": "read/ten-red-hens/ten-red-hens.pdf",
-      "pdf_sha256": "8a4377fb4622aa074cf83e8547bf7ad31f463266501c36736d9632d2eca82c81"
+      "pdf_sha256": "9cb3d41371109307998da39f0a40fd955bb060c2049e6feca667a93956173746"
+    },
+    {
+      "slug": "the-angel-on-the-small-tree",
+      "source_id": "web-christmas-the-angel-on-the-small-tree",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/cover.png": "823adbcf5df781967a0e1f06f316b186d8d57f47204cd2e0138b7a087678142b",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p01.png": "b088cecdda9159659298f5a220c8b4f14c64adf3f4e14899cf217ae91f2c6ca1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p02.png": "182b588f10f76bf95adf5c4dd17c702af05365f9af99ab78aabfb28460ab6d20",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p03.png": "b09d537bcff7e6b706816067db048b9a53c9ca1f54d1a09f6a94bd3f6212fa57",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p04.png": "a3c357ab09b9dfa225f3d7e12b5f93adc3e398572f972948eab13014855fc332",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p05.png": "45134130c7dd6c54faa1feec8b704eb83b3f5ac166643b8b0537a53e7f6666c7",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p06.png": "eb373204c79eb3492b051882e7d6614f6520539853f8a40b86f6f45a7770600a",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p07.png": "34d494374494f762638dc0a1e30461c1a69c7627dad55223107535a1dad8ba67",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p08.png": "e52e4bbc7a727b150195ac377555e6239f946e08ec9880bac6e58ae06c2a8d17",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p09.png": "b293600f1a7415c1f5cefcc42aa813fd3b13601cc2f08efd5c702c648750c571",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p10.png": "89dd2d8eaf240a2b6b93a97714ec1c76eb23eba7f044930e3174c501b9d1ab0c",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p11.png": "0a3d1281670f6e592b959a43ac1aca456de3fe2a1f463119d0e41a7a951020cd",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p12.png": "336455c258cc931a48545852b0498f3e7eb9f849f7b0e85f35842e78098d0573",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p13.png": "5fe0f8f75c532a3b4efe547ab78039d64a4dade268b6469570b891be5561be12",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p14.png": "6c08456d2a7b11bf06d5cd828d078b09a355d798de5ebdcb1429c7c6995fe397",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p15.png": "d2bc7907c1a7127e889be4ec8a58be66e62c8abc493fea380b763fbea1ccd3a7",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p16.png": "b1582523cfc51dd996e4028a40c31bd5f49e00c7a3b888cd87b64914492efac0",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p17.png": "84b4b56e292e0fc448ff8b1cc2f2523aa30d5d9b59cb8b139bdc5cc0cbb6a6db",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p18.png": "9f25f58271d5d5503483e72d60efde1eb04e8c9eb8485bfbdfadcf59a81ff7f1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p19.png": "361fe44e920876fe2dc85534a1e512f5391007f5aa7634eda33086dacb931da1",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p20.png": "4906d5a5b89426878364ef565985ac5ee127fe2dad657be53fe1f831de22b1ea",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p21.png": "1fc65d8e9d1fcaaecf3f9993e49ee1580fc966f297a6ce5b77ec76b690a0f753",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p22.png": "45966c25edbefe5f7b20bedb78980af2c0a3713bb31f2860d33fa4f67f96b164",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p23.png": "2f2c978100064c200fbd8e056335de92f3a0d35f4960f21bf6e3d2f24620c23a",
+        "../docs/reads-events-bookshelf/christmas/the-angel-on-the-small-tree/p24.png": "8c0675dcb004dbb6aeca263d36c6369c4c79dc622df250b6bb12ebdf1589eff5"
+      },
+      "text": [
+        "On the first Saturday in December, Ted-E-Bear carried a small tree into his sitting room. It stood in a red pot by the window, no taller than Ted's shoulder. \"It's perfect,\" said Honey-Beats. \"It's tiny,\" said Candy-Nut. \"It's both,\" said Ted.",
+        "Ted brought down the old decorations box and blew the dust off the lid. On top was a photograph in a wooden frame. It showed a small tree, a very small Ted, and his gran. And on the very top of the tree, standing up straight, was a fabric angel.",
+        "Under the photograph, wrapped in tissue paper, was the angel herself. She had a cream dress, a gold string halo and two felt wings. One wing was big and puffy. The other wing was small and flat. \"Her wings don't match,\" said Candy-Nut. \"Gran made them,\" said Ted. \"She made them in a hurry.\"",
+        "\"Angel first!\" said Honey-Beats. \"Like in the photo!\" \"Decorations first!\" said Candy-Nut. She had made twelve acorns out of salt dough and painted every one. \"The angel goes on last. Everybody knows that.\" They both looked at Ted. \"The tree doesn't mind,\" said Ted. \"Shall we start with the angel and see?\"",
+        "Ted lifted Honey-Beats up high, so she could reach the top branch. \"Up you go, Angel!\" said Honey-Beats, and she slipped the angel's loop over the tip of the tree. Ted put Honey-Beats down. They all stood back to look.",
+        "The angel had turned round to face the wall. \"She's shy,\" said Candy-Nut.",
+        "Ted lifted Candy-Nut up this time. Candy-Nut turned the angel round to face the room. \"Up you go, Angel!\" They stood back. The angel slowly tipped forward until she was looking at the floor. \"She's lost something,\" said Honey-Beats.",
+        "While Ted fetched the lights, Candy-Nut hung her first salt-dough acorn. Honey-Beats hung the second one. Then the third. They hung all twelve, one each, taking turns.",
+        "Under the tree there was one present already. It was wrapped in green paper with a red bow. It had a very funny shape. A round, flat part. And two long, thin bumps sticking out of the top. \"What do you think it is?\" whispered Candy-Nut.",
+        "\"A frying pan,\" said Honey-Beats, \"and two spoons.\" \"A snowman's hat,\" said Candy-Nut, \"and his arms.\" \"A lollipop with legs!\" \"A pancake with chopsticks!\" They laughed so much that Candy-Nut fell over. \"Christmas morning,\" said Ted, from the doorway, with the lights.",
+        "They tried the angel one more time. Honey-Beats held her very straight, and Ted lifted her very slowly. \"Up you go, Angel!\" The angel leaned... and leaned... and leaned all the way over to one side, until she was looking straight down at the present. \"She's peeking!\" said Candy-Nut.",
+        "Honey-Beats crossed her arms. \"She's supposed to stand up straight. Like in the photo.\" Ted sat down on the rug. \"Let's work out why she leans. Then we can decide what to do about it.\"",
+        "Candy-Nut held the angel up by her loop, in the air, all by herself. The angel swung, and tipped over toward her big puffy wing. \"It's the wing!\" said Candy-Nut. \"The big one's heavier. It pulls her over.\"",
+        "\"We could make the big wing smaller,\" said Honey-Beats. Ted looked at the wing his gran had sewn. \"I'd like to keep it, if we can.\" Honey-Beats thought. She tapped her drumsticks together, the way she did when she was thinking. Tap, tap, tap.",
+        "\"Then let's make the small wing heavier!\" said Honey-Beats. They looked in the decorations box for something small and a little bit heavy. A button? Too light. A conker? Too lumpy. A pine cone? Too big.",
+        "At the very bottom of the box, Candy-Nut found a little brass bell on a red thread. She tied it to the small wing. Very carefully. Double knot. Candy-Nut held the angel up by her loop again. The angel hung perfectly straight. And when she moved, she went jingle.",
+        "Ted lifted them both up together this time, one under each arm. \"Up you go, Angel!\" they said. The angel stood on top of the tree, straight and tall, with her halo on and her bell ringing softly.",
+        "\"Now she looks like the photo,\" said Honey-Beats. She picked up the photograph to check. Then she looked closer. Then she held it right up to her nose. \"Ted,\" she said. \"In the photo... she's leaning.\"",
+        "Ted put on his reading glasses. He looked. In the photograph, on the top of Gran's little tree, the angel was leaning over to one side. Not very much. Just a little. Ted laughed. \"I'd forgotten. Gran always said, 'She leans toward the best bit.'\"",
+        "\"What's the best bit?\" asked Candy-Nut. \"Gran never said,\" said Ted. \"We used to try to guess.\" Honey-Beats looked up at the angel, standing straight with her little bell. \"Can we take the bell off?\" she said. \"Just to see?\"",
+        "So Candy-Nut untied the double knot, and Ted lifted Honey-Beats up one last time. \"Up you go, Angel!\" They stood back. They watched. The angel leaned slowly over, and stopped.",
+        "She was pointing straight at the funny-shaped present. \"She thinks the present is the best bit!\" said Candy-Nut. \"She might be right,\" said Honey-Beats.",
+        "Ted switched on the lights. The little tree glowed, with twelve salt-dough acorns and one leaning angel. Candy-Nut tied the brass bell to a low branch, where everybody could reach it.",
+        "Honey-Beats gave the bell a tap with her drumstick. Jingle. \"Ted,\" she said. \"Is it a drum?\" Ted smiled, and said nothing at all, which is what grown-ups say when the answer is \"Christmas morning\"."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-angel-on-the-small-tree/pages/p01.jpg": "6358070ca04ee40f6b81bcf4eb89f7c59fb3d8e73e01ef3980e959520274076a",
+        "read/the-angel-on-the-small-tree/pages/p02.jpg": "cfae4b525fc4a63db5b5a18af01756fa3b3041f0ba2d7e9f25355e91e43448e0",
+        "read/the-angel-on-the-small-tree/pages/p03.jpg": "76cdc7621556d470eb75c7e615aa73801846205cd9c8376d5c5c880184a9ecb6",
+        "read/the-angel-on-the-small-tree/pages/p04.jpg": "2fc41b4bfa1d98856fa0e6248121e9d4ec6a6c9c56342f70a31206d18de3cf8d",
+        "read/the-angel-on-the-small-tree/pages/p05.jpg": "0a1fcfdca4c0cc51d1cbfe1257b3414910c921502dde6d8ecb2f05bb95f19b7d",
+        "read/the-angel-on-the-small-tree/pages/p06.jpg": "412420a7c5b7595f35a006a11f331ab2be4290dc0d2da49dc4916dc1f4fbbc22",
+        "read/the-angel-on-the-small-tree/pages/p07.jpg": "735d37dbd674b3d1bec3a4f07d9f57dc6eb7ff819a5aaf1c20854ae99e915f79",
+        "read/the-angel-on-the-small-tree/pages/p08.jpg": "8de8932eb8b0d195ac2a854f69f568f2e579fc6c514c3a9aff2bdc4f4b4dfe41",
+        "read/the-angel-on-the-small-tree/pages/p09.jpg": "5f9efd124ad2c04d9724ff23facf4de2bdb58cc143eac647cea6ed1f3257d3f2",
+        "read/the-angel-on-the-small-tree/pages/p10.jpg": "933b0032d2583d27b79521746b7149bdc620224fee6475541445bb56811fc964",
+        "read/the-angel-on-the-small-tree/pages/p11.jpg": "55175cce415771fd3eb41f13af933fa08180f53a95e966a0310890c42f4d0b01",
+        "read/the-angel-on-the-small-tree/pages/p12.jpg": "fbed4026590a474baa00696ef86e1c0657621085fabe354f68c3b4f2bc6c6109",
+        "read/the-angel-on-the-small-tree/pages/p13.jpg": "915d43b0433974031d1f8151e73014edc9a358ccc627a7b836a57e4fd488e60f",
+        "read/the-angel-on-the-small-tree/pages/p14.jpg": "2719510fc9c56d40af6a4ba80fdcd2b45b2a76432702a4cb50d3b809d509025e",
+        "read/the-angel-on-the-small-tree/pages/p15.jpg": "2a5114b9cfcedad63a7072377af4f13fb6e52e47bc68dd67e78d182ca01f076d",
+        "read/the-angel-on-the-small-tree/pages/p16.jpg": "0d1f908dbe34c9468c432689fa345bffeb907d93bab0d5c15185557a327f6220",
+        "read/the-angel-on-the-small-tree/pages/p17.jpg": "786bafeb59e13ebded6309a760318f3cfbd9f9c551c6e05a01ce64de761030e3",
+        "read/the-angel-on-the-small-tree/pages/p18.jpg": "aa84b59108cc12b04b619a76272aa1b3d85c04a19efdddbe5a88258fa94041ad",
+        "read/the-angel-on-the-small-tree/pages/p19.jpg": "eaa5a3575a0311a3c1054979ebb6ee32027e3149a8758c60b38dbd442f5771ea",
+        "read/the-angel-on-the-small-tree/pages/p20.jpg": "d3c4835b3b0d955d10511806ede2f2bdc875507cef6f6d2008771bdcc0757411",
+        "read/the-angel-on-the-small-tree/pages/p21.jpg": "25460c93f119b37c0ee2fae5ed746bd10a2d2b0dfe9340ebd65ef2ab2f693cbd",
+        "read/the-angel-on-the-small-tree/pages/p22.jpg": "07360030cc1e130a179a52207fe78686330326f59df9e79d81b3d42d1612c390",
+        "read/the-angel-on-the-small-tree/pages/p23.jpg": "255b3efa3ef77cb740751ca97a50c31d9d156768e5332c9b19bf1955b62184fa",
+        "read/the-angel-on-the-small-tree/pages/p24.jpg": "367753478991c26757c603c079f2ba5dd2e079dac3815a6a4194a02ce709baf6"
+      },
+      "pdf": "read/the-angel-on-the-small-tree/the-angel-on-the-small-tree.pdf",
+      "pdf_sha256": "071aa6542a9b4485e41084dbac6df5ecae4d15fdf1fc7107f9fa7e58b808d0d2",
+      "cover_jpeg_sha256": "ff73dd0f1d2f0377f9d1cfb9bc06a1a4aa9efa29e4b85158c9ee73faf69a2bd2"
     },
     {
       "slug": "the-cat-and-the-rat",
@@ -6016,7 +6630,263 @@
         "read/the-cat-and-the-rat/pages/the-cat-and-the-rat-page-8.jpg": "e30e1cdc2e11101bc618bec3b566038e6767b7e3af21f4d439532d58ef3f4238"
       },
       "pdf": "read/the-cat-and-the-rat/the-cat-and-the-rat.pdf",
-      "pdf_sha256": "5f18124cd94e3ad158883e8c09ee73f5e708f4579bcf5e646a1634f7a75790d9"
+      "pdf_sha256": "3d00dbdd95dab6a01e569e4f99888f91131d22142c9a50822ff8ee8d1c712840"
+    },
+    {
+      "slug": "the-great-christmas-un-robbery",
+      "source_id": "web-christmas-the-great-christmas-un-robbery",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/cover.png": "a283ad1cabd94027ffa38cea8ac566dbf93b485fed26bdbde691f7a01f8581f8",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p01.png": "641339505d0cdef88c78576e52337080e91a881c062d8166200b4cb40fd9cd29",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p02.png": "40f193253047bb9ff3e68219a4d56ed982fd3fb48de9044c14b9e9b9827e8357",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p03.png": "983940cd7d4cae8bc898162a3db680581b338742527bc0d9911a035c1f8e475f",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p04.png": "6bfaa0da054bc9486b59bee612b438eccd237ba6f77ba64339e89803239ef0b9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p05.png": "f9d2b6f1b75f97df38ff51f19813d274c0096dcadb5de98ecb58fb826232aaf9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p06.png": "fdf832460c95e3b8bac5d925a7fcd09888dea0e7d569ed4dde9a08dbfa680ac6",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p07.png": "19c9d665e5190fea1862caa57034ac9afd98dc04eca4111c8dbe3eb323b01bc9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p08.png": "076b8c275544ae9ab188e044dc54471ed4fd563af438108bfb8f399a6fa4b43a",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p09.png": "a8a07a20c49c6a4e8a77b93d576ed52004b20852c10c57355a1344baf0a40f88",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p10.png": "476bf0a79982362a762a972d4e45fecd5c39c2070e70822551970688ad741b82",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p11.png": "0998c3788d72e29093df1310d977b8d457f7ef9da217706edf24dda4daf0240b",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p12.png": "48f3d51746ad60d09ebe67e4852d1ed54adeae46339a4271cd79df80eb090c18",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p13.png": "dd6a607e2c3c47614af8d844a3963e33b447feb34da0b14b6b9a0f416f0a0c3e",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p14.png": "c325909d50c469cd2add5aecff631a3fa4c778e298ac24c3b5bc6a831d52c5c3",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p15.png": "9a7a5b419a7b1270c8b7a0860cd71a45d5f7417921084783f47173fa3a668b40",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p16.png": "7f9a30695840407923833fe2fde400f95044aa88ca024ae13a1760d4a205e913",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p17.png": "fed9c7d531d1dca20e22510025cc0268cc10e6baa5a0c078a19a5c23aa899929",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p18.png": "aaf73d815690e3a3ef9a5628f8361c9996fe1e653e5682868e08260bf54fdbe9",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p19.png": "f0d8cd78af8e2454389545e60aadf9718c9338e7761cc84d1284f38708647869",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p20.png": "06f50ef5505ef36bedbe2a3c475bef1724b315cf29a245e7cffd5140846ce799",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p21.png": "69548cbc45684a4aea10321809d828a25900209c5824b189715370eb771ace0c",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p22.png": "fa2f3a3afada064575afdd7479aeec4fa4c13acaa9c83fddc57ca569b8d27427",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p23.png": "049244b38d04ce0a8ebb12c37dd7429b83f190fba3672631d255d15ea35c3077",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p24.png": "9803bea459f0b34d0da9da89b7f0b0b025cdcef73255ae1df3c19969196862ff",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p25.png": "3d341adaed65531aac06c145d10402735cd5641c7dc0667f924f6d39d29bc613",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p26.png": "21fde236cd800ff15fff949303fd2fa1ee15c99e216229b05af1dc05fa2502f6",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p27.png": "a41293869857c60c2b7189d9869a8a3670e79b4ed741912c17ec0bc902f44cbf",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p28.png": "dede006b60bc0e4ff20d79c9243f01cc467068da30cec82ba24bd442acbfa042",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p29.png": "2aa7508af39844d3262d1678601efa47f94bca5f09c401f628db928c8529148c",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p30.png": "b0a4149321e2d7f06f921be093e601f449d7dfae6885ab61233906462c715345",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p31.png": "2c31c5e4260ef1ad4f29ff9c5a5c7a9045edb7cd2c0e2f6b32aa75db4232e0e7",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p32.png": "636e9f4c2bab138386ce4bd0dc98510aefdd8e5b88209e723bf6789fd399f6c0",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p33.png": "2a73eae91e82d7f8bb9fa62f087cfd80685fde1338c503cd810c2a2841ffd96b",
+        "../docs/reads-events-bookshelf/christmas/the-great-christmas-un-robbery/p34.png": "589a4f8a6c2eeec291d2d9975b58303d96815292e936dce30c4b1f6a558ca1c6"
+      },
+      "text": [
+        "Chapter One: The Gap Booklava lived in the library, and so she knew its secrets. She knew which stair creaked, which lamp flickered, and which dictionary was best for sleeping in. She knew that every morning, before anybody came, Professor Hooten dusted every single shelf. And she knew that on the oldest shelf, the First Shelf, right behind his armchair, there was a gap.",
+        "It was a narrow gap, just wide enough for one thin book. And every morning, Professor Hooten dusted it, very carefully, as if something were already there. \"What goes in the gap?\" Booklava asked him one December morning. Hooten smiled. \"That space,\" he said, \"is for the book that hasn't been written yet.\" And he would not say another word about it.",
+        "Booklava told Foxy-Lox, because Foxy-Lox was the cleverest person she knew. Foxy-Lox had won the Hide-and-Seek-and-Solve Championship three years running. Foxy-Lox's eyes narrowed. Her tail swished. \"Then we write it,\" she said. \"A book about the village, by everybody in the village. And we put it in the gap for Christmas. Without him seeing.\"",
+        "\"You can't,\" said Booklava. \"Nobody does anything in that library without him seeing.\" \"Nobody,\" said Foxy-Lox, \"has ever tried with a crew.\"",
+        "Booklava counted the problems on her wingtips. \"One. He can turn his head almost all the way round. Two. He can read in the pitch dark, so turning the lights off is no use. Three. He can hear a page turn from the other end of the library. Four. He never leaves, and he never naps. Not in the daytime. Not ever.\" Foxy-Lox grinned. \"Then it's the best puzzle I've ever had.\"",
+        "Chapter Two: The Crew The first person Foxy-Lox visited was Polly Roger. \"I hear you can copy any sound,\" said Foxy-Lox. Polly Roger fluffed her feathers. Then, without opening her beak very much, she made the sound of a kettle whistling, a door bell jingling, and Professor Hooten saying, \"Hmm, now, let me see.\" It was so like Hooten that Booklava turned round to look for him.",
+        "The second was Cynthia Book-Smart. \"I have no feet,\" said Cynthia, \"so I never make a floorboard creak. I can turn a page with my tongue without a whisper. And I know where every book in that library lives, because I have read every one of them.\" \"Even the dictionaries?\" said Booklava. \"Twice,\" said Cynthia.",
+        "The third was Ham-and-Cheese. \"Why me?\" he squeaked. He was sitting in a teacup. \"Because you're the smallest person in the village,\" said Foxy-Lox. \"And because you can hold perfectly still.\" Ham-and-Cheese held perfectly still to show her. It was very impressive.",
+        "Then came the book. Foxy-Lox went from door to door with a basket of blank pages. \"One page each,\" she said. \"Something good that happened this year. Write it or draw it. Don't tell Hooten.\" Nutmeg drew the tree that wouldn't come. Vincent painted his shadow show. Sub-Zero drew a snowball with a white flag on it. Corgi-on-the-Cob drew six cobs of corn, and then, after some thought, a seventh.",
+        "The pages kept coming. Shelly-Pop drew a pumpkin floating on a pond. Snack-Spector wrote about twelve pots of daffodils that hadn't come up yet. Biscuit-Bouncer drew a bathtub going extremely fast. When they had collected them all, Booklava stitched the pages together with red thread, and Cynthia painted the cover with the tip of her tail. It was a beautiful book. It had forty-seven pages. It was very, very fat.",
+        "Chapter Three: The Plan In Foxy-Lox's den, the crew gathered round a big map of the library, drawn by Cynthia from memory. Every shelf. Every lamp. Every floorboard. \"Here's Hooten's armchair,\" said Foxy-Lox, tapping it. \"And here, right behind it, is the First Shelf, and the gap.\"",
+        "\"Problem one,\" said Foxy-Lox. \"The head.\" She turned to Booklava. \"You're an owl. How far round can an owl's head go?\" \"A long way,\" said Booklava. \"But not all the way. There's always a bit right behind us that we can't see without turning our whole body.\" Foxy-Lox drew a narrow slice of pie on the map, behind Hooten's armchair. \"The Blind Spot,\" she said. \"And look what's in it.\" The First Shelf. \"He sits with his back to the very shelf we need,\" said Cynthia slowly. \"How careless of him.\"",
+        "\"Problem two: his ears.\" The library door had a brass bell above it that jingled whenever it opened. \"Ham-and-Cheese climbs inside the bell,\" said Foxy-Lox, \"and holds the clapper.\" The ninth floorboard from the door creaked like an old gate. \"Cynthia goes round it,\" said Foxy-Lox. \"She has no feet anyway.\" \"I take that as a compliment,\" said Cynthia.",
+        "\"Problem three. He never leaves and he never naps.\" Foxy-Lox held up one claw. \"But when he's thinking very hard about something, he hums. Booklava, you told me so.\" \"Like a radiator,\" said Booklava. \"Hmmmmm.\" \"And when he hums, does he hear anything else?\" Booklava thought about it. \"No. Nothing. Last week the twins knocked over a whole trolley of atlases while he was humming, and he didn't even blink.\" \"Then your job,\" said Foxy-Lox, \"is to ask him the hardest question in the world.\"",
+        "\"Problem four. He can see in the dark, so there's no point waiting for night.\" Foxy-Lox smiled her widest smile. \"So we'll do it in broad lamplight. On Lantern Evening, when the library's full of people and lanterns and singing. Polly and I will be carol singers, by the door. Loud ones.\"",
+        "She went through it, step by step, tapping the map. \"Polly and I sing at the door. Ham-and-Cheese holds the bell. Cynthia slides in with the book. Booklava asks the question. Hooten hums. Cynthia goes round the ninth board, into the Blind Spot, up the First Shelf, book in the gap, and out again. Thirty seconds.\" \"And if anything goes wrong?\" asked Ham-and-Cheese. \"Then,\" said Foxy-Lox, \"we make it up.\"",
+        "Chapter Four: The Rehearsal They practised in Foxy-Lox's den. Polly Roger played Professor Hooten, with a lampshade on her head for turning. The first time, Ham-and-Cheese sneezed inside the bell. (It was a spoon, for practice, but still.) The second time, Polly turned her lampshade head so far round that she fell off her chair. The third time, Cynthia tied herself in a knot behind the sofa, and it took twenty minutes to untie her.",
+        "\"It's not working,\" said Ham-and-Cheese. \"It's a rehearsal,\" said Foxy-Lox. \"It isn't supposed to work. It's supposed to go wrong here, so it doesn't go wrong there.\"",
+        "Booklava practised her question. \"It has to be so hard he hums for at least a minute,\" she said. She had been thinking about it all week. \"Professor, if there are so many stars that you can't count them, in every direction, for ever and ever, why is the sky dark at night? Why isn't it bright everywhere?\" Polly Roger, in the lampshade, went quiet. Then she said, in Hooten's voice, \"Hmm. Hmmmmm.\" \"That's the one,\" said Foxy-Lox.",
+        "The fourth time, nobody sneezed, nobody fell off a chair and nobody tied themselves in a knot. Twenty-eight seconds. \"Tomorrow,\" said Foxy-Lox.",
+        "Chapter Five: Lantern Evening On Lantern Evening, the library glowed. Lanterns hung from every bookcase. The paper tree glittered. The hall was full of friends drinking cocoa and singing. And in his armchair, with his back to the First Shelf, sat Professor Hooten, looking at everybody at once.",
+        "Foxy-Lox and Polly Roger stood by the door in scarves, singing as loudly as they could. Ham-and-Cheese was already inside the brass bell, both paws round the clapper. The door swung open. The bell did not ring. And through the gap, quiet as a ribbon, slid Cynthia Book-Smart, with the fat book wrapped in her coils.",
+        "Booklava hopped up onto the arm of Hooten's chair. \"Professor,\" she said. \"If there are so many stars that you can't count them, in every direction, for ever and ever, why is the sky dark at night?\" Hooten's eyes went very wide. \"Ah,\" he said. \"Now that is a very good question. Hmm.\" He closed his eyes. \"Hmmmmmmmm.\" The Hover-Hum had begun.",
+        "Cynthia slid round the ninth floorboard. She slid into the Blind Spot behind the armchair. She slid up the First Shelf, along the oldest books, to the gap. She lifted the fat book, all forty-seven pages of it, toward the gap. It did not fit. It was not even close.",
+        "By the door, Foxy-Lox saw Cynthia freeze. She saw the book. She saw the gap. She sang the next line louder, and made a tiny signal with her tail: Go. Ham-and-Cheese let go of the clapper (the door was shut now; the bell was safe) and dropped to the floor. He ran along the skirting board, behind the armchair and up the First Shelf. Then, one by one, he began to push every single book on the shelf along. Just a whisker each. Very, very quietly.",
+        "The hum stopped. \"Booklava,\" said Professor Hooten, opening his eyes. \"I think I may have it. You see, the light from-\" His head began to turn.",
+        "From the direction of the library kitchen came the sound of a kettle, whistling, louder and louder, as if it were about to boil dry. Hooten's head swung the other way. \"My kettle?\" \"It's fine, Professor,\" said Booklava quickly. \"But you didn't finish! Why isn't the sky bright everywhere?\" \"Ah. Yes. Hmm.\" Hooten's eyes closed again. \"Hmmmmmm.\" By the door, Polly Roger stopped being a kettle and went back to being a carol singer.",
+        "Ham-and-Cheese pushed the last book along. The gap was a little wider now. Just wide enough. Cynthia slid the fat book in. It fitted. Snugly. As if it had always belonged there. She slid down, round the ninth board, and out through the door, and Ham-and-Cheese rode out on the end of her tail.",
+        "Outside, in the snow, under the lanterns, the crew could not stop grinning. \"Did he see?\" whispered Ham-and-Cheese. \"Nobody sees everything,\" said Foxy-Lox.",
+        "Chapter Six: Volume Two The next morning, the crew happened to visit the library. All five of them. At once. By chance. Professor Hooten was in his armchair, wearing his reading glasses, with the fat book open on his knees. He was wiping his eyes with the corner of his robe.",
+        "\"Listen to this,\" he said, and read them Corgi-on-the-Cob's page about six cobs of corn, and then a seventh. Then he read Shelly-Pop's, and Snack-Spector's, and Nutmeg's, and Biscuit-Bouncer's. \"Forty-seven pages,\" he said. \"Everybody in the village. It's the book I've been waiting for.\"",
+        "\"Of course,\" he added, \"I saw you.\" The crew went very still. \"I can see in the dark, so I can certainly see in lamplight. And Polly, you do my kettle better than my kettle does.\" He looked at Foxy-Lox over his glasses. \"As for the Blind Spot... why do you think I put the First Shelf behind my chair? Every library needs one place where people can leave something without being watched.\"",
+        "\"So you knew,\" said Foxy-Lox. \"All of it.\" \"Nearly all of it,\" said Hooten. \"There's one thing I didn't see.\" His head turned slowly along the First Shelf. \"Who moved every single book on this shelf exactly one whisker to the left?\" Ham-and-Cheese put up a very small paw. Professor Hooten bowed to him, deeply, the way he bowed to nobody. \"Then you,\" he said, \"are the best of the lot.\"",
+        "He reached into his robe and brought out a new book, thin and empty, with a plain cover. \"This one is for next year,\" he said. \"There's room for it next to the first one. Volume Two.\" Booklava took it. Then she remembered. \"Professor, you never finished. Why is the sky dark at night?\" \"Because the light from most of the stars hasn't got here yet,\" said Hooten. \"It's still on its way.\" He looked at the empty book in her wings, and smiled. \"Like most of the best stories.\""
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-great-christmas-un-robbery/pages/p01.jpg": "92d96a12a3abdda24ebfb04fbcc4ac9d574cc31c2cf902a67137aa7f192d1e22",
+        "read/the-great-christmas-un-robbery/pages/p02.jpg": "493fb0e62e6eda803c2dcd28dd9be0dde453f5e4818e2f405c2716a9d9ffe9bf",
+        "read/the-great-christmas-un-robbery/pages/p03.jpg": "8abc99427c094e744e1408f13d50bc4ff9530118def7f4edf2896f61017d69a8",
+        "read/the-great-christmas-un-robbery/pages/p04.jpg": "7fe998ab91d97ddeff7322c324b0c4af4acf4caa4e43be63e3c52113fe73b873",
+        "read/the-great-christmas-un-robbery/pages/p05.jpg": "97a3868c453e639e1511be5ee22c1f38638965e37ac254dadd8e743e5e597477",
+        "read/the-great-christmas-un-robbery/pages/p06.jpg": "797a85418c8ff0935bd9d7bd074a6f93163bedd1ccf3d5798d03915319a44823",
+        "read/the-great-christmas-un-robbery/pages/p07.jpg": "86ffd0cbaa704f08620d64d01fcf827b2afb51ece9c253b8fca0ab8e42e731f0",
+        "read/the-great-christmas-un-robbery/pages/p08.jpg": "3d8985a10f22df9f6290eb31fcbb69a7ca9a3142f1f5d5c32f05df2b58dcebc9",
+        "read/the-great-christmas-un-robbery/pages/p09.jpg": "78656b97768d90d99b489e9f7fe80319993bdb78c276bbb5278a730cff843a8a",
+        "read/the-great-christmas-un-robbery/pages/p10.jpg": "ee678f3f9e911e4c7705a6d573e13e0ee11fc76dab69bca7ca42d1271442adc1",
+        "read/the-great-christmas-un-robbery/pages/p11.jpg": "d917902365794522aa82a9d948df7694ba330c52e0444e9241e4598027b6025b",
+        "read/the-great-christmas-un-robbery/pages/p12.jpg": "b46453f7b23bd673160e7d6288aca32380aaaa5decad923126568fb6b4d20d64",
+        "read/the-great-christmas-un-robbery/pages/p13.jpg": "dc7a8ac871dbd8cec86a85723108b6c79f31ef8e5bd5a594480c317521741c50",
+        "read/the-great-christmas-un-robbery/pages/p14.jpg": "3a4cde29073c23422e385d23e16ceae9f0d123f06846febf666cf73527512306",
+        "read/the-great-christmas-un-robbery/pages/p15.jpg": "1ce8b3684b718b0224560cfe9cf9224919180b19b121fde983c65c2b6f668bbb",
+        "read/the-great-christmas-un-robbery/pages/p16.jpg": "be2252786e7abfa8d850e9b7b7bf5d2c3d7a34d17f78c8b8140ff22554697c28",
+        "read/the-great-christmas-un-robbery/pages/p17.jpg": "7f180a3f3babded0dda16adfa8766b22d687bf7f134b353359da88302be31a29",
+        "read/the-great-christmas-un-robbery/pages/p18.jpg": "8b95664ffc695d13ac608396540ef64f3761ad14d4924798d560476bf0787ead",
+        "read/the-great-christmas-un-robbery/pages/p19.jpg": "ff64dc5d7f9426278d5a7fb4f1b5b36b7dd5298c6245eee30f4fbe8f055a0b39",
+        "read/the-great-christmas-un-robbery/pages/p20.jpg": "230bc60094d496a5d52daf89e0e94b25406e0097e50c567463ffcb88eb2fa6d6",
+        "read/the-great-christmas-un-robbery/pages/p21.jpg": "eafad2d09dfc1cc6b67daab1b33b356fb7fd02ea1bd353cfd66456106d99a5ad",
+        "read/the-great-christmas-un-robbery/pages/p22.jpg": "e7eb05ab62c86e442ad5a685607fdc9129ea879792061a7a950beb3752c593af",
+        "read/the-great-christmas-un-robbery/pages/p23.jpg": "1eeb981dcaec269001994321f1f6d22d7f88044fc912f5fa8c3c837c91967523",
+        "read/the-great-christmas-un-robbery/pages/p24.jpg": "e0aaec73aa712ed2f9c917cb6f3a728304ac20deec3717791e0fd4984891bf3c",
+        "read/the-great-christmas-un-robbery/pages/p25.jpg": "74deef9fc929dc3e67a04dfd079089c249f109a5fa9d52969fb98cb0eda86503",
+        "read/the-great-christmas-un-robbery/pages/p26.jpg": "4d88f5c44979538f65f3731a5b54e27f2ead88468239eb45d39ed034a1f13b6f",
+        "read/the-great-christmas-un-robbery/pages/p27.jpg": "4ee2d5778f09c8dbf85605da2826a826e4125197efee712bec79461a29e68877",
+        "read/the-great-christmas-un-robbery/pages/p28.jpg": "0f1df78415de582d2b14c77edf395ac3335fd4293d836fc1db1d0ad3a93c8a73",
+        "read/the-great-christmas-un-robbery/pages/p29.jpg": "ff2a244ddbb008d5c27d52d92c1329b5519c4e4c3b9f42cb3306384583ef0d11",
+        "read/the-great-christmas-un-robbery/pages/p30.jpg": "ec4b5dfa8c0512d5a0c528301e31febc3525d86c179572264ff4b9f3959aafff",
+        "read/the-great-christmas-un-robbery/pages/p31.jpg": "7664100200d80fa8148a870b693347c105fe81a9c29ec30725a43440801c00db",
+        "read/the-great-christmas-un-robbery/pages/p32.jpg": "6754f0907c80c98f2cc8ec5338d112cd067c102ee7c3ec090ad4a82dee0cf54c",
+        "read/the-great-christmas-un-robbery/pages/p33.jpg": "95192c5f5f83d693d79028d157f413184515a22cccc0b8f4274a8468d3aed5b6",
+        "read/the-great-christmas-un-robbery/pages/p34.jpg": "78da8d2604e9a7d3095d2a095ff2f3181e956be03460d50e5a046fbc2cd82dc8"
+      },
+      "pdf": "read/the-great-christmas-un-robbery/the-great-christmas-un-robbery.pdf",
+      "pdf_sha256": "8a5c15d265959183f1cf3b0d2451974a825f038afbfbb1395f4fd57accc5afc8",
+      "cover_jpeg_sha256": "6f8c525979fd7d04b102060d659a87437fde126dfa7a7defb5cd12d7df2766e1"
     },
     {
       "slug": "the-last-parcel-under-the-tree",
@@ -6215,7 +7085,407 @@
         "read/the-last-parcel-under-the-tree/pages/p26.jpg": "8e88186e13db377c490f20296a340fcbb202a53fa7804e030479b9e76775554d"
       },
       "pdf": "read/the-last-parcel-under-the-tree/the-last-parcel-under-the-tree.pdf",
-      "pdf_sha256": "ea7f676a1b7f701bcca4205fd3899e6c48ab72a4ee2238fa01dfb88f6bc3a044"
+      "pdf_sha256": "72009022f307e383b9055ef7333cb289ae0032c0f88c52e9274f944bcfaaee96"
+    },
+    {
+      "slug": "the-star-that-fell-on-the-longest-night",
+      "source_id": "web-christmas-the-star-that-fell-on-the-longest-night",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/cover.png": "188dea1152f9d8c13c2db48d14a53d7dbda83ecadd13962bfd0df2a7be3b8b96",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p01.png": "19495a1a52b1d30280bae373048253b63e45d6dee71712e8528088e5770b83b4",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p02.png": "dc181a75386158635d16818207a7cc17b66bce4e30fc1b7e31e6d939beb8e166",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p03.png": "1f8531332907130ee213d9206f25064da9d7ea6da1f202e2254632adef8c12da",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p04.png": "27b66193665e27d5debe088fc0635ab70d0e1e12fdc3a62c0e5dd5d755d025a2",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p05.png": "f9dc528c19bc974caf64cd6a953fc6f838bf1198baea4b85be357eb0fcc9a1c1",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p06.png": "08321d034b8fad1108d9060306585e81b9db56cab4f204330845441aa41abb1f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p07.png": "c12504bed2cd80b159f70071bddf286c2fb090e9334967df3ae5069970ef97e2",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p08.png": "ec0f1d2f2ca55e2d9257a4eac6fed1aa7963b1c5a7d7f40b8703437e21467c26",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p09.png": "44b9b0c25b3c4dbd8e51435109227645d57dedfe65a1ea987c330fe8f49b3f2f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p10.png": "951549b22c263595831e451259a9e9d14874228031b357e4a4d796223b340b03",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p11.png": "cce5dff12d67f730b0ecd2db0d3e993ff3b5f3e7883b20c29670df16ae51aa29",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p12.png": "f3d40d77516033135dec22b28ca5a49e171ae6210d143469ba4ac4878432141f",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p13.png": "4f9064425958e4511464f5ddd6a5d80cf9807371edb53dcf2a8da605c81b3306",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p14.png": "db8bb72ee787123f82d702de469c422fb37c414fedbf6b112c5eda1c5c68674e",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p15.png": "9db40d856f183d8fee09c8ac079eea2059988a7f4fe6bde2fb21f17b27e1548d",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p16.png": "f5e461719efc5cc4be5935ee6b596fa6627d8bcad2819c9ace8c365299f29fc3",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p17.png": "ecc814d3f87d2ba21c9738de66a1f8f89c810c68bbf2d88ed560a9aaf9157910",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p18.png": "09911a1357d3cae0de47479f5530107bfe466d6b6faf8180e668e956369f006e",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p19.png": "7869606d20d677b8627d1a693d5f12c7abe50a635e44e23cdf3ebe9bd9ede3a7",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p20.png": "b5c029035fc2d0625557e8128c92125e9f9a644a1532d4f62c12702a1f19e73c",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p21.png": "b41f3485c2535dd600dde79e62593341315e6d0264d541d392887269315640da",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p22.png": "f8ef090a82bf586c9f33d18a6990536e043e2c747302de8bb21aaaddd00293ed",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p23.png": "a7579ab89fd31c43d87f70815ddcc1755275a706116f16c13d9427e989dc6030",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p24.png": "36a5234a735f08936783dc0e6f5dd70b1ac82e223358e15e2704f6a4e4211112",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p25.png": "dccd1d5788e260d6fe7c6e49aa90a2373a4749c6e2179191b10a4aebf5b13256",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p26.png": "c6b6387b1baea43cbdb7fa2becbe3d602725476c0c5bee54c30f0576eef23c2a",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p27.png": "9309d317fa99e37b7d69766404bdb4991b4f7cc1a25af3463b5dcb3380f440f4",
+        "../docs/reads-events-bookshelf/christmas/the-star-that-fell-on-the-longest-night/p28.png": "23dc146d7d00fb33e13099d2442f503ba2ec998951404e32d2aef907ec2506c0"
+      },
+      "text": [
+        "On the longest night of the year, the library was warm and the windows were black. Booklava, Cluck O'Clock and Luckybug sat on the rug by the paper tree. They had made a star out of gold paper for the top. It was a bit crumpled at one point. \"Why does the star go at the top?\" asked Luckybug. \"Why not the middle?\"",
+        "Professor Hooten put down his tea. \"Ah,\" he said. \"For that, you need a very old story. Older than the village. Older than the library.\" He took a thin blue book from the highest shelf. \"Shall I?\" \"Yes,\" said all three at once.",
+        "Hooten opened the book. The lamplight flickered, and outside the snow went on falling. \"Long ago,\" he read, \"before there was a village, or a library, or a single book, there was only the wood, and the snow, and the sky.\"",
+        "And on the longest night of the year, the sky was full of stars. The smallest star lived right at the very edge. From there she could see the wood below, white and silver and fast asleep. She wanted to see it better. So she leaned over, just a little. And then a little more.",
+        "She leaned too far. Down she fell, through the cold and the dark, past the cloud and the treetops and the branches, and landed in the snow at the foot of a young oak tree. Fsssss, went the snow.",
+        "The creatures of the wood came out to see what had fallen. Bear came, who was the strongest. Squirrel came, who was the best climber. Owl came, who was the best flier. Hare came, who was the quickest. And in a crack in the oak bark, a small grey Spider watched. Nobody noticed her. Nobody ever did.",
+        "The star lay in the snow, glowing, but already a little less bright. \"She's getting colder,\" said Hare. \"A star can't live down here.\" \"When the sun comes up,\" said Owl, \"she'll go out altogether.\" \"Then we'll put her back,\" said Bear. \"Before morning.\"",
+        "\"I'm the strongest,\" said Bear. \"I'll throw her home.\" He picked up the star in his big paws. He swung his arms back, once, twice, three times, and threw her as high as anything had ever been thrown.",
+        "The star went up, and up, and up... as high as the treetops. And then she came down again. Plop, into the snow. She was dimmer than before. And she was heavier, too. A bright star is as light as a feather. A fading star grows as heavy as a stone.",
+        "\"I'm the best climber,\" said Squirrel. \"I'll carry her home.\" She tucked the star under her chin and climbed the tallest pine on the hill, higher and higher, until the branches were thin as straws. But the very top twig was too thin to hold her. She stretched and stretched. The sky was still far away. Slowly she climbed down. The star was dimmer still.",
+        "\"I'm the best flier,\" said Owl. \"I'll fly her home.\" He held the star in his claws and flew up into the night, higher than the pine, higher than the clouds, until the air was thin and his wings ached. But the sky is always higher than wings. Owl glided down, tired out, and laid the star in the snow.",
+        "Now the star was no brighter than an ember in a dying fire. She was too heavy for one creature to lift at all. The creatures sat around her in the snow. \"The strongest couldn't do it,\" said Bear. \"The best climber couldn't do it,\" said Squirrel. \"The best flier couldn't do it,\" said Owl. Hare said nothing. She just watched the star grow dim.",
+        "\"Excuse me,\" said a tiny voice. They all looked round. There, on the oak bark, was the small grey Spider. \"I'm not strong,\" said Spider. \"I can't climb like Squirrel or fly like Owl. But I'm very small and very light. I can go where none of you can go. I can go right to the very top twig.\"",
+        "\"And then what?\" said Bear. \"Then,\" said Spider, \"I'll need all of you.\"",
+        "So Bear carried the star, heavy as a stone, up the hill to the tallest pine. Squirrel wove a little cradle out of moss. Owl pulled one soft feather from his chest to line it. Together they laid the star inside. And Hare, who was quickest, ran to the top of the hill to watch the moon.",
+        "Spider began to climb. Up the trunk she went, past the place where Bear could reach. Past the branch where Squirrel had stopped. Up, and up, where the twigs were as thin as whiskers. And all the way, behind her, she spun a single silver thread.",
+        "At the very top twig, Spider looped her thread over, tight and neat. Then she let herself down again on the other end, slowly, swinging in the starlight, all the way to the snow. Now the thread went up the tree, over the very top twig and back down, with both ends on the ground.",
+        "They tied the moss cradle to one end of the thread. \"That thread is thinner than a whisker,\" said Bear. \"It'll never hold.\" \"Spider silk is stronger than it looks,\" said Spider. \"So are spiders.\"",
+        "Hare came racing down the hill. \"The moon is almost over the pine! It's nearly the middle of the night!\" The middle of the longest night is the moment when the sky bends lowest to the ground. Everybody in the wood knew that. So they all took hold of the other end of the thread. Bear first. Then Squirrel. Then Hare. Then Owl, with his claws. And last of all, at the very end, Spider.",
+        "\"Together,\" said Spider. \"Pull!\" They pulled. The cradle lifted off the snow. Up it went, past the lowest branches. And as the star rose, she began to glow a little brighter.",
+        "The thread creaked. Bear's paws slipped in the snow. Squirrel dug in her claws. Owl beat his wings. \"Together,\" said Spider. \"Pull!\" Up went the star, past the middle of the tree, brighter and brighter, until it was hard to look at her.",
+        "At the very middle of the longest night, the star reached the very top of the tallest pine. And the sky, which had been so far away all night, bent down. Just a little. The way someone big bends down to pick up someone small.",
+        "The star let go of the cradle and went home. For one moment, the whole wood was as bright as a summer noon. Every snowflake shone. Every creature's shadow stretched across the hill. Then it was night again.",
+        "The creatures looked up. There she was, the smallest star, back at the very edge of the sky. She was shining brighter than she ever had before. And on the very top twig of the pine, one tiny spark stayed caught on Spider's thread until morning.",
+        "\"And that is why,\" the creatures told their children, and their children's children, \"on the longest night, we put a star on the very top of the tree. \"To remember that nobody could do it alone. And that the smallest of us went the highest.\"",
+        "Professor Hooten closed the thin blue book. Nobody said anything for a while. The paper tree rustled. The snow tapped at the window. \"Is it true?\" said Cluck O'Clock at last. \"Which part?\" said Hooten. \"The spider part.\"",
+        "Professor Hooten turned his head, almost all the way round, to look up at the dark corner of the ceiling. There, in her web, sat Spinnerella. She waved one leg. \"My great-great-great-great-great-grandmother,\" said Spinnerella, \"never stopped talking about it.\"",
+        "So Spinnerella let herself down on a silver thread, and Booklava, Cluck O'Clock and Luckybug held up the crumpled gold star together, and Spinnerella fixed it to the very top of the paper tree. Outside, on the longest night, one small star at the edge of the sky shone a little brighter than the rest."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/the-star-that-fell-on-the-longest-night/pages/p01.jpg": "16f9781445584198a9249e5e47c18b8fa54de651b7e6fcafa6f4c989ac865523",
+        "read/the-star-that-fell-on-the-longest-night/pages/p02.jpg": "bd02a8cf308292ba03de151764663c9265314cf5f16b5981c9d8c49806ab1a86",
+        "read/the-star-that-fell-on-the-longest-night/pages/p03.jpg": "8f623aeeac4f90dbdfe8207be05e387af6e87a0b132c478add6008c08f5c361a",
+        "read/the-star-that-fell-on-the-longest-night/pages/p04.jpg": "95eca6c06ebbdd851097d7d0d4af8d85fa6f641d67a98d348bcb95ef4fa3e45d",
+        "read/the-star-that-fell-on-the-longest-night/pages/p05.jpg": "ea50addc2a47f366e926ee026d9db90b14426f4df21732d1e13a634c3a454007",
+        "read/the-star-that-fell-on-the-longest-night/pages/p06.jpg": "9fa43dbfdaab5ca106b10a4fa4071bdbe506092046d80595cc15950fe54e2bb0",
+        "read/the-star-that-fell-on-the-longest-night/pages/p07.jpg": "65b6c7f4ab88600fa37caf4963aa2ab1719e20f969cddf023b8803087802afc9",
+        "read/the-star-that-fell-on-the-longest-night/pages/p08.jpg": "dde1dc80abff99742ff38ee3b84d51f633dce6217213aecefaf050dbe6653ca7",
+        "read/the-star-that-fell-on-the-longest-night/pages/p09.jpg": "764e4816c081b5f54268d6c56361a0e8dc1ca3473f573d9fc753be9b802e23fb",
+        "read/the-star-that-fell-on-the-longest-night/pages/p10.jpg": "81382afe8cd38bfbeb25eef6e20a251957f6d7a6ba99113f23c77170d62c9390",
+        "read/the-star-that-fell-on-the-longest-night/pages/p11.jpg": "d551c4e688987b7e339aeb08b2eef1cf14c81e640ff74d5305c0b45e667b0f6e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p12.jpg": "db24df2cc491a538d20514aaba89448ef7be2a2a3819579e9bdbbac407434030",
+        "read/the-star-that-fell-on-the-longest-night/pages/p13.jpg": "3bea67dfe2ee2f7f1f821b41c4dad0375c61b339777012888a28af5d8649db8a",
+        "read/the-star-that-fell-on-the-longest-night/pages/p14.jpg": "d1a208557684e904acc1f7d572c8fcf7390837dd9a9379831e9767bc9500b4b1",
+        "read/the-star-that-fell-on-the-longest-night/pages/p15.jpg": "92bec82d922149a62c52d6ea1684a512104948a5cce5de6ac4cfc2df2da98d0e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p16.jpg": "a5520436d98dce6018d9d5717bbbb046790be7f654a056abdbc0b1e5bdb939a0",
+        "read/the-star-that-fell-on-the-longest-night/pages/p17.jpg": "3d5de30fab25d1b82d25e7d18aee28f415ea61beb6ba6619b425b84dcaa9b05d",
+        "read/the-star-that-fell-on-the-longest-night/pages/p18.jpg": "5d67b1fe3ea30595194e8afe637a632fb9c5cba37fbce72ca3959f7d3dab140b",
+        "read/the-star-that-fell-on-the-longest-night/pages/p19.jpg": "6148da92162ae4cfcdbddc8ffc6b12f1a58de97a126c671cc23a41b85f8498b4",
+        "read/the-star-that-fell-on-the-longest-night/pages/p20.jpg": "04a7517aaca0d12921206999b3dfd826f8a6598d575a5dc54bba816077a83547",
+        "read/the-star-that-fell-on-the-longest-night/pages/p21.jpg": "203a8fbfefa820aeebc0dc08427122f7a42369e6608ffcd3b8b7f7916466f3bc",
+        "read/the-star-that-fell-on-the-longest-night/pages/p22.jpg": "9c3f4919bde725465ef98314907055f1a4bc36178acc4fbc7607f766fab9932f",
+        "read/the-star-that-fell-on-the-longest-night/pages/p23.jpg": "5f64b9e0d5247f96a43a0ccaa635f675a54b0edc7e0dec0a00f4271b31e6a943",
+        "read/the-star-that-fell-on-the-longest-night/pages/p24.jpg": "4e7722da04c9204a8df8c2c6677558b588133dd4bbb9ab6398f08a828d52376e",
+        "read/the-star-that-fell-on-the-longest-night/pages/p25.jpg": "35e1c0aaa394958e55f78157c3d7ab905b11082fe803cfeadf2234bf10bea497",
+        "read/the-star-that-fell-on-the-longest-night/pages/p26.jpg": "3e097f18a74625de3656babef0c9bc693fb3402e032d4c25344db22ff004ac12",
+        "read/the-star-that-fell-on-the-longest-night/pages/p27.jpg": "a89e764eddbee50e2371ea32a317618743be7388aaa49657e1d975214bf6d8a7",
+        "read/the-star-that-fell-on-the-longest-night/pages/p28.jpg": "ce78b6c715aaaacc53684e2a3bdf9abf4013fafc0d76216cbf0ab55828c6df9b"
+      },
+      "pdf": "read/the-star-that-fell-on-the-longest-night/the-star-that-fell-on-the-longest-night.pdf",
+      "pdf_sha256": "dcd6bf9b7c921d1f353e213e9562b76db6f2f54769732e0b3cf4988feb698d47",
+      "cover_jpeg_sha256": "63986d4d1605696a7c25d30c75da9f2940b5f40f0960e4510a464fd647991cec"
+    },
+    {
+      "slug": "twenty-four-letters-before-christmas",
+      "source_id": "web-christmas-twenty-four-letters-before-christmas",
+      "source_art": {
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/cover.png": "b04f71bd4243857b01608155c2ca35785f0460460650d352b0556638465af5a5",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p01.png": "01c2db1ecc33e928e4181e9975b54e391c23ee732d7dbc5454621c37267bd693",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p02.png": "7ee9874de839cf1f21a49f1c50401f37db4bc0bf82dfccb2129490d935123ecb",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p03.png": "a612447aec02ef546ccabe712858a2cdcdabceaf5e02f62bdf71d0066d3df9ea",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p04.png": "14c8c3f196523bccc5ff9f68fe207aedbc1b852cc1bd2057e8a3c231fcf3151a",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p05.png": "a5d24f3e208da66629196bda3f7b6d3d0a34f1610e4d02c8223d716d10003471",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p06.png": "532e7f9dc17aed8f4379c33590580822b84232a77d77f5e062659da54715a03d",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p07.png": "efbd23a15bc1a793cd56776690b0c0a7ccff83680ce3778b5b8556039e69d94f",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p08.png": "f088a22de796f35a95589a842e3a1eb1b9606f7c28a8b26ff65635785fca9e35",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p09.png": "4f96174e7a6e49545b353dea84316f5fd1d2da8b098cbee557bf9cc133a36cb7",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p10.png": "caf6d37afbf4b2453900039e09b0a5a7f33505d7d33579b6496a54aa645c5c61",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p11.png": "4e9a5e521207bbfffa901c03719c51668942e392a7d7335bcc237b0e5d3a6462",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p12.png": "22e39eab54c100e24adc90d57134505190156ca71d8b793e583562910e0182f8",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p13.png": "2517d33c068d99b2a9f7b2568b66f52348d59466d0d16516b6307f61e33b57f4",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p14.png": "b410ac653d7c08e89165d5fd22f55b4469a84c79259d43aeac76c9d8d3010837",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p15.png": "6e083e7e1d887bf7579e89b1af31385d1eb72bc6cd8f372293e558a4f4f681df",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p16.png": "7e68165691b33cfb0ebcd8a6d2968c46a1293c03c4d9298bbcdea099f37c0924",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p17.png": "54794f727bdfb851436b319ffbd595db292a54c982c08c9a2a7ae844b6c8e90c",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p18.png": "36f8337ce35bb9ab0d2709dc48f6b9766d272a53fde21c5d9310ca2b879eaba0",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p19.png": "9d5416dffd477a3b44b0e793317a8c49234dede84d29d12046eb20a4eea41d0e",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p20.png": "7ede17258b83079dc460114e72e37f4b5fcc02db38b010942a8d39be365099c9",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p21.png": "fe44fbfa0b702242cfd9b8f140fbeecbd7a1b1d769ae19bbfe09aa9ec1294c24",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p22.png": "2aebccb758fc5b3ce27ab63e77c32b57b96e660bf47e908906f2e9463a931aa9",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p23.png": "8b17e8e2d041bc7eb4d2581b6ecdcf4db32c3323eba84cd9bcc7b0c3e36b9885",
+        "../docs/reads-events-bookshelf/christmas/twenty-four-letters-before-christmas/p24.png": "7c52c8e6769d6f95e6bf5473e5efc8a8b9b51dab1f6c803b5d6371033c57edcf"
+      },
+      "text": [
+        "1 December At eight o'clock in the morning, Ted-E-Bear found a gold envelope on his doormat. It had no stamp. His name was on the front, in big, wobbly letters. Inside was a piece of shiny gold paper with zigzag edges, and a note. Piece 1. Keep me safe. Bring me to the Great Oak on Christmas Eve. \"Who sent this?\" said Ted.",
+        "2 December The next morning, Corgi-on-the-Cob got one too. He sniffed the gold envelope. He sniffed it again. \"Cocoa,\" he said. \"This letter smells of hot cocoa.\" Piece 2. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "3 December Panda-Cake opened his envelope at the Breakfast Bistro, over a plate of pancakes. Out fell a gold piece, a note, and one tiny yellow feather, as soft as fluff. Panda-Cake put the feather carefully in his apron pocket. \"A clue,\" he said.",
+        "4 December Nutmeg's envelope came while she was choosing a Christmas tree. She looked at the library clock. Eight o'clock exactly. \"Ted's came at eight,\" she said. \"Corgi's came at eight. Panda-Cake's came at eight. Somebody is very good at telling the time.\"",
+        "5 December Vincent Van Mouse held his gold piece up to the light. \"Look at these edges,\" he said. \"Zig, zag, zig, zag. Somebody cut this with zigzag scissors. The kind that are safe for small paws.\" Piece 5. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "6 December Sub-Zero's envelope came with the first snow. He put his gold piece in his cooler backpack, between two Chilly-Facts, to keep it safe and flat. \"Whoever you are,\" he called out into the snowflakes, \"I'm keeping it safe!\"",
+        "7 December Hop-Tart got piece 7. He hopped straight round to Sub-Zero's house to compare. They held their two gold pieces side by side. They wiggled them. Click. They fitted together. \"They're pieces of the same thing!\" said Hop-Tart. \"But what thing?\"",
+        "8 December Pork-ulele got piece 8, and wrote a song about it on his ukulele. Who sends the letters, gold and bright? Who comes at eight and leaves no name? Who'll be at the Great Oak, Christmas night? He wasn't sure about the ending. He kept playing anyway.",
+        "9 December Luckybug's gold piece was bigger than she was. She carried it home over her head, like a little golden sail, all the way across the green. Piece 9. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "10 December Fe-Line-Mignon read her note very slowly, the way she read poetry. \"Ted showed me his note,\" she said. \"The writing was round and wobbly. Mine is tall and wobbly. These letters were written by two different paws.\" Two senders. Taking turns.",
+        "11 December Dough Mino asked everybody to bring their pieces to the library. He laid them out in a long, neat row on the floor. Eleven pieces. Lots of them had a sharp point at one end. \"Points,\" said Dough Mino. \"Lots of points. What has lots of points?\"",
+        "12 December Shelly-Pop's envelope was waiting on the little jetty at the duck pond, held down with a pebble so it couldn't blow away. \"Whoever left this,\" said Shelly-Pop, \"is very careful.\" Piece 12. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "13 December Polly Roger's envelope came all the way to the harbour. \"Arrr,\" she said. \"A treasure map? No. A treasure piece!\" She tucked it under her eye patch for safekeeping, which was not a good idea, and then into her coat pocket, which was.",
+        "14 December Biscuit-Bouncer was so excited about piece 14 that he bounced three times round the garden before he opened it. Then he had to go and find it in the snow. Piece 14. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "15 December Tick-Tusk got piece 15. She took out her pocket watch. \"I've been watching the post box,\" she said. \"Every morning, just before eight o'clock, somebody small posts a gold envelope. Too quickly to see who.\"",
+        "16 December Snack-Spector got piece 16, and went straight to the post box with his magnifying glass. In the snow were two sets of tiny footprints, side by side. Three thin toes each. Like a small bird's. \"Two small birds,\" said Snack-Spector, \"who smell of cocoa, leave yellow fluff and are very good at telling the time.\"",
+        "17 December Professor Hooten opened his envelope in the library and read it twice. Snack-Spector told him all the clues. Professor Hooten turned his head almost all the way round, and smiled, and said nothing at all.",
+        "18 December Hen-Berry got piece 18 at her kitchen table. She read the note. She looked at the two empty cocoa mugs by the sink. She looked at the zigzag scissors on the windowsill. She smiled, just like Professor Hooten, and said nothing at all.",
+        "19 December Spinnerella's envelope was very big and Spinnerella was very small. So she spun a silver thread round her gold piece and hung it in the corner of her web, where it turned and glittered in the light. Piece 19. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "20 December Bark-B-Q's piece came on a frosty morning. He sniffed it, like Corgi had. \"Cocoa,\" he agreed. \"And a little bit of hay. Like a henhouse.\" He wagged. He was getting close.",
+        "21 December Honey-Beats got piece 21. She tapped the envelope with her drumsticks. Tap, tap. Tap, tap. \"Two paws,\" she said. \"Taking turns. Like a drum and a bell.\" Everybody in the village was guessing now.",
+        "22 December Foxy-Lox read her note and laughed. \"I know who it is,\" she said. \"Who?\" said everybody. \"I'm not telling,\" said Foxy-Lox. \"It's much more fun to find out.\"",
+        "23 December On the twenty-third, Belgian-Waffle went to the post box to collect the morning letters, the way he always did. There was only one gold envelope inside. And it had his own name on the front. \"For me?\" said Belgian-Waffle. Nobody ever sent him anything. Piece 23. Keep me safe. Bring me to the Great Oak on Christmas Eve.",
+        "24 December: Christmas Eve As the sun went down, everybody came to the Great Oak, holding their gold pieces. Dough Mino laid them out in the snow. Points. Edges. Corners. Click, click, click. It was a star, as big as Ted-E-Bear. But in the very middle, there was a hole. Out from behind the Great Oak came two small chicks, one holding a flask of cocoa and one holding a watch. \"It was us,\" said Coop-Accino. \"We cut a star into twenty-four pieces,\" said Cluck O'Clock, \"so everybody could bring a piece of it.\" \"But who has the middle?\" said Ted. The twins looked at each other. Then they looked straight out of the page, at you. \"You do,\" they said. Put your hand on the middle of the star. There. Now it's whole. And together, everybody lifted it up to the top of the Great Oak, where it shone over the whole village all Christmas night."
+      ],
+      "teaching": [
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        },
+        {
+          "sequence": null,
+          "observation": null
+        }
+      ],
+      "expected": [],
+      "quizzes": [],
+      "art": {
+        "read/twenty-four-letters-before-christmas/pages/p01.jpg": "828ae898a8580000ac7f7edb933dc4c4aa59b55e00ef586979068b28a4e6722b",
+        "read/twenty-four-letters-before-christmas/pages/p02.jpg": "6b9b1c8ad541aca9a25575618948b7cd13b31cf3835b24e87c2b416187352f80",
+        "read/twenty-four-letters-before-christmas/pages/p03.jpg": "36a67a41f64197619fc4b943fdcc2ec2b498515d7b95228d04d3bf3fc148d5b9",
+        "read/twenty-four-letters-before-christmas/pages/p04.jpg": "20297ec4a79f8f65fb4235f9d77cca7717a376e79ceb1a69b26419620db23b35",
+        "read/twenty-four-letters-before-christmas/pages/p05.jpg": "899923892762c0f7ba904143e39719c59fc685e8b40436ca16896937f0641aa6",
+        "read/twenty-four-letters-before-christmas/pages/p06.jpg": "b3bd72a4ef77f4b5c5217ed9a8677f53acc0ddc674e6cc151a8b382d38b4369c",
+        "read/twenty-four-letters-before-christmas/pages/p07.jpg": "d6d06d4a60df4b19df606d32f6d4cd28a945d9c703946eb0e2d456c5fd112b0a",
+        "read/twenty-four-letters-before-christmas/pages/p08.jpg": "fae7fc64d034a94831f0f0dd44ce78f7c2633eea324103695417ff2e9109334e",
+        "read/twenty-four-letters-before-christmas/pages/p09.jpg": "acb52582ee83ef92e23843f2fdbbfb591978c8061cc6e71f8f9581d04b5fe073",
+        "read/twenty-four-letters-before-christmas/pages/p10.jpg": "1265ad1f84a85a1ba696139a1a2670bc7939c6c5fb401e5bb88bde7722902418",
+        "read/twenty-four-letters-before-christmas/pages/p11.jpg": "8697481eb724ce27f5627c0fd4df2539ae62a99e1428bd0855d422090f9fb526",
+        "read/twenty-four-letters-before-christmas/pages/p12.jpg": "c3a9d8f9ae921620c40395e34be51d60a816e7850072bfe77e99d75371ed2dc5",
+        "read/twenty-four-letters-before-christmas/pages/p13.jpg": "3a74d1418e43420c1c0e92cf58562f23b911ee8a8056a8335619f6f48e5e3920",
+        "read/twenty-four-letters-before-christmas/pages/p14.jpg": "6e81f7fd35b6d0e9a95fb98a9ffc151f7073891f47a77b00c0bd4a0f12387707",
+        "read/twenty-four-letters-before-christmas/pages/p15.jpg": "50e3ef1d832954523e4038643066e2d9331daea190c1c02728467e861e65822b",
+        "read/twenty-four-letters-before-christmas/pages/p16.jpg": "0e74ec7949dfd9007e544ae3a75de5b51bffb7b77a2f6b117a270fd95b76c9dd",
+        "read/twenty-four-letters-before-christmas/pages/p17.jpg": "200f1f4e5dbf0f6cf44f386e220bf05df7dedf9888642f41a9000ec12e4cbe41",
+        "read/twenty-four-letters-before-christmas/pages/p18.jpg": "daca3f2ce41b66b07414c7f1b3e1439c6300467f179d189e56c9ba68313ddd23",
+        "read/twenty-four-letters-before-christmas/pages/p19.jpg": "8ea0d7aac071083f2ca383ea1a8107eb579549bba991b616cb5a895ad088bf6a",
+        "read/twenty-four-letters-before-christmas/pages/p20.jpg": "698ddbe6f547e2a5a179c304e956866b443c4f3995070bd7e58b4323d6bf992a",
+        "read/twenty-four-letters-before-christmas/pages/p21.jpg": "fc2f16007551f3df249f67f0ac63b2ce81bbdd113b8ad50f5967b076ef413b7f",
+        "read/twenty-four-letters-before-christmas/pages/p22.jpg": "45a441366c9b66f8905eadd3a31ecd1b795a1febf4b459a0df9138060db0e2bc",
+        "read/twenty-four-letters-before-christmas/pages/p23.jpg": "37a18e9e4a587a4d6808a5ea7f6f20356240212bf23b414f40c6b56689feddfe",
+        "read/twenty-four-letters-before-christmas/pages/p24.jpg": "bfa77ddfa4f654af39d03b9f2d76b33e5843a9d1d57dd66c21c79e58f023838e"
+      },
+      "pdf": "read/twenty-four-letters-before-christmas/twenty-four-letters-before-christmas.pdf",
+      "pdf_sha256": "8bec3f69b968f37979e12e94730810e6871051cfe71bb983079db184c54c24ed",
+      "cover_jpeg_sha256": "c296a521af0d8bbf16d0e62291c3b89e59d54b4fa4e95ae42158eae2b23793c6"
     },
     {
       "slug": "vincent-van-mouse-and-the-christmas-shadow-show",
@@ -6400,7 +7670,7 @@
         "read/vincent-van-mouse-and-the-christmas-shadow-show/pages/p24.jpg": "04f22fd1898fa3c4b6d231698740ecddf8317cef70fe07827de31a42170b2746"
       },
       "pdf": "read/vincent-van-mouse-and-the-christmas-shadow-show/vincent-van-mouse-and-the-christmas-shadow-show.pdf",
-      "pdf_sha256": "0acccf4f66252e726436d047ae99991a2d038609c85f5c87068fe1576cde6aa3"
+      "pdf_sha256": "c6dd23a4a4da438acdfb8ca8fed47713fea21629f51f35708ace4bed468fe0af"
     },
     {
       "slug": "vincent-van-mouse-and-the-mural",
@@ -6481,7 +7751,7 @@
         "read/vincent-van-mouse-and-the-mural/pages/page-7.jpg": "813b38478fa4f4ba2def82ce09fde8315cba51afd7003d031ae1ee9a990f27d1"
       },
       "pdf": "read/vincent-van-mouse-and-the-mural/vincent-van-mouse-and-the-mural.pdf",
-      "pdf_sha256": "c001d66115d6ab93ee1262f6b1e5a576f1b5c257511ed7da406733ee69bf83c8"
+      "pdf_sha256": "c5fc049fe76cf9b3353cd808b1d397f3b78d3982137d1e6bfdea4a7f53c9825b"
     },
     {
       "slug": "wise-owl-festival-of-factors",
@@ -6535,7 +7805,7 @@
         "read/wise-owl-festival-of-factors/pages/page-4.jpg": "9e76ba72887f03e4af382bfd40de32365f9ad474e0c52c78feb899fe7735122d"
       },
       "pdf": "read/wise-owl-festival-of-factors/wise-owl-festival-of-factors.pdf",
-      "pdf_sha256": "c3e5b972f4744077e9379adbbec770253219e24cb9b90f7831169445d1b7ca8f"
+      "pdf_sha256": "d1bba0b95e16dc1eb30dba6d596ec2021b1029f30f463931227bc597c96d5dbd"
     },
     {
       "slug": "wise-owls-library-day",
@@ -6598,7 +7868,7 @@
         "read/wise-owls-library-day/pages/wise-owl-library-day-p4-r2.jpg": "03519544e4635a72a4a99645dbf8b25000454d113650cfb0777e3f4872bac5fb"
       },
       "pdf": "read/wise-owls-library-day/wise-owls-library-day.pdf",
-      "pdf_sha256": "2b5f4c5f63d8d6f12a34d5b740d9fd19ba78dcae62563cfd2073e2d23249f504"
+      "pdf_sha256": "aae59f323bea2056a72681317beb94ce96a8a6f719d480c71454be7c5a0389a4"
     }
   ]
 }

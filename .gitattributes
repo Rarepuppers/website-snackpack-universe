@@ -1,2 +1,9 @@
 # Keep hashed blank SVG delivery bytes stable on Windows.
 **/*-blank.svg text eol=lf
+
+# Colouring PDFs are generated binary documents.
+characters/colouring/files/*.pdf binary
+
+# Keep game UI manifest hashes stable across Git checkouts.
+play/shared-assets/game-ui/**/*.json text eol=lf
+play/shared-assets/game-ui/**/*.md text eol=lf

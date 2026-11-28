@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("the portrait board links to the owl, hen and confirmed family", async ({ page }) => {
   await page.goto("/characters/");
-  await expect(page.locator("#crew .cast-card")).toHaveCount(51);
+  await expect(page.locator("#crew .cast-card")).toHaveCount(52);
   await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
   await expect(page.getByRole("heading", { name: "Professor Hooten" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Midnight That Came Early/ })).toBeVisible();
@@ -58,15 +58,18 @@ test("home and Reads link to the catalog, with search by legacy name", async ({ 
   await search.fill("nobody here");
   await expect(page.getByRole("status")).toHaveText("No matching characters");
   await search.fill("");
-  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(51);
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(52);
   await page.goto("/read/");
   await expect(page.getByRole("link", { name: "Meet the Characters", exact: true })).toHaveAttribute("href", "/characters/");
 });
 
 test("an app-led profile has its own alternative portrait", async ({ page }) => {
   await page.goto("/characters/tick-tusk/");
-  await page.getByText("See another portrait", { exact: true }).click();
-  const art = page.locator(".cast-art img");
+  const portrait = page.locator("details.cast-art").filter({
+    has: page.getByText("See another portrait", { exact: true }),
+  });
+  await portrait.locator("summary").click();
+  const art = portrait.locator("img");
   await expect(art).toBeVisible();
   await expect.poll(() => art.evaluate(image => image.naturalWidth)).toBe(480);
 });
@@ -122,4 +125,20 @@ test("the board fits a 320px dark screen at 200 percent text", async ({ page }) 
   for (const card of await page.locator("#crew .cast-card").all()) {
     expect(await card.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   }
+});
+
+test("story and animal filters can be shared and lead back to the book", async ({ page }) => {
+  await page.goto("/characters/?group=birds&story=cluck-oclock-and-the-midnight-that-came-early");
+  await expect(page.locator("#crew .cast-card:visible")).toHaveCount(4);
+  await page.getByLabel("Animal group").selectOption("mammals");
+  await expect(page).toHaveURL(/group=mammals/);
+  await expect(page.getByRole("status")).toHaveText("No matching characters");
+  await page.getByLabel("Animal group").selectOption("");
+  await page.getByRole("link", { name: "Professor Hooten Owl" }).click();
+  const greeting = page.locator(".cast-profile .cast-lead");
+  const first = await greeting.textContent();
+  await page.getByRole("button", { name: "Another hello" }).click();
+  await expect(greeting).not.toHaveText(first);
+  await page.getByRole("link", { name: /Midnight That Came Early/ }).click();
+  await expect(page.getByText("Meet the cast", { exact: true })).toHaveCount(1);
 });

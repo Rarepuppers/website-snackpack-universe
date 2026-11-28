@@ -2825,3 +2825,58 @@ a.read-event-card:hover h2,a.read-event-card:focus-visible h2{text-decoration:un
 .class-links-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 8px; }
 .class-links-list .class-copy { min-height: 36px; padding: 6px 14px; font-size: 0.9rem; }
 .class-copy-status { min-height: 1.4em; overflow-wrap: anywhere; }
+
+.read-advent-grownups { margin-block: 1rem; }
+.read-advent-grownups summary { cursor: pointer; }
+.read-advent-grownups p { margin: .65rem 0; }
+.read-advent-lock-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  text-align: center;
+  font-weight: 700;
+}
+.story-page-card[data-advent-locked] > [hidden],
+.story-finish-card[hidden],
+body:not(.reader-mode) .story-page-card[data-advent-locked]:not([data-advent-next]):not(:target) {
+  display: none;
+}
+.read-advent-board {
+  position: relative;
+  max-width: 48rem;
+  margin: 1rem auto;
+}
+.read-advent-board img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); }
+.read-advent-board ol {
+  position: absolute;
+  inset: 28.4% 20.3% 22.8% 20.5%;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 6% 2%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.read-advent-board a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  color: #381b12;
+  background: #fff0b5e8;
+  font-size: clamp(.75rem, 2.8vw, 1.25rem);
+  line-height: 1;
+  font-weight: 800;
+  text-decoration: none;
+}
+.read-advent-board a[data-advent-locked] { background: #f9eee0ee; }
+.read-advent-board a[aria-current="date"] { border-color: #fff3c4; background: #84283b; color: #fff; }
+.read-advent-board small { margin-block-start: .14em; font-size: clamp(.47rem, 1.3vw, .75rem); white-space: nowrap; }
+.read-advent-board a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }

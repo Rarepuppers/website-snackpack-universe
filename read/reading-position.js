@@ -59,6 +59,9 @@
   var cards = Array.prototype.slice.call(document.querySelectorAll(".story-page-card"));
   var route = location.pathname.match(/^\/read\/([a-z0-9-]+)\/$/);
   if (!cards.length || !route) return;
+  if (saved && saved.slug === route[1] && saved.total === cards.length && !saved.completed) {
+    window.SnackPackReading.resumeIndex = saved.page - 1;
+  }
   // Anonymous book counts. See read-events.js and /privacy/arcade/.
   var events = document.createElement("script");
   events.src = "/read/read-events.js"; events.async = true;
@@ -66,6 +69,7 @@
   var slug = route[1], finished = false, timer = null;
   function record(index, complete) {
     if (index < 0 || index >= cards.length) return;
+    if (cards[index].hasAttribute("data-advent-locked")) return;
     if (finished && !complete) return;
     if (complete) finished = true;
     write(KEY, JSON.stringify({ version: 1, slug: slug, page: index + 1, total: cards.length, completed: !!complete }));

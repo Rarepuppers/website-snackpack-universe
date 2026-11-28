@@ -31,6 +31,13 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 - [Ted-E-Bear's Short-Vowel Kit](https://www.snackpackuniverse.com/read/ted-e-bears-short-vowel-kit/): A complete five-page illustrated beginning reader from SnackPack Sentences & Spelling, focused on CVC short-vowel words. No account, ads or download.
 - [Free SnackPack bookshelf](https://www.snackpackuniverse.com/read/): Complete illustrated stories are added only when their full approved page-art sets are ready.
 
+## Characters
+
+- [Meet the Characters](https://www.snackpackuniverse.com/characters/) — Browse the story and app cast by name, animal group or book.
+- [Who’s at the Door?](https://www.snackpackuniverse.com/characters/clues/) — Read the clues and guess the guest.
+- [Colouring pages](https://www.snackpackuniverse.com/characters/colouring/) — Printable character and story sheets in A4 and US Letter.
+- [Meet the animals](https://www.snackpackuniverse.com/animals/) — Sourced facts about the real animals behind the stories.
+
 ## Play free in your browser (web arcade)
 
 [Atlas Quest](https://www.snackpackuniverse.com/atlas-quest/) is SnackPack Studios' free, ad-free world geography game. It uses an interactive physical and political globe for country, capital, flag, border, landmark and sourced world-fact challenges. It requires no account, keeps learning progress on the device, supports export and import, and can be installed for offline play. The linked page contains the permanent Atlas Quest FAQ, privacy, support and troubleshooting information; the game itself is at https://atlas.snackpackuniverse.com/.
@@ -62,7 +69,7 @@ Six more apps are planned or in progress and not yet live: Tales & Trivia, Creat
 
 The full list also includes SnackWords (a daily five-letter word guess), Golf Solitaire, Snakes & Ladders, Memory Match, Table Tennis, Asteroid Destroyer, and nine original soccer and flag games (Goalkeeper Hero, Penalty Shootout, Free Kick Curl, Crossbar Challenge, Header Hero, Dribble Rush, Keepy-Uppy, Soccer Trivia Sprint, Flag Frenzy) — see [SnackPack Arcade](https://www.snackpackuniverse.com/play/) for the complete, current list.
 
-27 games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort, Flag Frenzy and Pinball.
+29 games have a shared daily puzzle, collected at [SnackPack Daily](https://www.snackpackuniverse.com/play/daily/) — one board per UTC day, the same for every player, with a local streak and a spoiler-free share string. Includes SnackWords, Sudoku, Word Search, FreeCell, Mahjong Solitaire, Pyramid Solitaire, TriPeaks Solitaire, Golf Solitaire, Memory Match, Thirteen, Minesweeper, Water Sort, Flag Frenzy and Pinball.
 
 ## World Cup 2026 hub
 

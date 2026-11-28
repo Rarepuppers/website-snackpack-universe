@@ -113,7 +113,7 @@ test("a sprint ends after 60 seconds and keeps the best", async ({ page }) => {
 
 test("today's daily is shared and counts on the daily hub", async ({ page, browser }) => {
   const today = new Date().toISOString().slice(0, 10);
-  await page.goto("/play/math-facts/?daily=" + today);
+  await page.goto("/play/math-facts/?daily=today&classroom=1");
   const first = await page.locator("#mf-question").textContent();
   const other = await browser.newPage();
   await other.goto("/play/math-facts/?daily=" + today);

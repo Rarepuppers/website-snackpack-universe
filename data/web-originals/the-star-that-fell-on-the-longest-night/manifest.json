@@ -1,0 +1,1174 @@
+{
+  "schemaVersion": 1,
+  "id": "the-star-that-fell-on-the-longest-night",
+  "title": "The Star That Fell on the Longest Night",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "6–9",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 28,
+  "wordCount": 1341,
+  "blurb": "On the longest night of the year, Professor Hooten tells an old, old story. Long ago, the smallest star in the sky leaned too far and fell into the snowy wood. The strongest, the best climber and the best flier all try to send her home before morning. But the one who finds the way is the one nobody noticed.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "On the longest night of the year, the library was warm and the windows were black.\n\nBooklava, Cluck O’Clock and Luckybug sat on the rug by the paper tree. They had made a star out of gold paper for the top. It was a bit crumpled at one point.\n\n“Why does the star go at the top?” asked Luckybug. “Why not the middle?”",
+      "illustrationDirection": "Frame. The library hall at night, black windows with falling snow. Booklava, Cluck O’Clock and Luckybug on the rug by the paper tree, holding up a slightly crumpled gold paper star.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "19495a1a52b1d30280bae373048253b63e45d6dee71712e8528088e5770b83b4",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 354850,
+            "sha256": "8434a2013d314aa9450260212ee12978df5d929b13bc4beb93d276c786f2ed33"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 216080,
+            "sha256": "ac10fb210b2e69b46d9cbbf7d86996cba1766519c46f09beba4f9e38937c8d27"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 99224,
+            "sha256": "8ed7b21fcd09e8f1679497b11bce3fb385b6c66795e2a54f57f785a3a59d8d81"
+          }
+        ],
+        "review": "Warm borderless library frame, one crumpled paper star and the three character models. Windows retain the snowy night.",
+        "generator": "built-in imagegen",
+        "alt": "Booklava, Cluck O’Clock and Luckybug hold up a gold paper star by the library’s paper tree."
+      },
+      "alt": "Booklava, Cluck O’Clock and Luckybug hold up a gold paper star by the library’s paper tree."
+    },
+    {
+      "number": 2,
+      "text": "Professor Hooten put down his tea.\n\n“Ah,” he said. “For that, you need a very old story. Older than the village. Older than the library.” He took a thin blue book from the highest shelf. “Shall I?”\n\n“Yes,” said all three at once.",
+      "illustrationDirection": "Frame. Hooten in his armchair reaching up to the highest shelf for a thin blue book. The three children looking up eagerly.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dc181a75386158635d16818207a7cc17b66bce4e30fc1b7e31e6d939beb8e166",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 364804,
+            "sha256": "271b84d593d26ae6e61644395d9d201582162ce1cc5368959ca77dbd72b2326a"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 235238,
+            "sha256": "1a6d33f2b8b63b3f99a62dce181fcf592d21d929729125230f3ca042f694b0e2"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110830,
+            "sha256": "e2916704d1afc7d62cd20f358e5f8af4087dfad68e32a2024ec8e8fd6585e538"
+          }
+        ],
+        "review": "Hooten draws a thin, unlettered blue book from the high shelf. One mug of tea and the three children by the paper star in the warm frame.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten takes a thin blue book from the highest shelf."
+      },
+      "alt": "Professor Hooten takes a thin blue book from the highest shelf."
+    },
+    {
+      "number": 3,
+      "text": "Hooten opened the book. The lamplight flickered, and outside the snow went on falling.\n\n“Long ago,” he read, “before there was a village, or a library, or a single book, there was only the wood, and the snow, and the sky.”",
+      "illustrationDirection": "Frame becomes tale: Hooten opens the book, and from its pages rises a painted vision of a snowy wood under a starry sky, already in folk-art style, as if the picture is coming out of the book.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "1f8531332907130ee213d9206f25064da9d7ea6da1f202e2254632adef8c12da",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 420766,
+            "sha256": "3399dc80e6521cf31b9355be11c7be52200226fa91cf0f8e2e729c48df1e140f"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 267908,
+            "sha256": "7fe3d287464adf8fd28ad98d2c4c7547599d24b0c9b3a19f400e9e3e47908bc9"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 125038,
+            "sha256": "30c0a1a11acea7a370ea933ca023bfd707e104373f1a13037a273fde324a4fe9"
+          }
+        ],
+        "review": "Professor Hooten sits in his usual green academic robe with the slim blue book. One pattern of painted folk woods rises from the open pages, with all three established listeners in the warm library frame.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten opens the book, and a snowy wood under the stars rises from its pages."
+      },
+      "alt": "Hooten opens the book, and a snowy wood under the stars rises from its pages."
+    },
+    {
+      "number": 4,
+      "text": "And on the longest night of the year, the sky was full of stars.\n\nThe smallest star lived right at the very edge. From there she could see the wood below, white and silver and fast asleep.\n\nShe wanted to see it better. So she leaned over, just a little. And then a little more.",
+      "illustrationDirection": "Tale. Indigo sky full of stars. At the very edge, the smallest gold star leaning over to look down at the silver, sleeping wood.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "27b66193665e27d5debe088fc0635ab70d0e1e12fdc3a62c0e5dd5d755d025a2",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 191986,
+            "sha256": "ca7a9a3bd5489639af87191114c830a2a2d9a7d8e4b44476cc84f4a4b89c1087"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 105966,
+            "sha256": "aa9b7dddab5d95becb679f54e96078f3b6bf046564cdc662cdddb2637ff42301"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 47234,
+            "sha256": "35855233e7f9a67c5a8e5f0e1edb315a85525b6c57a8b64612ad042394fcc82f"
+          }
+        ],
+        "review": "One tiny warm-gold faceless star leaning across a curved sky edge. The woodland below and the star-and-pine border stay cool blue and silver.",
+        "generator": "built-in imagegen",
+        "alt": "The smallest star leans over the edge of the sky to look at the wood below."
+      },
+      "alt": "The smallest star leans over the edge of the sky to look at the wood below."
+    },
+    {
+      "number": 5,
+      "text": "She leaned too far.\n\nDown she fell, through the cold and the dark, past the cloud and the treetops and the branches, and landed in the snow at the foot of a young oak tree.\n\n*Fsssss,* went the snow.",
+      "illustrationDirection": "Tale. The star tumbling down through dark, past cloud and branches, a trail of light behind her, toward a young oak in a clearing. Steam where she meets the snow.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f9dc528c19bc974caf64cd6a953fc6f838bf1198baea4b85be357eb0fcc9a1c1",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 204320,
+            "sha256": "33686f47c276af63315a68a98b3297bda5bc54fc3157c5ad84fabbf67e420079"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 123136,
+            "sha256": "3fde231273ab7b3e573af8d850b07ebaa87342bcdb13a04314f259753436e5e2"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 56070,
+            "sha256": "1d0afeebd43a38cecd7efcf9b367bb8e4c7517e43eb6a13792aa9bb2f31a6c90"
+          }
+        ],
+        "review": "Single glowing gold star has landed by the young oak. The fable woods remain empty and silver-blue with the same painted border.",
+        "generator": "built-in imagegen",
+        "alt": "The star falls through the night and lands in the snow under a young oak."
+      },
+      "alt": "The star falls through the night and lands in the snow under a young oak."
+    },
+    {
+      "number": 6,
+      "text": "The creatures of the wood came out to see what had fallen.\n\nBear came, who was the strongest. Squirrel came, who was the best climber. Owl came, who was the best flier. Hare came, who was the quickest.\n\nAnd in a crack in the oak bark, a small grey Spider watched. Nobody noticed her. Nobody ever did.",
+      "illustrationDirection": "Tale. Bear, Squirrel, Owl and Hare gathering round the glowing star in the clearing. Hidden in a crack of the oak bark: a tiny grey Spider.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "08321d034b8fad1108d9060306585e81b9db56cab4f204330845441aa41abb1f",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 219934,
+            "sha256": "1cb385021b8376edc86abc5d63250dbb39191c490cb486b37e97e8545a846291"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 135930,
+            "sha256": "0a4986ed6c28755a2962c7cc78ca65663ab000a8d1f2d9a5b2c7f00890679034"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 64152,
+            "sha256": "9ba44be0f19b0393846067e59742d5f262379c7ccd555cee5c61f8a536b007ee"
+          }
+        ],
+        "review": "One luminous star lies directly on snow, no cradle. Exactly four large animals gather while one tiny grey spider peers from a bark crack.",
+        "generator": "built-in imagegen",
+        "alt": "Bear, Squirrel, Owl and Hare gather round the fallen star. A tiny spider watches from the oak bark."
+      },
+      "alt": "Bear, Squirrel, Owl and Hare gather round the fallen star. A tiny spider watches from the oak bark."
+    },
+    {
+      "number": 7,
+      "text": "The star lay in the snow, glowing, but already a little less bright.\n\n“She’s getting colder,” said Hare. “A star can’t live down here.”\n\n“When the sun comes up,” said Owl, “she’ll go out altogether.”\n\n“Then we’ll put her back,” said Bear. “Before morning.”",
+      "illustrationDirection": "Tale. Close round the star, a little less bright. Hare pointing to the east; Owl solemn; Bear determined.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c12504bed2cd80b159f70071bddf286c2fb090e9334967df3ae5069970ef97e2",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 156824,
+            "sha256": "609ac1e984b1edba0d0ef4b67998d189a7f6971c5ed578a76018a77143b9f94c"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 93952,
+            "sha256": "94ea9b9c11285afdbd7d665c84d1816aad22712b6d878df96a479a09f74016ab"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 43748,
+            "sha256": "aa6eeb6237f7501bb8693993ff3f69efa6925ecf29e822be04a50aa2b65d83e2"
+          }
+        ],
+        "review": "The smaller warm glow now comes from the star at the animals’ feet. Hare points east, Bear and Owl look down, with no warm star left in the sky.",
+        "generator": "built-in imagegen",
+        "alt": "The animals see that the star is getting dimmer."
+      },
+      "alt": "The animals see that the star is getting dimmer."
+    },
+    {
+      "number": 8,
+      "text": "“I’m the strongest,” said Bear. “I’ll throw her home.”\n\nHe picked up the star in his big paws. He swung his arms back, once, twice, three times, and threw her as high as anything had ever been thrown.",
+      "illustrationDirection": "Tale. Bear winding up to throw, the star in his big paws, his whole body coiled.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ec0f1d2f2ca55e2d9257a4eac6fed1aa7963b1c5a7d7f40b8703437e21467c26",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 205168,
+            "sha256": "8e7bebdbc4dc3843997afb16dfb4605f64af5eed185869c4192c02a16c3d5227"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 113850,
+            "sha256": "33d11298e9d77f846efd5ece5363cd04e03eab9039bf788b99925ee460de2870"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 49668,
+            "sha256": "581697ba602197833892a6afd1bd8fa8c60e17f00cc62b0344b1376e024749c3"
+          }
+        ],
+        "review": "Bear swings one luminous gold star back in both paws. Small friends watch. The tale’s border and restrained glow remain.",
+        "generator": "built-in imagegen",
+        "alt": "Bear swings back to throw the star as high as he can."
+      },
+      "alt": "Bear swings back to throw the star as high as he can."
+    },
+    {
+      "number": 9,
+      "text": "The star went up, and up, and up... as high as the treetops.\n\nAnd then she came down again. *Plop,* into the snow.\n\nShe was dimmer than before. And she was heavier, too. A bright star is as light as a feather. A fading star grows as heavy as a stone.",
+      "illustrationDirection": "Tale. The star at the height of the throw, level with the treetops, then (same picture) falling back into the snow with a small puff. Bear’s face dismayed.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "44b9b0c25b3c4dbd8e51435109227645d57dedfe65a1ea987c330fe8f49b3f2f",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 200906,
+            "sha256": "ce91a84b1818dbc34fc5c7675235b5bdbfde86aaa107416d76acba274b1d5747"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 117966,
+            "sha256": "002223fe2d31be52f6741985980dc227c1f5f89fa54b1bf400fb572be73d2bb4"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 53456,
+            "sha256": "aa7bd72ed87ecacabcbc95d59119fe8e5fa514b696ad6c5dd91c3527c069efc6"
+          }
+        ],
+        "review": "One dim falling star with a shallow arc ends in soft snow by the oak, observed by the bear. No rope or cradle.",
+        "generator": "built-in imagegen",
+        "alt": "The star reaches the treetops and falls back into the snow."
+      },
+      "alt": "The star reaches the treetops and falls back into the snow."
+    },
+    {
+      "number": 10,
+      "text": "“I’m the best climber,” said Squirrel. “I’ll carry her home.”\n\nShe tucked the star under her chin and climbed the tallest pine on the hill, higher and higher, until the branches were thin as straws.\n\nBut the very top twig was too thin to hold her. She stretched and stretched. The sky was still far away.\n\nSlowly she climbed down. The star was dimmer still.",
+      "illustrationDirection": "Tale. Squirrel near the top of the tallest pine, star under her chin, stretching up from twigs too thin to hold her. The sky far above.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "951549b22c263595831e451259a9e9d14874228031b357e4a4d796223b340b03",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 122578,
+            "sha256": "6258f8ac7ea6f527b9843432c8a490929a19287253227696c973cdb699925549"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 73462,
+            "sha256": "0edda1e653ad5b7b99f1623f4cb42cc308e7e4ef67e144903a68519424aace5d"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 33790,
+            "sha256": "d6515ec65feb215c58a46b6e3afd76ef3dab99f860a4ff817e2edc9900d23461"
+          }
+        ],
+        "review": "Squirrel stretches on a thin twig and carries the waning warm star at her chest. No thread or cradle.",
+        "generator": "built-in imagegen",
+        "alt": "Squirrel climbs to the top of the tallest pine but cannot reach the sky."
+      },
+      "alt": "Squirrel climbs to the top of the tallest pine but cannot reach the sky."
+    },
+    {
+      "number": 11,
+      "text": "“I’m the best flier,” said Owl. “I’ll fly her home.”\n\nHe held the star in his claws and flew up into the night, higher than the pine, higher than the clouds, until the air was thin and his wings ached.\n\nBut the sky is always higher than wings. Owl glided down, tired out, and laid the star in the snow.",
+      "illustrationDirection": "Tale. Owl high above the clouds, the star in his claws, wings straining, the sky still far above. Far below, tiny, the white wood.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "cce5dff12d67f730b0ecd2db0d3e993ff3b5f3e7883b20c29670df16ae51aa29",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 241992,
+            "sha256": "487edb84e1ecf2c19a2457c8485cb230b59b34083fa1651e3d421a754e04200c"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 130188,
+            "sha256": "07d99d537a680e9bc0ed994b1c5fdabf0941bf220c6a6722646437e206dc2088"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 57066,
+            "sha256": "52c039162e8ac7bcd9534630ac28ad946a6a0258cba4bf001a13dcf526db0497"
+          }
+        ],
+        "review": "An unclothed tawny owl flies over silver cloud with one waning warm star in his claws.",
+        "generator": "built-in imagegen",
+        "alt": "Owl flies higher than the clouds, but the sky is still far above him."
+      },
+      "alt": "Owl flies higher than the clouds, but the sky is still far above him."
+    },
+    {
+      "number": 12,
+      "text": "Now the star was no brighter than an ember in a dying fire. She was too heavy for one creature to lift at all.\n\nThe creatures sat around her in the snow.\n\n“The strongest couldn’t do it,” said Bear. “The best climber couldn’t do it,” said Squirrel. “The best flier couldn’t do it,” said Owl.\n\nHare said nothing. She just watched the star grow dim.",
+      "illustrationDirection": "Tale. The star in the snow, dim as an ember. The four creatures sitting round her in a sad circle, heads bowed. Snow falling.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f3d40d77516033135dec22b28ca5a49e171ae6210d143469ba4ac4878432141f",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 192732,
+            "sha256": "7f353299811ba2de86ca083a46e156bd0b1c0ce30978867103edf5dba3f31635"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 110784,
+            "sha256": "c7f6f59cb8fe668f8488d53d02379d8200a07020981a8630c1ff577068568881"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 49816,
+            "sha256": "ab6b31aeb6a8033ced136a59e58841f9cff4a81f4e1f74c47d347b96aea9f283"
+          }
+        ],
+        "review": "Four woodland friends sit around one ember-dim star. The snow and sky stay cool.",
+        "generator": "built-in imagegen",
+        "alt": "The four animals sit sadly around the dim star."
+      },
+      "alt": "The four animals sit sadly around the dim star."
+    },
+    {
+      "number": 13,
+      "text": "“Excuse me,” said a tiny voice.\n\nThey all looked round. There, on the oak bark, was the small grey Spider.\n\n“I’m not strong,” said Spider. “I can’t climb like Squirrel or fly like Owl. But I’m very small and very light. I can go where none of you can go. I can go right to the very top twig.”",
+      "illustrationDirection": "Tale. The tiny grey Spider on the oak bark, one leg raised; four big faces turning to look at her in surprise.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4f9064425958e4511464f5ddd6a5d80cf9807371edb53dcf2a8da605c81b3306",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 387654,
+            "sha256": "46bf1f2e74bd316b5762b2dbf0ea309d3d03e11fc00b0a6685c2f22c946c64b3"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 218980,
+            "sha256": "7d97415f9f5062c6a18f659c82c41bb93c52808156e0b82888660d60ae9f204f"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95868,
+            "sha256": "f027032a9be8dafe5b1f5085a7c533ef1149d74946fc12e529ae4319f1673ffe"
+          }
+        ],
+        "review": "Small grey spider raises a leg from the oak bark, and exactly four friends turn. One dim star remains on the snow.",
+        "generator": "built-in imagegen",
+        "alt": "Everyone turns in surprise as the tiny spider speaks."
+      },
+      "alt": "Everyone turns in surprise as the tiny spider speaks."
+    },
+    {
+      "number": 14,
+      "text": "“And then what?” said Bear.\n\n“Then,” said Spider, “I’ll need all of you.”",
+      "illustrationDirection": "Tale. Close on Spider, small but steady, the creatures looming around her, listening.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "db8bb72ee787123f82d702de469c422fb37c414fedbf6b112c5eda1c5c68674e",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 262430,
+            "sha256": "8a43cb4d1e55592043e9ce125a07f5f7edc0a9a1069e7f37dfbe16b7e56e7b3c"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 155822,
+            "sha256": "5afdaa7ecd3fe333534fb62436e7dfe20ad26ad0fad60f333815c21336ce68d0"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 71174,
+            "sha256": "2709b7b87032323541184300340af74ae133e741c6adc7345320e8494560092d"
+          }
+        ],
+        "review": "Bear, Squirrel, Hare, Owl and the tiny grey Spider. Ember star below their faces, with the two stray figures removed.",
+        "generator": "built-in imagegen",
+        "alt": "The animals lean in to hear the spider’s plan."
+      },
+      "alt": "The animals lean in to hear the spider’s plan."
+    },
+    {
+      "number": 15,
+      "text": "So Bear carried the star, heavy as a stone, up the hill to the tallest pine.\n\nSquirrel wove a little cradle out of moss. Owl pulled one soft feather from his chest to line it. Together they laid the star inside.\n\nAnd Hare, who was quickest, ran to the top of the hill to watch the moon.",
+      "illustrationDirection": "Tale. A procession up the white hill: Bear carrying the dim star; Squirrel weaving a moss cradle; Owl offering a soft feather; Hare racing ahead to the hilltop. The moon low in the east.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9db40d856f183d8fee09c8ac079eea2059988a7f4fe6bde2fb21f17b27e1548d",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 219750,
+            "sha256": "44058b304c7091374436396b9976d8213c64cfd03a8a954d6dffca1b69ad0a0b"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 136064,
+            "sha256": "a35609ddd150f7dd2ffe84b33b19f513158fd0500baade1b86a508d7bc825973"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 64032,
+            "sha256": "60d25ce65cbfa8c561417ea6ecc5ec6707a1f42f545bc4c6d0bbb0eff65bcb87"
+          }
+        ],
+        "review": "The bear carries one small ember-outline star with little halo. The squirrel weaves a moss cradle, owl offers one feather, and hare leads uphill toward the low moon.",
+        "generator": "built-in imagegen",
+        "alt": "The animals carry the star up the hill as Squirrel weaves a moss cradle."
+      },
+      "alt": "The animals carry the star up the hill as Squirrel weaves a moss cradle."
+    },
+    {
+      "number": 16,
+      "text": "Spider began to climb.\n\nUp the trunk she went, past the place where Bear could reach. Past the branch where Squirrel had stopped. Up, and up, where the twigs were as thin as whiskers.\n\nAnd all the way, behind her, she spun a single silver thread.",
+      "illustrationDirection": "Tale. Tall vertical view of the pine trunk: Spider climbing, a silver thread trailing behind her, past a mark where Bear could reach and the branch where Squirrel stopped.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f5e461719efc5cc4be5935ee6b596fa6627d8bcad2819c9ace8c365299f29fc3",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 230230,
+            "sha256": "c8a3f7b9be144a6447a86447cc5dae4fae0ad5b5a62dfc9363b20d99e0381c01"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 132904,
+            "sha256": "504b9aabb901418679f6b5974a061da1b3693f208840f2739fa768608025268b"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 60768,
+            "sha256": "e16f940e0b50b996f95acbb52c6718c689ea11cc94a0f07cb170c452875ffd36"
+          }
+        ],
+        "review": "Spider climbs the pine above the bear’s stretch and the squirrel’s branch, spinning a single pale thread downward behind her.",
+        "generator": "built-in imagegen",
+        "alt": "Spider climbs the tall pine, spinning a silver thread behind her."
+      },
+      "alt": "Spider climbs the tall pine, spinning a silver thread behind her."
+    },
+    {
+      "number": 17,
+      "text": "At the very top twig, Spider looped her thread over, tight and neat.\n\nThen she let herself down again on the other end, slowly, swinging in the starlight, all the way to the snow.\n\nNow the thread went up the tree, over the very top twig and back down, with both ends on the ground.",
+      "illustrationDirection": "Tale. The very top twig, fine as a whisker, with the thread looped over it; Spider letting herself down on the other end, swinging in starlight.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ecc814d3f87d2ba21c9738de66a1f8f89c810c68bbf2d88ed560a9aaf9157910",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 134538,
+            "sha256": "aaa33d90b807dc563f44844dfc5296b63a98883d467eae0febd47457b1c037a1"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 80038,
+            "sha256": "237f3673d59a922a155b08d07459c423a5bdd761f1de7d9cc3c32a60fc2570f6"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 35976,
+            "sha256": "7359fff51c8a50e078e70ebc32d70826106e0e6fd012068e55678ba6f9338ab0"
+          }
+        ],
+        "review": "A fine silver thread is visibly supported by the top twig against indigo sky, and the tiny grey spider descends its right end.",
+        "generator": "built-in imagegen",
+        "alt": "Spider loops her thread over the very top twig and lets herself back down."
+      },
+      "alt": "Spider loops her thread over the very top twig and lets herself back down."
+    },
+    {
+      "number": 18,
+      "text": "They tied the moss cradle to one end of the thread.\n\n“That thread is thinner than a whisker,” said Bear. “It’ll never hold.”\n\n“Spider silk is stronger than it looks,” said Spider. “So are spiders.”",
+      "illustrationDirection": "Tale. At the foot of the pine, the moss cradle with the dim star tied to one end of the thread. Bear frowning doubtfully at the thin line; Spider looking up at him.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "09911a1357d3cae0de47479f5530107bfe466d6b6faf8180e668e956369f006e",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 155872,
+            "sha256": "7872d6e9dad50dd6fe7cc3135d722632d5d182ba64e83713656bd033f3677545"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 94694,
+            "sha256": "5e454011f3ca3d8c50a95b0f285fb5a6372942203753bf0d903a1aa92a14dc31"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 43124,
+            "sha256": "0d0eccfe7b111984ef8e0546e664b271fa8e4710f287a69f9f868335d2c89646"
+          }
+        ],
+        "review": "One silver thread passes over the twig from the bear to the moss cradle, which stays at snow level with its feather and dim star.",
+        "generator": "built-in imagegen",
+        "alt": "The animals tie the star’s cradle to the thread as Bear frowns at how thin it is."
+      },
+      "alt": "The animals tie the star’s cradle to the thread as Bear frowns at how thin it is."
+    },
+    {
+      "number": 19,
+      "text": "Hare came racing down the hill. “The moon is almost over the pine! It’s nearly the middle of the night!”\n\nThe middle of the longest night is the moment when the sky bends lowest to the ground. Everybody in the wood knew that.\n\nSo they all took hold of the other end of the thread. Bear first. Then Squirrel. Then Hare. Then Owl, with his claws. And last of all, at the very end, Spider.",
+      "illustrationDirection": "Tale. Hare racing down the hill; the moon almost over the pine. Everyone grasping the thread in a line: Bear, Squirrel, Hare, Owl, and tiny Spider at the end.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7869606d20d677b8627d1a693d5f12c7abe50a635e44e23cdf3ebe9bd9ede3a7",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 152762,
+            "sha256": "a6d81f6452481f0d4c822072b8cf1515b4b6b8b79ca996dbe45a0e4ed2082c98"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 96848,
+            "sha256": "b12f4c05ca837e983796a6602ce29cf803fc43c1f0d312a86c2af9cd7e4be5d7"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 45910,
+            "sha256": "008e9353c9625ab9a612fdcb770a9bed986372e2b173a76807c3dc42bc4b962c"
+          }
+        ],
+        "review": "A full moon sits above the pine, and just one silver thread connects five animals to the top twig and the cradle resting in the snow. One feather and a tiny, ember-dim five-point star show in the cradle.",
+        "generator": "built-in imagegen",
+        "alt": "The moon is nearly over the pine, and the animals line up to hold the thread."
+      },
+      "alt": "The moon is nearly over the pine, and the animals line up to hold the thread."
+    },
+    {
+      "number": 20,
+      "text": "“Together,” said Spider. “Pull!”\n\nThey pulled.\n\nThe cradle lifted off the snow. Up it went, past the lowest branches. And as the star rose, she began to glow a little brighter.",
+      "illustrationDirection": "Tale. Everyone pulling; the cradle lifting off the snow; the star beginning to glow brighter.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b5c029035fc2d0625557e8128c92125e9f9a644a1532d4f62c12702a1f19e73c",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 156512,
+            "sha256": "46d7c32ebee782819a6994d00bb344e218e39af499e1b3ad4a3e2982491cc454"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 95966,
+            "sha256": "a77a308ac50e8e1a654941b029d608abf57deb8f7fcce4edbf326f1851d92aae"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 43996,
+            "sha256": "35623273da1ebb91d594ab58799cdb416c6cf7fd889601fe2e12de991517a863"
+          }
+        ],
+        "review": "The clear thread rides over the pine tip, five friends pull in order, the moss cradle just lifts off the ground, and gold begins to return under the full moon.",
+        "generator": "built-in imagegen",
+        "alt": "The animals pull together, and the star begins to rise and glow."
+      },
+      "alt": "The animals pull together, and the star begins to rise and glow."
+    },
+    {
+      "number": 21,
+      "text": "The thread creaked. Bear’s paws slipped in the snow. Squirrel dug in her claws. Owl beat his wings.\n\n“Together,” said Spider. “Pull!”\n\nUp went the star, past the middle of the tree, brighter and brighter, until it was hard to look at her.",
+      "illustrationDirection": "Tale. Strain and effort: Bear’s paws sliding, Squirrel’s claws dug in, Owl’s wings beating. The star halfway up the pine, bright.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b41f3485c2535dd600dde79e62593341315e6d0264d541d392887269315640da",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 189472,
+            "sha256": "4af78ff24c19b4a85041eff40e34cd867696aef31130dee1b97893d9381e72c6"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 115452,
+            "sha256": "6005e99ff7e1d6b70f7d4fb67d90ee0a6fb21283977e404b22a919272dafbeda"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 52532,
+            "sha256": "879cbe590c868191d73ec9555932423ba98bb99d989df86fcedb780ed1732eee"
+          }
+        ],
+        "review": "Under a full moon, the single thread runs over the top twig and the bright star in its feather-lined cradle rises near the pine’s midpoint. The bear slips, the squirrel digs in and the owl beats its wings.",
+        "generator": "built-in imagegen",
+        "alt": "The animals strain on the thread as the star rises past the middle of the tree."
+      },
+      "alt": "The animals strain on the thread as the star rises past the middle of the tree."
+    },
+    {
+      "number": 22,
+      "text": "At the very middle of the longest night, the star reached the very top of the tallest pine.\n\nAnd the sky, which had been so far away all night, bent down. Just a little. The way someone big bends down to pick up someone small.",
+      "illustrationDirection": "Tale. The star at the very top of the pine. The indigo sky bending down toward it like a great soft arm of stars.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f8ef090a82bf586c9f33d18a6990536e043e2c747302de8bb21aaaddd00293ed",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 224146,
+            "sha256": "39bdfc8f55319589ed07804a656dbdbf1ecf0a2d79ec5a67496f7bcfb075d8fc"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 131130,
+            "sha256": "6ca01e609988903e31b57c6f959e2bc6e7e8f4b01b69e83df951a832048e0a3c"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 58618,
+            "sha256": "cea54d565597f0689a1f1661877ac583685984556b055edd6e8b79e79b0d1c46"
+          }
+        ],
+        "review": "The cradle is pulled to just below the very top twig and the arc of the indigo sky bends down towards the blazing star. Five creatures are on the pulling end.",
+        "generator": "built-in imagegen",
+        "alt": "The star reaches the top of the pine, and the sky bends down to meet it."
+      },
+      "alt": "The star reaches the top of the pine, and the sky bends down to meet it."
+    },
+    {
+      "number": 23,
+      "text": "The star let go of the cradle and went home.\n\nFor one moment, the whole wood was as bright as a summer noon. Every snowflake shone. Every creature’s shadow stretched across the hill.\n\nThen it was night again.",
+      "illustrationDirection": "Tale. The flash: the whole wood lit gold-white, every snowflake glittering, long shadows from every creature across the hill.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a7579ab89fd31c43d87f70815ddcc1755275a706116f16c13d9427e989dc6030",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 395986,
+            "sha256": "f7620b752aded768cbc1ecb1203d6686d66b1b6803fe360c8df83b79599e6347"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 249162,
+            "sha256": "c3c71119fe557eb7ebe84ad4990af45917dcef92a215ccb6467e14b7930c2d89"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115086,
+            "sha256": "62d788e9bb6d6fc576ea048bcc6b2b05f426f9d6f051b5496b9f5ba2c0a2f407"
+          }
+        ],
+        "review": "The star has visibly left the empty moss cradle and casts the bright flash from above the tip. The five animals cast long shadows and the snowy woodland glitters.",
+        "generator": "built-in imagegen",
+        "alt": "For one moment, the whole wood is lit as bright as day."
+      },
+      "alt": "For one moment, the whole wood is lit as bright as day."
+    },
+    {
+      "number": 24,
+      "text": "The creatures looked up.\n\nThere she was, the smallest star, back at the very edge of the sky. She was shining brighter than she ever had before.\n\nAnd on the very top twig of the pine, one tiny spark stayed caught on Spider’s thread until morning.",
+      "illustrationDirection": "Tale. Night again. The animals gazing up; the smallest star bright at the edge of the sky; one tiny spark caught on the thread at the top twig.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "36a5234a735f08936783dc0e6f5dd70b1ac82e223358e15e2704f6a4e4211112",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 205998,
+            "sha256": "97fe58c479e892ddea3931b7f376832be4669a6044201618432030cd310fe4ae"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 117340,
+            "sha256": "bd9a77cabeddd3aa7f0cb15c9734df9d751082404969d714b77c1ec5ec7db1b0"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 52966,
+            "sha256": "1d2c0639b05fa2f46c8f603d615f1f8a77b47a6a6e2506643c29c717287e4378"
+          }
+        ],
+        "review": "After the bright flash, the star is small and bright at the sky’s edge, with a second, distinctly tiny spark left on the thread by the top twig. All five woodland creatures look up.",
+        "generator": "built-in imagegen",
+        "alt": "The animals look up and see the smallest star shining brightly back in the sky."
+      },
+      "alt": "The animals look up and see the smallest star shining brightly back in the sky."
+    },
+    {
+      "number": 25,
+      "text": "“And that is why,” the creatures told their children, and their children’s children, “on the longest night, we put a star on the very top of the tree.\n\n“To remember that nobody could do it alone. And that the smallest of us went the highest.”",
+      "illustrationDirection": "Tale. A generations picture: the same five animals with young ones around them, placing a simple star on top of a small tree in a snowy clearing.",
+      "art": {
+        "status": "accepted",
+        "master": "p25.png",
+        "webp": "p25.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "dccd1d5788e260d6fe7c6e49aa90a2373a4749c6e2179191b10a4aebf5b13256",
+        "derivatives": [
+          {
+            "path": "p25.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 325556,
+            "sha256": "2bc473254ae8187c526a2f9255942e252583ddb7d8f541a0d17f08b5a101c49b"
+          },
+          {
+            "path": "p25-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 181926,
+            "sha256": "ae3ab24912f53b3fa9d26fc83bf8e18e162ddf8e7112f7af49e6837339de41d3"
+          },
+          {
+            "path": "p25-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 78868,
+            "sha256": "c11859657a8d195c3e233c9f7fde6cf28bb3f6c86869afe9f37e3731e4db49ba"
+          }
+        ],
+        "review": "The five folk-tale friends and their young gather around a small snowy pine and place a single simple golden star at the top. The decorative silver border and quiet night palette remain.",
+        "generator": "built-in imagegen",
+        "alt": "The animals and their young ones place a star on top of a small tree."
+      },
+      "alt": "The animals and their young ones place a star on top of a small tree."
+    },
+    {
+      "number": 26,
+      "text": "Professor Hooten closed the thin blue book.\n\nNobody said anything for a while. The paper tree rustled. The snow tapped at the window.\n\n“Is it true?” said Cluck O’Clock at last.\n\n“Which part?” said Hooten.\n\n“The spider part.”",
+      "illustrationDirection": "Frame. Hooten closing the thin blue book. The children still and thoughtful. Cluck O’Clock asking.",
+      "art": {
+        "status": "accepted",
+        "master": "p26.png",
+        "webp": "p26.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "c6b6387b1baea43cbdb7fa2becbe3d602725476c0c5bee54c30f0576eef23c2a",
+        "derivatives": [
+          {
+            "path": "p26.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 362114,
+            "sha256": "1effb844d44bcf4674cf6a500abf3e90cc35f4748d3d7815b1c438efe446814f"
+          },
+          {
+            "path": "p26-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 225698,
+            "sha256": "a3c41dc7cdfc2a0bc727b3ceac356368d0d2124530b6a4f7c3f30317e715752a"
+          },
+          {
+            "path": "p26-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 104866,
+            "sha256": "6f95115b94f446e0bb0036a6b60cb88bc8c1f5cc762f84058722d9d43778a10f"
+          }
+        ],
+        "review": "The snowy window, paper tree, Hooten’s green robe and slim closed blue book match the library frame. The three listeners sit together and Cluck O’Clock raises his wing to ask.",
+        "generator": "built-in imagegen",
+        "alt": "Hooten closes the book as Cluck O’Clock asks if the story is true."
+      },
+      "alt": "Hooten closes the book as Cluck O’Clock asks if the story is true."
+    },
+    {
+      "number": 27,
+      "text": "Professor Hooten turned his head, almost all the way round, to look up at the dark corner of the ceiling.\n\nThere, in her web, sat Spinnerella. She waved one leg.\n\n“My great-great-great-great-great-grandmother,” said Spinnerella, “never stopped talking about it.”",
+      "illustrationDirection": "Frame. Hooten’s head turned almost all the way round, looking up at the ceiling corner, where Spinnerella waves one leg from her web.",
+      "art": {
+        "status": "accepted",
+        "master": "p27.png",
+        "webp": "p27.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9309d317fa99e37b7d69766404bdb4991b4f7cc1a25af3463b5dcb3380f440f4",
+        "derivatives": [
+          {
+            "path": "p27.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 241784,
+            "sha256": "c06574fb588b5b5e5a8b9fbb01d588fc9bdad16be04a374030d79e709cd7f8ce"
+          },
+          {
+            "path": "p27-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 157092,
+            "sha256": "a680893636620f216fe5ab0525d97331456a748e0a1a4b597e0b2e985bd814ef"
+          },
+          {
+            "path": "p27-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 75472,
+            "sha256": "3499d9dfed4d9414c3784daf02fd854562857fae507b4e7d1c3d59e4999263ed"
+          }
+        ],
+        "review": "Professor turns his head back above his shoulder to the tiny dark Spider. No gold envelope or other stray props remain.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten looks up at Spinnerella, who waves from her web."
+      },
+      "alt": "Professor Hooten looks up at Spinnerella, who waves from her web."
+    },
+    {
+      "number": 28,
+      "text": "So Spinnerella let herself down on a silver thread, and Booklava, Cluck O’Clock and Luckybug held up the crumpled gold star together, and Spinnerella fixed it to the very top of the paper tree.\n\nOutside, on the longest night, one small star at the edge of the sky shone a little brighter than the rest.",
+      "illustrationDirection": "Frame. Spinnerella on a silver thread fixing the crumpled gold star to the top of the paper tree while Booklava, Cluck O’Clock and Luckybug hold it up. Through the window, one small star shining brightly.",
+      "art": {
+        "status": "accepted",
+        "master": "p28.png",
+        "webp": "p28.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "23dc146d7d00fb33e13099d2442f503ba2ec998951404e32d2aef907ec2506c0",
+        "derivatives": [
+          {
+            "path": "p28.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 340062,
+            "sha256": "13fb6e0b7e8faa7098a92359256eaf0c52351a1aa5638f889c2722d706e45cc3"
+          },
+          {
+            "path": "p28-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 215752,
+            "sha256": "1620e5d798529825013eef06a5877b8d35c1226dafc15d10c1bb39b6715f5100"
+          },
+          {
+            "path": "p28-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 96180,
+            "sha256": "65915db57492a2ea921e497e8b08d4444a6e468c9969a8fb3a49627bdad8aecc"
+          }
+        ],
+        "review": "One crumpled five-pointed paper star tops the folded tree. The three young listeners support it and Spinnerella comes down on a single silver thread. One distinct small star shines through the snowy window, and the illustration stays in the warm unbordered frame style.",
+        "generator": "built-in imagegen",
+        "alt": "Spinnerella fixes the gold star on top of the paper tree while the children hold it up. One small star shines outside the window."
+      },
+      "alt": "Spinnerella fixes the gold star on top of the paper tree while the children hold it up. One small star shines outside the window."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "188dea1152f9d8c13c2db48d14a53d7dbda83ecadd13962bfd0df2a7be3b8b96",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 222452,
+        "sha256": "4f2367ac4deecafe9059f0f92b52ad7bfb9763468545e159e1a3b356eb1e7229"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 117658,
+        "sha256": "7cf1c90122647afb7d2ee1644d222a664fdbb339425e6ed290e42c12b888ec83"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 49930,
+        "sha256": "1c49fb8b9c6aff7221534b77ade163c84d3cc28d5bac52bcbf2528a4f38a1147"
+      }
+    ],
+    "review": "Folk-art construction reads in colour and greyscale at 160 px. Five unliveried woodland pullers including the tiny grey Spider. One silver thread visibly goes around the top twig and down to one moss cradle with a luminous, faceless gold star and feather.",
+    "generator": "built-in imagegen",
+    "alt": "Woodland animals pull together on a silver thread to lift a glowing star to the top of a tall pine."
+  },
+  "sourceFolder": "christmas/the-star-that-fell-on-the-longest-night",
+  "webSlug": "the-star-that-fell-on-the-longest-night",
+  "reviewedPrintableSha256": "dcd6bf9b7c921d1f353e213e9562b76db6f2f54769732e0b3cf4988feb698d47"
+}

@@ -142,7 +142,7 @@
         <h1>Today's puzzles.<br>Same boards for everyone.</h1>
         <p class="lead">One set a day, drawn from the same seed for every player — so a time or a streak actually means something. Free, no ads, no sign-in, nothing to install.</p>
         <div class="dl-hero-stats">
-          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">27</span></b></span>
+          <span class="dl-stat">Done today <b id="dl-done">0/<span data-game-count="daily">29</span></b></span>
           <span class="dl-stat">Streak <b id="dl-streak">0</b></span>
           <span class="dl-stat">Best streak <b id="dl-best">0</b></span>
         </div>
@@ -159,7 +159,7 @@
             <!-- Number kept mid-sentence on purpose: build-game-counts.mjs
                  renders word-format markers lowercase, so a sentence-initial
                  one would read "twelve boards". -->
-            <h2>One day, <span data-game-count="daily" data-game-count-format="word">27</span> boards.</h2>
+            <h2>One day, <span data-game-count="daily" data-game-count-format="word">29</span> boards.</h2>
           </div>
           <span class="daily-challenge-date" id="dl-seed">Seed loading</span>
         </div>
@@ -193,6 +193,16 @@
           <a class="dl-card" data-game="chess-puzzles" href="../chess-puzzles/">
             <picture><source srcset="../tiles/chess-puzzles.webp" type="image/webp"><img src="../tiles/chess-puzzles.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
             <div><h3>Chess Puzzles</h3><p>Today's mate in one and two</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="typing" href="../typing/">
+            <picture><source srcset="../tiles/typing.webp" type="image/webp"><img src="../tiles/typing.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
+            <div><h3>Snack Typer</h3><p>Today's words and story sentence</p></div>
+            <span class="dl-tick" hidden>Done</span>
+          </a>
+          <a class="dl-card" data-game="math-facts" href="../math-facts/">
+            <picture><source srcset="../tiles/math-facts.webp" type="image/webp"><img src="../tiles/math-facts.png" alt="" aria-hidden="true" loading="lazy" width="52" height="52"></picture>
+            <div><h3>Fact Sprint</h3><p>Today's 20 math facts</p></div>
             <span class="dl-tick" hidden>Done</span>
           </a>
           <a class="dl-card" data-game="word-search" href="../word-search/">
@@ -337,7 +347,7 @@
     snackwords: "SnackWords", sudoku: "Sudoku", "killer-sudoku": "Killer Sudoku", "word-search": "Word Search", freecell: "FreeCell",
     mahjong: "Mahjong", "golf-solitaire": "Golf Solitaire", "memory-match": "Memory Match",
     thirteen: "Thirteen", minesweeper: "Minesweeper", "water-sort": "Water Sort", "block-puzzle": "Block Puzzle", "flag-frenzy": "Flag Frenzy",
-    "five-dice": "Dice Score", hearts: "Hearts", spades: "Spades", "rummy-500": "Rummy 500", "big-two": "Big Two", backgammon: "Backgammon", sokoban: "Sokoban", "chess-puzzles": "Chess Puzzles"
+    "five-dice": "Dice Score", hearts: "Hearts", spades: "Spades", "rummy-500": "Rummy 500", "big-two": "Big Two", backgammon: "Backgammon", sokoban: "Sokoban", "chess-puzzles": "Chess Puzzles", typing: "Snack Typer", "math-facts": "Fact Sprint"
   };
   var cards = [].slice.call(document.querySelectorAll(".dl-card"));
 

@@ -1,5 +1,10 @@
 import fs from 'node:fs';
 import {test,expect} from '@playwright/test';
+import {READ_EVENTS} from '../../scripts/lib/read-events.mjs';
+const christmasEvent = READ_EVENTS.find(({id}) => id === 'christmas');
+const webOriginals=JSON.parse(fs.readFileSync(new URL('../../data/web-originals.json',import.meta.url),'utf8'));
+const sledge = ['biscuit-bouncer-and-the-great-sledge-race','Biscuit-Bouncer and the Great Sledge Race',26,'Ages 6–8 · Read together'];
+const star = ['the-star-that-fell-on-the-longest-night','The Star That Fell on the Longest Night',28,'Ages 6–9 · Read together'];
 const books=[
  ['nutmeg-and-the-tree-that-wouldnt-come','Tree That',24],
  ['vincent-van-mouse-and-the-christmas-shadow-show','Christmas Shadow',24],
@@ -8,6 +13,13 @@ const books=[
  ['sub-zero-and-the-great-snowball-truce','Great Snowball Truce',24,'Ages 5–7 · Read together'],
  ['captain-beakon-and-the-bell-across-the-bay','Bell Across the Bay',44,'Ages 12–14 · Independent reading'],
 ];
+books.push(...[
+ ['the-angel-on-the-small-tree','The Angel on the Small Tree',24,'Ages 5–7 · Read together'],
+ sledge,
+ star,
+ ['dough-mino-and-the-parcel-mix-up','Dough Mino and the Parcel Mix-Up',30,'Ages 8–11 · Confident readers'],
+ ['the-great-christmas-un-robbery','The Great Christmas Un-Robbery',34,'Ages 9–12 · Confident readers'],
+].filter(([slug])=>Object.hasOwn(webOriginals,slug)));
 for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader, page turns and complete artwork`,async({page})=>{
  await page.setViewportSize({width:390,height:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -29,8 +41,43 @@ for(const [slug,query,storyPages,audience] of books)test(`${slug}: mobile reader
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  expect(errors).toEqual([]);
  await page.goto('/read/?q='+encodeURIComponent(query));
- await expect(page.locator('.read-library-card:visible')).toHaveCount(1);
+ await expect(page.locator(`.read-library-card[href="./${slug}/"]`)).toBeVisible();
 });
+
+for(const [[slug,title],matchingAges] of [[sledge,['5-6','7-8']],[star,['5-6','7-8','9-10']]]){
+ if(!Object.hasOwn(webOriginals,slug)) continue;
+ test(`${title} appears in the age filters and has a colouring PDF`,async({page})=>{
+   await page.goto('/read/?q='+encodeURIComponent(title));
+   const card=page.locator(`.read-library-card[href="./${slug}/"]`);
+   for(const age of matchingAges){
+     await page.locator(`[data-filter-age="${age}"]`).click();
+     await expect(card).toBeVisible();
+   }
+   await page.locator('[data-filter-age="11-12"]').click();
+   await expect(card).toBeHidden();
+   await page.goto('/read/events/christmas/');
+   const printable=page.getByRole('link',{name:`Colour ${title}`,exact:true});
+   const href=await printable.getAttribute('href');
+   const download=await page.request.get(new URL(href,page.url()).href);
+   expect(download.ok()).toBe(true);
+   expect((await download.body()).subarray(0,5).toString()).toBe('%PDF-');
+ });
+}
+
+if(Object.hasOwn(webOriginals,star[0])){
+ test('the longest night features the Star and both books link to each other',async({page})=>{
+   await page.clock.setFixedTime(new Date(2026,11,21,12));
+   await page.goto('/read/events/christmas/');
+   const pick=page.locator('[data-tonight]:visible');
+   await expect(pick).toContainText('Longest night pick');
+   await expect(pick).toContainText(star[1]);
+   const advent='twenty-four-letters-before-christmas';
+   for(const [from,to] of [[advent,star[0]],[star[0],advent]]){
+     await page.goto(`/read/${from}/`);
+     await expect(page.locator(`.story-finish-card a[href*="${to}"]`)).toHaveCount(1);
+   }
+ });
+}
 
 test('the harbour mystery is discoverable by age and can open a chapter directly',async({page})=>{
  await page.goto('/read/?type=stories');
@@ -44,19 +91,14 @@ test('the harbour mystery is discoverable by age and can open a chapter directly
  await expect(page.locator('#page-31').getByRole('heading')).toHaveText('The blue boathouse');
 });
 
-test('the Christmas event page lists the six books in reading order and books link back to it',async({page})=>{
+test('the Christmas event page follows the published reading order and books link back to it',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/read/events/christmas/');
- const woodland=page.locator('ol.read-event-books');
- await expect(woodland.locator('.read-event-book')).toHaveCount(6);
- await expect(woodland.locator('h3 a')).toHaveText([
-   'Nutmeg and the Tree That Wouldn’t Come',
-   'Vincent Van Mouse and the Christmas Shadow Show',
-   'Sub-Zero and the Great Snowball Truce',
-   'Captain Beakon and the Bell Across the Bay',
-   'One More Story Before Santa',
-   'The Last Parcel Under the Tree',
- ]);
+ const woodland=page.locator('ol.read-event-books h3 a');
+ await expect(woodland).toHaveCount(christmasEvent.timeline.length);
+ expect(await woodland.evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(
+   christmasEvent.timeline.map(({slug})=>`../../${slug}/`),
+ );
  await expect(page.locator('[data-tonight]:visible')).toHaveCount(1);
  await page.goto('/read/events/');
  await expect(page.locator('a.read-event-card[data-read-event="christmas"]')).toHaveCount(1);
@@ -116,7 +158,6 @@ const foxy = {
  slug:'foxy-lox-and-the-postcard-present', title:'Foxy-Lox and the Postcard Present',
  pages:16, age:'7-9', matchingAges:['7-8','9-10'], otherAge:'11-12',
 };
-const webOriginals=JSON.parse(fs.readFileSync(new URL('../../data/web-originals.json',import.meta.url),'utf8'));
 const summerBooks=[bark,foxy].filter(({slug})=>Object.hasOwn(webOriginals,slug));
 const christmas='/read/events/christmas/';
 const reader=({slug})=>`/read/${slug}/`;
@@ -127,7 +168,7 @@ test('Summer Christmas discovery reflects the released web originals',async({pag
  const guide=page.getByRole('region',{name:'Christmas reading guide'});
  const guideLink=guide.getByRole('link',{name:/Browse Summer Christmas stories/});
  const jsonLd=await page.locator('script[type="application/ld+json"]').first().textContent();
- expect(JSON.parse(jsonLd).mainEntity.numberOfItems).toBe(6+summerBooks.length);
+ expect(JSON.parse(jsonLd).mainEntity.numberOfItems).toBe(christmasEvent.timeline.length+summerBooks.length);
  await expect(group).toHaveCount(Number(summerBooks.length>0));
  await expect(guideLink).toHaveCount(Number(summerBooks.length>0));
  if(summerBooks.length){
@@ -255,3 +296,58 @@ test('Bark-B-Q recommends the next Summer Christmas story only after Foxy-Lox is
  }
  await expect(page.locator('.story-finish-card .story-event-link a')).toHaveAttribute('href',`${christmas}#summer-christmas`);
 });
+
+const parcel = 'dough-mino-and-the-parcel-mix-up';
+const villageBook = 'the-great-christmas-un-robbery';
+
+for (const [slug, title, matchingAges, excludedAge] of [
+  [parcel, 'Dough Mino and the Parcel Mix-Up', ['7-8', '9-10', '11-12'], '5-6'],
+  [villageBook, 'The Great Christmas Un-Robbery', ['9-10', '11-12'], '7-8'],
+]) {
+ if (!Object.hasOwn(webOriginals, slug)) continue;
+ test(`${title} is discoverable in its older-reader age bands`, async ({page}) => {
+   await page.goto('/read/?q='+encodeURIComponent(title));
+   const card = page.locator(`.read-library-card[href="./${slug}/"]`);
+   for (const age of matchingAges) {
+     await page.locator(`[data-filter-age="${age}"]`).click();
+     await expect(card).toBeVisible();
+   }
+   await page.locator(`[data-filter-age="${excludedAge}"]`).click();
+   await expect(card).toBeHidden();
+ });
+}
+
+if (Object.hasOwn(webOriginals, parcel)) {
+ test('Dough Mino’s end card and Christmas share the Parcel Puzzle PDF', async ({page}) => {
+   await page.goto(`/read/${parcel}/`);
+   const href = '/read/events/christmas/parcel-puzzle.pdf';
+   const link = page.locator('.story-finish-card').getByRole('link', {name:'Parcel Puzzle activity sheet'});
+   await expect(link).toHaveAttribute('href', href);
+   await expect(link).toHaveAttribute('download', '');
+   await page.goto(christmas);
+   await expect(page.getByRole('link', {name:'Parcel Puzzle activity sheet'})).toHaveAttribute('href', href);
+   const response = await page.request.get(href);
+   expect(response.ok()).toBe(true);
+   expect((await response.body()).subarray(0,5).toString()).toBe('%PDF-');
+ });
+}
+
+if (Object.hasOwn(webOriginals, villageBook)) {
+ test('the village book recommends only released stories it calls back to', async ({page}) => {
+   const related = [
+     'nutmeg-and-the-tree-that-wouldnt-come',
+     'vincent-van-mouse-and-the-christmas-shadow-show',
+     'sub-zero-and-the-great-snowball-truce',
+     'corgi-on-the-cob-and-the-harvest-table',
+     'shelly-pop-and-the-runaway-pumpkin',
+     'snack-spector-and-the-vanishing-thank-yous',
+     'biscuit-bouncer-and-the-great-sledge-race',
+   ].filter(slug => Object.hasOwn(webOriginals, slug));
+   await page.goto(`/read/${villageBook}/`);
+   const endCard = page.locator('.story-finish-card');
+   const links = endCard.locator('.story-next-link');
+   await expect(links).toHaveCount(related.length);
+   expect(await links.evaluateAll(elements => elements.map(link => link.getAttribute('href')))).toEqual(related.map(slug => `../${slug}/`));
+   await expect(endCard.locator('.story-event-link a')).toHaveAttribute('href', christmas);
+ });
+}

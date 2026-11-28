@@ -1,0 +1,1020 @@
+{
+  "schemaVersion": 1,
+  "id": "twenty-four-letters-before-christmas",
+  "title": "Twenty-Four Letters Before Christmas",
+  "language": "en-GB",
+  "printCoverTitle": true,
+  "event": "christmas",
+  "ageRange": "4–7",
+  "readingLevel": "Read together",
+  "readingMode": "read-together",
+  "publicationStatus": "published",
+  "storyPageCount": 24,
+  "wordCount": 1188,
+  "blurb": "On the first of December, Ted-E-Bear finds a gold envelope on his doormat. Inside is a piece of gold paper and a note: “Keep me safe. Bring me to the Great Oak on Christmas Eve.” Every morning after that, another friend gets one. Who is sending them? And what are the pieces for? Read one page a day, and look for the clues.",
+  "pages": [
+    {
+      "number": 1,
+      "text": "**1 December**\n\nAt eight o’clock in the morning, Ted-E-Bear found a gold envelope on his doormat. It had no stamp. His name was on the front, in big, wobbly letters.\n\nInside was a piece of shiny gold paper with zigzag edges, and a note.\n\n*Piece 1. Keep me safe. Bring me to the Great Oak on Christmas Eve.*\n\n“Who sent this?” said Ted.",
+      "illustrationDirection": "Ted-E-Bear in his mustard jumper at his front door at 8 a.m., holding up a gold zigzag-edged piece and a small note in round wobbly squiggles. The gold envelope in his other paw.",
+      "art": {
+        "status": "accepted",
+        "master": "p01.png",
+        "webp": "p01.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "01c2db1ecc33e928e4181e9975b54e391c23ee732d7dbc5454621c37267bd693",
+        "derivatives": [
+          {
+            "path": "p01.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 407100,
+            "sha256": "2b153e8673b283e70aebcbbb58abb159d2cfd1decb8c2789b84ecae1545ac15d"
+          },
+          {
+            "path": "p01-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 243644,
+            "sha256": "b4d7906b334df2f5746132e07a2c1e0b02de95d154f8a5137593d593ab43a203"
+          },
+          {
+            "path": "p01-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 110252,
+            "sha256": "8e26fa6e2d494a835271cc1daecad459f08b948061b6c1871928ce458b691a03"
+          }
+        ],
+        "review": "Ted matches the yellow-jumper Angel model. One envelope, one piece and one note with rounded squiggles. Wet ground and rime before first snowfall. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Ted-E-Bear holds a gold paper piece and a note he found on his doormat."
+      },
+      "alt": "Ted-E-Bear holds a gold paper piece and a note he found on his doormat."
+    },
+    {
+      "number": 2,
+      "text": "**2 December**\n\nThe next morning, Corgi-on-the-Cob got one too.\n\nHe sniffed the gold envelope. He sniffed it again.\n\n“Cocoa,” he said. “This letter smells of hot cocoa.”\n\n*Piece 2. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "Corgi-on-the-Cob at his round door, nose pressed to a gold envelope, eyes closed, sniffing. A wisp of steam-like scent curling from it.",
+      "art": {
+        "status": "accepted",
+        "master": "p02.png",
+        "webp": "p02.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7ee9874de839cf1f21a49f1c50401f37db4bc0bf82dfccb2129490d935123ecb",
+        "derivatives": [
+          {
+            "path": "p02.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 312170,
+            "sha256": "dc9c954f948e013ed67413a8c2b12e1a2e2c599c495f6631fdf6072328ff972d"
+          },
+          {
+            "path": "p02-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 199140,
+            "sha256": "f64672b1cbca42ac6d28744197eb012fda532f76f1c081d46086bd27e63803a7"
+          },
+          {
+            "path": "p02-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88932,
+            "sha256": "08eb8056fe763364c1fd8323fb829a5490e32c02b28b7e2fdc6dac1114155972"
+          }
+        ],
+        "review": "Corgi now wears his canonical knitted corn earmuffs and teal scarf. One envelope, one gold piece, one note with tall spiky squiggles. Frost before the first snow. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Corgi-on-the-Cob sniffs a gold envelope that smells of cocoa."
+      },
+      "alt": "Corgi-on-the-Cob sniffs a gold envelope that smells of cocoa."
+    },
+    {
+      "number": 3,
+      "text": "**3 December**\n\nPanda-Cake opened his envelope at the Breakfast Bistro, over a plate of pancakes.\n\nOut fell a gold piece, a note, and one tiny yellow feather, as soft as fluff.\n\nPanda-Cake put the feather carefully in his apron pocket. “A clue,” he said.",
+      "illustrationDirection": "The Breakfast Bistro: Panda-Cake at a table with pancakes, holding up a tiny yellow fluffy feather between two claws, the gold piece beside his plate.",
+      "art": {
+        "status": "accepted",
+        "master": "p03.png",
+        "webp": "p03.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a612447aec02ef546ccabe712858a2cdcdabceaf5e02f62bdf71d0066d3df9ea",
+        "derivatives": [
+          {
+            "path": "p03.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 188108,
+            "sha256": "2eb82356a3a94b79812981a9e916e252845d30596486c4587346190dd6c74064"
+          },
+          {
+            "path": "p03-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 119458,
+            "sha256": "eeb8927ac807964d97557766d7dbabf48389be659a7805b053060f52658c0998"
+          },
+          {
+            "path": "p03-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 56780,
+            "sha256": "956cb2c839f750c6c33597415a6edf5d2e54193cfad0c9e2f5ab403fc93d5c2f"
+          }
+        ],
+        "review": "One separate envelope, one zigzag-cut gold piece, a white note and one little fluffy yellow feather. The window shows rime on grass and no snow on branches, with no senders visible. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Panda-Cake finds a tiny yellow feather in his envelope at the Breakfast Bistro."
+      },
+      "alt": "Panda-Cake finds a tiny yellow feather in his envelope at the Breakfast Bistro."
+    },
+    {
+      "number": 4,
+      "text": "**4 December**\n\nNutmeg’s envelope came while she was choosing a Christmas tree.\n\nShe looked at the library clock. Eight o’clock exactly.\n\n“Ted’s came at eight,” she said. “Corgi’s came at eight. Panda-Cake’s came at eight. Somebody is very good at telling the time.”",
+      "illustrationDirection": "Nutmeg in the library garden among small potted firs, holding her gold envelope and looking through the window at the library clock showing exactly eight.",
+      "art": {
+        "status": "accepted",
+        "master": "p04.png",
+        "webp": "p04.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "14c8c3f196523bccc5ff9f68fe207aedbc1b852cc1bd2057e8a3c231fcf3151a",
+        "derivatives": [
+          {
+            "path": "p04.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 361074,
+            "sha256": "0d3b852a6d24096125e5804baf77ff7021c5ac5fd1d3bed15d4ac5563cb10ffc"
+          },
+          {
+            "path": "p04-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 200306,
+            "sha256": "22010fadb966d4b6348c6135f19b8c1715b716f243ff837117e3f266444d590e"
+          },
+          {
+            "path": "p04-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 90252,
+            "sha256": "ae947046aeb17c9894ef9c65d6ae25efd84f8d5809de72714b28201ec6e0e246"
+          }
+        ],
+        "review": "One gold envelope and one piece. Nutmeg matches the published scarf and jumper. The clock hands mark exactly eight; patches of frost and no falling snow.",
+        "generator": "built-in imagegen",
+        "alt": "Nutmeg notices her envelope arrived at exactly eight o’clock."
+      },
+      "alt": "Nutmeg notices her envelope arrived at exactly eight o’clock."
+    },
+    {
+      "number": 5,
+      "text": "**5 December**\n\nVincent Van Mouse held his gold piece up to the light.\n\n“Look at these edges,” he said. “Zig, zag, zig, zag. Somebody cut this with zigzag scissors. The kind that are safe for small paws.”\n\n*Piece 5. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "Vincent’s attic studio: Vincent holding the gold piece up to the window light, the zigzag edge clearly shown, a pair of paintbrushes in his other paw.",
+      "art": {
+        "status": "accepted",
+        "master": "p05.png",
+        "webp": "p05.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a5d24f3e208da66629196bda3f7b6d3d0a34f1610e4d02c8223d716d10003471",
+        "derivatives": [
+          {
+            "path": "p05.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 309814,
+            "sha256": "04f8391f5d81f20d2895a8c29001975089b6fbcd27fe9ea798912d6794bcb859"
+          },
+          {
+            "path": "p05-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 177044,
+            "sha256": "b82eb888f48e69802cfca6a7eededa31d5eb605d4ac3404e99f8550f4047f1cc"
+          },
+          {
+            "path": "p05-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 77410,
+            "sha256": "c21b196613d4a3d161d2eabce961ca561e46639581fbaf70a773725df3946972"
+          }
+        ],
+        "review": "One gold envelope, note and jagged piece. Vincent matches his attic portrait and has two brushes. Window is frosted. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Vincent Van Mouse holds up a gold piece and points to its zigzag edges."
+      },
+      "alt": "Vincent Van Mouse holds up a gold piece and points to its zigzag edges."
+    },
+    {
+      "number": 6,
+      "text": "**6 December**\n\nSub-Zero’s envelope came with the first snow.\n\nHe put his gold piece in his cooler backpack, between two Chilly-Facts, to keep it safe and flat.\n\n“Whoever you are,” he called out into the snowflakes, “I’m keeping it safe!”",
+      "illustrationDirection": "First snow. Sub-Zero outside his snowy house slipping his gold piece into his cooler backpack, beak raised to the falling flakes.",
+      "art": {
+        "status": "accepted",
+        "master": "p06.png",
+        "webp": "p06.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "532e7f9dc17aed8f4379c33590580822b84232a77d77f5e062659da54715a03d",
+        "derivatives": [
+          {
+            "path": "p06.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 252142,
+            "sha256": "6b121bbc7ac3f4de4fdf0bc86b9166a62a113beff3b69ec7052b5da239be725f"
+          },
+          {
+            "path": "p06-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 152860,
+            "sha256": "b54512534852c9b0f3b3f708cd1ae245de88967d698aa5f51b3ac11289520e06"
+          },
+          {
+            "path": "p06-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 72240,
+            "sha256": "6ca7dcbbe9a353350d2120861897a3bf0278125608c3e224b1c1a8a82abc4476"
+          }
+        ],
+        "review": "One gold piece goes into the cooler backpack between two Chilly-Facts. One gold envelope and one note, no senders. Full-size, prop detail and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Sub-Zero puts his gold piece safely into his cooler backpack as the first snow falls."
+      },
+      "alt": "Sub-Zero puts his gold piece safely into his cooler backpack as the first snow falls."
+    },
+    {
+      "number": 7,
+      "text": "**7 December**\n\nHop-Tart got piece 7. He hopped straight round to Sub-Zero’s house to compare.\n\nThey held their two gold pieces side by side. They wiggled them. *Click.*\n\nThey fitted together.\n\n“They’re pieces of the same thing!” said Hop-Tart. “But what thing?”",
+      "illustrationDirection": "Hop-Tart and Sub-Zero side by side, holding two gold pieces that click together along a zigzag edge, both amazed.",
+      "art": {
+        "status": "accepted",
+        "master": "p07.png",
+        "webp": "p07.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "efbd23a15bc1a793cd56776690b0c0a7ccff83680ce3778b5b8556039e69d94f",
+        "derivatives": [
+          {
+            "path": "p07.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 298706,
+            "sha256": "c1fec863a733d549c65b14ae09a1bcf5f0740a7195a8e092b88dade0dbeb75a1"
+          },
+          {
+            "path": "p07-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 191540,
+            "sha256": "b4f850db906f94a43a722731364e8dc8d8f752f84a4654f8383a5d3ae8f42315"
+          },
+          {
+            "path": "p07-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 88818,
+            "sha256": "ca32f8a963d854a7f000990bf5e32855acf14f1caf24f9eaa81fa44d9116c704"
+          }
+        ],
+        "review": "Exactly two gold pieces form one point, zigzag edges interlock at a readable seam, each held by one friend. One envelope in the snow. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Hop-Tart and Sub-Zero find that their two gold pieces fit together."
+      },
+      "alt": "Hop-Tart and Sub-Zero find that their two gold pieces fit together."
+    },
+    {
+      "number": 8,
+      "text": "**8 December**\n\nPork-ulele got piece 8, and wrote a song about it on his ukulele.\n\n*Who sends the letters, gold and bright?*\n*Who comes at eight and leaves no name?*\n*Who’ll be at the Great Oak, Christmas night?*\n\nHe wasn’t sure about the ending. He kept playing anyway.",
+      "illustrationDirection": "Pork-ulele on his porch strumming his ukulele, the gold piece propped against a flowerpot, musical notes drifting in the cold air.",
+      "art": {
+        "status": "accepted",
+        "master": "p08.png",
+        "webp": "p08.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "f088a22de796f35a95589a842e3a1eb1b9606f7c28a8b26ff65635785fca9e35",
+        "derivatives": [
+          {
+            "path": "p08.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 288752,
+            "sha256": "89f6a7454e445ae471635af17edb86f20157b2cd662e71b10fc90c28f81751ab"
+          },
+          {
+            "path": "p08-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 173628,
+            "sha256": "688e480ee389465176446e9864bf6198086c480a1b79adf3cede72a8c78f9ac4"
+          },
+          {
+            "path": "p08-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 81084,
+            "sha256": "02a174219c50a6f4e357ce0f9538e1a1fbc67c57ce5cd9e6c08bbb25882836d9"
+          }
+        ],
+        "review": "Blue-shirted Pork-ulele strums a ukulele next to one gold envelope and one paper piece. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Pork-ulele plays a song about the mystery letters."
+      },
+      "alt": "Pork-ulele plays a song about the mystery letters."
+    },
+    {
+      "number": 9,
+      "text": "**9 December**\n\nLuckybug’s gold piece was bigger than she was.\n\nShe carried it home over her head, like a little golden sail, all the way across the green.\n\n*Piece 9. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "Luckybug walking across the snowy green carrying a gold piece far bigger than she is, held over her head like a golden sail.",
+      "art": {
+        "status": "accepted",
+        "master": "p09.png",
+        "webp": "p09.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4f96174e7a6e49545b353dea84316f5fd1d2da8b098cbee557bf9cc133a36cb7",
+        "derivatives": [
+          {
+            "path": "p09.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 272692,
+            "sha256": "32150877397c95bdd982c4d591c5385ac6655296293a7fdcf1e4bba2110d5d4c"
+          },
+          {
+            "path": "p09-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 174042,
+            "sha256": "9bb5d554b46667ef4e469179c7d26d3b40626fcb87aa5eb17ed56045db55a918"
+          },
+          {
+            "path": "p09-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82322,
+            "sha256": "fba0826c9446bd97e0365a2fe3e776c2c7d41d2ca81892e2354cae7be5da427d"
+          }
+        ],
+        "review": "Luckybug holds one gold piece larger than herself. The oak, stone wall, snowy schoolhouse, bench and red pillar box establish the green. No readable signs or senders. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Luckybug carries a gold piece bigger than herself across the green."
+      },
+      "alt": "Luckybug carries a gold piece bigger than herself across the green."
+    },
+    {
+      "number": 10,
+      "text": "**10 December**\n\nFe-Line-Mignon read her note very slowly, the way she read poetry.\n\n“Ted showed me his note,” she said. “The writing was round and wobbly. Mine is tall and wobbly. These letters were written by two different paws.”\n\nTwo senders. Taking turns.",
+      "illustrationDirection": "Fe-Line-Mignon in her elegant parlour on a red-velvet rug, holding her note (tall spiky squiggles) beside Ted’s note (round squiggles), comparing them.",
+      "art": {
+        "status": "accepted",
+        "master": "p10.png",
+        "webp": "p10.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "caf6d37afbf4b2453900039e09b0a5a7f33505d7d33579b6496a54aa645c5c61",
+        "derivatives": [
+          {
+            "path": "p10.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 275774,
+            "sha256": "b7af167ed981d11095f860137275b1fdc6556bc463a88b9eb17144eb5115863d"
+          },
+          {
+            "path": "p10-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 164620,
+            "sha256": "0caa211d185a163297df943c2b0ef192313bbe6bedb42b007c01eb19e18d8cf4"
+          },
+          {
+            "path": "p10-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 76114,
+            "sha256": "02ba78a632d49fa45c41b81b2a47a38ac6f09714b9c1f74edf82cd444e43cf58"
+          }
+        ],
+        "review": "Two white notes with distinct round and tall angular squiggles, one gold piece, one gold envelope and the red-velvet rug. No sender visible. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Fe-Line-Mignon compares two notes and sees they are in different handwriting."
+      },
+      "alt": "Fe-Line-Mignon compares two notes and sees they are in different handwriting."
+    },
+    {
+      "number": 11,
+      "text": "**11 December**\n\nDough Mino asked everybody to bring their pieces to the library. He laid them out in a long, neat row on the floor.\n\nEleven pieces. Lots of them had a sharp point at one end.\n\n“Points,” said Dough Mino. “Lots of points. What has lots of points?”",
+      "illustrationDirection": "The library floor: Dough Mino laying eleven gold pieces in a neat row; many have sharp points. Friends looking on.",
+      "art": {
+        "status": "accepted",
+        "master": "p11.png",
+        "webp": "p11.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "4e9a5e521207bbfffa901c03719c51668942e392a7d7335bcc237b0e5d3a6462",
+        "derivatives": [
+          {
+            "path": "p11.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 302862,
+            "sha256": "a83809a65f2b124a4f669acdc0a2b4f8a7e60efa4105384193082c8fefc21dd4"
+          },
+          {
+            "path": "p11-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 196788,
+            "sha256": "f2289e7070f72fcddcb1f62678d4d76e7088479d0fcb663f16787ec734eee9d8"
+          },
+          {
+            "path": "p11-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 93684,
+            "sha256": "6ab7aed36a32c917e409f918c3361c4caeeb889796a6537626a70078b6f49ca2"
+          }
+        ],
+        "review": "Eleven separate gold pieces, ten in the line and one in his paw, each with a zigzag edge. Dough Mino matches the dinosaur art.",
+        "generator": "built-in imagegen",
+        "alt": "Dough Mino lays eleven gold pieces in a neat row on the library floor."
+      },
+      "alt": "Dough Mino lays eleven gold pieces in a neat row on the library floor."
+    },
+    {
+      "number": 12,
+      "text": "**12 December**\n\nShelly-Pop’s envelope was waiting on the little jetty at the duck pond, held down with a pebble so it couldn’t blow away.\n\n“Whoever left this,” said Shelly-Pop, “is very careful.”\n\n*Piece 12. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "The duck pond jetty in snow: a gold envelope weighed down with a smooth pebble. Shelly-Pop arriving, smiling.",
+      "art": {
+        "status": "accepted",
+        "master": "p12.png",
+        "webp": "p12.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "22e39eab54c100e24adc90d57134505190156ca71d8b793e583562910e0182f8",
+        "derivatives": [
+          {
+            "path": "p12.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 309640,
+            "sha256": "c80f5381974001eb2dadd38e20efac7dda9dedb88e8012218c41a099f613109d"
+          },
+          {
+            "path": "p12-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 180628,
+            "sha256": "d95f554b8b2454baedfbc6b363874280bdf62cb8b2f6e61a90227d118bf69689"
+          },
+          {
+            "path": "p12-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82986,
+            "sha256": "63d0efd903da0c5a171325f84d92d1bb3f9c4115b30132612309700eb5873a37"
+          }
+        ],
+        "review": "One smooth pebble holds one gold envelope on the reed-lined snowy jetty. Shelly-Pop is green with her brown shell and rosy cheeks. No senders. Full-size and 390 px reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "Shelly-Pop finds a gold envelope held down by a pebble on the jetty."
+      },
+      "alt": "Shelly-Pop finds a gold envelope held down by a pebble on the jetty."
+    },
+    {
+      "number": 13,
+      "text": "**13 December**\n\nPolly Roger’s envelope came all the way to the harbour.\n\n“Arrr,” she said. “A treasure map? No. A treasure piece!”\n\nShe tucked it under her eye patch for safekeeping, which was not a good idea, and then into her coat pocket, which was.",
+      "illustrationDirection": "The harbour wall: Polly Roger lifting her eye patch to tuck a gold piece under it, comically, with gulls watching.",
+      "art": {
+        "status": "accepted",
+        "master": "p13.png",
+        "webp": "p13.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2517d33c068d99b2a9f7b2568b66f52348d59466d0d16516b6307f61e33b57f4",
+        "derivatives": [
+          {
+            "path": "p13.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 358124,
+            "sha256": "0db01cabe47acbaf754222ddd3ef526e02d4ea54f7c088c75bbc10a0dca298aa"
+          },
+          {
+            "path": "p13-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 207668,
+            "sha256": "e30356b318ebfe04198ae6006253d8b8c83dd71fc7ece354828d342cd7ecf838"
+          },
+          {
+            "path": "p13-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 95882,
+            "sha256": "045ead0731d4231073aeee19d0d4279c932e348e31ab94176ef70c05f1409220"
+          }
+        ],
+        "review": "Polly matches her published scarlet macaw, purple coat and gold-edged plume hat. One gold envelope and one piece at her single eye patch, with two gulls at the harbour.",
+        "generator": "built-in imagegen",
+        "alt": "Polly Roger tries to keep her gold piece safe under her eye patch."
+      },
+      "alt": "Polly Roger tries to keep her gold piece safe under her eye patch."
+    },
+    {
+      "number": 14,
+      "text": "**14 December**\n\nBiscuit-Bouncer was so excited about piece 14 that he bounced three times round the garden before he opened it.\n\nThen he had to go and find it in the snow.\n\n*Piece 14. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "A snowy garden: Biscuit-Bouncer mid-bounce, ears flying, and a gold envelope sinking into the snow behind him.",
+      "art": {
+        "status": "accepted",
+        "master": "p14.png",
+        "webp": "p14.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "b410ac653d7c08e89165d5fd22f55b4469a84c79259d43aeac76c9d8d3010837",
+        "derivatives": [
+          {
+            "path": "p14.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 266318,
+            "sha256": "1b667fbfc6ba6e6c81bc13181a9cfcf37260213128573f1d55fafc2493de621a"
+          },
+          {
+            "path": "p14-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 176862,
+            "sha256": "a95a7b42c70db9c21fed1c87f4ef79547462386b041ca3541fc26458a9ef0bd0"
+          },
+          {
+            "path": "p14-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 87330,
+            "sha256": "626f1dfeec829bd91563f6f17707672373ccf0d58934d7c10b0ed0d822abef5a"
+          }
+        ],
+        "review": "The green ball is removed. One envelope sinks into the snow as the puppy bounds past.",
+        "generator": "built-in imagegen",
+        "alt": "Biscuit-Bouncer bounces with excitement while his envelope lands in the snow."
+      },
+      "alt": "Biscuit-Bouncer bounces with excitement while his envelope lands in the snow."
+    },
+    {
+      "number": 15,
+      "text": "**15 December**\n\nTick-Tusk got piece 15. She took out her pocket watch.\n\n“I’ve been watching the post box,” she said. “Every morning, just before eight o’clock, somebody small posts a gold envelope. Too quickly to see who.”",
+      "illustrationDirection": "Tick-Tusk behind a snowy hedge with her pocket watch, peeking at the red post box on the green. Two tiny yellow blurs just vanishing round the box.",
+      "art": {
+        "status": "accepted",
+        "master": "p15.png",
+        "webp": "p15.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "6e083e7e1d887bf7579e89b1af31385d1eb72bc6cd8f372293e558a4f4f681df",
+        "derivatives": [
+          {
+            "path": "p15.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 323768,
+            "sha256": "d4924aa2caef7d8f8b8713be0d1655858621e9b0dd69074ad3eadbef90083f98"
+          },
+          {
+            "path": "p15-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 198762,
+            "sha256": "da0f41ef0f7568d746635c7e3f3d2ccd697c8b90b8b540187d115b8bbd011f4d"
+          },
+          {
+            "path": "p15-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 91884,
+            "sha256": "7ff65077902497959ee3d8be7adebdb8d2435f39cc966ec99d552dd24beb6229"
+          }
+        ],
+        "review": "Two yellow blurs without features. One watch and an unlettered pillar box.",
+        "generator": "built-in imagegen",
+        "alt": "Tick-Tusk watches the post box with her pocket watch as two tiny yellow blurs dash away."
+      },
+      "alt": "Tick-Tusk watches the post box with her pocket watch as two tiny yellow blurs dash away."
+    },
+    {
+      "number": 16,
+      "text": "**16 December**\n\nSnack-Spector got piece 16, and went straight to the post box with his magnifying glass.\n\nIn the snow were two sets of tiny footprints, side by side. Three thin toes each. Like a small bird’s.\n\n“Two small birds,” said Snack-Spector, “who smell of cocoa, leave yellow fluff and are very good at telling the time.”",
+      "illustrationDirection": "Snack-Spector kneeling at the post box with his magnifying glass over two sets of tiny three-toed footprints side by side in the snow.",
+      "art": {
+        "status": "accepted",
+        "master": "p16.png",
+        "webp": "p16.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7e68165691b33cfb0ebcd8a6d2968c46a1293c03c4d9298bbcdea099f37c0924",
+        "derivatives": [
+          {
+            "path": "p16.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 304820,
+            "sha256": "a7f9bd7d531fb90e754235f1b3ad4b04746b4b1171a79f5621cd19b447e045db"
+          },
+          {
+            "path": "p16-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 178870,
+            "sha256": "c0cbb0a9d28fb63fdd7bc37d094f3e711edf2eca93521f9ffec31d26cf37eb17"
+          },
+          {
+            "path": "p16-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 83310,
+            "sha256": "6a64bc82b7820661019033876c0e0ca50c0547fec8c8864c049682438f21aeaa"
+          }
+        ],
+        "review": "Two side-by-side tracks with two three-toed impressions each. One gold envelope tucked in the pouch. No sender or readable lettering.",
+        "generator": "built-in imagegen",
+        "alt": "Snack-Spector studies two sets of tiny bird footprints by the post box."
+      },
+      "alt": "Snack-Spector studies two sets of tiny bird footprints by the post box."
+    },
+    {
+      "number": 17,
+      "text": "**17 December**\n\nProfessor Hooten opened his envelope in the library and read it twice.\n\nSnack-Spector told him all the clues.\n\nProfessor Hooten turned his head almost all the way round, and smiled, and said nothing at all.",
+      "illustrationDirection": "The library: Professor Hooten with his gold envelope, head turned almost all the way round toward Snack-Spector, eyes twinkling, beak closed.",
+      "art": {
+        "status": "accepted",
+        "master": "p17.png",
+        "webp": "p17.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "54794f727bdfb851436b319ffbd595db292a54c982c08c9a2a7ae844b6c8e90c",
+        "derivatives": [
+          {
+            "path": "p17.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 408298,
+            "sha256": "540ec422e5e9fcc59795d97d2c27a3983c63247bc3484e9d3f9bcdd3969efb80"
+          },
+          {
+            "path": "p17-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 242682,
+            "sha256": "ae7a7934018fcfaf0f8972d45407c832e9cdcceb636733cd85f7a11761305fb0"
+          },
+          {
+            "path": "p17-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 109754,
+            "sha256": "8c68bc2b75378e6f98526df4ce187777ceb6e69a9aff72c472b6ef201796875c"
+          }
+        ],
+        "review": "Hooten’s head turns toward Snack-Spector while his body faces away. One note inside one gold envelope with one gold piece. No twins.",
+        "generator": "built-in imagegen",
+        "alt": "Professor Hooten smiles and says nothing as Snack-Spector tells him the clues."
+      },
+      "alt": "Professor Hooten smiles and says nothing as Snack-Spector tells him the clues."
+    },
+    {
+      "number": 18,
+      "text": "**18 December**\n\nHen-Berry got piece 18 at her kitchen table.\n\nShe read the note. She looked at the two empty cocoa mugs by the sink. She looked at the zigzag scissors on the windowsill.\n\nShe smiled, just like Professor Hooten, and said nothing at all.",
+      "illustrationDirection": "Hen-Berry’s kitchen: Hen-Berry with her note, glancing at two cocoa mugs by the sink and zigzag scissors on the windowsill. The twins’ bedroom door ajar in the background, no twins visible.",
+      "art": {
+        "status": "accepted",
+        "master": "p18.png",
+        "webp": "p18.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "36f8337ce35bb9ab0d2709dc48f6b9766d272a53fde21c5d9310ca2b879eaba0",
+        "derivatives": [
+          {
+            "path": "p18.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 234308,
+            "sha256": "235eda3364ea6151379ffede8ecd015f533df9b78a0cf84a9270de3313a6ee8b"
+          },
+          {
+            "path": "p18-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 148594,
+            "sha256": "f1355da4de43027b78402f2571fd78774fe7fac3de885c0e721fd87cb97ca80a"
+          },
+          {
+            "path": "p18-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 67124,
+            "sha256": "6f01888f0564a6581853d1163ed515bf8a8492bbe385fcd4f13be125d2e51af2"
+          }
+        ],
+        "review": "Counted two cocoa mugs and one zigzag-cut pair of scissors. One note with spiky squiggles, one gold piece and one envelope. No chick visible through the ajar door.",
+        "generator": "built-in imagegen",
+        "alt": "Hen-Berry reads her note and notices two cocoa mugs and a pair of zigzag scissors."
+      },
+      "alt": "Hen-Berry reads her note and notices two cocoa mugs and a pair of zigzag scissors."
+    },
+    {
+      "number": 19,
+      "text": "**19 December**\n\nSpinnerella’s envelope was very big and Spinnerella was very small.\n\nSo she spun a silver thread round her gold piece and hung it in the corner of her web, where it turned and glittered in the light.\n\n*Piece 19. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "Spinnerella in her web in the library corner, her gold piece hanging on a silver thread, turning and glittering.",
+      "art": {
+        "status": "accepted",
+        "master": "p19.png",
+        "webp": "p19.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "9d5416dffd477a3b44b0e793317a8c49234dede84d29d12046eb20a4eea41d0e",
+        "derivatives": [
+          {
+            "path": "p19.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 187594,
+            "sha256": "72919a33ee1337f443721b14fc8ffc4b748e7dc522a771b6c0adf4f9bda2fd5b"
+          },
+          {
+            "path": "p19-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 120990,
+            "sha256": "8a610057e3187aacac6defe09582d6847cf26234183e879c1afc2ad42f327c21"
+          },
+          {
+            "path": "p19-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 57928,
+            "sha256": "a95d62a1293908d397631c766b2dc8f64c4ccf01347d729e8cc49c4b50e29c8f"
+          }
+        ],
+        "review": "One gold piece hangs on a short silvery thread in a spider’s web, one gold envelope below. No early appearance of the senders.",
+        "generator": "built-in imagegen",
+        "alt": "Spinnerella hangs her gold piece in her web, where it glitters."
+      },
+      "alt": "Spinnerella hangs her gold piece in her web, where it glitters."
+    },
+    {
+      "number": 20,
+      "text": "**20 December**\n\nBark-B-Q’s piece came on a frosty morning. He sniffed it, like Corgi had.\n\n“Cocoa,” he agreed. “And a little bit of hay. Like a henhouse.”\n\nHe wagged. He was getting close.",
+      "illustrationDirection": "Bark-B-Q at his frosty garden gate, sniffing his envelope, tail wagging, a thoughtful look.",
+      "art": {
+        "status": "accepted",
+        "master": "p20.png",
+        "webp": "p20.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7ede17258b83079dc460114e72e37f4b5fcc02db38b010942a8d39be365099c9",
+        "derivatives": [
+          {
+            "path": "p20.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 317488,
+            "sha256": "6c41a997db59c46effca13f8d07f1d7f55c3cb90ceccb554fab5b85c23be4f8c"
+          },
+          {
+            "path": "p20-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 181120,
+            "sha256": "42df44b1c47acd654871dc26523c75b0cd05d4ee8d71b168645911ce83c14ac6"
+          },
+          {
+            "path": "p20-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82900,
+            "sha256": "d3d82a847dfcc9390993ab93914f06841478de15bac46f31cfa4d1446ef54c81"
+          }
+        ],
+        "review": "Bark-B-Q wears apron, hat and a knitted blue scarf, sniffing one gold envelope.",
+        "generator": "built-in imagegen",
+        "alt": "Bark-B-Q sniffs his envelope and smells cocoa and hay."
+      },
+      "alt": "Bark-B-Q sniffs his envelope and smells cocoa and hay."
+    },
+    {
+      "number": 21,
+      "text": "**21 December**\n\nHoney-Beats got piece 21. She tapped the envelope with her drumsticks. Tap, tap. Tap, tap.\n\n“Two paws,” she said. “Taking turns. Like a drum and a bell.”\n\nEverybody in the village was guessing now.",
+      "illustrationDirection": "Honey-Beats on her doorstep tapping her envelope with her drumsticks, listening.",
+      "art": {
+        "status": "accepted",
+        "master": "p21.png",
+        "webp": "p21.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fe44fbfa0b702242cfd9b8f140fbeecbd7a1b1d769ae19bbfe09aa9ec1294c24",
+        "derivatives": [
+          {
+            "path": "p21.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 305550,
+            "sha256": "89a96f24ec785fc474778250b2c5f1fb0c07c1f6090aa8f765a02b31093e4572"
+          },
+          {
+            "path": "p21-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 185088,
+            "sha256": "7b69769790499d0e141c82488b8b1f4a23c3e94d79cf53b48505bbfee5ebdaf5"
+          },
+          {
+            "path": "p21-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 85230,
+            "sha256": "4e99a6f7b14c781a75bf0782ae777247a741fa7ab635fb7e5dc172737ce93e7a"
+          }
+        ],
+        "review": "Honey-Beats taps one gold envelope with exactly two drumsticks.",
+        "generator": "built-in imagegen",
+        "alt": "Honey-Beats taps her envelope with her drumsticks."
+      },
+      "alt": "Honey-Beats taps her envelope with her drumsticks."
+    },
+    {
+      "number": 22,
+      "text": "**22 December**\n\nFoxy-Lox read her note and laughed.\n\n“I know who it is,” she said.\n\n“Who?” said everybody.\n\n“I’m not telling,” said Foxy-Lox. “It’s much more fun to find out.”",
+      "illustrationDirection": "Foxy-Lox at her den door laughing, envelope held to her chest; a little crowd of friends leaning in eagerly.",
+      "art": {
+        "status": "accepted",
+        "master": "p22.png",
+        "webp": "p22.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2aebccb758fc5b3ce27ab63e77c32b57b96e660bf47e908906f2e9463a931aa9",
+        "derivatives": [
+          {
+            "path": "p22.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 305964,
+            "sha256": "0c45c2d9b222a4a97a7b0e146a0fc50e9a49daf1d2d6e8edf18b072ec82355f2"
+          },
+          {
+            "path": "p22-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 185966,
+            "sha256": "8bd7077af2eb290da9306a362d833d9d4b0d04451c09b9a365faf5de832cbec1"
+          },
+          {
+            "path": "p22-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 86408,
+            "sha256": "d518f6764687f85aff4ab4950349583e5bacebd04805afca7f387dda60637d34"
+          }
+        ],
+        "review": "Cranberry scarf, den and one gold envelope. No chicks visible.",
+        "generator": "built-in imagegen",
+        "alt": "Foxy-Lox laughs and says she knows who it is, but won’t tell."
+      },
+      "alt": "Foxy-Lox laughs and says she knows who it is, but won’t tell."
+    },
+    {
+      "number": 23,
+      "text": "**23 December**\n\nOn the twenty-third, Belgian-Waffle went to the post box to collect the morning letters, the way he always did.\n\nThere was only one gold envelope inside. And it had his own name on the front.\n\n“For me?” said Belgian-Waffle. Nobody ever sent him anything.\n\n*Piece 23. Keep me safe. Bring me to the Great Oak on Christmas Eve.*",
+      "illustrationDirection": "Dawn at the post box: Belgian-Waffle peering in at a single gold envelope with his own name on it, feathers fluffed in surprise.",
+      "art": {
+        "status": "accepted",
+        "master": "p23.png",
+        "webp": "p23.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "8b17e8e2d041bc7eb4d2581b6ecdcf4db32c3323eba84cd9bcc7b0c3e36b9885",
+        "derivatives": [
+          {
+            "path": "p23.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 299518,
+            "sha256": "6e3861f2b5eaf9d60d1f52a8230942322362075af9c45ac9c61b89c380f95a50"
+          },
+          {
+            "path": "p23-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 178254,
+            "sha256": "29dd7a4e6a24c4ddf70bdd549fd840b4873086c9fc3ce340763b245252479fda"
+          },
+          {
+            "path": "p23-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 82444,
+            "sha256": "2f526294edd0d3718bd075fec3b282d0c09caae6d48200a10198b9fc86a4bf42"
+          }
+        ],
+        "review": "One visible gold envelope in the open pillar box, old frayed scarf, blue jay in waffle vest.",
+        "generator": "built-in imagegen",
+        "alt": "Belgian-Waffle finds a gold envelope with his own name on it."
+      },
+      "alt": "Belgian-Waffle finds a gold envelope with his own name on it."
+    },
+    {
+      "number": 24,
+      "text": "**24 December: Christmas Eve**\n\nAs the sun went down, everybody came to the Great Oak, holding their gold pieces.\n\nDough Mino laid them out in the snow. Points. Edges. Corners. Click, click, click. It was a star, as big as Ted-E-Bear. But in the very middle, there was a hole.\n\nOut from behind the Great Oak came two small chicks, one holding a flask of cocoa and one holding a watch.\n\n“It was us,” said Coop-Accino. “We cut a star into twenty-four pieces,” said Cluck O’Clock, “so everybody could bring a piece of it.”\n\n“But who has the middle?” said Ted.\n\nThe twins looked at each other. Then they looked straight out of the page, at you.\n\n“You do,” they said.\n\nPut your hand on the middle of the star.\n\nThere. Now it’s whole. And together, everybody lifted it up to the top of the Great Oak, where it shone over the whole village all Christmas night.",
+      "illustrationDirection": "Sunset at the Great Oak: the friends gathered round a huge gold star laid out in the snow, a round hole in its middle. Cluck O’Clock (watch) and Coop-Accino (cocoa flask) stepping out from behind the oak, looking straight at the reader. Above, already glowing on the topmost branch, the completed star, as if the reader has just filled the middle. Use a two-level composition: the star in the snow below, the finished star in the tree above.",
+      "art": {
+        "status": "accepted",
+        "master": "p24.png",
+        "webp": "p24.webp",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "7c52c8e6769d6f95e6bf5473e5efc8a8b9b51dab1f6c803b5d6371033c57edcf",
+        "derivatives": [
+          {
+            "path": "p24.webp",
+            "width": 1024,
+            "height": 1536,
+            "bytes": 324282,
+            "sha256": "e11914dd8e62054829d8aba356884f47e9b247577a7ff4870ca82551f8c02e36"
+          },
+          {
+            "path": "p24-800w.webp",
+            "width": 800,
+            "height": 1200,
+            "bytes": 222914,
+            "sha256": "5207ac94fe5c21ae10400b96db864067ddce4a9dfd4d5fcfb89c787533c1d404"
+          },
+          {
+            "path": "p24-480w.webp",
+            "width": 480,
+            "height": 720,
+            "bytes": 115784,
+            "sha256": "350fb02b4b2434d4744d180ad28643da969e90c3d9f48c6906ebc1cfd7a959b1"
+          }
+        ],
+        "review": "Both young twins carry the correct props. The numeral-free watch has two hands. Gold star follows the four-piece-per-point and three-piece-body guide with a round open middle. The foreground twins partly hide the lower tips. Completed star above. Full-size seam and prop crops and 390 px proof reviewed.",
+        "generator": "built-in imagegen",
+        "alt": "The villagers gather at the Great Oak as Cluck and Coop step forward, with a gold star high in the branches."
+      },
+      "alt": "The villagers gather at the Great Oak as Cluck and Coop step forward, with a gold star high in the branches."
+    }
+  ],
+  "cover": {
+    "status": "accepted",
+    "master": "cover.png",
+    "webp": "cover.webp",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "b04f71bd4243857b01608155c2ca35785f0460460650d352b0556638465af5a5",
+    "derivatives": [
+      {
+        "path": "cover.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 272204,
+        "sha256": "8849ab2182c51ee9c313fc103b8619ac6dc3a674141daeb3f55ad8ea70a1e2d9"
+      },
+      {
+        "path": "cover-800w.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 155488,
+        "sha256": "b8b9aab7c3898774d1ae02b71e2e9476e2d6852fceff74ee2f24805afb1f9a78"
+      },
+      {
+        "path": "cover-480w.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 69768,
+        "sha256": "30acd00ef8c886671526ac8fabdb8c224072565da8a53dad6e2b94ce764f6fb2"
+      }
+    ],
+    "review": "One central envelope, one red heart seal, no stamp or lettering. The lane glints are clearly subordinate. No senders in view. Envelope and seal remain legible at 160 px in colour and greyscale.",
+    "generator": "built-in imagegen",
+    "alt": "A shining gold envelope lies on Ted-E-Bear’s snowy doormat, and more gold envelopes glint on doorsteps down the lane."
+  },
+  "advent": {
+    "month": 12,
+    "firstDay": 1,
+    "lastDay": 24,
+    "teaserFrom": "11-15"
+  },
+  "sourceFolder": "christmas/twenty-four-letters-before-christmas",
+  "webSlug": "twenty-four-letters-before-christmas",
+  "reviewedPrintableSha256": "8bec3f69b968f37979e12e94730810e6871051cfe71bb983079db184c54c24ed"
+}

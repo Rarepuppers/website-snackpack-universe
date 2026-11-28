@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { replaceMarkerBlock } from "./lib/marker-block.mjs";
+import { isPublicBookEntry, publishedOriginals } from "./lib/character-release.mjs";
+import { withBreadcrumbs } from "./lib/breadcrumbs.mjs";
 
 const site = new URL("../", import.meta.url);
 const check = process.argv.includes("--check");
@@ -9,7 +12,24 @@ const read = file => fs.readFileSync(file, "utf8");
 const local = file => new URL(file, site);
 const json = data => JSON.stringify(data, null, 2) + "\n";
 const snapshot = "data/character-board.json";
-const fields = ["id", "name", "kind", "greeting", "moment", "book", "alt", "family", "animal", "fact", "aliases", "app", "colouring"];
+const releasedApps = {
+  "snackpack-1-abcs-alphabet": "SnackPack ABC",
+  "snackpack-2-123s-counting": "SnackPack 123",
+  "snackpack-3-spelling-sentences": "Sentences & Spelling",
+  "snackpack-4-math-arithmetic": "Basic Math",
+  "snackpack-7-mathematics": "SnackPack Mathematics",
+  "snackpack-8-earth-science": "Earth Science",
+  "snackpack-9-space-math": "Space Math",
+  "snackpack-11-prehistoric-pals": "Prehistoric Pals",
+  "snackpack-12-zoo-world": "Zoo World",
+  "snackpack-13-garden-world": "Garden World",
+};
+const appRoutes = {
+  "snackpack-prehistoric-pals": "snackpack-11-prehistoric-pals",
+  "snackpack-zoo-world": "snackpack-12-zoo-world",
+  "snackpack-garden-world": "snackpack-13-garden-world",
+};
+const fields = ["id", "name", "kind", "greeting", "moment", "book", "alt", "family", "animal", "fact", "aliases", "app", "colouring", "status", "pronouns", "greetings", "group"];
 
 function output(file, text) {
   if (/^(characters|animals)\/.*index\.html$/.test(file)) {
@@ -17,6 +37,25 @@ function output(file, text) {
     const description = text.match(/<p class="cast-lead">([^<]+)<\/p>/)?.[1];
     assert(description, `Missing page description for ${route}`);
     text = text.replace("<title>", `<link rel="canonical" href="https://www.snackpackuniverse.com${route}">\n<meta name="description" content="${description}">\n<title>`);
+    const id = file.match(/^(?:characters|animals)\/([^/]+)\/index\.html$/)?.[1];
+    if (id && !["clues", "colouring"].includes(id)) {
+      const media = `characters/media/${id}-share.jpg`;
+      assert(fs.existsSync(local(media)) && fs.statSync(local(media)).size <= 120_000, `Missing or oversized ${media}`);
+      const title = text.match(/<title>(.*?) \| SnackPack Universe<\/title>/)?.[1];
+      assert(title, route);
+      const origin = "https://www.snackpackuniverse.com";
+      const tags = [
+        `<meta property="og:title" content="${title}">`,
+        `<meta property="og:description" content="${description}">`,
+        `<meta property="og:image" content="${origin}/${media}">`,
+        `<meta property="og:image:width" content="1200">`,
+        `<meta property="og:image:height" content="630">`,
+        `<meta property="og:url" content="${origin}${route}">`,
+        `<meta name="twitter:card" content="summary_large_image">`,
+      ];
+      text = text.replace("</head>", tags.join("\n") + "\n</head>");
+    }
+    text = withBreadcrumbs(text, file);
   }
   const destination = local(file);
   if (check) {
@@ -29,21 +68,33 @@ function output(file, text) {
 
 const pick = (object, keys) => Object.fromEntries(keys.filter(key => Object.hasOwn(object, key)).map(key => [key, object[key]]));
 const data = from ? JSON.parse(read(path.join(from, "shared-assets/text/characters/catalog.json"))) : JSON.parse(read(local(snapshot)));
+const publicRecords = data.characters.filter(record => data.version === 2 ? record.status === "public" : (record.status ?? "public") === "public");
 if (from) {
-  for (const record of data.characters) {
+  for (const record of publicRecords) {
     assert(fs.existsSync(path.join(from, record.source)), record.source);
     assert(fs.existsSync(path.join(from, record.portrait)), record.portrait);
     if (record.variant) assert(fs.existsSync(path.join(from, record.variant.source)), record.variant.source);
   }
 }
 
-const characters = data.characters.map(record => ({
+const releases = publishedOriginals(site);
+const publicIds = new Set(publicRecords.map(record => record.id));
+const characters = publicRecords.map(record => ({
   ...pick(record, fields),
   ...(record.art && {art: pick(record.art, ["page", "caption"])}),
   ...(record.variant && {variant: pick(record.variant, ["caption"])}),
+  ...(record.relationships && {relationships: record.relationships.filter(edge => publicIds.has(edge.to))
+    .map(edge => pick(edge, ["to", "type"]))}),
+  ...(record.apps || record.webApps ? {webApps: (record.apps?.map(binding => appRoutes[binding.app] ?? binding.app) ?? record.webApps)
+    .filter(id => Object.hasOwn(releasedApps, id) && fs.existsSync(local(`apps/${id}/index.html`)))} : {}),
+  ...(record.appearances && {appearances: record.appearances
+    .filter(appearance => appearance.kind === "book" && isPublicBookEntry(appearance, appearance.id, releases))
+    .map(appearance => pick(appearance, ["kind", "id", "role"]))}),
 }));
 const animals = data.animals.map(animal => pick(animal, ["id", "name", "fact", "sourceName", "source"]));
-const rounds = data.rounds;
+const seasonal = new Map((data.seasonalRounds ?? [])
+  .filter(round => isPublicBookEntry(round, round.book, releases)).map(round => [round.answer, round]));
+const rounds = data.rounds.map(round => seasonal.get(round.answer) ?? round);
 assert(rounds.length > 0, "Publish at least one complete clue round");
 assert.equal(new Set(rounds.map(round => round.answer)).size, rounds.length);
 assert.equal(rounds.length, characters.length);
@@ -141,34 +192,66 @@ ${body}
 }
 
 const picture = (record, {large = false, eager = false} = {}) => `<img src="${portrait(record.id, large ? 480 : 240)}" srcset="${[240,480,960].map(width => `${portrait(record.id, width)} ${width}w`).join(", ")}" sizes="${large ? "(max-width: 680px) 90vw, 420px" : "(max-width: 540px) 45vw, 300px"}" width="${large ? 480 : 240}" height="${large ? 480 : 240}" alt="${large ? escape(record.alt) : ""}" ${eager ? "fetchpriority=\"high\"" : "loading=\"lazy\""} decoding="async">`;
-const cards = characters.map(record => `<li data-cast-search="${escape([record.name, record.kind, ...(record.aliases ?? [])].join(" "))}"><a class="cast-card" href="${profileHref(record.id)}">${picture(record)}<span><strong>${escape(record.name)}</strong><small>${escape(record.kind)}</small></span></a></li>`).join("\n");
+const groups = {
+  birds: "Birds", mammals: "Mammals", reptiles: "Reptiles",
+  bugs: "Bugs and creepy-crawlies", "sea-creatures": "Sea creatures",
+};
+const storyTitles = new Map();
+for (const character of characters) {
+  for (const { id } of character.appearances ?? []) {
+    if (storyTitles.has(id)) continue;
+    const html = read(local(`read/${id}/index.html`));
+    const title = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] ??
+      html.match(/<title>([^|<]+)/)?.[1]?.trim();
+    assert(title, id);
+    storyTitles.set(id, title.replace(/&amp;/g, "&").replace(/&quot;/g, '"'));
+  }
+}
+const stories = [...storyTitles].sort((a, b) => a[1].localeCompare(b[1], "en"));
+const options = (entries) => entries.map(([id, label]) => `<option value="${id}">${escape(label)}</option>`).join("");
+const cards = characters.map(record => `<li data-cast-search="${escape([record.name, record.kind, ...(record.aliases ?? [])].join(" "))}" data-cast-group="${escape(record.group ?? "")}" data-cast-stories="${(record.appearances ?? []).map(appearance => escape(appearance.id)).join(" ")}"><a class="cast-card" href="${profileHref(record.id)}">${picture(record)}<span><strong>${escape(record.name)}</strong><small>${escape(record.kind)}</small></span></a></li>`).join("\n");
 output("characters/index.html", page("Meet the Characters", `<section class="cast-welcome">
 <div class="cast-welcome-copy">${heading("SnackPack character board", "Hi! Come meet<br>the SnackPack crew.", "Find the friends from your favourite stories. Then see if you can guess who’s behind the library door.")}
 <div class="cast-actions">${button("#crew", "Meet the crew", true)}${button("/characters/clues/", "Play the clue game")}</div></div>
 <picture class="cast-welcome-art"><source srcset="/characters/media/library-720.webp 720w, /characters/media/library-1200.webp 1200w" sizes="(max-width: 680px) 94vw, 620px"><img src="/characters/media/library-720.webp" alt="Professor Hooten shows Hen-Berry and the twins the library’s five clocks" width="720" height="648" fetchpriority="high"></picture>
 </section>
 <section id="crew" class="cast-section"><div class="cast-section-top"><div><p class="cast-kicker">From the stories and apps</p><h2>Pick a face to say hello</h2></div><p>Find their stories, favourite props and family.</p></div>
-<div class="cast-search" data-cast-filter hidden><label for="cast-search">Find a character</label><input id="cast-search" type="search" placeholder="Name or animal"><p role="status" data-cast-count></p></div>
+<div class="cast-search" data-cast-filter hidden><label for="cast-search">Find a character</label><input id="cast-search" type="search" placeholder="Name or animal"><label for="cast-group">Animal group</label><select id="cast-group"><option value="">All</option>${options(Object.entries(groups))}</select><label for="cast-story">Explore by story</label><select id="cast-story"><option value="">All stories</option>${options(stories)}</select><p role="status" data-cast-count></p></div>
 <ul class="cast-board">${cards}</ul></section>
 <section aria-label="More to explore" class="cast-extras"><a href="/animals/"><strong>Meet the animals</strong><span>Explore real animals, from quiet owls to swimming penguins.</span></a><a href="/characters/colouring/"><strong>Print and colour</strong><span>Scenes from the SnackPack stories.</span></a></section>`, "\n<script src=\"/characters/board.js\" defer></script>"));
 
 for (const record of characters) {
-  const family = record.family?.map(id => link(profileHref(id), byId.get(id).name)).join(", ");
+  const related = [...new Set([...(record.family ?? []), ...(record.relationships ?? []).map(edge => edge.to)])];
+  const family = related.map(id => {
+    const name = byId.get(id).name;
+    return `<a class="cast-relative" href="${profileHref(id)}"><img src="${portrait(id, 240)}" width="36" height="36" alt="" loading="lazy">${escape(name)}</a>`;
+  }).join("");
+  const roles = { lead: "star", support: "helper", cameo: "cameo" };
+  const otherStories = (record.appearances ?? []).filter(appearance => appearance.id !== record.book?.[0]);
+  const more = otherStories.map(({ id, role }) =>
+    `<li>${link(`/read/${id}/`, storyTitles.get(id))} · ${roles[role]}</li>`).join("");
+  const appLinks = (record.webApps ?? []).map(id => link(`/apps/${id}/`, releasedApps[id])).join(" · ");
+  const greetings = (record.greetings?.length ?? 0) > 1
+    ? `<button class="cast-button" type="button" data-cast-greetings="${escape(JSON.stringify(record.greetings))}" hidden>Another hello</button>`
+    : "";
   const animal = animalById.get(record.animal);
   output(`characters/${record.id}/index.html`, page(record.name, `<p class="cast-crumb"><a href="/characters/">Meet the Characters</a> / ${escape(record.name)}</p>
 <section class="cast-profile">
 <div class="cast-profile-art">${picture(record, {large:true, eager:true})}</div>
-<div>${heading(escape(record.kind), escape(record.name), escape(record.greeting))}
+<div>${heading(escape(record.kind), escape(record.name), escape(record.greeting))}${greetings}
 <section class="cast-detail"><h2>${record.book ? "In the stories" : "Meet the character"}</h2><p>${escape(record.moment)}</p>${record.book ? `<p>${bookLink(record)}</p>` : ""}</section>
-${record.app ? `<p>${link(`/apps/${record.app[0]}/`, record.app[1])}</p>` : ""}
+${more ? `<section class="cast-detail"><h2>Also in</h2><ul>${more}</ul></section>` : ""}
 ${record.fact ? `<section class="cast-detail"><h2>Something to spot</h2><p>${escape(record.fact)}</p></section>` : ""}
 ${record.art ? storyArt(record) : ""}
 ${record.variant ? alternatePortrait(record) : ""}
-${family ? `<section class="cast-detail"><h2>Family</h2><p>${family}</p></section>` : ""}
+${family ? `<section class="cast-detail"><h2>Friends and family</h2><div class="cast-actions">${family}</div></section>` : ""}
 ${animal ? `<section class="cast-detail"><h2>Meet the animal</h2><p>${link(animalHref(animal.id), animal.name)}</p></section>` : ""}
+${appLinks ? `<section class="cast-detail"><h2>In the apps</h2><p>${appLinks}</p></section>` :
+  record.app ? `<p>${link(`/apps/${record.app[0]}/`, record.app[1])}</p>` : ""}
 <div class="cast-actions">${button("/characters/clues/", "Play the clue game", true)}${record.colouring
   ? button(`/characters/colouring/#${record.id}`, "Colour this character")
-  : button("/characters/colouring/", "Find colouring pages")}</div></div></section>`));
+  : button("/characters/colouring/", "Find colouring pages")}</div></div></section>`,
+greetings ? '\n<script src="/characters/profile.js" defer></script>' : ""));
 }
 
 output("animals/index.html", page("Meet the Animals", `<p class="cast-crumb"><a href="/characters/">Meet the Characters</a> / Animals</p>
@@ -198,7 +281,7 @@ const fallback = rounds[0];
 output("characters/clues/index.html", page("Who’s at the Door?", `<p class="cast-crumb"><a href="/characters/">Meet the Characters</a> / Clue game</p>
 <section class="cast-game">
 <div class="cast-game-heading">${heading("The library clue game", "Who’s at the door?", "Read the clues and pick the SnackPack guest you think is behind the door.")}</div>
-<div data-cast-fallback class="cast-clues"><h2>A mystery to try</h2><ol>${fallback.clues.map(([clue]) => `<li>${escape(clue)}</li>`).join("")}</ol><details><summary>Show me the answer</summary><p>${escape(fallback.explanation)} ${link(profileHref(fallback.answer), "Meet Cluck O’Clock")}</p></details></div>
+<div data-cast-fallback class="cast-clues"><h2>A mystery to try</h2><ol>${fallback.clues.map(([clue]) => `<li>${escape(clue)}</li>`).join("")}</ol><details><summary>Show me the answer</summary><p>${escape(fallback.explanation)} ${link(profileHref(fallback.answer), `Meet ${byId.get(fallback.answer).name}`)}</p></details></div>
 <div data-cast-game hidden>
 <div class="cast-clues"><h2 data-clue-title tabindex="-1">Clue 1 of 3</h2><ol data-clue-list></ol><div class="cast-actions"><button type="button" class="cast-button cast-button-primary" data-next-clue>Read another clue</button><button type="button" class="cast-button" data-show-answer>Show me the answer</button></div></div>
 <ul class="cast-board cast-candidates" aria-label="Choose a guest">${characters.map(record => `<li><button type="button" class="cast-card" data-guess="${record.id}">${picture(record)}<span><strong>${escape(record.name)}</strong><small>${escape(record.kind)}</small></span></button></li>`).join("")}</ul>
@@ -207,21 +290,20 @@ output("characters/clues/index.html", page("Who’s at the Door?", `<p class="ca
 output("characters/clue-rounds.json", json(rounds.map(({ answer, clues, explanation }) => ({
   answer, candidates: clues[0][1], clues: clues.map(([text]) => text), explanation, name: byId.get(answer).name,
 }))));
-const bookCasts = {
-  "corgi-on-the-cob-and-the-harvest-table": ["corgi-on-the-cob", "shelly-pop", "nutmeg"],
-  "everybody-brought-potatoes": ["bark-b-q", "eggs-benedict", "belgian-waffle"],
-  "cluck-oclock-and-the-midnight-that-came-early": ["cluck-oclock", "coop-accino", "hen-berry"],
-  "ted-e-bear-and-the-jar-of-good-things": ["ted-e-bear", "corgi-on-the-cob", "professor-hooten"],
-  "vincent-van-mouse-and-the-christmas-shadow-show": ["vincent-van-mouse", "panda-cake", "professor-hooten"],
-  "sub-zero-and-the-great-snowball-truce": ["sub-zero", "biscuit-bouncer", "hop-tart"],
-};
-for (const [slug, cast] of Object.entries(bookCasts)) {
-  const file = `read/${slug}/index.html`;
-  const marker = "<!-- /read-next:generated -->";
-  const existing = read(local(file));
-  assert(existing.includes(marker), file);
-  const links = cast.map(id => link(profileHref(id), byId.get(id).name)).join(" · ");
-  output(file, existing.replace(/\n<!-- cast-links:start -->[\s\S]*?<!-- cast-links:end -->\n/, "")
-    .replace(marker, `${marker}\n<!-- cast-links:start -->\n<p class="story-event-link"><strong>Meet the cast</strong> · ${links}</p>\n<!-- cast-links:end -->\n`));
-}
 console.log(`Character board verified with ${characters.length} characters, ${animals.length} animal records and ${rounds.length} clue rounds.`);
+
+const appCastStart = "<!-- app-cast:generated -->";
+const appCastEnd = "<!-- /app-cast:generated -->";
+for (const id of Object.keys(releasedApps)) {
+  const cast = characters.filter(record => record.webApps?.includes(id)).slice(0, 6);
+  const file = `apps/${id}/index.html`;
+  if (!cast.length) continue;
+  const html = read(local(file));
+  const links = cast.map(record => link(profileHref(record.id), record.name)).join(" · ");
+  const block = `${appCastStart}
+<section class="section"><div class="shell"><h2>Meet the cast</h2><p>${links}</p></div></section>
+${appCastEnd}`;
+  assert(html.includes("</main>"), file);
+  output(file, replaceMarkerBlock(html, appCastStart, appCastEnd, block) ??
+    html.replace("</main>", `${block}\n</main>`));
+}

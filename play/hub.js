@@ -20,12 +20,13 @@
     together: ["connect-4", "checkers", "reversi", "table-tennis", "backgammon", "snakes-and-ladders", "five-dice", "thirteen"],
     daily: ["sudoku", "killer-sudoku", "minesweeper", "word-search", "freecell", "snackwords", "crossword", "kakuro", "picross", "water-sort", "mahjong", "flag-frenzy", "soccer-trivia-sprint", "thirteen", "five-dice", "hearts", "spades", "rummy-500", "backgammon", "block-puzzle", "typing", "math-facts"]
   };
-  // Featured leads with what people actually play (21 Nov 2026): Thirteen and
-  // 2048 are the two games found from search (Search Console 22 Oct – 19 Nov:
-  // 139 and 9 clicks), and Connect 4, Snacky Worm and Pinball are what classes
-  // open from this page. Solitaire's Cloudflare views were a headless bot, so
-  // it no longer leads. Everything else keeps page order.
-  var featuredFirst = ["thirteen", "2048", "connect-4", "snacky-worm", "pinball"];
+  // Featured leads with what people actually play. Thirteen and 2048 are the
+  // two games found from search (Search Console 22 Oct – 19 Nov: 139 and 9
+  // clicks); Connect 4 and Snacky Worm are what classes open (GoatCounter: 75%
+  // and 73% of starts from the Honduran school); Hearts replaced Pinball on
+  // 26 Nov under plan rule R1 (10 starts from outside Honduras against
+  // Pinball's 7 in total, 6–26 Nov). Solitaire's Cloudflare views were a bot.
+  var featuredFirst = ["thirteen", "2048", "connect-4", "snacky-worm", "hearts"];
   function featuredRank(record) { var i = featuredFirst.indexOf(record.slug); return i < 0 ? featuredFirst.length : i; }
   var recentAdded = ["math-facts", "typing", "big-two", "chess", "killer-sudoku", "brick-breaker", "block-puzzle", "rummy-500", "backgammon", "hearts", "spades", "five-dice", "water-sort", "spider-solitaire", "tripeaks", "pyramid", "snackwords", "flag-frenzy", "dribble-rush", "header-hero"];
   var tiles = Array.from(grid.querySelectorAll(":scope > .game-tile"));

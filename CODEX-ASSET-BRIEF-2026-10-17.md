@@ -14,7 +14,14 @@ The public dice-game name is now Dice Score; `five-dice` filenames/URLs and app
 internal save IDs are retained. Publication/CI screenshot review remains tracked
 in `docs/BRAIN_GAMES_NEXT_PLAN_2026-10-18.md` in the monorepo.
 
-Context and evidence: `docs/archive/ARCADE-AUDIT-2026-10-17.md`. Live arcade plan: `ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md`.
+Context and evidence: `docs/archive/ARCADE-AUDIT-2026-10-17.md`.
+Web arcade items 1–18 are complete. Items 1–11 were delivered on 18 October.
+Pyramid and TriPeaks were switched to their delivered share cards on
+26 November. Items 12–18 shipped on 27 November. Their
+[delivery brief](docs/archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md) is archived.
+Batch 2 below remains available for shared game art as those games are scheduled.
+Arcade follow-up measurements are in
+[the active plan](ARCADE-AND-TELEMETRY-PLAN-2026-11-21.md).
 
 ---
 
@@ -62,8 +69,8 @@ Context and evidence: `docs/archive/ARCADE-AUDIT-2026-10-17.md`. Live arcade pla
 | 14 | `play/social/brick-breaker.png` (+ `.webp`) | 1200×630 | **New game (2026-10-22).** The tile uses Vol 2's painted Brick Breaker icon (`apps/snackpack-brain-games-vol-2/assets/game-icons/brick-breaker.png`), so only the social card is needed: the same rounded bricks, a ball breaking through and the wooden paddle, landscape, title area on the left third quiet, **no text**. The current file is an interim composite; replace it, keep the name. |
 | 15 | `play/social/chess.png` (+ `.webp`) | 1200×630 | **New game (2026-10-22).** Tile uses Vol 3's painted chess icon; only the social card is needed: the same ivory king and dark rook on a wooden board, landscape, title area on the left third quiet, **no text**. Interim composite live; keep the name. |
 | 16 | `play/social/killer-sudoku.png` (+ `.webp`) | 1200×630 | **New game (2026-10-22).** Tile uses Vol 3's painted Killer Sudoku icon; only the social card is needed: the same cream grid with coloured dashed cages and a pencil, landscape, title area quiet, **no digits or text**. Interim composite live; keep the name. |
-| 17 | `play/tiles/typing.png`, `@2x`; `play/social/typing.png` (+ `.webp`) | 144×144, 288×288; 1200×630 | **New game (2026-11-26), Snack Typer.** Typing practice for kids. Interim art is an SVG of pastel keycaps (A S D F / J K L ;) with F outlined, and a rendered card. Painted version: chunky rounded keycaps in the same finger colours (pink, lilac, blue, mint, butter, peach), one key lifted and outlined, a small snack character's paw resting on F. When the PNG lands, point the hub tile at it instead of `typing.svg`. |
-| 18 | `play/tiles/math-facts.png`, `@2x`; `play/social/math-facts.png` (+ `.webp`) | 144×144, 288×288; 1200×630 | **New game (2026-11-26), Fact Sprint.** Math facts practice. Interim art is an SVG of a cream answer card reading "7×8" over three keypad keys on mint green. Painted version: the answer card with "7 × 8 = 56", a racing-stripe or stopwatch hint for "sprint", same mint and orange palette. Point the hub tile at the PNG when it lands. |
+| 17 | `play/tiles/typing.png`, `@2x`; `play/social/typing.png` (+ `.webp`) | 144×144, 288×288; 1200×630 | **New game (2026-11-26), Snack Typer.** Blank, chunky keycaps in the finger colours, one lifted and outlined, two with the F/J home-row bumps; card adds a small picture book. **No letters on the keys** (the interim SVG has them, which breaks rule 3). Full spec: `docs/archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md`. |
+| 18 | `play/tiles/math-facts.png`, `@2x`; `play/social/math-facts.png` (+ `.webp`) | 144×144, 288×288; 1200×630 | **New game (2026-11-26), Fact Sprint.** A dot array (3 rows of 4 counters) with a × shape and an orange stopwatch on mint; card adds clay + − × ÷ pieces and a blank number pad. **No digits** (the interim art has them, which breaks rule 3). Full spec: `docs/archive/CODEX-PROMPT-ARCADE-ART-2026-11-26.md`. |
 
 Also deliver a `.webp` beside each PNG (same basename, q88, `method=6`) for 1–7.
 After delivery, update `play/tiles/PLACEHOLDERS.txt` to remove the pyramid and

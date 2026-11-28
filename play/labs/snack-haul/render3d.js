@@ -757,11 +757,17 @@ const PROP_FILES = { chilliPlant: "chilli_plant", hut: "beach_hut", lamp: "lante
 // Kinds propKit() can draw. Any other kind appears only once its model is delivered.
 const CODE_KINDS = new Set(["oak", "bush", "rock", "fence", "cottage", "cactus", "hay", "barn", "pine", "cabin", "crag", "chilliPlant", "palm", "hut", "lamp", "townhouse", "stall", "log"]);
 function usable(kind, region) { return CODE_KINDS.has(kind) || hasModel(propFile(kind, region)); }
-function propFile(kind, region) { return "props/" + (kind === "rock" ? "rock_" + region : PROP_FILES[kind] || kind); }
+// The North Pole swaps in the Winter Haul set (W2) wherever a model exists.
+const NORTHPOLE_FILES = { pine: "winter/pine_snow", rock: "winter/ice_rock", fence: "winter/fence_candy", snowman: "winter/snowman", igloo: "winter/igloo",
+  lamp_garland: "winter/lamp_garland", present_pile: "winter/present_pile", big_tree: "winter/big_tree", house_b: "winter/house_b", house_c: "winter/house_c" };
+function propFile(kind, region) {
+  if (region === "northpole" && NORTHPOLE_FILES[kind] && hasModel(NORTHPOLE_FILES[kind])) return NORTHPOLE_FILES[kind];
+  return "props/" + (kind === "rock" ? "rock_" + region : PROP_FILES[kind] || kind);
+}
 
 const SCENERY = {
-  northpole: { leaf: ["#2a6955", "#4e7f6d"], rock: "#afbfda", fence: "#eaf3ff", fills: [["pine", 26], ["rock", 7]],
-    front: ["rock", "pine"], landmarks: ["cabin"], snowTrees: true, fencing: false },
+  northpole: { leaf: ["#2a6955", "#4e7f6d"], rock: "#afbfda", fence: "#eaf3ff", fills: [["pine", 24], ["rock", 7], ["snowman", 1], ["present_pile", 1], ["lamp_garland", 1]],
+    front: ["rock", "pine"], landmarks: ["big_tree", "house_b", "house_c", "igloo"], fallbackLandmarks: ["cabin"], snowTrees: true, fencing: false },
   bakery: { leaf: ["#5f9e3f", "#78b24a", "#e0a23f"], rock: "#a79c8e", fence: "#efe6d6", fills: [["oak", 24], ["bush", 10], ["rock", 5]], front: ["bush", "rock"], landmarks: ["cottage", "windmill"], fencing: true },
   dunes: { leaf: ["#8caf54", "#a3bd5c", "#c9bb62"], rock: "#c9a877", fence: "#c7a26e", fills: [["cactus", 12], ["hay", 7], ["rock", 7], ["bush", 5]], front: ["rock", "bush"], landmarks: ["barn", "silo"], fencing: true },
   frost: { leaf: ["#3f6f6b", "#528782"], rock: "#a9bfd8", fence: "#7a5234", fills: [["pine", 30], ["rock", 7]], front: ["rock", "pine"], landmarks: ["cabin", "ski_lodge"], snowTrees: true, fencing: false },
@@ -998,7 +1004,7 @@ export class World3D {
     const keep = this.keepClear, blocked = (x, z) => !!keep && x > keep.x0 && x < keep.x1 && z > keep.z;
     // Buildings stand on the lowest corner of their footprint, so none floats over
     // a slope, and a spot steeper than 0.35 is skipped.
-    const BUILT = new Set(["cottage", "hut", "townhouse", "stall", "barn", "silo", "cabin", "ski_lodge", "honey_shop", "lighthouse", "clock_tower", "windmill", "chilli_stall", "chilli_shrine", "crate_stack", "planter", "boat"]);
+    const BUILT = new Set(["big_tree", "house_b", "house_c", "igloo", "cottage", "hut", "townhouse", "stall", "barn", "silo", "cabin", "ski_lodge", "honey_shop", "lighthouse", "clock_tower", "windmill", "chilli_stall", "chilli_shrine", "crate_stack", "planter", "boat"]);
     const footing = (kind, x, z, s, sink) => {
       if (!BUILT.has(kind)) return surface(x, z) - sink;
       const f = (kind === "clock_tower" || kind === "lighthouse" || kind === "windmill" || kind === "barn" ? 2.4 : 1.6) * s;
@@ -1024,7 +1030,9 @@ export class World3D {
       }
       place(kind, list, true);
     });
-    scenery.landmarks.filter((kind) => usable(kind, theme.id)).forEach((kind, nth, all) => {
+    let landmarks = scenery.landmarks.filter((kind) => usable(kind, theme.id));
+    if (!landmarks.length && scenery.fallbackLandmarks) landmarks = scenery.fallbackLandmarks;
+    landmarks.forEach((kind, nth, all) => {
       const list = [];
       for (let x = 34 + r() * 30 + nth * 45; x < terrain.total + 30; x += (60 + r() * 50) * all.length) {
         const z = -13 - r() * 14, turn = (r() - 0.5) * 0.7, s = 1 + r() * 0.3, y = footing(kind, x, z, s, 0.2);
@@ -1182,10 +1190,11 @@ export class World3D {
     this.zoneMesh = zone;
 
     const depot = new Kit(), dx = t.total + 7;
-    const place = (name, x, y, z) => {
+    const place = (name, x, y, z, turn = 0) => {
       const o = authoredModel(name);
       if (!o) return false;
       o.position.set(x, y, z);
+      o.rotation.y = turn;
       o.traverse((c) => { if (c.isMesh) c.castShadow = q.shadows; });
       scene.add(o);
       return true;
@@ -1196,7 +1205,9 @@ export class World3D {
       depot.add(box(0.9, 5.4, 7), "#463225", m(dx - 6, zy + 2.7, 0));
       for (let i = 0; i < 8; i++) depot.add(box(1.9, 0.18, 1.2), i % 2 ? "#e0483c" : "#fff6e6", m(dx - 7.1, zy + 4.8 + 0, -4.2 + i * 1.2, 0, 0, 0.5));
     }
-    if (!place("road/zone_gate", t.zoneStart, zy, 0)) {
+    // The candy-cane arch is modelled across X, so it turns to span the road.
+    const caneArch = theme.id === "northpole" && place("winter/cane_arch", t.zoneStart, zy, 0, Math.PI / 2);
+    if (!caneArch && !place("road/zone_gate", t.zoneStart, zy, 0)) {
       depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, -3.2));
       depot.add(box(0.26, 11, 0.26), "#d8d2c6", m(t.zoneStart, zy + 5.5, 3.2));
       depot.add(box(0.5, 1, 6.6), "#e0483c", m(t.zoneStart, zy + 10.6, 0));
@@ -1250,7 +1261,23 @@ export class World3D {
     (t.features || []).forEach((f) => {
       if (f.type === "dropoff") {
         const z = -4.75, y = SH.heightAt(t,f.x);
-        if (!stand("winter/house_a", f.x,z)) {
+        // Porches take turns between the three cottages; each sits with its
+        // front step at the road's edge, whatever its depth.
+        const homes = ["winter/house_a", "winter/house_b", "winter/house_c"].filter((h) => hasModel(h));
+        const home = homes.length ? model(homes[Math.round(f.x) % homes.length]) : null;
+        if (home) {
+          const box3 = new THREE.Box3().setFromObject(home);
+          home.position.set(f.x, y, -2.4 - box3.max.z);
+          home.traverse((c) => { if (c.isMesh) c.castShadow = this.quality.shadows; });
+          this.scene.add(home);
+          // A short candy fence either side of the garden (a road-long fence cost 30k triangles).
+          [-1, 1].forEach((side) => {
+            const x = f.x + side * (box3.max.x + 1.9), span = model("winter/fence_candy");
+            if (!span) return;
+            span.position.set(x, SH.heightAt(t, x), -3.3);
+            this.scene.add(span);
+          });
+        } else {
           const house = winterBuilding(false,this.quality.shadows);
           house.position.set(f.x,y,z); this.scene.add(house);
         }

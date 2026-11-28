@@ -22,6 +22,12 @@ for(const theme of ['cream','dark','light'])for(const width of [320,390,768,1280
  });
 }
 test('guide counts and audience wording agree across visible copy and metadata',async({page})=>{
+ const offline=JSON.parse(fs.readFileSync(new URL('../../read/offline-manifest.json',import.meta.url)));
+ expect(offline.books).toBe(bookCount);
+ await page.goto('/');
+ await expect(page.locator('#read h2')).toContainText(`${bookCount} illustrated readers`);
+ await page.goto('/read/');
+ await expect(page.locator('.read-library-card')).toHaveCount(bookCount);
  await page.goto('/guides/free-printable-decodable-readers/');await expect(page.locator('h1')).toContainText('Fourteen');
  await expect(page.locator('main .lead').first()).toContainText(`${bookCount}-book`);
  expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain(`${bookCount} free illustrated books`);
