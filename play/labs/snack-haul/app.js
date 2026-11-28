@@ -551,7 +551,7 @@ function drainEvents(g) {
     world.react(ev);
     buzzFor(ev);
     if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
-    else if (ev.type === "bonus") { play("pickup_load", 0.7, 1 + ev.n * 0.08) || beep(700 + ev.n * 120, 0.12, "triangle", 0.08); toast("+" + ev.n + " bonus load" + (ev.n > 1 ? "s" : "") + (ev.n >= ev.max ? ". Full!" : ""), 900); }
+    else if (ev.type === "bonus") { play("bonus_load_" + Math.min(3, ev.n), 0.8) || play("pickup_load", 0.7, 1 + ev.n * 0.08) || beep(700 + ev.n * 120, 0.12, "triangle", 0.08); toast("+" + ev.n + " bonus load" + (ev.n > 1 ? "s" : "") + (ev.n >= ev.max ? ". Full!" : ""), 900); }
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
     else if (ev.type === "lasso") { play("saved", 0.8) || beep(520, 0.2, "triangle", 0.08); toast("Lassoed! Load saved", 1200); $("lasso").hidden = true; buzz("medium"); }
     else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); markLoss(g, ev); }
@@ -746,7 +746,7 @@ function hud(g) {
   $("stop").hidden = !showStop;
   const spot = !bonus && g.status === "driving" && g.inZone() && g.spotAt();
   $("stop").firstElementChild.textContent = dropping ? "Stop on the doormat" : loading ? "Stop to load" : bonus ? "Stay for more: +" + bonus.n + " of " + bonus.max : g.delivery.winter ? "Stop at the depot" : spot ? "Stop here: " + spot + " spot" : "Stop to unload";
-  if (spot && spot !== state.lastSpot && g.speed() < 2) play("stop_tick", 0.5, 1.5) || beep(1320, 0.08, "triangle", 0.06);
+  if (spot && spot !== state.lastSpot && g.speed() < 2) play("spot_ring", 0.6) || play("stop_tick", 0.5, 1.5) || beep(1320, 0.08, "triangle", 0.06);
   state.lastSpot = spot;
   if (showStop) {
     const progress = bonus ? bonus.progress : g.stopProgress();
@@ -758,6 +758,7 @@ function hud(g) {
 function finishDelivery(g) {
   engineSound(null, false);
   const r = SH.report(g), d = state.delivery, today = localDate();
+  if (r.parked) setTimeout(() => play("park_" + r.parked, 0.7), 700);
   if (d.winter) return finishWinterRun(r,d);
   const s = save.stats;
   s.metres += Math.round(Math.max(0, g.truck.getPosition().x - 8));

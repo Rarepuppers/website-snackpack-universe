@@ -748,6 +748,8 @@
     var r = REGIONS[d.region] || REGIONS[0];
     return d.region > 0 && r.kinds ? r.kinds[0] : "crate";
   }
+  // The stall model's key: road/stall_<key>.glb (bakery, dunes, harbour, frost, chilli, market, mill).
+  function stopKey(d) { return d.track ? "mill" : (REGIONS[d.region] || REGIONS[0]).id; }
   function stopName(d) {
     if (d.track) return "Mill Shop";
     return STOP_NAMES[(REGIONS[d.region] || REGIONS[0]).id] || "Farm Stall";
@@ -1771,7 +1773,7 @@
   return {
     STEP: STEP, BALANCE: BALANCE, REGIONS: REGIONS, ROUTES: ROUTES, DELIVERIES: DELIVERIES, UPGRADES: UPGRADES, MAX_LEVEL: MAX_LEVEL,
     EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
-    TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, bonusCargoFor: bonusCargoFor, stopName: stopName, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
+    TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, bonusCargoFor: bonusCargoFor, stopName: stopName, stopKey: stopKey, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
     cargoSize: cargoSize, NEW_CARGO: NEW_CARGO, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
     findDelivery: findDelivery, dailyDelivery: dailyDelivery, topUpRun: topUpRun, dailyRoad: dailyRoad, TEST_DRIVES: TEST_DRIVES, findTestDrive: findTestDrive, loadFor: loadFor, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
