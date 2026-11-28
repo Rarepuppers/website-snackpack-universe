@@ -1,5 +1,5 @@
 # Snack Drop asset credits
 
-Every file under `assets/` that was not made from scratch for this game is listed here with its source and licence.
-
-(None yet.)
+The D1 models, icons, and sounds were made for SnackPack Studios. The Corgi
+model follows the SnackPack character canon and the existing Corgi art.
+D1 uses no third-party art or recordings.

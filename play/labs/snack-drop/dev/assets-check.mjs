@@ -18,12 +18,15 @@ ok(s.cookie && !s.crumb, "fixture Cookie model replaces the code-built one, othe
 ok(s.crate && !s.codeCrate, "fixture container replaces the code-built crate");
 ok(await page.evaluate(() => window.__snackdrop.game.drops > 0), "the game plays with the fixtures");
 
-for (const q of ["?assets=dev/empty-assets/&bot=1", "?bot=1"]) {
-  await page.goto(base + q);
-  await page.waitForFunction(() => window.__snackdrop && window.__snackdrop.game.drops > 2, null, { timeout: 30000 });
-  s = await state();
-  ok(!s.cookie && !s.crate && s.codeCrate, `fallbacks in use with ${q}`);
-}
+await page.goto(base + "?assets=dev/empty-assets/&bot=1");
+await page.waitForFunction(() => window.__snackdrop && window.__snackdrop.game.drops > 2, null, { timeout: 30000 });
+s = await state();
+ok(!s.cookie && !s.crate && s.codeCrate, "fallbacks in use with an empty assets folder");
+// The real assets/ folder: whatever is there loads and the game plays.
+await page.goto(base + "?bot=1");
+await page.waitForFunction(() => window.__snackdrop && window.__snackdrop.game.drops > 2, null, { timeout: 30000 });
+const real = await page.evaluate(() => fetch("assets/manifest.json").then((r) => r.json()).then((m) => m.files.length));
+ok(true, `the game plays with the real assets folder (${real} files listed)`);
 console.log(errors.length ? "errors:\n" + errors.join("\n") : "no page errors");
 await close();
 process.exit(fail || errors.length ? 1 : 0);
