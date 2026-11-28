@@ -25,7 +25,13 @@
     canEvery: 110,
     passShare: 0.5,
     coinValue: 1,
-    cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12 },
+    cargoPay: { crate: 6, eggs: 10, jelly: 8, milk: 8, melon: 9, cake: 14, popcorn: 7, icecream: 12, baguette: 9, cheese: 12, pizza: 7, soda: 9 },
+    baguetteDensity: 0.45,         // light, long loaves
+    baguetteGrip: 0.55,            // crust on crate: steep climbs slide them off; Straps 1 (the farm gift) holds a start
+    fizzPop: 1,                    // soda fizz that pops the crate; shake adds it, smooth driving bleeds it
+    fizzBleed: 0.12,               // fizz lost per second
+    fizzFrom: 0.35,                // contact impulse a soda crate shrugs off
+    fizzGain: 0.6,                 // fizz per unit of impulse above that
     eggBreak: 2.6,
     ballast: 2.4,                  // low weight under the bed, which keeps flips earned
     valleyBend: 0.3,               // how fast a valley floor may turn upward, in slope per metre
@@ -36,6 +42,13 @@
     stopSeconds: 0.7,
     stopSpeed: 0.7,
     dockSpeed: 2,                  // hitting the depot wall faster than this costs the medal
+    bonusEvery: 1.0,               // Hold for more: one bonus load per second waited at a pickup stop
+    bonusMax: 3,                   // bonus loads per stop (Top-Up Run: one fewer, after its usual load)
+    bonusPay: 1.5,                 // a delivered bonus load pays this times its cargo value
+    spotRadius: 0.6,               // Parking Spots: how close the front wheel must stop to a spot
+    spotDeep: 2.0,                 // the deep spot's distance from the depot wall
+    spotNear: 5.5,                 // the near spot: past where an ordinary stop ends, so it is still a choice
+    spotPay: { near: 10, deep: 25 },
     parSpeed: 5.5,                 // metres a second for the gold medal
     silver: 1.25,                  // medal times, as multiples of the gold time
     bronze: 1.6,
@@ -46,6 +59,8 @@
     regionStars: 14,               // stars in a region that open the next one
     slick: 0.6,                    // share of normal grip on ice and wet cobbles
     fordDrag: 2,
+    hayDrag: 0.9,                  // drag while ploughing through a smashed hay stack
+    duckPenalty: 2,                // seconds added for driving into the ducks
     bridgeBounce: 0.45,
     cargoBedBounce: 0.09,
     cargoBedBounceFrom: 5.5,       // m/s closing speed into the deck
@@ -113,14 +128,18 @@
     ["Salsa Switchback", "Popcorn Pass", "Canyon Gap", "Jalape\u00f1o Jump", "Scorched Ridge", "Volcano Ramp", "Ember Trail", "Ghost Pepper Run"],
     ["Lantern Alley", "Cobble Crawl", "Night Bus Hill", "Clock Tower Climb", "Rainy Arcade", "Noodle Stall Dash", "Midnight Mile", "The Last Order"]
   ];
-  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14 };
+  var FEATURE_LEN = { ramp: 4.5, bridge: 15, ford: 12, slick: 16, wind: 36, bump: 3, pickup: 14, ducks: 3, sails: 2, hay: 2.4, seesaw: 21 };
+  // The seesaw bridge: a plank this long tips this far either way on a hinge.
+  var SEESAW = { half: 4.5, tilt: 0.16, thick: 0.15, damp: 2 };
 
   // Early regions rise more gently, so the free region never turns into a wall.
   function regionHeat(heat, r) { var rr = r * 0.75; return heat * (0.8 + rr * 0.075) + rr * 0.04; }
   function loadFor(region, r, i, code) {
     var a = region.kinds ? region.kinds[0] : CARGO_TYPES[1 + (i * 2 + 1) % 7];
     var b = region.kinds ? region.kinds[1] : CARGO_TYPES[1 + (i * 3 + 4) % 7];
-    return code.split("").map(function (ch) { return ch === "a" ? a : ch === "b" ? b : "crate"; });
+    // g, z, p and s are the 1.1 cargo: baguette, cheese wheel, pizza boxes, soda crate.
+    var extra = { g: "baguette", z: "cheese", p: "pizza", s: "soda" };
+    return code.split("").map(function (ch) { return ch === "a" ? a : ch === "b" ? b : extra[ch] || "crate"; });
   }
 
   // Roads with their own design, for the routes a new player meets first. heat is
@@ -139,7 +158,20 @@
     "bakery-7": { rev: 2, seed: "bakery-7-r2-A53", len: 380, heat: 0.743, load: "cbcacac", shapes: [{ type: "hill", at: 96, w: 80, h: 7.5 }, { type: "rollers", at: 244, w: 48, n: 4, h: 1.7 }], feat: 1 },
     "bakery-8": { rev: 2, seed: "bakery-8-r2-A104", len: 340, heat: 0.825, load: "cacbcaca", pickup: 3, pickupAt: 153, ramps: [{ at: 223, h: 0.4 }], shapes: [{ type: "rollers", at: 72, w: 36, n: 3, h: 1.5 }, { type: "drop", at: 253, w: 44, h: 8.5 }], feat: 2 },
     "dunes-1": { rev: 2, seed: "dunes-1-r2-E540", len: 140, heat: 0.64, load: "cccac", ramps: [{ at: 90, h: 0.6 }], shapes: [{ type: "rollers", at: 31, w: 48, n: 2, h: 3 }], feat: 1 },
-    "dunes-2": { rev: 2, seed: "dunes-2-r2-F489", len: 180, heat: 0.73, load: "ccaca", ramps: [{ at: 126, h: 0.57 }], shapes: [{ type: "hill", at: 60, w: 47, h: -4 }], feat: 1 }
+    "dunes-2": { rev: 2, seed: "dunes-2-r2-F489", len: 180, heat: 0.73, load: "ccaca", ramps: [{ at: 126, h: 0.57 }], shapes: [{ type: "hill", at: 60, w: 47, h: -4 }], feat: 1 },
+    "dunes-3": { rev: 2, seed: "dunes-3-r2-B116", len: 200, heat: 0.62, load: "cacac", ramps: [{at: 159, h: 0.55}], shapes: [{type: "rollers", at: 101, w: 41, n: 2, h: 3.9}], feats: [{type: "wind", at: 32, len: 31, power: 0.59}], feat: 0 },
+    "harbour-1": { rev: 2, seed: "harbour-1-r2-B44", len: 130, heat: 0.67, load: "cccc", ramps: [{at: 88, h: 0.36}], feats: [{type: "bridge", at: 29}], feat: 1 },
+    "harbour-2": { rev: 2, seed: "harbour-2-r2-B125", len: 170, heat: 0.69, load: "ccccc", ramps: [{at: 125, h: 0.43}], feats: [{type: "bridge", at: 34}, {type: "bridge", at: 79}], feat: 0 },
+    "harbour-3": { rev: 2, seed: "harbour-3-r2-B256", len: 200, heat: 0.69, load: "cacac", ramps: [{at: 157, h: 0.55}], shapes: [{type: "drop", at: 85, w: 41, h: 9.5}], feats: [{type: "ford", at: 29}], feat: 0 },
+    "frost-1": { rev: 2, seed: "frost-1-r2-B105", len: 130, heat: 0.73, load: "cccc", shapes: [{type: "rollers", at: 71, w: 30, n: 2, h: 1.9}], feats: [{type: "slick", at: 33, len: 27}], feat: 0 },
+    "frost-2": { rev: 2, seed: "frost-2-r2-B10", len: 170, heat: 0.82, load: "ccccc", ramps: [{at: 139, h: 0.42}], shapes: [{type: "drop", at: 85, w: 42, h: 5}], feats: [{type: "slick", at: 36, len: 20}], feat: 0 },
+    "frost-3": { rev: 2, seed: "frost-3-r2-B210", len: 200, heat: 0.75, load: "cacac", ramps: [{at: 31, h: 0.45}], feats: [{type: "slick", at: 63, len: 47}], feat: 0 },
+    "chilli-1": { rev: 2, seed: "chilli-1-r2-B57", len: 130, heat: 0.83, load: "cccc", ramps: [{at: 29, h: 0.57}, {at: 84, h: 0.62}], feat: 0 },
+    "chilli-2": { rev: 2, seed: "chilli-2-r2-B75", len: 170, heat: 0.74, load: "ccccc", ramps: [{at: 33, h: 0.67}, {at: 111, h: 0.62}], shapes: [{type: "hill", at: 63, w: 36, h: 4.1}], feat: 0 },
+    "chilli-3": { rev: 2, seed: "chilli-3-r2-B616", len: 200, heat: 1.02, load: "cacac", ramps: [{at: 28, h: 0.58}, {at: 144, h: 0.76}], shapes: [{type: "drop", at: 74, w: 52, h: 11.8}], feat: 0 },
+    "market-1": { rev: 2, seed: "market-1-r2-C261", len: 130, heat: 0.76, load: "cccc", feats: [{type: "bump", at: 31}, {type: "bump", at: 63}], ramps: [{at: 94, h: 0.45}], feat: 0 },
+    "market-2": { rev: 2, seed: "market-2-r2-B44", len: 170, heat: 0.85, load: "ccccc", feats: [{type: "bump", at: 31}, {type: "slick", at: 71, len: 23}, {type: "bump", at: 133}], feat: 0 },
+    "market-3": { rev: 2, seed: "market-3-r2-B194", len: 200, heat: 0.9, load: "cacac", ramps: [{at: 165, h: 0.41}], shapes: [{type: "hill", at: 55, w: 65, h: 6.3}], feats: [{type: "bump", at: 30}], feat: 0 }
   };
   var DELIVERIES = [];
   REGIONS.forEach(function (region, r) {
@@ -229,7 +261,14 @@
   }
   var DIM = dimsFor(TRUCKS[0]);
   // Width and height of one unit of each cargo type. Melons are round.
+  // New in 1.1, outside CARGO_TYPES so region loads and stats keep their shape:
+  // baguettes (long, they overhang the rail), cheese wheels (heavy and round),
+  // pizza boxes (wide, flat, slippery, stacked in one column) and soda crates (fizz).
+  var NEW_CARGO = ["baguette", "cheese", "pizza", "soda"];
   function cargoSize(type) {
+    if (type === "baguette") return { w: 0.95, h: 0.16 };
+    if (type === "cheese") return { w: 0.54, h: 0.54, round: true };
+    if (type === "pizza") return { w: 0.62, h: 0.1 };
     if (type === "sack") return { w: 0.56, h: 0.5 };      // winter cargo, not yet in CARGO_TYPES
     if (type === "pudding") return { w: 0.5, h: 0.6 };
     return type === "melon" ? { w: 0.5, h: 0.5, round: true } : type === "cake" ? { w: 0.5, h: 0.72 } : { w: 0.52, h: 0.52 };
@@ -268,6 +307,13 @@
     }
     var lo = START_FLAT + 34, hi = START_FLAT + d.len - 30;
     function free(x0, x1) { return list.concat(shapes).every(function (f) { return x1 + 16 < f.x0 || x0 - 16 > f.x1; }); }
+    // Top-Up Run: a pickup stop every 70 to 90 m, each adding one load.
+    if (d.topup) {
+      for (var tx = START_FLAT + 60; tx < START_FLAT + d.len - 40; tx += 70 + r() * 20) {
+        var sx = Math.round(tx / SAMPLE) * SAMPLE;
+        list.push({ type: "pickup", x0: sx - 7.5, x1: sx + 7.5 });
+      }
+    }
     if (d.pickup) {
       var px = Math.round((START_FLAT + d.len * (0.45 + r() * 0.1)) / SAMPLE) * SAMPLE;
       if (d.winter) {
@@ -283,6 +329,15 @@
     (d.ramps || []).forEach(function (a) {
       var ax = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE;
       list.push({ type: "ramp", x0: ax, x1: ax + FEATURE_LEN.ramp, h: a.h, arc: !!a.arc, set: true });
+    });
+    // Authored region features (bridge, ford, slick, wind, bump) at a set place; len may override the usual length.
+    (d.feats || []).forEach(function (a) {
+      var fx = Math.round((START_FLAT + a.at) / SAMPLE) * SAMPLE, f = { type: a.type, x0: fx, x1: fx + (a.len || FEATURE_LEN[a.type]), set: true };
+      if (a.type === "wind") { f.power = a.power || 0.42; f.phase = a.phase || 0; }
+      if (a.type === "ducks" || a.type === "sails") { f.period = a.period || 7; f.cross = a.cross || 3; f.phase = a.phase || 0; }
+      if (a.type === "hay") f.rows = a.rows || 2;
+      if (a.type === "seesaw") f.xc = Math.round((fx + f.x1) / 2 / SAMPLE) * SAMPLE;
+      list.push(f);
     });
     var shapes = (d.shapes || []).map(function (s) { return { x0: START_FLAT + s.at, x1: START_FLAT + s.at + s.w }; });
     var kinds = d.winter ? (d.twist === "blizzard" ? ["slick","drift"] : ["drift","slick"]) : region.features, i = d.index;
@@ -355,12 +410,13 @@
     function at(px) { return pts[Math.max(0, Math.min(pts.length - 1, Math.round(px / SAMPLE)))]; }
     // Pickup stops are level, and bridges and fords sag in the middle.
     features.forEach(function (f) {
-      if (f.type === "pickup" || f.type === "dropoff") {
-        var level = at(f.x0).y;
+      if (f.type === "pickup" || f.type === "dropoff" || f.type === "ducks" || f.type === "sails" || f.type === "seesaw" || f.type === "hay") {
+        // Hay gets a few metres of level run-up too: on a climb it stalls the truck.
+        var level = at(f.x0).y, pad = f.type === "hay" ? 6 : 0;
         pts.forEach(function (p) {
-          if (p.x >= f.x0 && p.x <= f.x1) p.y = level;
-          else if (p.x > f.x0 - 9 && p.x < f.x0) p.y += (level - p.y) * ((p.x - (f.x0 - 9)) / 9);
-          else if (p.x > f.x1 && p.x < f.x1 + 9) p.y = level + (p.y - level) * ((p.x - f.x1) / 9);
+          if (p.x >= f.x0 - pad && p.x <= f.x1 + pad) p.y = level;
+          else if (p.x > f.x0 - pad - 9 && p.x < f.x0 - pad) p.y += (level - p.y) * ((p.x - (f.x0 - pad - 9)) / 9);
+          else if (p.x > f.x1 + pad && p.x < f.x1 + pad + 9) p.y = level + (p.y - level) * ((p.x - f.x1 - pad) / 9);
         });
       } else if (f.type === "slick") {
         // Ice on a steep climb cannot be driven, so slick stretches stay gentle.
@@ -394,6 +450,18 @@
         if (pts[v].y < floor) pts[v].y = floor;
       }
     }
+    // The seesaw's mill stream is cut after smoothing, which would fill it in. The
+    // plank's ends rest on the banks; only the stream bed lies under it.
+    features.forEach(function (f) {
+      if (f.type !== "seesaw") return;
+      var level = at(f.xc).y;
+      pts.forEach(function (p) {
+        var off = Math.abs(p.x - f.xc);
+        if (off < SEESAW.half - 0.1) p.y = level - 1.6;
+        else if (off < SEESAW.half + 0.1) p.y = level - 0.45;
+      });
+      f.level = level;
+    });
     // Ramps go on last, because they are meant to be steeper than the road allows.
     // A ramp on a climb would end in a wall, so each one slides to the nearest
     // stretch that is level or falling, and is dropped if there is none close by.
@@ -410,7 +478,9 @@
       for (var j = 1; j <= 3; j++) pts[found + j].y += f.h * (j / 3) * (j / 3);
     });
     features = features.filter(function (f) { return !f.dead; });
-    return { pts: pts, total: total, zoneStart: total - 16, zoneEnd: total - 1.5, features: features, shapes: d.shapes || [] };
+    // Parking Spots: where the front wheel should rest. The deep one sits by the wall.
+    var spots = [{ kind: "near", x: total - BALANCE.spotNear }, { kind: "deep", x: total - BALANCE.spotDeep }];
+    return { pts: pts, total: total, zoneStart: total - 16, zoneEnd: total - 1.5, spots: spots, features: features, shapes: d.shapes || [] };
   }
   function heightAt(terrain, x) {
     var p = terrain.pts, i = Math.max(0, Math.min(p.length - 2, Math.floor(x / SAMPLE)));
@@ -474,12 +544,51 @@
     return { coins: coins, cans: cans, rocks: rocks, ridges: ridges };
   }
 
+  // ════ Side roads: Back Roads and the Extra Mile ═════════════════
+  // Free Bakery roads outside the career. Their stars go into the same save as the
+  // career's and count towards total stars, but never towards region unlocks or
+  // reputation, so no existing count moves. `track` says which list a road is on.
+  // Back Roads open at 8 Bakery stars; the Extra Mile at 18. Each road opens once
+  // either of the two before it on its track has a star.
+  // `light` sets the time of day. New features: ducks (a crossing on a fixed clock),
+  // hay (light stacks that break), seesaw (a plank on a hinge). `node dev/sim.js side`.
+  // SIDE-BEGIN
+  var SIDE_ROADS = [
+    { id: "back-1", track: "back", name: "Duck Crossing", light: "dawn", rev: 1, seed: "back-1-A1", len: 150, heat: 0.62, load: "ccacc", feats: [{type: "ducks", at: 40, period: 7, cross: 3, phase: 1.5}, {type: "ducks", at: 118, period: 6, cross: 2.6, phase: 4}], ramps: [{at: 66, h: 0.56, arc: true}], shapes: [{type: "drop", at: 80, w: 20, h: 4.5}], feat: 0 },
+    { id: "back-2", track: "back", name: "Hay Maze", light: "morning", rev: 1, seed: "back-2-A1", len: 180, heat: 0.6, load: "ccacc", feats: [{type: "hay", at: 40, rows: 2}, {type: "hay", at: 92, rows: 3}, {type: "hay", at: 140, rows: 2}], feat: 0 },
+    { id: "back-3", track: "back", name: "Mill Race", light: "midday", rev: 1, seed: "back-3-A1", len: 190, heat: 0.58, load: "cacac", feats: [{type: "seesaw", at: 46}, {type: "seesaw", at: 118}], feat: 0 },
+    { id: "back-4", track: "back", name: "Orchard Rollers", light: "golden", rev: 1, seed: "back-4-A1", len: 220, heat: 0.52, load: "ccacca", shapes: [{type: "rollers", at: 40, w: 60, n: 4, h: 0.95}, {type: "rollers", at: 140, w: 45, n: 3, h: 1.25}], feat: 0 },
+    { id: "back-5", track: "back", name: "Lantern Lane", light: "dusk", rev: 1, seed: "back-5-A1", len: 240, heat: 0.56, load: "ccacac", feats: [{type: "ducks", at: 56, period: 6.5, cross: 2.8, phase: 2}, {type: "hay", at: 160, rows: 2}], ramps: [{at: 108, h: 0.32}], feat: 0 },
+    { id: "back-6", track: "back", name: "The Moonlit Bake", light: "night", rev: 1, seed: "back-6-A1", len: 290, heat: 0.54, load: "ccacacac", pickup: 4, pickupAt: 80, feats: [{type: "ducks", at: 40, period: 6, cross: 2.4, phase: 0}, {type: "seesaw", at: 120}, {type: "hay", at: 222, rows: 2}], shapes: [{type: "rollers", at: 168, w: 36, n: 3, h: 0.9}], feat: 0 },
+    // The Extra Mile: "The Village Fair" (REGION_EXPANSION_PLAN 3.1). Opens at 18 Bakery stars.
+    { id: "bakery-9", track: "extra", name: "Hay Bale Hop", light: "morning", rev: 1, seed: "bakery-9-A1", len: 220, heat: 0.66, load: "cccac", shapes: [{type: "hill", at: 52, w: 46, h: -3.2}], feats: [{type: "hay", at: 74, rows: 3}, {type: "hay", at: 150, rows: 2}], feat: 0 },
+    { id: "bakery-10", track: "extra", name: "Baguette Brae", light: "midday", rev: 1, seed: "bakery-10-A1", len: 260, heat: 0.62, load: "ccccggg", shapes: [{type: "hill", at: 60, w: 90, h: 11}, {type: "drop", at: 160, w: 30, h: 6}], feat: 0 },
+    { id: "bakery-11", track: "extra", name: "Windmill Sails", light: "golden", rev: 1, seed: "bakery-11-A1", len: 300, heat: 0.6, load: "zccac", feats: [{type: "sails", at: 70, period: 4, cross: 1.2, phase: 0.4}, {type: "sails", at: 170, period: 4, cross: 1.3, phase: 1.9}], ramps: [{at: 120, h: 0.42, arc: true}], feat: 0 },
+    { id: "bakery-12", track: "extra", name: "The Harvest Fair", light: "golden", rev: 1, seed: "bakery-12-A1", len: 380, heat: 0.66, load: "ccaccggg", pickup: 3, pickupAt: 150, feats: [{type: "ducks", at: 44, period: 6.5, cross: 2.6, phase: 1}, {type: "hay", at: 110, rows: 2}, {type: "seesaw", at: 200}, {type: "sails", at: 300, period: 4, cross: 1.2, phase: 0.8}], feat: 0 }
+  ];
+  // SIDE-END
+  var SIDE_OPEN = { back: 8, extra: 18 };
+  var SIDE = SIDE_ROADS.map(function (s, i) {
+    var region = REGIONS[0], d = Object.assign({ region: 0, index: 1 + i % 6, pickup: 0, side: true }, s);
+    d.trackIndex = SIDE_ROADS.filter(function (x, k) { return k < i && x.track === s.track; }).length;
+    d.load = loadFor(region, 0, d.index, s.load);
+    return d;
+  });
+  function sideTrack(track) { return SIDE.filter(function (d) { return d.track === track; }); }
+  function sideStars(track, stars) { return sideTrack(track).reduce(function (n, d) { return n + (stars[d.id] || 0); }, 0); }
+  // The ducks: on the road for `cross` seconds of every `period`, waddling up for two
+  // seconds before. A clock, not physics, so every run and ghost sees the same ducks.
+  function duckState(f, clock) {
+    var c = ((clock + (f.phase || 0)) % f.period + f.period) % f.period;
+    return { active: c < f.cross, warn: c > f.period - 2, u: c < f.cross ? c / f.cross : 0 };
+  }
+
   // ════ Deliveries ═════════════════════════════════════════════════
   // The free game: all of Bakery Hills and the first roads of Dairy Dunes.
   var FREE_ROUTES = DELIVERIES.filter(function (d) { return d.region === 0 || d.id === "dunes-1" || d.id === "dunes-2"; }).map(function (d) { return d.id; });
   function isFree(id) { return FREE_ROUTES.indexOf(id) >= 0; }
   function findDelivery(id) {
-    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || null;
+    return DELIVERIES.filter(function (x) { return x.id === id; })[0] || SIDE.filter(function (x) { return x.id === id; })[0] || null;
   }
   // ════ Customers and Special Orders ══════════════════════════════
   // Each region has one customer. Stars in a region raise their reputation, and
@@ -491,7 +600,9 @@
     { id: "comb", name: "Captain Comb", role: "the harbour master", icon: "\u2693" },
     { id: "yolanda", name: "Yolanda Frost", role: "the ice-cream maker", icon: "\ud83c\udf66" },
     { id: "pepper", name: "Pepper Pete", role: "the popcorn seller", icon: "\ud83c\udf36\ufe0f" },
-    { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" }
+    { id: "nora", name: "Night Owl Nora", role: "the market keeper", icon: "\ud83c\udfee" },
+    // Free customer on the Back Roads: his orders open on Back Roads stars, not reputation.
+    { id: "crust", name: "Old Crust", role: "the miller", icon: "\ud83c\udf3e", region: 0, track: "back" }
   ];
   var REP_STARS = [3, 8, 13, 18, 22];      // region stars for reputation levels 1 to 5
   // Twist per order slot. `fragile` is the region's delicate cargo; `truck` the truck it suits.
@@ -516,12 +627,31 @@
       { route: 5, twist: "big", extra: 2 }
     ].forEach(function (o, n) {
       var route = ROUTES[o.route], base = loadFor(region, r, o.route, route.load);
-      var load = o.load || (o.extra ? base.concat(["crate", "crate"]) : base);
+      // The big order's two extra loads bring each region's 1.1 cargo: cheese wheels to the
+      // Cheese Fair, soda to the Honey Festival, pizza boxes to the Night Market Feast.
+      var bigExtra = [null, "cheese", "soda", null, null, "pizza"][r] || "crate";
+      var load = o.load || (o.extra ? (bigExtra === "cheese" ? ["cheese"].concat(base, ["crate"]) : base.concat([bigExtra, bigExtra])) : base);
       ORDERS.push({
         id: region.id + "-order-" + (n + 1), order: true, slot: n, name: ORDER_NAMES[r][n], customer: r, twist: o.twist,
         region: r, index: o.route, len: route.len + (o.extra ? 40 : 0), heat: regionHeat(route.heat, r) * 1.05,
         load: load, pickup: r > 0 && o.twist === "big" ? 2 : 0, grip: o.grip || 1, truck: o.truck || null
       });
+    });
+  });
+  // Old Crust's orders: fresh roads in the Back Roads style, opening at `at` Back Roads stars.
+  [
+    { name: "Dawn Flour Run", twist: "rush", at: 3, light: "dawn", len: 170, load: ["crate", "crate", "crate", "crate", "eggs"], feats: [{type: "ducks", at: 50, period: 6.5, cross: 2.8, phase: 1}, {type: "ducks", at: 118, period: 7, cross: 3, phase: 5}] },
+    { name: "Hay Day", twist: "big", at: 8, light: "golden", len: 210, load: ["crate", "crate", "eggs", "crate", "crate", "eggs", "crate"], feats: [{type: "hay", at: 44, rows: 2}, {type: "hay", at: 104, rows: 2}, {type: "seesaw", at: 150}] },
+    { name: "Flour Power", twist: "rush", track: "extra", at: 3, light: "morning", len: 230, load: ["crate", "crate", "crate", "crate", "baguette", "baguette"], feats: [{type: "hay", at: 60, rows: 2}, {type: "sails", at: 150, period: 4, cross: 1.2, phase: 1}] },
+    { name: "Stack 'Em High", twist: "baguettes", track: "extra", at: 6, light: "midday", len: 240, load: ["crate", "crate", "crate", "crate", "baguette", "baguette", "baguette", "baguette"], shapes: [{type: "hill", at: 60, w: 80, h: 6}] },
+    { name: "Judges' Breakfast", twist: "fragile", track: "extra", at: 9, light: "dawn", len: 260, load: ["eggs", "eggs", "crate", "eggs", "baguette", "baguette"], feats: [{type: "ducks", at: 50, period: 6, cross: 2.4, phase: 2}, {type: "seesaw", at: 140}] },
+    { name: "Millstones by Moonlight", twist: "fragile", at: 14, light: "night", len: 230, load: ["eggs", "eggs", "crate", "eggs", "eggs"], feats: [{type: "seesaw", at: 40}, {type: "ducks", at: 120, period: 6, cross: 2.6, phase: 3}], shapes: [{type: "rollers", at: 160, w: 40, n: 3, h: 1.3}] }
+  ].forEach(function (o, n, all) {
+    var track = o.track || "back", k = all.slice(0, n).filter(function (x) { return (x.track || "back") === track; }).length;
+    ORDERS.push({
+      id: track + "-order-" + (k + 1), order: true, slot: n, name: o.name, customer: 6, twist: o.twist, track: o.track || "back", at: o.at, light: o.light,
+      region: 0, index: 2 + n, len: o.len, heat: 0.55 + n * 0.04, load: o.load, pickup: 0, grip: 1, truck: null, feats: o.feats, shapes: o.shapes, feat: 0,
+      seed: track + "-order-" + (k + 1) + "-A1"
     });
   });
   function findOrder(id) { return ORDERS.filter(function (o) { return o.id === id; })[0] || null; }
@@ -532,9 +662,27 @@
       rain: "It is pouring. Less grip everywhere.",
       fragile: "Nothing but delicate cargo.",
       truck: "Must go in the " + truckSpec(o.truck).name + ".",
-      big: "The biggest load yet" + (o.pickup ? ", with a pickup on the way." : ".")
+      big: "The biggest load yet" + (o.pickup ? ", with a pickup on the way." : "."),
+      baguettes: "A stack of baguettes. Keep the nose down on climbs."
     })[o.twist] || "";
   }
+
+  // Test Drives: one short road in each locked region, free, in a loaner truck with
+  // set upgrades. Each opens at a number of Bakery Hills stars (`at`). Roads are
+  // designed like ROADS and checked by `node dev/sim.js testdrives`.
+  // TESTDRIVES-BEGIN
+  var TEST_DRIVE_ROADS = [
+    { id: "test-harbour", name: "Pier Review", region: 2, at: 6, truck: "van", level: 2, len: 160, load: "ccacb", seed: "test-harbour-B164", feats: [{type: "bridge", at: 32}, {type: "ford", at: 80}], ramps: [], feat: 0, heat: 0.51 },
+    { id: "test-frost", name: "Ice to Meet You", region: 3, at: 12, truck: "hauler", level: 2, len: 170, load: "cccac", seed: "test-frost-A260", feats: [{type: "slick", at: 32, len: 28}], ramps: [{at: 125, h: 0.44}], feat: 0, heat: 0.68 },
+    { id: "test-chilli", name: "Hot Stuff", region: 4, at: 18, truck: "pickup", level: 3, len: 160, load: "ccacc", seed: "test-chilli-A75", ramps: [{at: 34, h: 0.51}, {at: 109, h: 0.58}], feat: 0, heat: 0.63 },
+    { id: "test-market", name: "Last Orders, First Taste", region: 5, at: 24, truck: "monster", level: 2, len: 150, load: "ccacc", seed: "test-market-A159", feats: [{type: "bump", at: 24}, {type: "slick", at: 81, len: 21}], feat: 0, heat: 0.73 }
+  ];
+  // TESTDRIVES-END
+  var TEST_DRIVES = TEST_DRIVE_ROADS.map(function (t) {
+    var region = REGIONS[t.region];
+    return Object.assign({}, t, { testDrive: true, loan: true, index: 1, load: loadFor(region, t.region, 1, t.load), pickup: 0 });
+  });
+  function findTestDrive(id) { return TEST_DRIVES.filter(function (t) { return t.id === id; })[0] || null; }
 
   // World Tour Daily: one road a day, the same for everyone, in a loaner truck with
   // set upgrades, so a player's own garage and regions make no difference. Regions
@@ -583,13 +731,45 @@
       heat: regionHeat(0.5, region), climb: BALANCE.longClimb, load: loadFor(r, region, 3, "cacbca"), pickup: 0
     };
   }
+  // Top-Up Run: an endless road that starts with two crates, adds one at every stop
+  // and gets steeper. The same road all day; a new one tomorrow.
+  function topUpRun(region, date) {
+    var r = REGIONS[region];
+    return {
+      id: "topup-" + r.id + "-" + date, seed: "topup-" + r.id + "-" + date, long: true, topup: true, region: region, index: 3,
+      len: BALANCE.longLen, heat: regionHeat(0.35, region), climb: BALANCE.longClimb * 0.8, load: ["crate", "crate"], pickup: 0
+    };
+  }
+  // Hold for more: the bonus cargo and the stop's name come from the road, never a roll.
+  var STOP_NAMES = { bakery: "Fruit Stand", dunes: "Dairy Shed", harbour: "Fish Market", frost: "Ice House", chilli: "Chilli Shack", market: "Night Kiosk" };
+  function bonusCargoFor(d) {
+    if (d.topup) return d.topupCargo || "crate";
+    if (d.bonusCargo) return d.bonusCargo;
+    var r = REGIONS[d.region] || REGIONS[0];
+    return d.region > 0 && r.kinds ? r.kinds[0] : "crate";
+  }
+  // The stall model's key: road/stall_<key>.glb (bakery, dunes, harbour, frost, chilli, market, mill).
+  function stopKey(d) { return d.track ? "mill" : (REGIONS[d.region] || REGIONS[0]).id; }
+  function stopName(d) {
+    if (d.track) return "Mill Shop";
+    return STOP_NAMES[(REGIONS[d.region] || REGIONS[0]).id] || "Farm Stall";
+  }
   function parTime(d) { return Math.round((START_FLAT + d.len + END_FLAT) / BALANCE.parSpeed) + (d.pickup ? 4 : 0); }
   // Career gold times, written by `node dev/sim.js medals --write`: 1.08 times the best
   // clean bot run at the upgrade level expected there, and never looser than the old
   // time. A route missing here keeps the length-based time.
   // MEDALS-BEGIN
-  var MEDALS = {"bakery-1": 24, "bakery-2": 29, "bakery-3": 40, "bakery-4": 41, "bakery-5": 51, "bakery-6": 51, "bakery-7": 63, "dunes-1": 24, "dunes-2": 30, "dunes-3": 32, "harbour-1": 25, "harbour-2": 28, "harbour-3": 43, "harbour-5": 58, "harbour-6": 63, "frost-1": 21, "frost-2": 26, "frost-3": 39, "frost-5": 57, "chilli-1": 26, "chilli-2": 34, "market-1": 27, "market-2": 33, "market-3": 43, "market-4": 47, "market-7": 76};
+  var MEDALS = {"bakery-1": 23, "bakery-2": 29, "bakery-3": 38, "bakery-4": 41, "bakery-5": 49, "bakery-6": 49, "bakery-7": 62, "dunes-1": 23, "dunes-2": 30, "dunes-3": 34, "harbour-1": 23, "harbour-2": 32, "harbour-3": 29, "harbour-5": 54, "harbour-6": 63, "frost-1": 26, "frost-2": 24, "frost-3": 28, "frost-5": 57, "chilli-1": 23, "chilli-2": 33, "chilli-3": 32, "market-1": 24, "market-2": 28, "market-3": 29, "market-4": 47, "market-7": 76, "back-1": 30, "back-2": 28, "back-3": 29, "back-4": 32, "back-5": 38, "bakery-9": 30, "bakery-10": 34, "bakery-11": 42, "bakery-12": 54};
   // MEDALS-END
+  // What the route sheet shows before a drive: the features in road order (each
+  // kind once), the authored shapes, and the medal times.
+  function routePreview(d) {
+    var t = buildTerrain(d), seen = {}, ahead = [];
+    t.features.concat((d.shapes || []).map(function (s) { return { type: s.type === "hill" && s.h < 0 ? "dip" : s.type, x0: START_FLAT + s.at }; }))
+      .sort(function (a, b) { return a.x0 - b.x0; })
+      .forEach(function (f) { if (!seen[f.type] && f.type !== "dropoff") { seen[f.type] = true; ahead.push(f.type); } });
+    return { ahead: ahead, medals: medalTimes(d), len: d.len, load: d.load, pickup: d.pickup || 0 };
+  }
   function medalTimes(d) {
     var best = d.daily || d.long || d.order ? 0 : MEDALS[d.id];
     if (best) return { gold: best, silver: Math.round(best * BALANCE.careerSilver), bronze: Math.round(best * BALANCE.careerBronze) };
@@ -622,6 +802,38 @@
     pick.rocks.concat(pick.ridges).forEach(function (rock) {
       ground.createFixture({ shape: new planck.Circle({ x: rock.x, y: rock.y }, rock.r), friction: 0.9 });
     });
+    // Hay stacks: light bales two wide, `rows` high. The truck smashes through and the
+    // hay drags at it (BALANCE.hayDrag). Bales go 3 s after the stack is first hit.
+    var hay = [];
+    terrain.features.forEach(function (f) {
+      if (f.type !== "hay") return;
+      f.bales = [];
+      var y0 = heightAt(terrain, f.x0 + 1.2);
+      for (var row = 0; row < f.rows; row++) for (var col = 0; col < 2; col++) {
+        var bale = world.createBody({ type: "dynamic", position: { x: f.x0 + 0.6 + col * 1.2, y: y0 + 0.33 + row * 0.66 } });
+        bale.setUserData({ kind: "hay", stack: f });
+        // Bales pass through the load: sweeping a bed clean was too harsh. The jolt of
+        // ploughing in fast is what shakes crates loose.
+        bale.createFixture({ shape: new planck.Box(0.58, 0.32), density: 0.22, friction: 0.8, filterMaskBits: 0xFFFF ^ CARGO_BIT });
+        f.bales.push(bale); hay.push(bale);
+      }
+    });
+    // Seesaw bridges: a plank on a hinge, resting with its far end up. It counts as
+    // ground, so a load that lands on it is lost, as on the road.
+    var seesaws = [];
+    terrain.features.forEach(function (f) {
+      if (f.type !== "seesaw") return;
+      var py = f.level + SEESAW.half * Math.sin(SEESAW.tilt) - SEESAW.thick;
+      var plank = world.createBody({ type: "dynamic", position: { x: f.xc, y: py }, angle: SEESAW.tilt });
+      plank.setUserData({ kind: "ground", seesaw: f });
+      plank.createFixture({ shape: new planck.Box(SEESAW.half, SEESAW.thick), density: 0.6, friction: roadGrip });
+      world.createJoint(new planck.RevoluteJoint({
+        enableLimit: true, lowerAngle: -SEESAW.tilt, upperAngle: SEESAW.tilt, referenceAngle: 0,
+        enableMotor: true, motorSpeed: 0, maxMotorTorque: SEESAW.damp
+      }, ground, plank, { x: f.xc, y: py }));
+      f.plank = plank; seesaws.push(plank);
+    });
+    var crossings = terrain.features.filter(function (f) { return f.type === "ducks" || f.type === "sails"; });
 
     // A tall truck on big wheels somersaults if its brakes bite as hard as its engine pulls.
     var brakeBite = spec.brake || 1;
@@ -661,13 +873,13 @@
     var cargo = [];
     function addCargo(type, pos, angle) {
       var size = cargoSize(type);
-      var body = world.createBody({ type: "dynamic", position: pos, angle: angle || 0, angularDamping: size.round ? 2 : 0 });
+      var body = world.createBody({ type: "dynamic", position: pos, angle: angle || 0, angularDamping: type === "cheese" ? 0.4 : size.round ? 2 : 0 });
       var info = { kind: "cargo", type: type, lost: false, broken: false, body: body, id: cargo.length, w: size.w, h: size.h, round: !!size.round };
       body.setUserData(info);
       body.createFixture({
         shape: size.round ? new planck.Circle(size.w / 2) : new planck.Box(size.w / 2 - 0.005, size.h / 2 - 0.005),
-        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "popcorn" ? 0.28 : type === "icecream" ? 1.2 : 0.9,
-        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : 0.5) + 0.1 * up.straps,
+        density: type === "sack" ? 2.0 : type === "milk" ? 2.6 : type === "cheese" ? 2.4 : type === "soda" ? 1.6 : type === "popcorn" ? 0.28 : type === "pizza" ? 0.5 : type === "baguette" ? BALANCE.baguetteDensity : type === "icecream" ? 1.2 : 0.9,
+        friction: (type === "sack" ? .82 : type === "melon" ? 0.7 : type === "cheese" ? 0.45 : type === "pizza" ? 0.22 : type === "baguette" ? BALANCE.baguetteGrip : 0.5) + 0.1 * up.straps,
         restitution: type === "jelly" ? 0.55 : type === "popcorn" ? 0.2 : 0.04,
         filterCategoryBits: CARGO_BIT
       });
@@ -677,14 +889,27 @@
     // Stack the load on the bed, front of the bed first. Each column keeps its
     // own height, because cakes are taller than crates.
     var onBoard = d.load.slice(0, d.load.length - (d.pickup || 0)), pending = d.load.slice(onBoard.length);
-    var columns = [];
-    onBoard.forEach(function (type, i) {
-      var col = i % spec.perRow, size = cargoSize(type), base = columns[col] || 0;
+    var columns = [], slot = 0, pizzaCol = -1, laid = [];
+    onBoard.forEach(function (type) {
+      // Baguettes go on last, lying on top at the back, sticking out past the rail.
+      if (type === "baguette") { laid.push(type); return; }
+      // Pizza boxes share one column, stacked high.
+      var col = type === "pizza" && pizzaCol >= 0 ? pizzaCol : slot++ % spec.perRow, size = cargoSize(type), base = columns[col] || 0;
+      if (type === "pizza" && pizzaCol < 0) pizzaCol = col;
       addCargo(type, { x: spawnX + D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: spawnY + D.bedHeight + base + size.h / 2 + 0.01 });
       columns[col] = base + size.h + 0.012;
     });
+    // On a full back row they lie across its top; otherwise on the bed against the
+    // rail. The body stays over the bed (an overhanging stack pivoted off under
+    // throttle); the model is drawn longer, so the bread still pokes out the back.
+    var backTop = Math.min(columns[spec.perRow - 1] || 0, columns[spec.perRow - 2] || 0);
+    laid.forEach(function (type, k) {
+      var size = cargoSize(type), x = D.bedLeft + size.w / 2 + 0.04;
+      addCargo(type, { x: spawnX + x, y: spawnY + D.bedHeight + backTop + size.h / 2 + 0.02 + k * (size.h + 0.012) });
+    });
 
-    var pickupZone = terrain.features.find(function (f) { return f.type === "pickup"; }) || null;
+    var pickupZones = terrain.features.filter(function (f) { return f.type === "pickup"; }), pickupZone = pickupZones[0] || null, zoneIndex = 0;
+    if (d.topup && pickupZone) pending = [d.topupCargo || "crate"];
     var deliveries = terrain.features.filter(function (f) { return f.type === "dropoff"; });
     var g = {
       delivery: d, region: region, regionIndex: d.region, terrain: terrain, world: world, truck: truck, wheels: wheels,
@@ -695,8 +920,13 @@
       dropoffs: deliveries, homes: 0, given: {},
       events: [], settle: 0.5, airTime: 0, airTotal: 0, bestAir: 0, topSpeed: 0, flipsNearly: 0, slipRear: 0, gasOn: false, brakeOn: false,
       total: d.load.length, pending: pending, pickup: pickupZone, pickupState: pickupZone ? "ahead" : "none", wind: 0, zone: null, rec: [],
-      brakeUsed: false, featMax: {}
+      brakeUsed: false, featMax: {}, lassoLeft: opts.lasso ? 1 : 0, lassoUsed: false,
+      clock: 0, hay: hay, seesaws: seesaws, crossings: crossings, honks: 0,
+      bonusTaken: 0, bonusZone: null, bonusHere: 0, parked: null
     };
+    // Hold for more: switched on per run (opts.bonus), so older ghosts and the rival replay exactly.
+    var bonusOn = !!opts.bonus && !d.dropoffs && (!d.long || d.topup), bonusTimer = 0;
+    var bonusCap = d.topup ? BALANCE.bonusMax - 1 : BALANCE.bonusMax;
     var topSpeed = (BALANCE.topSpeed + spec.top + 1.15 * up.engine) * (spec.runners && sleighGrip < 1 ? .80 : 1) / D.wheelR;
     var torque = BALANCE.torque * spec.torque * (1 + 0.2 * up.engine);
     var thirst = spec.thirst || 1;
@@ -732,7 +962,7 @@
         var hardLanding = g.settle <= 0 && closingSpeed(contact) >= BALANCE.cargoBedBounceFrom;
         contact.setRestitution(hardLanding ? BALANCE.cargoBedBounce : 0.04);
       }
-      if (g.settle > 0 || g.tailgateFall || g.time < nextGateHit) return;
+      if (g.settle > 0 || g.tailgateFall || g.clock < nextGateHit) return;
       if (hit && !hit.self.lost && !hit.self.broken && !hit.self.delivered &&
           (a === tailgate || b === tailgate)) {
         gateHit = Math.max(gateHit, closingSpeed(contact) - BALANCE.tailgateCargoHit);
@@ -749,7 +979,7 @@
       var prior = gateWear;
       gateWear += Math.min(BALANCE.tailgateWearPerHit, gateHit * BALANCE.tailgateWearGain);
       gateHit = 0;
-      nextGateHit = g.time + BALANCE.tailgateHitCooldown;
+      nextGateHit = g.clock + BALANCE.tailgateHitCooldown;
       if (gateWear < BALANCE.tailgateWarning) return;
       var at = truck.getWorldPoint({ x: tailgateX, y: D.bedHeight });
       if (gateWear >= 1) {
@@ -757,7 +987,7 @@
         // Contact callbacks run while the world is locked. Disable collisions
         // after the step, keeping the chassis' tuned mass and centre of gravity.
         tailgate.setSensor(true);
-        g.tailgateFall = { x: at.x, y: at.y, angle: truck.getAngle(), vx: v.x, vy: v.y, at: g.time };
+        g.tailgateFall = { x: at.x, y: at.y, angle: truck.getAngle(), vx: v.x, vy: v.y, at: g.clock };
         g.events.push({ type: "tailgateLost", x: at.x, y: at.y });
       } else if (prior < BALANCE.tailgateWarning) {
         g.events.push({ type: "tailgateLoose", x: at.x, y: at.y });
@@ -766,7 +996,11 @@
     world.on("begin-contact", function (c) {
       var hit = tagged(c, "cargo");
       if (hit && hit.other && hit.other.kind === "ground" && !hit.self.lost && !hit.self.broken) {
-        if (g.settle <= 0) {
+        if (g.settle <= 0 && g.lassoLeft > 0 && !d.dropoffs && !hit.self.bonus) {
+          // The lasso: the first load to hit the ground is roped back onto the bed
+          // after this step (a body can't be moved inside a contact callback).
+          g.lassoLeft -= 1; g.lassoUsed = true; hit.self.rescue = true;
+        } else if (g.settle <= 0) {
           hit.self.lost = true;
           var cp = hit.self.body.getPosition();
           g.events.push({ type: "lost", cargo: hit.self.type, x: cp.x, y: cp.y });
@@ -774,6 +1008,14 @@
       }
       var w = tagged(c, "wheel");
       if (w && w.other && w.other.kind === "ground") w.self.touching += 1;
+      // The truck breaks into a hay stack: it pays a coin and starts the clock.
+      var h = tagged(c, "hay");
+      if (h && h.other && (h.other.kind === "truck" || h.other.kind === "wheel") && h.self.stack.hitAt == null) {
+        h.self.stack.hitAt = g.clock;
+        g.coinsTaken += 1;
+        var hp = h.body.getPosition();
+        g.events.push({ type: "hay", x: hp.x, y: hp.y });
+      }
     });
     world.on("end-contact", function (c) {
       var w = tagged(c, "wheel");
@@ -791,6 +1033,10 @@
     });
     world.on("post-solve", function (c, impulse) {
       var hit = tagged(c, "cargo");
+      // Soda takes shake from every knock; enough and the crate pops.
+      if (hit && hit.self.type === "soda" && !hit.self.broken && !hit.self.lost && g.settle <= 0) {
+        hit.self.fizz = (hit.self.fizz || 0) + Math.max(0, Math.max.apply(null, impulse.normalImpulses) - BALANCE.fizzFrom) * BALANCE.fizzGain;
+      }
       if (!hit || hit.self.type !== "eggs" || hit.self.broken || hit.self.lost || g.settle > 0) return;
       var hardest = Math.max.apply(null, impulse.normalImpulses);
       if (hardest > eggBreak) {
@@ -800,7 +1046,9 @@
       }
     });
 
-    function liveCargo() { return cargo.filter(function (c) { return !c.lost && !c.broken && !c.delivered; }).length; }
+    // Bonus loads never count towards the route's loads: stars, the pass mark and the lasso ignore them.
+    function liveCargo() { return cargo.filter(function (c) { return !c.bonus && !c.lost && !c.broken && !c.delivered; }).length; }
+    function bonusLive() { return cargo.filter(function (c) { return c.bonus && !c.lost && !c.broken && !c.delivered; }).length; }
     function grounded() { return wheels.some(function (w) { return w.getUserData().touching > 0; }); }
     function onBed(c) {
       var local = truck.getLocalPoint(c.body.getPosition());
@@ -809,19 +1057,45 @@
 
     // The waiting loads drop onto the bed, above whatever is already there.
     function loadPickup() {
+      var loadedZone = pickupZone;
       var top = D.bedHeight;
       cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l) top = Math.max(top, l.y + c.h / 2); });
+      // Baguettes go on the back of the stack, so measure the back two columns only.
+      var long = 0, backTop = D.bedHeight;
+      cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l && l.x < D.bedLeft + 1.15) backTop = Math.max(backTop, l.y + c.h / 2); });
       var added = pending.map(function (type, i) {
         var col = i % spec.perRow, row = Math.floor(i / spec.perRow), size = cargoSize(type);
         var local = { x: D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: top + 0.25 + size.h / 2 + row * 0.8 };
+        // Baguettes are handed up lying across the back of the stack.
+        if (type === "baguette") local = { x: D.bedLeft + size.w / 2 + 0.04, y: backTop + 0.04 + size.h / 2 + (long++) * (size.h + 0.02) };
         return addCargo(type, truck.getWorldPoint(local), truck.getAngle());
       });
       pending = g.pending = [];
       g.settle = 0.6;
       g.pickupState = "loaded";
+      if (bonusOn) { g.bonusZone = loadedZone; g.bonusHere = 0; bonusTimer = 0; }
+      if (d.topup) { g.stops = (g.stops || 0) + 1; g.topupScore = (g.topupScore || 0) + liveCargo(); nextZone(); }
       g.events.push({ type: "pickup", items: added, x: truck.getPosition().x, y: truck.getPosition().y });
     }
 
+    // Hold for more: one bonus load handed up on top of the stack.
+    function bonusType() { return bonusCargoFor(d); }
+    function addBonus() {
+      var top = D.bedHeight, type = bonusType(), size = cargoSize(type);
+      cargo.forEach(function (c) { var l = !c.lost && !c.broken && !c.delivered && onBed(c); if (l) top = Math.max(top, l.y + c.h / 2); });
+      var col = g.bonusHere % spec.perRow;
+      var c = addCargo(type, truck.getWorldPoint({ x: D.bedRight - D.crate * (col + 0.55) - col * 0.015, y: top + 0.25 + size.h / 2 }), truck.getAngle());
+      if (!d.topup) c.bonus = true;
+      g.bonusHere += 1; g.bonusTaken += 1; g.settle = 0.6;
+      g.events.push({ type: "bonus", n: g.bonusHere, max: bonusCap, cargo: type, x: truck.getPosition().x, y: truck.getPosition().y });
+    }
+
+    // Top-Up Run: the next stop comes up as soon as this one is loaded or passed.
+    function nextZone() {
+      pickupZone = pickupZones[++zoneIndex] || null;
+      g.pickup = pickupZone;
+      if (pickupZone) { pending = g.pending = [d.topupCargo || "crate"]; g.pickupState = "ahead"; }
+    }
     function finish(status, reason) {
       if (status === "done") {
         // A cake only counts if it arrives the right way up.
@@ -832,6 +1106,11 @@
             g.events.push({ type: "ruined", cargo: c.type, x: c.body.getPosition().x, y: c.body.getPosition().y });
           }
         });
+      }
+      // Parking Spots: the front wheel's resting place pays a bonus at a clean stop.
+      if (status === "done" && !d.dropoffs && !d.long && !d.topup && !g.dockHit) {
+        var fx = wheels[1].getPosition().x;
+        terrain.spots.forEach(function (sp) { if (Math.abs(fx - sp.x) <= BALANCE.spotRadius) g.parked = sp.kind; });
       }
       g.status = status; g.reason = reason;
       rearJoint.setMotorSpeed(0); frontJoint.setMotorSpeed(0);
@@ -859,6 +1138,19 @@
     g.nextDrop = nextDrop;
     g.canDrop = function () { return readyCargo().length > 0; };
     g.live = liveCargo;
+    g.bonusLive = bonusLive;
+    g.bonusOn = bonusOn;
+    g.parkable = !d.dropoffs && !d.long && !d.topup;
+    // Which Parking Spot the front wheel is over right now, if any.
+    g.spotAt = function () {
+      if (!g.parkable) return null;
+      var fx = wheels[1].getPosition().x, hit = null;
+      terrain.spots.forEach(function (sp) { if (Math.abs(fx - sp.x) <= BALANCE.spotRadius) hit = sp.kind; });
+      return hit;
+    };
+    g.bonusInfo = function () { return g.bonusZone ? { n: g.bonusHere, max: bonusCap, progress: Math.min(1, bonusTimer / BALANCE.bonusEvery), cargo: bonusType() } : null; };
+    // Still on a stop's mat with bonus loads to come: the greedy bot waits here.
+    g.bonusWaiting = function () { return !!g.bonusZone && g.bonusHere < bonusCap; };
     g.need = need;
     g.grounded = grounded;
     g.speed = function () { return truck.getLinearVelocity().x; };
@@ -866,7 +1158,7 @@
     // One fixed physics step. input = { gas: bool, brake: bool }
     g.step = function (input) {
       if (g.status !== "driving") { world.step(STEP); return; }
-      g.time += STEP;
+      g.time += STEP; g.clock += STEP;
       if (g.settle > 0) g.settle -= STEP;
       var gas = !!input.gas && g.fuel > 0, brake = !!input.brake;
       // Record the pedals, run-length encoded, so a ghost can replay this run.
@@ -918,6 +1210,9 @@
         if (splash <= 0) { splash = 0.9; g.events.push({ type: "splash", x: pos.x, y: heightAt(terrain, pos.x) }); }
       } else if (zone && zone.type === "drift" && isGrounded) {
         truck.applyForceToCenter({x:-vx*truck.getMass()*(Math.abs(vx)>3 ? .24 : .52),y:0},true);
+      } else if (zone && zone.type === "hay" && zone.hitAt != null && !zone.gone) {
+        // Ploughing through loose hay drags like a ford.
+        truck.applyForceToCenter({ x: -vx * truck.getMass() * BALANCE.hayDrag, y: 0 }, true);
       } else if (zone && zone.type === "wind") {
         // Gusts push on the load, not the truck, so light cargo goes first.
         g.wind = zone.power * (0.5 + 0.5 * Math.sin(g.time * 1.7 + zone.phase));
@@ -945,8 +1240,52 @@
           }
         }
       });
+      // Ducks on the road: driving into them honks and costs 2 s, and the truck pulls up short.
+      crossings.forEach(function (f) {
+        var on = duckState(f, g.clock).active, front = pos.x + D.bedHalf + 0.3, back = pos.x - D.bedHalf;
+        var win = Math.floor((g.clock + (f.phase || 0)) / f.period);
+        if (on && front > f.x0 && back < f.x1 && f.honked !== win) {
+          f.honked = win; g.honks += 1; g.time += BALANCE.duckPenalty;
+          // A gentle check, not a wall: a hard stop would throw the load.
+          var lv = truck.getLinearVelocity();
+          truck.setLinearVelocity({ x: lv.x * 0.8, y: lv.y });
+          g.events.push({ type: "honk", what: f.type, x: (f.x0 + f.x1) / 2, y: heightAt(terrain, f.x0) });
+        }
+      });
       world.step(STEP);
       applyGateWear();
+      // A stack the truck has hit bursts: its bales stop touching the truck and fly
+      // ahead (a bale wedged under the chassis could stand the truck on its tail).
+      // The slowing comes from the hay's drag. Bales clear away 3 s later.
+      terrain.features.forEach(function (f) {
+        if (f.type !== "hay" || f.hitAt == null) return;
+        if (!f.burst) {
+          f.burst = true;
+          var tv = truck.getLinearVelocity().x;
+          f.bales.forEach(function (b, k) {
+            b.getFixtureList().setFilterData({ groupIndex: -1, categoryBits: 1, maskBits: 0xFFFF ^ CARGO_BIT });
+            b.setLinearVelocity({ x: tv * 1.1 + (k % 2) * 0.8, y: 2.2 + Math.floor(k / 2) * 0.9 });
+            b.setAngularVelocity(k % 2 ? -2 : 2);
+          });
+        } else if (!f.gone && g.clock - f.hitAt >= 3) {
+          f.gone = true;
+          f.bales.forEach(function (b) { b.setActive(false); });
+        }
+      });
+
+      // Lasso: put a roped load back on top of the stack, moving with the truck.
+      cargo.forEach(function (c) {
+        if (!c.rescue) return;
+        c.rescue = false;
+        var from = c.body.getPosition(), top = D.bedHeight;
+        cargo.forEach(function (o) { var l = o !== c && !o.lost && !o.broken && !o.delivered && onBed(o); if (l) top = Math.max(top, l.y + o.h / 2); });
+        var at = truck.getWorldPoint({ x: (D.bedLeft + D.bedRight) / 2, y: top + c.h / 2 + 0.08 });
+        g.events.push({ type: "lasso", id: c.id, cargo: c.type, x: from.x, y: from.y, toX: at.x, toY: at.y });
+        c.body.setTransform(at, truck.getAngle());
+        c.body.setLinearVelocity(truck.getLinearVelocity());
+        c.body.setAngularVelocity(0);
+        g.settle = Math.max(g.settle, 0.4);
+      });
 
       // How much the rear tyre is spinning against the road: drives the dust.
       var rearSurface = -wheels[0].getAngularVelocity() * D.wheelR;
@@ -964,6 +1303,25 @@
           c.taken = true; g.fuel = Math.min(g.maxFuel, g.fuel + BALANCE.canSeconds); g.events.push({ type: "fuel", x: c.x, y: c.y });
         }
       });
+
+      // Soda: fizz bleeds away on smooth roads; a full gauge pops the crate and
+      // shoves its neighbours.
+      var fizzMax = 0;
+      cargo.forEach(function (c) {
+        if (c.type !== "soda" || c.lost || c.broken || c.delivered) return;
+        c.fizz = Math.max(0, (c.fizz || 0) - BALANCE.fizzBleed * STEP);
+        if (c.fizz >= BALANCE.fizzPop) {
+          c.broken = true; c.fizz = 0;
+          var sp = c.body.getPosition();
+          cargo.forEach(function (o) {
+            if (o === c || o.lost || o.broken || o.delivered) return;
+            var op = o.body.getPosition(), dx = op.x - sp.x, dy = op.y - sp.y, dist = Math.hypot(dx, dy);
+            if (dist < 1.1) o.body.applyLinearImpulse({ x: dx / (dist + 0.1) * 0.35, y: 0.45 }, op, true);
+          });
+          g.events.push({ type: "pop", cargo: "soda", x: sp.x, y: sp.y });
+        } else fizzMax = Math.max(fizzMax, c.fizz / BALANCE.fizzPop);
+      });
+      g.fizz = fizzMax;
 
       // A crate that falls through a gap in the physics still counts as lost.
       cargo.forEach(function (c) {
@@ -987,7 +1345,16 @@
         if (loadTimer > BALANCE.stopSeconds) loadPickup();
         else if (pos.x > pickupZone.x1 + 5) {
           g.pickupState = "missed"; pending = g.pending = [];
+          if (d.topup) nextZone();
           g.events.push({ type: "missed", x: pos.x, y: pos.y });
+        }
+      }
+      // Hold for more: stay on the mat after loading and one more load drops on every second.
+      if (g.bonusZone) {
+        if (pos.x < g.bonusZone.x0 || pos.x > g.bonusZone.x1) g.bonusZone = null;
+        else {
+          bonusTimer = speedNow < BALANCE.stopSpeed && angle < 0.5 ? bonusTimer + STEP : 0;
+          if (bonusTimer > BALANCE.bonusEvery) { addBonus(); bonusTimer = 0; if (g.bonusHere >= bonusCap) g.bonusZone = null; }
         }
       }
       var porch=nextDrop();
@@ -997,7 +1364,11 @@
         porch.missed=true;
         g.events.push({type:"missedDrop",x:pos.x,y:pos.y});
       }
-      if (!d.dropoffs && liveCargo() + pending.length < need) { finish("failed", "load"); return; }
+      if (d.topup) {
+        // Three loads gone in all ends the run; it always ends as a run, never a failure.
+        var gone = cargo.filter(function (c) { return c.lost || c.broken; }).length;
+        if (gone >= 3) { finish("failed", "load"); return; }
+      } else if (!d.dropoffs && liveCargo() + pending.length < need) { finish("failed", "load"); return; }
 
       flipTimer = angle > 2 && speedNow < 3 ? flipTimer + STEP : 0;
       if (flipTimer > BALANCE.flipSeconds) { finish("failed", "flip"); return; }
@@ -1029,17 +1400,19 @@
   // ════ After a delivery ═══════════════════════════════════════════
   function report(g) {
     var total = g.delivery.dropoffs || g.total, kept = g.delivery.dropoffs ? g.homes : g.live();
-    var region = g.region, pay = 0, kinds = {}, d = g.delivery;
+    var region = g.region, pay = 0, kinds = {}, d = g.delivery, bonusPay = 0, bonusKept = 0;
     CARGO_TYPES.forEach(function (t) { kinds[t] = 0; });
     // Ice cream melts: full pay inside the par time, a third by 1.5 times it.
     var melt = g.time <= g.par ? 1 : Math.max(BALANCE.meltFloor, 1 - ((g.time / g.par - 1) / 0.5) * (1 - BALANCE.meltFloor));
     g.cargo.forEach(function (c) {
       if (d.dropoffs ? c.delivered : !c.lost && !c.broken) {
-        pay += (BALANCE.cargoPay[c.type] || SEASONAL_CARGO[c.type]) * (c.type === "icecream" ? melt : 1);
+        var worth = (BALANCE.cargoPay[c.type] || SEASONAL_CARGO[c.type]) * (c.type === "icecream" ? melt : 1);
+        if (c.bonus) { bonusPay += worth * BALANCE.bonusPay; bonusKept += 1; } else pay += worth;
         kinds[c.type] = (kinds[c.type] || 0) + 1;
       }
     });
     pay = Math.round(pay * region.pay * g.spec.pay);
+    bonusPay = g.status === "done" ? Math.round(bonusPay * region.pay * g.spec.pay) : 0;
     var share = kept / total, done = g.status === "done";
     var metres = Math.max(0, Math.round(g.truck.getPosition().x - 8));
     var stars = !done || d.long ? 0 : share >= 1 ? 3 : share >= 0.75 ? 2 : 1;
@@ -1047,7 +1420,10 @@
     var lines = [];
     var coins = Math.round(g.coinsTaken * BALANCE.coinValue);
     var score = 0;
-    if (d.long) {
+    if (d.topup) {
+      score = g.topupScore || 0;
+      lines.push({ label: "Reached stop " + (g.stops || 0) + " with " + kept + " on board", coins: Math.round(score * 2 * region.pay) });
+    } else if (d.long) {
       score = Math.round(metres * (0.5 + 0.5 * share));
       lines.push({ label: metres + " m with " + kept + " of " + total + " loads", coins: Math.round(score / 12 * region.pay) });
     } else if (done) {
@@ -1055,14 +1431,17 @@
       if (kinds.icecream && melt < 1) lines.push({ label: "Ice cream melted a little", coins: 0 });
       if (stars === 3) lines.push({ label: d.dropoffs ? "Every porch delivered" : "Whole load intact", coins: Math.round(10 * region.pay) });
       if (medal) lines.push({ label: ["", "Bronze", "Silver", "Gold"][medal] + " time", coins: Math.round(BALANCE.expressPay * region.pay * medal / 3) });
+      if (g.bonusTaken && !d.topup) lines.push({ label: "Bonus loads: " + bonusKept + " of " + g.bonusTaken + " delivered", coins: bonusPay });
+      if (g.parked) lines.push({ label: "Parked in the " + g.parked + " spot", coins: Math.round(BALANCE.spotPay[g.parked] * region.pay) });
       if (d.daily && !d.paid) lines.push({ label: "Daily delivery", coins: BALANCE.dailyPay });
     }
     if (coins) lines.push({ label: "Coins on the road", coins: coins });
     return {
-      status: g.status, reason: g.reason, kept: kept, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
+      status: g.status, reason: g.reason, kept: kept, stops: g.stops || 0, lassoUsed: !!g.lassoUsed, topup: !!d.topup, total: total, stars: stars, time: g.time, express: medal === 3, medal: medal,
       par: g.par, medals: g.medals, kinds: kinds, bestAir: g.bestAir, airTotal: g.airTotal, topSpeed: g.topSpeed, truck: g.spec.id,
       long: !!d.long, dockHit: !!g.dockHit, metres: metres, brakeUsed: g.brakeUsed, featMax: g.featMax, landings: g.landings || 0,
-      coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
+      honks: g.honks || 0, coinsAll: g.coins.length, fuelShare: g.fuel / g.maxFuel, delivery: d.id, score: score, coinsTaken: g.coinsTaken, missedPickup: g.pickupState === "missed",
+      bonusTaken: g.bonusTaken, bonusKept: d.topup ? 0 : bonusKept, parked: g.parked,
       lines: lines, earned: lines.reduce(function (n, l) { return n + l.coins; }, 0)
     };
   }
@@ -1071,7 +1450,8 @@
   // A careful driver that cruises at `target` metres a second, slows for crests
   // and dips ahead, and pulls up at stops. dev/sim.js tests the game with it, and
   // the rival in the game is this same driver, so its runs are exact.
-  function botInput(g, target) {
+  // o (optional): { greedy: wait for every bonus load, park: "near" | "deep" front-wheel target }.
+  function botInput(g, target, o) {
     var t = g.terrain, pos = g.truck.getPosition(), vx = g.truck.getLinearVelocity().x;
     var angle = normalAngle(g.truck.getAngle());
     var ahead = 5 + vx;
@@ -1079,11 +1459,31 @@
     var s2 = (heightAt(t, pos.x + ahead + 2) - heightAt(t, pos.x + ahead)) / 2;
     var want = target - Math.min(target * 0.55, Math.abs(s2 - s1) * 9);
     var toStop = (t.zoneStart + t.zoneEnd) / 2 - pos.x;
+    if (o && o.greedy && g.bonusWaiting()) return { gas: false, brake: vx > 0.05 };
+    var parkTo = o && o.park ? t.spots.filter(function (sp) { return sp.kind === o.park; })[0].x - (pos.x + g.dim.frontX) : null;
     // A pickup stop is a second place to pull up, part-way along.
     if (g.pickupState === "ahead") toStop = (g.pickup.x0 + g.pickup.x1) / 2 - pos.x;
     var porch=g.nextDrop();
     if (porch && (porch.x-pos.x > 9 || g.canDrop())) toStop=Math.min(toStop,porch.x-pos.x);
+    var cruise = want;
     if (toStop < 40) want = Math.min(want, Math.max(0.1, toStop * 0.28));
+    // Parking: roll in above walking pace (crawling inside the depot ends the run
+    // early), then brake hard with the front wheel on the spot.
+    if (parkTo != null && parkTo < 40 && g.pickupState !== "ahead" && !porch) {
+      want = Math.min(cruise, Math.max(1.2, parkTo * 0.45)); toStop = 9;
+      if (parkTo < 0.35) return { gas: false, brake: vx > 0.05 };
+      if (vx > want + 0.4) return { gas: false, brake: true };
+    }
+    // Ducks ahead: wait at the verge when they will be on the road as we get there.
+    (g.crossings || []).forEach(function (f) {
+      var gap = f.x0 - (pos.x + g.dim.bedHalf + 0.3);
+      if (gap < -0.5 || gap > 16 || pos.x - g.dim.bedHalf > f.x1) return;
+      var eta = Math.max(0, gap) / Math.max(1, vx);
+      if (duckState(f, g.clock + eta).active || duckState(f, g.clock + eta + 1.4).active || duckState(f, g.clock).active && gap < 3) {
+        want = Math.min(want, Math.max(0, (gap - 1.5) * 0.3));
+        if (gap < 2.5) toStop = 0.6;
+      }
+    });
     var input = { gas: false, brake: false };
     if (!g.grounded()) {
       if (angle > 0.14) input.brake = true;
@@ -1100,9 +1500,9 @@
   // route, written by `node dev/sim.js rivals --write`. t is Dash's time.
   // RIVALS-BEGIN
   var RIVALS = {
-    "bakery-1": {"v":8,"L":1,"t":28.1},
+    "bakery-1": {"v":9,"L":1,"t":25.4},
     "bakery-2": {"v":8,"L":1,"t":32.4},
-    "bakery-3": {"v":6.5,"L":1,"t":46.1},
+    "bakery-3": {"v":7,"L":1,"t":42.9},
     "bakery-4": {"v":8,"L":1,"t":48.6},
     "bakery-5": {"v":8,"L":1,"t":59.1},
     "bakery-6": {"v":8,"L":1,"t":60.4},
@@ -1110,43 +1510,53 @@
     "bakery-8": {"v":4.5,"L":1,"t":114.3},
     "dunes-1": {"v":10,"L":2,"t":28.8},
     "dunes-2": {"v":9,"L":2,"t":34.5},
-    "dunes-3": {"v":9,"L":2,"t":35.9},
+    "dunes-3": {"v":9,"L":2,"t":38.3},
     "dunes-4": {"v":7,"L":2,"t":57.3},
     "dunes-5": {"v":7,"L":3,"t":68.2},
     "dunes-6": {"v":6.5,"L":3,"t":81.7},
     "dunes-7": {"v":7,"L":4,"t":95.9},
     "dunes-8": {"v":7,"L":3,"t":84.5},
-    "harbour-1": {"v":9,"L":3,"t":27.6},
-    "harbour-2": {"v":10,"L":3,"t":33},
-    "harbour-3": {"v":8,"L":3,"t":48.4},
+    "harbour-1": {"v":10,"L":3,"t":27.4},
+    "harbour-2": {"v":10,"L":3,"t":35.7},
+    "harbour-3": {"v":10,"L":3,"t":34.8},
     "harbour-4": {"v":6.5,"L":3,"t":62.8},
-    "harbour-5": {"v":4,"L":3,"t":110.8},
+    "harbour-5": {"v":10,"L":3,"t":56.2},
     "harbour-6": {"v":7.5,"L":3,"t":72.9},
     "harbour-7": {"v":4,"L":3,"t":162.1},
     "harbour-8": {"v":4,"L":5,"t":137.9},
-    "frost-1": {"v":10,"L":4,"t":26.2},
-    "frost-2": {"v":10,"L":4,"t":33},
-    "frost-3": {"v":8,"L":4,"t":46.3},
+    "frost-1": {"v":9,"L":4,"t":29.2},
+    "frost-2": {"v":10,"L":4,"t":32.5},
+    "frost-3": {"v":10,"L":4,"t":35.1},
     "frost-4": {"v":6.5,"L":4,"t":64.8},
     "frost-5": {"v":8,"L":4,"t":64},
     "frost-6": {"v":7.5,"L":5,"t":72},
     "frost-7": {"v":7,"L":4,"t":100.3},
     "frost-8": {"v":8,"L":4,"t":80},
-    "chilli-1": {"v":9,"L":5,"t":29.3},
-    "chilli-2": {"v":9,"L":5,"t":38.2},
-    "chilli-3": {"v":6.5,"L":5,"t":57.2},
+    "chilli-1": {"v":10,"L":5,"t":29.5},
+    "chilli-2": {"v":9,"L":5,"t":36.5},
+    "chilli-3": {"v":8,"L":5,"t":46.2},
     "chilli-4": {"v":8,"L":5,"t":57.3},
     "chilli-5": {"v":7,"L":5,"t":70.7},
     "chilli-6": {"v":5.5,"L":5,"t":92.5},
     "chilli-7": {"v":6,"L":5,"t":119},
     "chilli-8": {"v":5,"L":5,"t":113.5},
-    "market-1": {"v":9,"L":5,"t":30},
-    "market-2": {"v":9,"L":5,"t":36.4},
-    "market-3": {"v":7.5,"L":5,"t":49.2},
+    "market-1": {"v":10,"L":5,"t":29.6},
+    "market-2": {"v":10,"L":5,"t":36.4},
+    "market-3": {"v":10,"L":5,"t":37.7},
     "market-4": {"v":9,"L":5,"t":50.6},
     "market-6": {"v":7.5,"L":5,"t":72},
     "market-7": {"v":9,"L":5,"t":83},
-    "market-8": {"v":8,"L":5,"t":85.3}
+    "market-8": {"v":8,"L":5,"t":85.3},
+    "back-1": {"v":7.5,"L":1,"t":34.6},
+    "back-2": {"v":8,"L":1,"t":36.4},
+    "back-3": {"v":10,"L":1,"t":32.9},
+    "back-4": {"v":9,"L":1,"t":36.7},
+    "back-5": {"v":10,"L":1,"t":43.5},
+    "back-6": {"v":6.5,"L":1,"t":69.6},
+    "bakery-9": {"v":10,"L":2,"t":35.8},
+    "bakery-10": {"v":10,"L":2,"t":38.5},
+    "bakery-11": {"v":10,"L":2,"t":57.5},
+    "bakery-12": {"v":10,"L":2,"t":65.2}
   };
   // RIVALS-END
   function rivalFor(id) { return RIVALS[id] || null; }
@@ -1197,7 +1607,7 @@
   // ════ Route challenges: one extra objective per career route ═════
   // The table is written by `node dev/sim.js challenges --write`, which sets each
   // target from what a bot driver manages, so every challenge is proven possible.
-  var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps" };
+  var FEATURE_NAMES = { bridge: "the bridges", ford: "the fords", slick: "the ice", bump: "the speed bumps", wind: "the windy stretch", ramp: "the ramps", hay: "the hay", seesaw: "the seesaw bridges", ducks: "the duck crossings", sails: "the windmill sails" };
   // CHALLENGES-BEGIN
   var CHALLENGES = {
     "bakery-1": {"kind":"coins","n":9},
@@ -1216,38 +1626,48 @@
     "dunes-6": {"kind":"air","n":0.6},
     "dunes-7": {"kind":"fuel","n":0.75},
     "dunes-8": {"kind":"coins","n":42},
-    "harbour-1": {"kind":"coins","n":13},
-    "harbour-2": {"kind":"calm","feature":"bridge","n":4},
-    "harbour-3": {"kind":"speed","n":11},
+    "harbour-1": {"kind":"coins","n":14},
+    "harbour-2": {"kind":"calm","feature":"bridge","n":5},
+    "harbour-3": {"kind":"speed","n":13},
     "harbour-4": {"kind":"calm","feature":"ford","n":4},
     "harbour-5": {"kind":"truck","truck":"van"},
     "harbour-6": {"kind":"flat","n":0.4},
     "harbour-7": {"kind":"fuel","n":0.75},
     "harbour-8": {"kind":"calm","feature":"bridge","n":4.5},
-    "frost-1": {"kind":"coins","n":9},
-    "frost-2": {"kind":"calm","feature":"slick","n":5.5},
-    "frost-3": {"kind":"nobrake"},
+    "frost-1": {"kind":"coins","n":16},
+    "frost-2": {"kind":"calm","feature":"slick","n":4},
+    "frost-3": {"kind":"coins","n":23},
     "frost-4": {"kind":"fuel","n":0.8},
     "frost-5": {"kind":"truck","truck":"hauler"},
     "frost-6": {"kind":"calm","feature":"slick","n":7.5},
     "frost-7": {"kind":"flat","n":0.4},
     "frost-8": {"kind":"coins","n":34},
-    "chilli-1": {"kind":"air","n":0.7},
-    "chilli-2": {"kind":"coins","n":17},
+    "chilli-1": {"kind":"air","n":0.9},
+    "chilli-2": {"kind":"coins","n":10},
     "chilli-3": {"kind":"flat","n":0.4},
     "chilli-4": {"kind":"coins","n":24},
     "chilli-5": {"kind":"truck","truck":"monster"},
     "chilli-6": {"kind":"coins","n":35},
     "chilli-7": {"kind":"fuel","n":0.75},
     "chilli-8": {"kind":"coins","n":38},
-    "market-1": {"kind":"coins","n":11},
-    "market-2": {"kind":"calm","feature":"bump","n":5},
-    "market-3": {"kind":"air","n":0.5},
+    "market-1": {"kind":"coins","n":14},
+    "market-2": {"kind":"calm","feature":"bump","n":5.5},
+    "market-3": {"kind":"air","n":0.9},
     "market-4": {"kind":"calm","feature":"slick","n":7.5,"wet":true},
     "market-5": {"kind":"truck","truck":"hauler"},
     "market-6": {"kind":"flat","n":0.5},
     "market-7": {"kind":"fuel","n":0.75},
-    "market-8": {"kind":"coins","n":37}
+    "market-8": {"kind":"coins","n":37},
+    "back-1": {"kind":"coins","n":21},
+    "back-2": {"kind":"calm","feature":"hay","n":3.5},
+    "back-3": {"kind":"calm","feature":"seesaw","n":4.5},
+    "back-4": {"kind":"flat","n":0.4},
+    "back-5": {"kind":"coins","n":24},
+    "back-6": {"kind":"fuel","n":0.8},
+    "bakery-9": {"kind":"coins","n":24},
+    "bakery-10": {"kind":"coins","n":25},
+    "bakery-11": {"kind":"coins","n":29},
+    "bakery-12": {"kind":"coins","n":41}
   };
   // CHALLENGES-END
   function challengeFor(id) { return CHALLENGES[id] || null; }
@@ -1339,6 +1759,11 @@
   // region a route opens once either of the two before it has a star.
   function isOpen(id, stars) {
     var d = findDelivery(id);
+    if (d && d.side) {
+      if (regionStars(0, stars) < SIDE_OPEN[d.track]) return false;
+      var list = sideTrack(d.track), k = list.indexOf(d);
+      return k === 0 || (stars[list[k - 1].id] || 0) > 0 || (k > 1 && (stars[list[k - 2].id] || 0) > 0);
+    }
     if (d.region > 0 && regionStars(d.region - 1, stars) < BALANCE.regionStars) return false;
     if (d.index === 0) return true;
     var region = DELIVERIES.filter(function (x) { return x.region === d.region; });
@@ -1348,12 +1773,14 @@
   return {
     STEP: STEP, BALANCE: BALANCE, REGIONS: REGIONS, ROUTES: ROUTES, DELIVERIES: DELIVERIES, UPGRADES: UPGRADES, MAX_LEVEL: MAX_LEVEL,
     EVENTS: EVENTS, activeEvent: activeEvent, regionFor: regionFor, WINTER_ROUTES: WINTER_ROUTES, WINTER_DOORS: WINTER_DOORS, WINTER_ORDERS: WINTER_ORDERS, winterDelivery: winterDelivery,
-    TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
-    cargoSize: cargoSize, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
-    findDelivery: findDelivery, dailyDelivery: dailyDelivery, dailyRoad: dailyRoad, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
+    TRUCKS: TRUCKS, EVENT_TRUCKS: EVENT_TRUCKS, bonusCargoFor: bonusCargoFor, stopName: stopName, stopKey: stopKey, CARGO_TYPES: CARGO_TYPES, CONTRACTS: CONTRACTS, truckSpec: truckSpec, dimsFor: dimsFor, DIM: DIM, SAMPLE: SAMPLE,
+    cargoSize: cargoSize, NEW_CARGO: NEW_CARGO, createGame: createGame, report: report, upgradeCost: upgradeCost, isOpen: isOpen, regionStars: regionStars,
+    findDelivery: findDelivery, dailyDelivery: dailyDelivery, topUpRun: topUpRun, dailyRoad: dailyRoad, TEST_DRIVES: TEST_DRIVES, findTestDrive: findTestDrive, loadFor: loadFor, dailyRegion: dailyRegion, DAILY_TRUCK: DAILY_TRUCK, DAILY_POOL: DAILY_POOL, DAILY_LEVEL: DAILY_LEVEL, isFree: isFree, FREE_ROUTES: FREE_ROUTES, longHaul: longHaul, parTime: parTime, medalTimes: medalTimes,
     contractsFor: contractsFor, weeklyFor: weeklyFor, cupFor: cupFor, WEEKLY: WEEKLY, ghostPath: ghostPath, ghostGap: ghostGap, featureAt: featureAt,
     CUSTOMERS: CUSTOMERS, ORDERS: ORDERS, REP_STARS: REP_STARS, findOrder: findOrder, repLevel: repLevel, orderText: orderText,
     botInput: botInput, rivalFor: rivalFor, rivalUpgrades: rivalUpgrades, RIVALS: RIVALS, MEDALS: MEDALS, ROADS: ROADS, challengeFor: challengeFor, challengeText: challengeText, challengeMet: challengeMet, CHALLENGES: CHALLENGES,
-    heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng
+    heightAt: heightAt, normalAngle: normalAngle, hash: hash, rng: rng,
+    routePreview: routePreview, medalTimes: medalTimes,
+    SIDE: SIDE, SIDE_ROADS: SIDE_ROADS, SIDE_OPEN: SIDE_OPEN, sideTrack: sideTrack, sideStars: sideStars, duckState: duckState, SEESAW: SEESAW
   };
 });

@@ -24,25 +24,44 @@ function load() {
   if (kept && (!local || (kept.savedAt || 0) > (local.savedAt || 0))) return kept;
   return local || {};
 }
-const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, crumb: {}, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
+const DEFAULTS = { driver: "corgi", topper: "", coins: 0, stars: {}, best: {}, express: {}, upgrades: {}, trucks: ["pickup"], truck: "pickup", achieved: {}, daily: { last: "", streak: 0 }, tutorial: 0, sound: true, quality: "auto", shake: true, days: [], medal: {}, ghost: {}, long: {}, jobs: { date: "", got: {}, paid: {} }, gifts: {}, challenge: {}, ghostOn: true, music: true, haptics: true, pro: false, v: 1, rival: {}, ghostWins: {}, crumb: {}, sfxVol: 1, musicVol: 1, hornButton: true, bigText: false, lassos: 0, lassoAuto: true, orders: {}, parts: 0, mastery: {}, paint: {}, extras: [], longBest: {}, longMile: {}, cup: { week: "", top: 0, best: {}, paid: {} }, week: { key: "", got: 0, paid: false } };
 const save = Object.assign({}, DEFAULTS, load());
 migrateWinterSave(save);
 // 1.0.2 rebuilt the first roads. Stars, medals and challenges stay; best times,
 // ghosts and Weekly Cup times from the old roads would not compare, so they go.
 function migrateRoads() {
-  const roads = SH.ROADS, rev = (id) => (roads[id] && roads[id].rev) || 1;
-  if ((save.roads || 0) >= 2) return;
-  Object.keys(roads).forEach((id) => {
-    if (save.ghost[id] && (save.ghost[id].rev || 1) !== rev(id)) delete save.ghost[id];
+  // Each designed road has a version (rev). When it changes, that road's best time,
+  // ghost and Weekly Cup time go; stars, medals and challenges stay.
+  const seen = save.roadRev || (save.roadRev = {});
+  const legacy = (save.roads || 0) >= 2;
+  Object.keys(SH.ROADS).forEach((id) => {
+    const rev = SH.ROADS[id].rev || 1;
+    if ((seen[id] || (legacy && FIRST_MILE.includes(id) ? 2 : 1)) === rev) { seen[id] = rev; return; }
+    if (save.ghost[id] && (save.ghost[id].rev || 1) !== rev) delete save.ghost[id];
     delete save.best[id];
     if (save.cup && save.cup.best) delete save.cup.best[id];
+    seen[id] = rev;
   });
   // Anyone who already earned stars on Bakery Hills 3 got the straps gift.
   if (save.stars["bakery-3"] || save.stars["bakery-4"]) save.gifts.straps = true;
   save.roads = 2;
 }
+// The roads 1.0.2 rebuilt, for saves migrated before versions were tracked per road.
+const FIRST_MILE = ["bakery-1", "bakery-2", "bakery-3", "bakery-4", "bakery-5", "bakery-6", "bakery-7", "bakery-8", "dunes-1", "dunes-2"];
 migrateRoads();
-save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0 }, save.stats);
+if (save.bigText) document.documentElement.classList.add("big-text");
+// Motion follows the phone's reduce-motion setting until the player picks (Q18).
+if (save.motionPicked == null && typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches) save.shake = false;
+// Pedals: size, see-through and layout (Q11).
+function applyPedals() {
+  const c = document.documentElement.classList;
+  c.toggle("pedals-large", save.pedalSize === "large");
+  c.toggle("pedals-clear", save.pedalClear === true);
+  c.toggle("pedals-swap", save.pedalLayout === "swap");
+  c.toggle("pedals-one", save.pedalLayout === "one");
+}
+applyPedals();
+save.stats = Object.assign({ deliveries: 0, crates: 0, eggs: 0, metres: 0, earned: 0, failed: 0, bestAir: 0, topSpeed: 0, melons: 0, cakes: 0, popcorn: 0, coldIcecream: 0, bridges: 0, landings: 0, longBest: 0, longMetres: 0, contracts: 0, tuktukAway: 0, bonusLoads: 0, deepParks: 0, nearParks: 0 }, save.stats);
 function persist() {
   save.savedAt = Date.now();
   const json = JSON.stringify(save);
@@ -85,8 +104,10 @@ const fullWeb = !nativeApp && (params.get("full") === "1" || SH.DELIVERIES.some(
 if (fullWeb && !nativeApp) save.webFull = true;
 const PLAY_URL = "https://play.google.com/store/apps/details?id=com.snackpackuniverse.snackhaul&referrer=utm_source%3Dwebsite%26utm_medium%3Dweb-demo%26utm_campaign%3Dsnack-haul";
 const paywalled = () => !fullWeb && !save.pro;
-// All of Bakery Hills is free (routes, Special Orders, Long Haul); elsewhere only the free routes.
-const routePaid = (d) => paywalled() && d.region > 0 && !d.daily && !d.winter && !SH.isFree(d.id);
+// All of Bakery Hills is free (routes, Special Orders, Long Haul, Top-Up); elsewhere only the free routes.
+const routePaid = (d) => paywalled() && d.region > 0 && !d.daily && !d.winter && !d.testDrive && !SH.isFree(d.id);
+// A Test Drive opens at a number of Bakery Hills stars, and is for players without the full game.
+const testOpen = (t) => regionStars(0) >= t.at;
 // A region is paid when none of its roads are free.
 const regionPaid = (r) => r > 0 && paywalled() && !SH.DELIVERIES.some((d) => d.region === r && SH.isFree(d.id));
 const truckPaid = (id) => paywalled() && id!=="sleigh" && !FREE_TRUCKS.includes(id);
@@ -142,7 +163,10 @@ const GOALS = [
   { id: "depot5", icon: "🌟", name: "Bright Lights", desc: "Grow the depot to stage 5.", coins: 300, test: () => depotStage() >= 5 },
   { id: "streak7", icon: "🗓️", name: "Full Week", desc: "Do the daily delivery 7 days in a row.", coins: 150, test: () => save.daily.streak >= 7 },
   { id: "cupgold", icon: "🏆", name: "Cup Winner", desc: "Win a gold Weekly Cup.", coins: 250, test: () => (save.stats.cupGolds || 0) >= 1 },
+  { id: "stacked", icon: "🗼", name: "Stacked High", desc: "Deliver 25 bonus loads from Hold for more.", coins: 80, test: () => (save.stats.bonusLoads || 0) >= 25 },
+  { id: "deeppark", icon: "🅿️", name: "Tight Squeeze", desc: "Park in the deep spot 10 times.", coins: 80, test: () => (save.stats.deepParks || 0) >= 10 },
   { id: "crumbs", icon: "✨", name: "Golden Crumbs", desc: "Win 10 golden crumbs: three stars, gold and the challenge in one run.", coins: 200, test: () => Object.keys(save.crumb || {}).length >= 10 },
+  { id: "nightbaker", icon: "🌙", name: "Night Baker", desc: "Finish all six Back Roads. Unlocks the Moon Pie roof topper.", coins: 120, test: () => SH.sideTrack("back").every((d) => save.stars[d.id] > 0) },
   { id: "done", icon: "🏆", name: "Haulage Legend", desc: "Finish every route.", coins: 300, test: () => SH.DELIVERIES.every((d) => save.stars[d.id] > 0) }
 ];
 function regionStars(r) { return SH.regionStars(r, save.stars); }
@@ -151,7 +175,7 @@ function regionStars(r) { return SH.regionStars(r, save.stars); }
 const ico = (name, fallback = "", cls = "ico") => (has("ui/" + name + ".webp") ? `<img class="${cls}" src="${url("ui/" + name + ".webp")}" alt="">` : fallback);
 const artUrl = (name) => (has("art/" + name + ".webp") ? url("art/" + name + ".webp") : "");
 const DRIVERS = [["corgi", "Corgi-on-the-Cob"], ["barkbq", "Bark-B-Q"], ["waffle", "Belgian Waffle"], ["booklava", "Booklava"]];
-const TOPPERS = [["", "None"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
+const TOPPERS = [["", "None"], ["moonpie", "Moon Pie"], ["croissant", "Croissant"], ["corn", "Corn cob"], ["chilli", "Chilli"], ["cone", "Ice-cream cone"], ["pretzel", "Pretzel"], ["donut", "Doughnut"], ["honey", "Honey pot"], ["crown", "Crown"]];
 function look(truckId = drivingTruck()) {
   const p = PAINTS.concat(WINTER_PAINTS).find((x) => x.id === save.paint[truckId]);
   return { driver: save.driver, topper: save.topper, upgrades: save.upgrades, paint: p && paintOwned(p) ? p.colors : null };
@@ -194,7 +218,7 @@ function paintOwned(p) {
   if (!h) return !!save.winterRewards[p.id];
   if (h.truck) return masteryLevel(h.truck) >= h.level;
   if (h.region != null) return regionStars(h.region) >= 24;
-  return SH.ORDERS.filter((o) => o.region === h.customer).every((o) => save.orders[o.id]);
+  return SH.ORDERS.filter((o) => o.customer === h.customer).every((o) => save.orders[o.id]);
 }
 function paintHow(p) {
   const h = p.how;
@@ -254,7 +278,7 @@ function ensureAudio() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audio.ctx = ctx;
-    audio.master = ctx.createGain(); audio.master.gain.value = 0.9; audio.master.connect(ctx.destination);
+    audio.master = ctx.createGain(); audio.master.gain.value = 0.9 * (save.sfxVol ?? 1); audio.master.connect(ctx.destination);
     const filter = ctx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 520; filter.Q.value = 1.5;
     audio.engineGain = ctx.createGain(); audio.engineGain.gain.value = 0;
     audio.o1 = ctx.createOscillator(); audio.o1.type = "sawtooth"; audio.o1.frequency.value = 60;
@@ -350,12 +374,13 @@ function setMusic(name, trackIndex = 0) {
     audio.music = loop;
     // A playlist changes track only at a natural end.
     if (tracks.length > 1) loop.src.onended = () => { if (audio.music === loop) setMusic(name, trackIndex + 1); };
-    loop.gain.gain.setTargetAtTime(MUSIC_LEVEL, audio.ctx.currentTime, .6);
+    loop.gain.gain.setTargetAtTime(musicLevel(), audio.ctx.currentTime, .6);
     loop.src.start();
     audio.musicName = name;
   });
 }
 const MUSIC_LEVEL = 0.32;
+const musicLevel = () => MUSIC_LEVEL * (save.musicVol ?? 1);
 // Tyre noise by region, swapped on bridges and ice, plus a quiet backdrop.
 const SURFACE = { northpole: "road_snow", bakery: "road_gravel", dunes: "road_sand", harbour: "road_sand", frost: "road_snow", chilli: "road_gravel", market: "road_cobble" };
 const AMBIENT = { northpole: "night", dunes: "wind", harbour: "waves", frost: "wind", market: "night" };
@@ -390,7 +415,7 @@ function engineSound(game, on) {
     audio.loops.idle.gain.gain.setTargetAtTime(!live ? 0 : gas ? 0.12 : 0.5, t, 0.08);
     audio.loops.drive.gain.gain.setTargetAtTime(!live ? 0 : gas ? 0.6 : Math.min(0.3, speed * 0.03), t, 0.08);
   }
-  if (audio.music) audio.music.gain.gain.setTargetAtTime(save.sound ? MUSIC_LEVEL : 0, t, 0.3);
+  if (audio.music) audio.music.gain.gain.setTargetAtTime(save.sound ? musicLevel() : 0, t, 0.3);
   let tyres = false;
   if (audio.road) {
     const zone = game && game.zone ? game.zone.type : "", under = zone === "bridge" ? "road_planks" : zone === "slick" ? "road_ice" : SURFACE[audio.roadRegion];
@@ -417,7 +442,21 @@ function engineSound(game, on) {
 
 // ════ World ═══════════════════════════════════════════════════════
 let world;
-try { world = new World3D(canvas, save.quality); } catch (e) { world = null; }
+// Auto graphics start where they settled last time, or from the phone: weak phones
+// (3 GB or less, or 4 cores or fewer) start on Low, 4 GB on Medium, others on High.
+function autoStartTier() {
+  if (["high", "medium", "low"].includes(save.autoTier)) return save.autoTier;
+  const mem = navigator.deviceMemory, cores = navigator.hardwareConcurrency;
+  if ((mem && mem <= 3) || (cores && cores <= 4)) return "low";
+  if (mem && mem <= 4) return "medium";
+  return "high";
+}
+try { world = new World3D(canvas, save.quality, autoStartTier()); } catch (e) { world = null; }
+if (world) {
+  if (save.autoCeiling != null) world.autoCeiling = save.autoCeiling;
+  world.onQualityChange = (name) => { save.autoTier = name; persist(); };
+  world.onCeiling = (level) => { save.autoCeiling = level; persist(); };
+}
 const state = { mode: "menu", screen: "home", game: null, delivery: null, input: { gas: false, brake: false }, acc: 0, last: 0, toastUntil: 0, hintUntil: 0, regionTab: 0, endTimer: 0, hints: {} };
 
 function sizeWorld() { world && world.resize(window.innerWidth, window.innerHeight); }
@@ -496,15 +535,27 @@ function roadSounds(g) {
   while (logs.length && logs[0] < x - 1) { logs.shift(); if (g.grounded() && Math.abs(g.speed()) > 1.5) play("log_bump", 0.55, 0.9 + Math.random() * 0.2); }
   if (!state.melted && g.time > g.par && g.cargo.some((c) => c.type === "icecream" && !c.lost && !c.broken)) { state.melted = true; play("icecream_melt", 0.6); toast("The ice cream is melting!", 1100); }
 }
+// Where each load was lost, as a tick on the progress bar, and in words on the results card.
+function markLoss(g, ev) {
+  const t = g.terrain, x = ev.x, zone = SH.featureAt(t, x), ahead = SH.heightAt(t, x + 3) - SH.heightAt(t, x);
+  const where = zone ? { ramp: "a ramp", bridge: "a bridge", ford: "a ford", slick: "the ice", wind: "the wind", bump: "the bumps", pickup: "the pickup stop" }[zone.type] || "a feature"
+    : !g.grounded() ? "a jump" : ahead < -0.4 ? "a crest" : ahead > 0.4 ? "a climb" : "flat road";
+  state.losses.push({ x, where, cargo: ev.cargo });
+  const tick = document.createElement("b");
+  tick.style.left = Math.min(100, (x / t.zoneStart) * 100).toFixed(1) + "%";
+  $("prog").parentElement.appendChild(tick);
+}
 function drainEvents(g) {
   g.events.splice(0).forEach((ev) => {
     if (ev.type === "done") ev.at = g.truck.getPosition();
     world.react(ev);
     buzzFor(ev);
     if (ev.type === "coin") play("coin", 0.55, 0.94 + Math.random() * 0.12) || beep(1180 + Math.random() * 200, 0.08, "triangle", 0.05);
+    else if (ev.type === "bonus") { play("bonus_load_" + Math.min(3, ev.n), 0.8) || play("pickup_load", 0.7, 1 + ev.n * 0.08) || beep(700 + ev.n * 120, 0.12, "triangle", 0.08); toast("+" + ev.n + " bonus load" + (ev.n > 1 ? "s" : "") + (ev.n >= ev.max ? ". Full!" : ""), 900); }
     else if (ev.type === "fuel") { play("fuel", 0.8) || (beep(520, 0.12, "sine", 0.1), beep(780, 0.16, "sine", 0.1, 0.1)); toast("Fuel!", 700); }
-    else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); }
-    else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); }
+    else if (ev.type === "lasso") { play("saved", 0.8) || beep(520, 0.2, "triangle", 0.08); toast("Lassoed! Load saved", 1200); $("lasso").hidden = true; buzz("medium"); }
+    else if (ev.type === "lost") { play(LOST_SOUND[ev.cargo] || "crate_lost", 0.8) || play("crate_lost", 0.8) || thud(0.6); toast("Cargo lost!", 800); markLoss(g, ev); }
+    else if (ev.type === "broken") { play("egg_crack", 0.8) || beep(900, 0.1, "sawtooth", 0.05); toast("Eggs cracked!", 800); markLoss(g, ev); }
     else if (ev.type === "land") {
       thud(Math.min(1, ev.air));
       if (ev.air > 0.35 && g.live()) {
@@ -523,9 +574,12 @@ function drainEvents(g) {
     else if (ev.type === "dock") { thud(1); toast("Bumped the depot!", 1000); }
     else if (ev.type === "tailgateLoose") { toast("Tailgate loose. Ease over bumps.", 1600); buzz("warning"); }
     else if (ev.type === "tailgateLost") { thud(0.7); toast("Tailgate lost! Watch the load.", 1700); buzz("warning"); }
+    else if (ev.type === "honk") { play("ducks", 0.8) || [740, 620].forEach((f, i) => beep(f, 0.12, "square", 0.05, i * 0.13)); toast("Ducks! +" + SH.BALANCE.duckPenalty + " s", 1100); buzz("light"); }
+    else if (ev.type === "pop") { play("soda_pop", 0.8) || (beep(1400, 0.05, "square", 0.05), beep(500, 0.2, "sawtooth", 0.04, 0.05)); toast("The soda popped!", 900); markLoss(g, ev); buzz("warning"); }
+    else if (ev.type === "hay") { play("hay_crash", 0.7) || thud(0.5); toast("Hay! +1 coin", 700); }
     else if (ev.type === "splash") play("splash", 0.6) || beep(300 + Math.random() * 200, 0.12, "sine", 0.04);
     else if (ev.type === "zone") {
-      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here" }[ev.feature];
+      const say = { dropoff:"Stop on the doormat", drift:"Snowdrift: carry your speed", wind: "Gusty! Mind the load", slick: g.regionIndex === 3 || g.delivery.winter ? "Ice! Brake early" : "Wet cobbles!", bridge: "Bridge: take it steady", ford: "Ford: keep your speed up", pickup: "Pickup stop: pull up here", ducks: "Ducks crossing: wait for the gap", hay: "Hay ahead: steady, not fast", seesaw: "Seesaw bridge: ease over the middle" }[ev.feature];
       if (say) hint(say, 2600);
       const sound = { drift:"snow_drift", bridge: "bridge_creak", wind: "wind_gust", ramp: "ramp_whoosh", bump: "speed_bump" }[ev.feature];
       if (sound) play(sound, 0.6);
@@ -544,7 +598,7 @@ function makeGhost(delivery) {
     if (rival && save.stars[delivery.id] && !save.rival[delivery.id]) {
       return { kind: "rival", rival, game: SH.createGame({ delivery, upgrades: SH.rivalUpgrades(rival.L), truck: "pickup", legacyCargoPhysics: true }) };
     }
-    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, upgrades: saved.upgrades, truck: saved.truck, legacyCargoPhysics: !saved.cargoPhysics }), rec: saved.rec, i: 0, k: 0 };
+    if (saved && saved.v === 2 && (saved.rev || 1) === (delivery.rev || 1)) return { kind: "mine", time: saved.time, game: SH.createGame({ delivery, lasso: !!saved.lasso, upgrades: saved.upgrades, truck: saved.truck, legacyCargoPhysics: !saved.cargoPhysics, bonus: !!saved.bonus }), rec: saved.rec, i: 0, k: 0 };
   } catch (e) { /* the run goes on without a ghost */ }
   return null;
 }
@@ -582,8 +636,12 @@ function startDelivery(delivery) {
   // A Special Order can name its truck; it must be owned to start.
   const truckId = delivery.truck || drivingTruck();
   // The daily is driven in a loaner truck with set upgrades, the same for everyone.
-  const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId });
-  state.logs = null; state.melted = false;
+  // The lasso: armed on any run that allows it while one is in the Pantry. Never in the
+  // Daily, the Weekly Cup, Test Drives or Winter Haul, where everyone drives the same setup.
+  const lasso = lassoAllowed(delivery) && save.lassoAuto !== false && (save.lassos || 0) > 0;
+  const game = SH.createGame({ delivery, upgrades: delivery.loan ? SH.rivalUpgrades(delivery.level) : save.upgrades, truck: truckId, lasso, bonus: true });
+  state.logs = null; state.melted = false; state.losses = [];
+  document.querySelectorAll(".progress b").forEach((el) => el.remove());
   state.game = game; state.acc = 0; state.endTimer = 0; state.hints = {}; state.mile = 0; state.slow = 0;
   state.input.gas = state.input.brake = false;
   syncPedals();
@@ -601,10 +659,12 @@ function startDelivery(delivery) {
   state.gap = state.ghost ? SH.ghostGap() : null;
   state.hudGap = null;
   $("gap").hidden = !state.gap;
+  $("horn").hidden = save.hornButton === false;
+  $("lasso").hidden = !game.lassoLeft;
   world.buildRoute(game);
   ui.innerHTML = ""; veil.classList.remove("on");
   driveEl.hidden = false;
-  const label = delivery.long ? "Long Haul" : delivery.daily ? "World Tour Daily: " + SH.REGIONS[delivery.region].name + " in the " + SH.truckSpec(truckId).name : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
+  const label = delivery.topup ? "Top-Up Run: stop at each mat to load one more" : delivery.testDrive ? "Test Drive: " + delivery.name + " in the " + SH.truckSpec(truckId).name : delivery.long ? "Long Haul" : delivery.daily ? "World Tour Daily: " + SH.REGIONS[delivery.region].name + " in the " + SH.truckSpec(truckId).name : delivery.order ? SH.CUSTOMERS[delivery.customer].name + ": " + delivery.name : delivery.name || SH.REGIONS[delivery.region].name + " " + (delivery.index + 1);
   toast(label + ": " + (delivery.winter ? delivery.dropoffs + " porches" : game.total + " loads"), 1700);
   const ch = !delivery.long && !delivery.daily && save.stars[delivery.id] && !save.challenge[delivery.id] ? SH.challengeFor(delivery.id) : null;
   if (delivery.winter) hint("Stop on each doormat, then return to the depot",4500);
@@ -645,9 +705,12 @@ function hud(g) {
   const loadText = g.delivery.winter ? g.homes + "/" + g.delivery.dropoffs + " porches" :
     live + "/" + g.total + (g.pending.length ? " +" + g.pending.length : "");
   if (state.hudLoad !== loadText) { state.hudLoad = loadText; $("load").innerHTML = ico("load", "📦") + " " + loadText; }
+  // Warnings carry a shape as well as a colour (Q19).
   $("load").className = !g.delivery.winter && live + g.pending.length - 1 < g.need && g.total > 1 ? "chip warn" : "chip";
   if (state.hudCoins !== g.coinsTaken) { state.hudCoins = g.coinsTaken; $("coins").innerHTML = ico("coin", "🪙") + " " + g.coinsTaken; }
-  if (g.delivery.long) {
+  if (g.delivery.topup) {
+    $("clock").textContent = "Stop " + (g.stops || 0) + " · " + g.live() + " on board";
+  } else if (g.delivery.long) {
     const metres = Math.max(0, Math.round(g.truck.getPosition().x - 8)), mile = Math.floor(metres / 250);
     $("clock").textContent = metres + " m · next " + (mile + 1) * 250;
     if (mile > (state.mile || 0)) { state.mile = mile; toast(mile * 250 + " m!", 1100); play("medal", 0.5); }
@@ -668,17 +731,28 @@ function hud(g) {
       el.setAttribute("aria-label", gap < 0 ? Math.abs(gap).toFixed(1) + " seconds ahead of the ghost" : gap > 0 ? gap.toFixed(1) + " seconds behind the ghost" : "Level with the ghost");
     }
   }
+  // Soda fizz: a gauge that fills with every knock and pops the crate when full.
+  const hasSoda = g.cargo.some((c) => c.type === "soda" && !c.lost && !c.broken && !c.delivered);
+  if ($("fizz").hidden === hasSoda) $("fizz").hidden = !hasSoda;
+  if (hasSoda) {
+    const fz = Math.round((g.fizz || 0) * 20) / 20;
+    if (state.hudFizz !== fz) { state.hudFizz = fz; $("fizz").firstChild.style.width = (fz * 100) + "%"; $("fizz").className = "chip fizz" + (fz > 0.7 ? " warn" : ""); $("fizz").setAttribute("aria-label", "Soda fizz " + Math.round(fz * 100) + "%"); }
+  }
   const f = g.fuel / g.maxFuel;
   $("fuel").style.width = (f * 100).toFixed(1) + "%";
   $("fuel").className = f < 0.25 ? "low" : "";
   $("prog").style.width = Math.min(100, (g.truck.getPosition().x / g.terrain.zoneStart) * 100).toFixed(1) + "%";
   const loading = g.status === "driving" && g.inPickup();
+  const bonus = g.status === "driving" && g.bonusInfo();
   const dropping = g.status === "driving" && g.inDropoff();
-  const showStop = dropping || loading || (g.status === "driving" && g.inZone());
+  const showStop = dropping || loading || !!bonus || (g.status === "driving" && g.inZone());
   $("stop").hidden = !showStop;
-  $("stop").firstElementChild.textContent = dropping ? "Stop on the doormat" : loading ? "Stop to load" : g.delivery.winter ? "Stop at the depot" : "Stop to unload";
+  const spot = !bonus && g.status === "driving" && g.inZone() && g.spotAt();
+  $("stop").firstElementChild.textContent = dropping ? "Stop on the doormat" : loading ? "Stop to load" : bonus ? "Stay for more: +" + bonus.n + " of " + bonus.max : g.delivery.winter ? "Stop at the depot" : spot ? "Stop here: " + spot + " spot" : "Stop to unload";
+  if (spot && spot !== state.lastSpot && g.speed() < 2) play("spot_ring", 0.6) || play("stop_tick", 0.5, 1.5) || beep(1320, 0.08, "triangle", 0.06);
+  state.lastSpot = spot;
   if (showStop) {
-    const progress = g.stopProgress();
+    const progress = bonus ? bonus.progress : g.stopProgress();
     $("stopbar").style.width = (progress * 100).toFixed(0) + "%";
     if (progress > 0.02 && progress < 1 && g.time - lastTick > 0.3) { lastTick = g.time; play("stop_tick", 0.35, 0.9 + progress * 0.4); }
   }
@@ -687,6 +761,7 @@ function hud(g) {
 function finishDelivery(g) {
   engineSound(null, false);
   const r = SH.report(g), d = state.delivery, today = localDate();
+  if (r.parked) setTimeout(() => play("park_" + r.parked, 0.7), 700);
   if (d.winter) return finishWinterRun(r,d);
   const s = save.stats;
   s.metres += Math.round(Math.max(0, g.truck.getPosition().x - 8));
@@ -707,7 +782,12 @@ function finishDelivery(g) {
   const beforeRegion = maxRegion();
   let streakLine = "", longBest = false, gift = "", orderPay = 0, tip = 0, cupLine = "";
   const milestones = [];
-  if (d.long) {
+  if (d.topup) {
+    // Top-Up Run: the best score of the day in each region.
+    const key = d.id, best = save.topupBest || (save.topupBest = {});
+    if (r.score > (best[key] || 0)) { best[key] = r.score; longBest = r.score > 0; }
+    s.topupStops = Math.max(s.topupStops || 0, r.stops);
+  } else if (d.long) {
     s.longBest = Math.max(s.longBest, r.metres); s.longMetres += r.metres;
     // Every 250 m reached for the first time in a region pays once.
     const reg = d.region, before = save.longMile[reg] || 0, mile = Math.floor(r.metres / 250);
@@ -717,6 +797,8 @@ function finishDelivery(g) {
     if (r.score > (save.long[r.truck] || 0)) { save.long[r.truck] = r.score; longBest = r.score > 0; }
   } else if (r.status === "done") {
     s.deliveries += 1; s.crates += r.kept; s.eggs += r.kinds.eggs;
+    s.bonusLoads = (s.bonusLoads || 0) + (r.bonusKept || 0);
+    if (r.parked === "deep") s.deepParks = (s.deepParks || 0) + 1; else if (r.parked === "near") s.nearParks = (s.nearParks || 0) + 1;
     s.melons += r.kinds.melon; s.cakes += r.kinds.cake; s.popcorn += r.kinds.popcorn;
     if (r.time <= r.par) s.coldIcecream += r.kinds.icecream;
     if (r.featMax && r.featMax.bridge != null) s.bridges += 1;
@@ -732,6 +814,9 @@ function finishDelivery(g) {
         tip = Math.round(10 * SH.REGIONS[d.region].pay);
         save.coins += tip; s.earned += tip;
       }
+    } else if (d.testDrive) {
+      save.testDrives = save.testDrives || {};
+      if (r.stars > (save.testDrives[d.id] || 0)) save.testDrives[d.id] = r.stars;
     } else if (d.daily) {
       if (save.daily.last !== today) {
         const y = new Date(Date.now() - 864e5);
@@ -743,6 +828,8 @@ function finishDelivery(g) {
       }
     } else {
       if (r.stars > (save.stars[d.id] || 0)) save.stars[d.id] = r.stars;
+      // Best time per truck, for the route sheet (Q17).
+      if (r.stars >= 2) { save.truckBest = save.truckBest || {}; const tb = (save.truckBest[d.id] ||= {}), tt = Math.round(r.time * 10) / 10; if (!tb[r.truck] || tt < tb[r.truck]) tb[r.truck] = tt; }
       if (!save.best[d.id] || r.time < save.best[d.id]) { if (save.best[d.id] && r.stars >= 2) setTimeout(() => play("saved", 0.6), 2000); save.best[d.id] = Math.round(r.time * 10) / 10; }
       if (r.express) save.express[d.id] = true;
       if (r.medal > (save.medal[d.id] || 0)) save.medal[d.id] = r.medal;
@@ -760,7 +847,7 @@ function finishDelivery(g) {
           }
         });
       } else if (d.cup) cupLine = "Cup legs count with two stars and a clean stop.";
-      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, cargoPhysics: g.cargoPhysics, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
+      if (save.best[d.id] === Math.round(r.time * 10) / 10 && g.rec.length < 6000) save.ghost[d.id] = { v: 2, rev: d.rev || 1, cargoPhysics: g.cargoPhysics, bonus: !!g.bonusOn, lasso: !!g.lassoLeft || !!g.lassoUsed, truck: r.truck, upgrades: Object.assign({}, save.upgrades), rec: g.rec.slice(), time: r.time };
     }
     // Bakery Hills 4 is the first route where a bare truck loses its load, so the farm hands over spare straps first.
     if (d.id === "bakery-3" && !save.gifts.straps) gift = giveStraps();
@@ -773,6 +860,14 @@ function finishDelivery(g) {
   // The golden crumb: three stars, gold and the route challenge, all in one run.
   const crumbNew = !!ch && !d.order && !d.cup && r.stars === 3 && r.medal === 3 && SH.challengeMet(ch, r) && !save.crumb[d.id];
   if (crumbNew) { save.crumb[d.id] = true; save.coins += 25; s.earned += 25; }
+  // Lassos: one is used up when it saves a load; new ones come from rare milestones.
+  const lassoLines = [];
+  if (r.lassoUsed) { save.lassos = Math.max(0, (save.lassos || 0) - 1); lassoLines.push("Your lasso saved a load. " + save.lassos + " left"); }
+  const earnLasso = (key, why) => { if (save.gifts[key]) return; const line = giveLasso(why); if (line) { save.gifts[key] = true; lassoLines.push(line); } };
+  if (crumbNew && Object.keys(save.crumb).length % 5 === 0) earnLasso("lasso-crumb-" + Object.keys(save.crumb).length, Object.keys(save.crumb).length + " golden crumbs");
+  if (d.id === "bakery-8" && r.stars === 3) earnLasso("lasso-bigbake", "Three stars on The Big Bake");
+  if (d.topup && r.stops >= 10) earnLasso("lasso-topup10", "Top-Up Run stop 10");
+  if (d.order && r.stars === 3 && Object.keys(save.orders).length >= 10) earnLasso("lasso-orders10", "Ten Special Orders");
   if (ch && !save.challenge[d.id] && SH.challengeMet(ch, r)) {
     save.challenge[d.id] = true;
     chPay = Math.round(20 * SH.REGIONS[d.region].pay);
@@ -809,21 +904,23 @@ function finishDelivery(g) {
   s.contracts += done.length;
   const goals = checkGoals(r);
   const newRegion = maxRegion() > beforeRegion ? SH.REGIONS[maxRegion()].name : null;
+  if (newRegion && maxRegion() === 1) earnLasso("lasso-dunes", "Welcome to Dairy Dunes");
   persist();
 
   const why = { load: "Too much of the load is gone. You need " + g.need + " of " + r.total + " to make the delivery.", flip: "The truck ended up on its roof.", fuel: "You ran out of fuel." }[r.reason] || "";
   const list = r.lines.map((l) => `<li><span>${esc(l.label)}</span><b>+${l.coins}</b></li>`).join("");
-  const next = d.daily || d.long || d.order || d.cup ? null : following(d);
+  const next = d.daily || d.long || d.order || d.cup || d.testDrive ? null : following(d);
   const medalName = ["", "Bronze", "Silver", "Gold"][r.medal];
   const canAdvance = r.status === "done" && next && !routePaid(next);
   // After a lost load, point to the garage when an upgrade is affordable.
   const toGarage = (r.status !== "done" && !d.long && r.reason !== "flip" && cheapestUpgrade() && save.coins >= cheapestUpgrade().cost) ||
     (d.id === "bakery-2" && r.status === "done" && !save.gifts.garageTip && bestNext() && save.coins >= bestNext().cost && (save.gifts.garageTip = true));
   const stars = "★".repeat(r.stars) + "☆".repeat(3 - r.stars);
-  sheet.innerHTML = `<h2>${d.long ? "Long Haul: " + r.metres + " m" : r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
-    ${d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0) + "."} Best distance in ${esc(SH.REGIONS[d.region].name)}: ${save.longBest[d.region] || 0} m</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c === "★" ? ico("star_on", c, "ico star") : ico("star_off", c, "ico star")}</span>`).join("")}</div>`}
+  sheet.innerHTML = `<h2>${d.topup ? "Top-Up Run: stop " + r.stops : d.long ? "Long Haul: " + r.metres + " m" : r.status === "done" ? "Delivered!" : "Delivery failed"}</h2>
+    ${d.topup ? `<p>Score ${r.score}${longBest ? ". Your best today!" : ", today's best " + ((save.topupBest || {})[d.id] || 0) + "."} Every load on board at a stop scores. Same road all day, a new one tomorrow.</p>` : d.long ? `<p>Score ${r.score}${longBest ? ". New best for this truck!" : ", best " + (save.long[r.truck] || 0) + "."} Best distance in ${esc(SH.REGIONS[d.region].name)}: ${save.longBest[d.region] || 0} m</p>` : `<div class="stars" aria-label="${r.stars} stars">${[...stars].map((c) => `<span>${c === "★" ? ico("star_on", c, "ico star") : ico("star_off", c, "ico star")}</span>`).join("")}</div>`}
     ${why && !d.long ? `<p>${esc(why)}</p>` : ""}
     ${r.dockHit && r.status === "done" && !d.long ? "<p>You hit the depot wall, so no medal this time. Brake and stop inside the arrows.</p>" : ""}
+    ${state.losses && state.losses.length && r.status !== "done" ? `<p class="challenge">Lost: ${esc(state.losses.slice(0, 4).map((l) => l.cargo + " at " + l.where + " (" + Math.max(0, Math.round(l.x - 8)) + " m)").join(", "))}</p>` : ""}
     ${r.missedPickup ? "<p>You drove past the pickup stop, so those loads were left behind.</p>" : ""}
     ${r.status === "done" && !d.long ? `<p>${r.time.toFixed(1)}s${medalName ? ", " + ico("medal_" + medalName.toLowerCase()) + " " + medalName + " medal" : ""}. Gold ${r.medals.gold}s, silver ${r.medals.silver}s, bronze ${r.medals.bronze}s</p>` : ""}
     ${list ? `<ul class="lines">${list}<li class="total"><span>Earned</span><span>${ico("coin", "🪙")} ${r.earned}</span></li></ul>` : ""}
@@ -844,17 +941,18 @@ function finishDelivery(g) {
     ${gift ? `<div class="unlocked">${ico("up_straps", "🪢")} ${esc(gift)}</div>` : ""}
     ${streakLine ? `<div class="unlocked">${ico("daily", "📅")} ${esc(streakLine)}</div>` : ""}
     ${newRegion ? `<div class="unlocked">${ico("map", "🗺️")} New region: ${esc(newRegion)}</div>` : ""}
+    ${lassoLines.map((l) => `<div class="unlocked">${ico("lasso", "🪢")} ${esc(l)}</div>`).join("")}
     ${done.map((c) => `<div class="unlocked">${ico("contracts", "📋")} ${esc(c.text)} +${c.pay}</div>`).join("")}
     ${goals.map((g2) => `<div class="unlocked">${ico("goal_" + g2.id, g2.icon)} ${esc(g2.name)} +${g2.coins}</div>`).join("")}
     ${r.status !== "done" && !d.long ? `<p>${esc(failTip(r))}</p>` : ""}
-    ${offerCard(r, d)}
+    ${d.testDrive && paywalled() ? `<div class="offer"><b>That was the ${esc(SH.truckSpec(d.truck).name)} in ${esc(SH.REGIONS[d.region].name)}.</b>It's waiting in the full game, with ${SH.DELIVERIES.filter((x) => x.region === d.region).length} roads here.<div class="row" style="margin-top:8px"><button class="btn primary" data-act="home">Keep driving</button><button class="btn" data-unlock="testdrive">${nativeApp ? "See the full game" : "Get it on Google Play"}</button></div></div>` : offerCard(r, d)}
     ${d.daily ? `<p class="nextbest">${ico("daily", "📅")} Tomorrow: ${esc(SH.REGIONS[SH.dailyRegion(localDate(new Date(Date.now() + 864e5)))].name)}.</p>` : ""}
     ${fastLane ? `<div class="unlocked">Three stars first time. You can skip ahead to Egg Farm Drop. <button class="btn" data-act="skip" style="margin-top:6px">Skip ahead</button></div>` : ""}
     ${nextBest(r, d) ? `<p class="nextbest">${esc(nextBest(r, d))}</p>` : ""}
     <div class="row" style="margin-top:8px">
       ${canAdvance ? '<button class="btn primary" data-act="next">Next delivery</button>' : ""}
       <button class="btn${canAdvance || toGarage ? "" : " primary"}" data-act="retry">${d.long ? "Same road" : "Try again"}</button>
-      ${d.long ? '<button class="btn" data-act="newroad">New road</button>' : ""}
+      ${d.long && !d.topup ? '<button class="btn" data-act="newroad">New road</button>' : ""}
       <button class="btn${toGarage && !canAdvance ? " primary" : ""}" data-act="garage">${toGarage && bestNext() ? "Garage: " + esc(bestNext().name) + " next" : "Garage"}</button>
     </div>`;
   veil.classList.add("on");
@@ -893,6 +991,14 @@ function finishWinterRun(report, delivery) {
   else play("failed",.6);
 }
 
+const LASSO_MAX = 3;
+function lassoAllowed(d) { return !d.daily && !d.cup && !d.testDrive && !d.winter; }
+// Lassos are rare and earned, never bought and never random. Returns a results line, or "".
+function giveLasso(why) {
+  if ((save.lassos || 0) >= LASSO_MAX) return "";
+  save.lassos = (save.lassos || 0) + 1;
+  return why + ": a Lucky Lasso (" + save.lassos + " in the Pantry)";
+}
 function giveStraps() {
   save.gifts.straps = true;
   if (level("straps") >= 1) return "";
@@ -921,7 +1027,7 @@ function cheapestUpgrade() {
 }
 // One line on what is closest: a medal, the last stars, or the next upgrade.
 function nextBest(r, d) {
-  if (d.long || d.daily || d.order) return "";
+  if (d.long || d.daily || d.order || d.testDrive) return "";
   if (r.status === "done" && r.stars === 3 && r.medal < 3 && !r.dockHit) {
     const target = r.medal === 2 ? r.medals.gold : r.medal === 1 ? r.medals.silver : r.medals.bronze;
     const gap = r.time - target;
@@ -940,7 +1046,8 @@ function failTip(r) {
   return level("straps") < 2 ? "Cargo Straps in the garage hold your load down." : "Slow down before crests and let the truck settle.";
 }
 function following(d) {
-  const i = SH.DELIVERIES.findIndex((item)=>item.id===d.id), n = SH.DELIVERIES[i + 1];
+  const list = d.side ? SH.sideTrack(d.track) : SH.DELIVERIES;
+  const i = list.findIndex((item)=>item.id===d.id), n = list[i + 1];
   return n && SH.isOpen(n.id, save.stars) ? n : null;
 }
 function toMenu(screen) {
@@ -1084,8 +1191,29 @@ sheet.addEventListener("click", (e) => {
   // An empty save with a newer timestamp, so an older copy held by the app can never win.
   if (a === "reset-yes") { try { localStorage.setItem(KEY, JSON.stringify({ savedAt: Date.now() })); } catch (x) { /* ignore */ } tellApp({ type: "reset" }); setTimeout(() => location.reload(), 150); }
   if (a === "close") veil.classList.remove("on");
+  if (a === "copycode") {
+    const box = sheet.querySelector(".savecode"); box.select();
+    try { (navigator.clipboard ? navigator.clipboard.writeText(box.value) : Promise.reject()).then(() => toast("Copied", 900), () => document.execCommand("copy")); } catch (x) { /* the code stays selected to copy by hand */ }
+    return;
+  }
+  if (a === "loadcode") {
+    const raw = sheet.querySelector(".savecode").value.trim(), msg = sheet.querySelector(".savemsg");
+    try {
+      if (!raw.startsWith("SH1.")) throw new Error("code");
+      const data = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+      if (!data || typeof data !== "object" || !data.stars) throw new Error("code");
+      data.savedAt = Date.now();
+      localStorage.setItem(KEY, JSON.stringify(data));
+      tellApp({ type: "save", data: JSON.stringify(data) });
+      setTimeout(() => location.reload(), 150);
+    } catch (x) { msg.textContent = "That code doesn't look right. Copy the whole code, starting SH1."; }
+    return;
+  }
+  if (a === "drive") { veil.classList.remove("on"); return startDelivery(SH.findDelivery(b.dataset.id)); }
 });
 $("pause").addEventListener("click", pause);
+// The horn on screen, for phones (the H key does the same on a keyboard).
+$("horn").addEventListener("pointerdown", (e) => { e.preventDefault(); ensureAudio(); horn(); });
 // Restart at once in the first seconds of a run; after that, through the pause sheet.
 $("restart").addEventListener("click", () => { if (state.mode !== "drive") return; if (state.game.time < 5) startDelivery(state.delivery); else pause(); });
 document.addEventListener("visibilitychange", () => {
@@ -1148,8 +1276,33 @@ function renderScreen() {
   ({ home: homeScreen, routes: routesScreen, orders: ordersScreen, long: longScreen, events: eventsScreen, winter: winterScreen, garage: garageScreen, goals: goalsScreen, settings: settingsScreen })[state.screen]();
   refreshShowcase();
 }
-const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${SH.DELIVERIES.length * 3}</span></div>`;
+const purse = () => `<div class="purse"><span class="pill">${ico("coin", "🪙")} ${save.coins}</span><span class="pill">${ico("star_on", "★")} ${totalStars()}/${(SH.DELIVERIES.length + SH.SIDE.length) * 3}</span></div>`;
 const panelHead = (title) => `<div class="phead"><button class="back" data-nav="home">${ico("home", "←")} Back</button><h2>${esc(title)}</h2>${purse()}</div>`;
+
+// ════ Next up (Q16): the three closest rewards across every progress track ═
+// Each candidate is { text, left } where left is the share still to go (0 to 1).
+function nextUp() {
+  const c = [], stars = (n) => n + (n === 1 ? " more star" : " more stars");
+  const regionsOpen = SH.REGIONS.filter((_, r) => regionOpen(r)).length;
+  if (regionsOpen < SH.REGIONS.length && !regionPaid(regionsOpen)) {
+    const have = regionStars(regionsOpen - 1), need = SH.BALANCE.regionStars;
+    if (have < need) c.push({ text: `${stars(need - have)} in ${SH.REGIONS[regionsOpen - 1].name} open ${SH.REGIONS[regionsOpen].name}`, left: (need - have) / need });
+  }
+  SH.CUSTOMERS.forEach((cu, r) => {
+    if (cu.track || !regionFull(r)) return;
+    const have = regionStars(r), next = SH.REP_STARS.find((x) => x > have);
+    if (next != null) c.push({ text: `${stars(next - have)} in ${SH.REGIONS[r].name} for ${cu.name}'s next order`, left: (next - have) / next });
+  });
+  Object.entries(SH.SIDE_OPEN || {}).forEach(([track, need]) => {
+    const have = regionStars(0), name = { back: "the Back Roads", extra: "the Extra Mile" }[track];
+    if (name && have < need) c.push({ text: `${stars(need - have)} in Bakery Hills open ${name}`, left: (need - have) / need });
+  });
+  const t = drivingTruck(), lvl = masteryLevel(t), km = (save.mastery[t] || 0) / 1000;
+  if (lvl < MASTERY_KM.length) { const to = MASTERY_KM[lvl], from = MASTERY_KM[lvl - 1] || 0; c.push({ text: `${(to - km).toFixed(1)} km in the ${SH.truckSpec(t).name} to mastery ${lvl + 1}`, left: (to - km) / Math.max(0.1, to - from) }); }
+  const stage = depotStage();
+  if (stage < DEPOT_PARTS.length) { const need = DEPOT_PARTS[stage]; c.push({ text: `${need - save.parts} depot part${need - save.parts === 1 ? "" : "s"} to depot stage ${stage + 1}`, left: (need - save.parts) / Math.max(1, need - (DEPOT_PARTS[stage - 1] || 0)) }); }
+  return c.filter((x) => x.left > 0).sort((a, b) => a.left - b.left).slice(0, 3);
+}
 
 function homeScreen() {
   const n = nextRoute(), today = localDate(), doneToday = save.daily.last === today;
@@ -1161,9 +1314,10 @@ function homeScreen() {
       ${freeDone ? `<button class="btn primary mapcard" data-unlock="map"${artUrl("map") ? ` style="background-image:linear-gradient(90deg,#ffc94dee 45%,#ffc94d44),url('${artUrl("map")}')"` : ""}>The road ahead<small>${SH.FREE_ROUTES.length} free roads done. Honey Harbour, Frosty Pass and more are next</small></button>` :
       `<button class="btn primary" data-nav="play">Drive<small>${esc(SH.REGIONS[n.region].name)} ${n.index + 1}: ${esc(n.name)}</small></button>`}
       <button class="btn" data-nav="events">${ico("daily")} Daily and weekly<small>${doneToday ? "Daily done · " + save.daily.streak + "-day streak" : "World Tour: " + esc(SH.REGIONS[SH.dailyRegion(today)].name) + " +" + SH.BALANCE.dailyPay}${cupTier(cup()) ? " · " + cupTier(cup()) + " cup" : ""}</small></button>
-      <button class="btn" data-nav="long">${ico("long_haul")} Long Haul<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
+      <button class="btn" data-nav="long">${ico("long_haul")} Long Haul and Top-Up<small>${Object.keys(save.longBest).length ? "Best " + Math.max(...Object.values(save.longBest)) + " m" : "How far can you get?"}</small></button>
       <button class="btn" data-nav="orders">${ico("contracts", "📋")} Special Orders<small>${ordersReady() ? '<i class="dot"></i> ' + esc(SH.CUSTOMERS[SH.ORDERS.find((o) => orderOpen(o) && !save.orders[o.id]).customer].name) + " has an order" : Object.keys(save.orders).length + " of " + SH.ORDERS.length + " done"}</small></button>
       ${currentEvent() ? `<button class="btn winter-entry"${artUrl("event_winter") ? ` style="--winter-art:url('${artUrl("event_winter")}')"` : ""} data-nav="winter">${ico("event_winter","❄")} Winter Haul<small>North Pole · Advent calendar</small></button>` : ""}
+      ${(() => { const n = nextUp(); return n.length && save.stats.deliveries ? `<div class="nextup" aria-label="Next up"><b>Next up</b>${n.map((x) => `<span>${esc(x.text)}</span>`).join("")}</div>` : ""; })()}
       <div class="dock">
         <button class="btn" data-nav="routes">${ico("routes")} Routes</button>
         <button class="btn" data-nav="garage">${ico("garage")} Garage</button>
@@ -1174,15 +1328,19 @@ function homeScreen() {
 }
 
 // ════ Customers and Special Orders ════════════════════════════════
-function orderOpen(o) { return regionFull(o.region) && SH.repLevel(o.region, save.stars) > o.slot; }
+function orderOpen(o) {
+  if (o.track) return SH.sideStars(o.track, save.stars) >= o.at;
+  return regionFull(o.region) && SH.repLevel(o.region, save.stars) > o.slot;
+}
 function ordersReady() { return SH.ORDERS.some((o) => orderOpen(o) && !save.orders[o.id]); }
 function ordersScreen() {
   const cards = SH.CUSTOMERS.map((c, r) => {
+    if (c.track) return sideCustomer(c, r);
     const region = SH.REGIONS[r];
     if (r > 0 && paywalled()) return `<button class="customer locked" data-unlock="orders"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Unlock the full game to meet ${esc(c.name)} and their 5 Special Orders.</small></button>`;
     if (!regionOpen(r)) return `<div class="customer locked"><b>${ico("lock", "🔒")} ${esc(region.name)}</b><small>Reach ${esc(region.name)} to meet ${esc(c.name)}.</small></div>`;
     const lvl = SH.repLevel(r, save.stars), stars = regionStars(r), next = SH.REP_STARS[lvl];
-    const list = SH.ORDERS.filter((o) => o.region === r).map((o) => {
+    const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
       const open = orderOpen(o), done = !!save.orders[o.id], needTruck = o.truck && !save.trucks.includes(o.truck);
       const why = !open ? "Reputation " + (o.slot + 1) : needTruck ? "Needs the " + SH.truckSpec(o.truck).name : done ? "Done ✓" : SH.orderText(o);
       return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open && !needTruck ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
@@ -1195,14 +1353,36 @@ function ordersScreen() {
     <p class="sub">Stars in a region raise your reputation with its customer. Each level opens a Special Order. Orders pay well and give depot parts. ${save.parts} part${save.parts === 1 ? "" : "s"} so far.</p>${cards}</section>`;
 }
 
+// Old Crust: a free customer whose orders open on Back Roads stars.
+function sideCustomer(c, r) {
+  const total = SH.sideTrack(c.track).length * 3, got = SH.sideStars(c.track, save.stars);
+  if (!SH.isOpen(SH.sideTrack(c.track)[0].id, save.stars)) return `<div class="customer locked"><b>${ico("lock", "🔒")} Back Roads</b><small>Earn ${SH.SIDE_OPEN[c.track]} Bakery Hills stars to open the Back Roads and meet ${esc(c.name)}.</small></div>`;
+  const list = SH.ORDERS.filter((o) => o.customer === r).map((o) => {
+    const open = orderOpen(o), done = !!save.orders[o.id];
+    const why = !open ? o.at + (o.track === "extra" ? " Extra Mile stars" : " Back Roads stars") : done ? "Done ✓" : SH.orderText(o);
+    return `<button class="order${done ? " done" : ""}" data-order="${o.id}"${open ? "" : " disabled"}><b>${esc(o.name)}</b><small>${esc(why)}</small></button>`;
+  }).join("");
+  const next = SH.ORDERS.filter((o) => o.customer === r && o.track === c.track && got < o.at)[0];
+  return `<div class="customer"><div class="who"><span class="face" aria-hidden="true">${c.icon}</span><div><b>${esc(c.name)}</b><small>${esc(c.role)}, Back Roads</small></div>
+    <div class="rep" aria-label="${got} of ${total} Back Roads stars">${got}/${total} ★<small>${next ? next.at - got + " more Back Roads stars for the next order" : "Every order open"}</small></div></div>
+    <div class="orders">${list}</div></div>`;
+}
+
 // ════ Long Haul: one road per region, milestones every 250 m ══════
 function longScreen() {
+  const today = localDate();
+  const tops = SH.REGIONS.map((r, i) => {
+    if (i > 0 && paywalled()) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
+    const best = (save.topupBest || {})[SH.topUpRun(i, today).id] || 0;
+    return `<button class="order" data-topup="${i}"${regionFull(i) || i === 0 ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${best ? "Today's best " + best : "Start with 2 crates"}</small></button>`;
+  }).join("");
   const rows = SH.REGIONS.map((r, i) => {
     const open = regionFull(i), best = save.longBest[i] || 0, mile = save.longMile[i] || 0;
     if (i > 0 && paywalled()) return `<button class="order" data-unlock="long"><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${ico("lock", "🔒")} Full game</small></button>`;
     return `<button class="order" data-long="${i}"${open ? "" : " disabled"}><b>${ico("region_" + r.id)} ${esc(r.name)}</b><small>${open ? (best ? "Best " + best + " m. " : "") + "Next milestone " + (mile + 1) * 250 + " m, +" + Math.round(20 * (mile + 1) * r.pay) : "Not reached yet"}</small></button>`;
   }).join("");
-  ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}<p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
+  ui.innerHTML = `<section class="panel">${panelHead("Long Haul")}<h3 class="small">Top-Up Run</h3><p class="sub">Start with two crates. Every stop on the way adds one more, and the road keeps climbing. Three loads lost ends the run.</p><div class="customer"><div class="orders">${tops}</div></div>
+    <h3 class="small">Long Haul</h3><p class="sub">One long road that keeps getting steeper. Go as far as you can. Every 250 m pays a bonus the first time you pass it in a region.</p><div class="customer"><div class="orders">${rows}</div></div></section>`;
 }
 
 // ════ Daily and weekly: the daily delivery, the Weekly Cup, contracts ═
@@ -1244,7 +1424,46 @@ function routesScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Routes")}<div class="tabs">${tabs}</div>
     ${artUrl("region_" + region.id) ? `<div class="banner" style="background-image:url('${artUrl("region_" + region.id)}')"><span>${(region.kinds || SH.CARGO_TYPES).map((k) => ico("cargo_" + k)).join("")}</span></div>` : ""}
     <p class="sub">${esc(region.blurb)} ${regionStars(state.regionTab)} of 24 stars here. ${SH.BALANCE.regionStars} open the next region.</p><div class="routes">${cells}</div>
+    ${state.regionTab === 0 ? sideSection("back", "Back Roads", "Six free country roads at different times of day, for Old Crust the miller. Ducks, hay and a seesaw bridge.") : ""}
+    ${state.regionTab === 0 ? sideSection("extra", "The Extra Mile: the Village Fair", "Four more roads to the harvest fair, with baguettes and the windmill's sails. These stars count in your total, not towards new regions.") : ""}
+    ${paywalled() && SH.TEST_DRIVES.length ? `<h3 class="small">Test Drives</h3><p class="sub">A free taste of each region in a truck from the full game. One opens every 6 Bakery Hills stars.</p><div class="customer"><div class="orders">${SH.TEST_DRIVES.map((t) => `<button class="order" data-test="${t.id}"${testOpen(t) ? "" : " disabled"}><b>${esc(t.name)}</b><small>${esc(SH.REGIONS[t.region].name)} · ${esc(SH.truckSpec(t.truck).name)} · ${testOpen(t) ? ((save.testDrives || {})[t.id] ? "★".repeat(save.testDrives[t.id]) : "Ready") : t.at + " Bakery stars"}</small></button>`).join("")}</div></div>` : ""}
     ${paywalled() ? `<p class="note">Free: all of Bakery Hills and the first two Dairy Dunes roads. ${nativeApp ? "The rest is one payment." : "The rest is in the full game on Google Play."}</p>` : ""}</section>`;
+}
+
+// ════ Route sheet (Q2): what's ahead, the targets, and your times, then Drive ═
+const CARGO_EMOJI = { crate: "📦", eggs: "🥚", milk: "🥛", jelly: "🍮", melon: "🍉", cake: "🎂", popcorn: "🍿", icecream: "🍦", baguette: "🥖", cheese: "🧀", pizza: "🍕", soda: "🥤" };
+const AHEAD_NAMES = { ramp: "ramps", bridge: "plank bridges", ford: "a ford", slick: "ice", wind: "gusts", bump: "speed bumps", pickup: "a pickup stop", ducks: "a duck crossing",
+  hay: "hay stacks", seesaw: "a seesaw bridge", sails: "windmill sails", rollers: "rollers", drop: "a big drop", hill: "a long hill", dip: "a dip" };
+function routeSheet(d) {
+  if (!d) return;
+  const p = SH.routePreview(d), m = p.medals, ch = SH.challengeFor(d.id), rival = SH.rivalFor(d.id), best = save.best[d.id];
+  const ahead = p.ahead.map((k) => (k === "slick" && d.region === 5 ? "wet cobbles" : AHEAD_NAMES[k] || k));
+  const loads = p.load.map((k, i) => `<span class="ld${i >= p.load.length - p.pickup ? " later" : ""}">${ico("cargo_" + k, CARGO_EMOJI[k] || "📦")}</span>`).join("");
+  const trucks = Object.entries((save.truckBest || {})[d.id] || {}).sort((a, b) => a[1] - b[1]).map(([id, t]) => esc(SH.truckSpec(id).name) + " " + t + "s").join(" · ");
+  sheet.innerHTML = `<h2>${esc(d.name || "")}</h2>
+    <p class="sub">${p.len} m${ahead.length ? ". Ahead: " + esc(ahead.join(", ")) : ""}.</p>
+    <div class="loads" aria-label="${p.load.length} loads">${loads}${p.pickup ? `<small> last ${p.pickup} at the pickup stop</small>` : ""}</div>
+    <p>${ico("medal_gold", "🥇")} Gold ${m.gold}s with the whole load · silver ${m.silver}s · bronze ${m.bronze}s</p>
+    ${ch ? `<p class="challenge">${ico("challenge", "🎯")} ${esc(SH.challengeText(ch))}${save.challenge[d.id] ? " ✓" : ""}</p>` : ""}
+    <p class="sub">${best ? "Your best " + best + "s" : "Not driven yet"}${rival ? " · Dash Dalloway " + rival.t + "s" : ""}</p>
+    ${trucks ? `<p class="sub">By truck: ${trucks}</p>` : ""}
+    <div class="row" style="margin-top:10px"><button class="btn primary" data-act="drive" data-id="${d.id}">Drive</button><button class="btn" data-act="close">Close</button></div>`;
+  veil.classList.add("on");
+}
+
+// Back Roads and the Extra Mile: free side tracks on the Bakery Hills tab. Their stars
+// count in the total, never towards opening regions.
+function sideSection(track, title, blurb) {
+  const list = SH.sideTrack(track);
+  if (!list.length) return "";
+  const need = SH.SIDE_OPEN[track], have = regionStars(0);
+  const head = `<h3 class="small">${esc(title)}</h3>`;
+  if (have < need) return `${head}<p class="sub">${esc(blurb)} Opens at ${need} Bakery Hills stars: ${have} of ${need}.</p>`;
+  const cells = list.map((d, k) => {
+    const open = SH.isOpen(d.id, save.stars), st = save.stars[d.id] || 0, exp = (save.medal[d.id] || 0) === 3;
+    return `<button class="route${exp ? " express" : ""}" data-go="${d.id}"${open ? "" : " disabled"} aria-label="${esc(title)} ${k + 1}, ${esc(d.name)}, ${st} stars"><b>${k + 1}</b><i class="rname">${esc(d.name)}</i><small>${"★".repeat(st)}${"☆".repeat(3 - st)}</small></button>`;
+  }).join("");
+  return `${head}<p class="sub">${esc(blurb)} ${SH.sideStars(track, save.stars)} of ${list.length * 3} stars.</p><div class="routes">${cells}</div>`;
 }
 
 function winterScreen() {
@@ -1294,7 +1513,8 @@ function garageScreen() {
   }).join("");
   // Drivers and roof toppers appear once their models are delivered.
   const pick = (kind, list, folder, suffix) => {
-    const have = list.filter(([id]) => id === "" || save.winterRewards[id] || hasModel(folder + id + suffix));
+    // The Moon Pie comes from the Night Baker goal, and has a code-built stand-in.
+    const have = list.filter(([id]) => id === "" || save.winterRewards[id] || (id === "moonpie" ? !!save.achieved.nightbaker : hasModel(folder + id + suffix)));
     if (have.length < 2) return "";
     return `<div class="set"><b>${ico(kind)} ${kind === "driver" ? "Driver" : "Roof topper"}</b><div class="opts">${have.map(([id, name]) => `<button class="tab" data-look="${kind}" data-val="${id}" aria-pressed="${save[kind] === id}">${esc(name)}</button>`).join("")}</div></div>`;
   };
@@ -1332,10 +1552,17 @@ function settingsScreen() {
   ui.innerHTML = `<section class="panel">${panelHead("Settings")}
     <div class="set"><b>Sound</b><div class="opts">${opt("sound", 1, "On", save.sound)}${opt("sound", 0, "Off", !save.sound)}</div></div>
     <div class="set"><b>Music</b><div class="opts">${opt("music", 1, "On", save.music !== false)}${opt("music", 0, "Off", save.music === false)}</div></div>
+    <div class="set"><b>Volume</b><div class="opts vol"><label>Sound <input type="range" min="0" max="100" step="5" value="${Math.round((save.sfxVol ?? 1) * 100)}" data-vol="sfxVol" aria-label="Sound volume"></label><label>Music <input type="range" min="0" max="100" step="5" value="${Math.round((save.musicVol ?? 1) * 100)}" data-vol="musicVol" aria-label="Music volume"></label></div></div>
+    <div class="set"><b>Text size</b><div class="opts">${opt("text", 0, "Normal", !save.bigText)}${opt("text", 1, "Large", !!save.bigText)}</div></div>
+    <div class="set"><b>Lucky Lasso</b><div class="opts">${opt("lasso", 1, "Use automatically", save.lassoAuto !== false)}${opt("lasso", 0, "Save them", save.lassoAuto === false)}</div><small class="sub">${save.lassos || 0} of ${LASSO_MAX} in the Pantry. Each one ropes the first load that falls off, once. Not used in the Daily, the Weekly Cup or Test Drives.</small></div>
+    <div class="set"><b>Horn button</b><div class="opts">${opt("horn", 1, "Show", save.hornButton !== false)}${opt("horn", 0, "Hide", save.hornButton === false)}</div></div>
     ${nativeApp ? `<div class="set"><b>Vibration</b><div class="opts">${opt("haptics", 1, "On", save.haptics !== false)}${opt("haptics", 0, "Off", save.haptics === false)}</div></div>` : ""}
-    <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1), save.quality === q)).join("")}</div></div>
+    <div class="set"><b>Graphics</b><div class="opts">${["auto", "high", "medium", "low"].map((q) => opt("quality", q, q[0].toUpperCase() + q.slice(1) + (q === "auto" && save.quality === "auto" && world ? " (" + world.quality.name[0].toUpperCase() + world.quality.name.slice(1) + ")" : ""), save.quality === q)).join("")}</div><small class="sub">Auto picks the best look your phone can run smoothly.</small></div>
     <div class="set"><b>Ghost and rival</b><div class="opts">${opt("ghost", 1, "On", save.ghostOn !== false)}${opt("ghost", 0, "Off", save.ghostOn === false)}</div></div>
-    <div class="set"><b>Camera shake</b><div class="opts">${opt("shake", 1, "On", save.shake)}${opt("shake", 0, "Off", !save.shake)}</div></div>
+    <div class="set"><b>Motion</b><div class="opts">${opt("shake", 1, "Full", save.shake)}${opt("shake", 0, "Reduced", !save.shake)}</div><small class="sub">Reduced turns off camera shake and bobbing. It follows your phone's setting until you choose.</small></div>
+    <div class="set"><b>Pedals</b><div class="opts">${opt("pedalSize", "normal", "Normal", save.pedalSize !== "large")}${opt("pedalSize", "large", "Large", save.pedalSize === "large")}${opt("pedalClear", 0, "Solid", save.pedalClear !== true)}${opt("pedalClear", 1, "See-through", save.pedalClear === true)}</div>
+      <div class="opts">${opt("pedalLayout", "std", "Brake left", !save.pedalLayout || save.pedalLayout === "std")}${opt("pedalLayout", "swap", "Brake right", save.pedalLayout === "swap")}${opt("pedalLayout", "one", "One thumb", save.pedalLayout === "one")}</div></div>
+    <div class="set"><b>Save code</b><div class="opts"><button class="tab" data-savecode="copy">Copy my save</button><button class="tab" data-savecode="paste">Load a save</button></div><small class="sub">Move your progress to another phone or browser.</small></div>
     <div class="set"><b>Progress</b><div class="opts"><button class="tab" data-reset>Reset game</button></div></div>
     ${nativeApp ? `<div class="set"><b>Full game</b><div class="opts">${save.pro ? '<span class="tab" aria-pressed="true">Unlocked ✓</span>' : '<button class="tab" data-unlock="settings">Unlock</button>'}<button class="tab" data-restore>Restore purchase</button></div></div>${billing.note ? `<p class="note">${esc(billing.note)}</p>` : ""}` : '<p class="note">Playtest build: your progress stays on this device. Turn your phone sideways for the best view. Arrow keys drive on a computer.</p>'}
     ${nativeApp ? "" : `<p class="note">Enjoying Snack Haul? <a href="${TIP_URL}" target="_blank" rel="noopener" style="color:inherit;font-weight:700">Tip the studio</a></p>`}
@@ -1358,22 +1585,24 @@ ui.addEventListener("click", (e) => {
       d.paid = save.daily.last === localDate();
       return startDelivery(d);
     }
-    if (nav === "long" && maxRegion() === 0) return startDelivery(SH.longHaul(0, Date.now().toString(36)));
+
     if (nav === "routes") state.regionTab = nextRoute().region;
     state.screen = nav;
     return renderScreen();
   }
+  if ((b = t("[data-test]")) && !b.disabled) return startDelivery(SH.findTestDrive(b.dataset.test));
   if ((b = t("[data-winter]")) && !b.disabled) {
     if (b.closest(".winter-doors")) play("door_open", 0.7);
     return startDelivery(SH.winterDelivery(b.dataset.winter));
   }
-  if ((b = t("[data-go]")) && !b.disabled) return startDelivery(SH.findDelivery(b.dataset.go));
+  if ((b = t("[data-go]")) && !b.disabled) return routeSheet(SH.findDelivery(b.dataset.go));
   if ((b = t("[data-extra]")) && !b.disabled) {
     const e = EXTRAS.find((x) => x[0] === b.dataset.extra);
     if (e && save.coins >= e[2] && !save.extras.includes(e[0])) { save.coins -= e[2]; save.extras.push(e[0]); play("upgrade", 0.7); persist(); refreshShowcase(); checkGoals(null); persist(); }
     return renderScreen();
   }
   if ((b = t("[data-paint]")) && !b.disabled) { if (b.dataset.paint) save.paint[save.truck] = b.dataset.paint; else delete save.paint[save.truck]; persist(); refreshShowcase(); return renderScreen(); }
+  if ((b = t("[data-topup]")) && !b.disabled) return startDelivery(SH.topUpRun(Number(b.dataset.topup), localDate()));
   if ((b = t("[data-long]")) && !b.disabled) return startDelivery(SH.longHaul(Number(b.dataset.long), Date.now().toString(36)));
   if ((b = t("[data-cup]")) && !b.disabled) return startDelivery(Object.assign({}, SH.findDelivery(b.dataset.cup), { cup: save.cup.week }));
   if ((b = t("[data-order]")) && !b.disabled) return startDelivery(SH.findOrder(b.dataset.order));
@@ -1404,17 +1633,49 @@ ui.addEventListener("click", (e) => {
     if (group === "music") { save.music = v === "1"; const keep = audio.wantMusic; if (save.music) { ensureAudio(); audio.musicName = ""; setMusic(keep || menuMusic()); } else { setMusic(""); audio.wantMusic = keep; } }
     if (group === "haptics") { save.haptics = v === "1"; if (save.haptics) buzz("light"); }
     if (group === "sound") { save.sound = v === "1"; if (save.sound) { ensureAudio(); setMusic(audio.wantMusic || menuMusic()); } else { engineSound(null, false); const keep = audio.wantMusic; setMusic(""); audio.wantMusic = keep; } }
-    if (group === "shake") save.shake = v === "1";
+    if (group === "shake") { save.shake = v === "1"; save.motionPicked = true; }
+    if (group === "pedalSize") save.pedalSize = v;
+    if (group === "pedalClear") save.pedalClear = v === "1";
+    if (group === "pedalLayout") save.pedalLayout = v;
+    if (group.startsWith("pedal")) applyPedals();
+    if (group === "horn") save.hornButton = v === "1";
+    if (group === "lasso") save.lassoAuto = v === "1";
+    if (group === "text") { save.bigText = v === "1"; document.documentElement.classList.toggle("big-text", save.bigText); }
     if (group === "ghost") save.ghostOn = v === "1";
-    if (group === "quality") { save.quality = v; world && world.setQuality(v); }
+    if (group === "quality") { save.quality = v; world && world.setQuality(v, autoStartTier()); }
     persist();
     return renderScreen();
+  }
+  if ((b = t("[data-savecode]"))) {
+    if (b.dataset.savecode === "copy") {
+      persist();
+      const code = "SH1." + btoa(unescape(encodeURIComponent(JSON.stringify(save))));
+      sheet.innerHTML = `<h2>Your save code</h2><p class="sub">Copy all of it and keep it somewhere safe. Load it on another phone or browser with Load a save.</p>
+        <textarea class="savecode" readonly rows="5">${esc(code)}</textarea><div class="row" style="margin-top:10px"><button class="btn primary" data-act="copycode">Copy</button><button class="btn" data-act="close">Done</button></div>`;
+    } else {
+      sheet.innerHTML = `<h2>Load a save</h2><p class="sub">Paste a save code. It replaces the progress on this device.</p>
+        <textarea class="savecode" rows="5" placeholder="SH1..."></textarea><p class="sub savemsg"></p><div class="row" style="margin-top:10px"><button class="btn primary" data-act="loadcode">Load</button><button class="btn" data-act="close">Cancel</button></div>`;
+    }
+    veil.classList.add("on");
+    return;
   }
   if (t("[data-reset]")) {
     sheet.innerHTML = '<h2>Reset the game?</h2><p>This deletes your coins, trucks and stars on this device.</p><div class="row" style="margin-top:12px"><button class="btn" data-act="close">Keep playing</button><button class="btn primary" data-act="reset-yes">Reset</button></div>';
     veil.classList.add("on");
   }
 });
+
+// Volume sliders: sound sets the master level, music its own level on top.
+ui.addEventListener("input", (e) => {
+  const el = e.target.closest("[data-vol]");
+  if (!el) return;
+  save[el.dataset.vol] = Number(el.value) / 100;
+  ensureAudio();
+  if (audio.master) audio.master.gain.setTargetAtTime(0.9 * save.sfxVol, audio.ctx.currentTime, 0.05);
+  if (audio.music) audio.music.gain.gain.setTargetAtTime(save.sound ? musicLevel() : 0, audio.ctx.currentTime, 0.05);
+  persist();
+});
+ui.addEventListener("change", (e) => { if (e.target.closest('[data-vol="sfxVol"]')) play("coin", 0.6); });
 
 // ════ Start ═══════════════════════════════════════════════════════
 if (!world) {

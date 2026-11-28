@@ -31,6 +31,17 @@ const THEMES = [
 
 // ════ Small helpers ═══════════════════════════════════════════════
 const col = (c) => new THREE.Color(c);
+// Times of day for the Back Roads and the Extra Mile: changes laid over the
+// Bakery Hills theme. "dusk" darkens as the drive goes on; "night" is lit by
+// headlights and lit windows. The painted sky only fits morning and midday.
+const LIGHTS = {
+  dawn: { skyTop: "#6f8fc4", skyMid: "#e9b7c2", skyLow: "#ffd9a8", fog: "#e8cdbf", sun: "#ffc9a0", sunI: 2.1, hemi: ["#c9d3f0", "#7d6a52", 1.1], exposure: 0.98, painted: false },
+  morning: {},
+  midday: { skyTop: "#3f9fe8", sunI: 3.3, exposure: 1.04 },
+  golden: { skyTop: "#5a8fd0", skyMid: "#f2c98a", skyLow: "#ffb870", fog: "#f0c58e", sun: "#ffbf73", sunI: 2.7, hemi: ["#f6dcc0", "#7a5c3a", 1.15], painted: false },
+  dusk: { skyTop: "#2b2f6a", skyMid: "#b0607a", skyLow: "#ff9e6a", fog: "#9a6a7a", fogFar: 280, sun: "#ff9f70", sunI: 1.9, hemi: ["#a7a6dc", "#4a3a40", 1.3], exposure: 1.06, night: true, fall: true, painted: false },
+  night: { skyTop: "#0b1230", skyMid: "#1f2a5a", skyLow: "#38406e", fog: "#2a3058", fogFar: 260, sun: "#b8c8ff", sunI: 1.35, hemi: ["#8494d8", "#2a2a3a", 1.4], exposure: 1.1, night: true, painted: false }
+};
 function m(x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = sx, sz = sx) {
   return new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz)), new THREE.Vector3(sx, sy, sz));
 }
@@ -211,6 +222,12 @@ function winterTopper(id) {
       shape.add(box(.051,.32,.057),"#e2bc87",m(0,.23,z,.24*Math.sign(z),0,.19));
       shape.add(box(.052,.16,.052),"#e2bc87",m(-.07,.30,z,0,0,-.56));
     }
+  } else if (id==="moonpie") {
+    // Code-built Moon Pie (Night Baker reward) until an authored topper arrives.
+    shape.add(cyl(.24,.24,.07,16),"#c98c4a",m(0,.035,0));
+    shape.add(cyl(.22,.22,.06,16),"#f6efe2",m(0,.10,0));
+    shape.add(cyl(.24,.24,.07,16),"#5a3622",m(0,.165,0));
+    shape.add(blob(.05,1),"#f2d36b",m(.08,.215,.06));
   } else if (id==="star") {
     const star=Array.from({length:10},(_,i)=> {
       const angle=i*Math.PI/5, r=i%2?.112:.24;
@@ -221,8 +238,10 @@ function winterTopper(id) {
   return kitMesh(shape,false,id==="star");
 }
 
-function buildTruck(spec, rail, quality, look = {}) {
-  const authored = model("trucks/truck_" + spec.id) || (spec.runners ? sleighFallback(spec, look) : null);
+function buildTruck(spec, rail, quality, look = {}, driving = false) {
+  const asset = "trucks/truck_" + spec.id;
+  const authored = (driving ? model(asset + "_lod1") : null)
+    || model(asset) || (spec.runners ? sleighFallback(spec, look) : null);
   const D = SH.dimsFor(spec), width = authored ? AUTHORED_WIDTH[spec.id] || 1.8 : spec.id === "hauler" ? 1.95 : 1.8, root = new THREE.Group();
   // look.paint is an earned paint job: [body colour, trim colour].
   const [paint, trim] = look.paint || PAINT[spec.id];
@@ -424,7 +443,7 @@ function buildTruck(spec, rail, quality, look = {}) {
 function syncTailgate(scene, model, game, z, reduceMotion) {
   const fall = game.tailgateFall;
   if (!fall) return;
-  const gate = model.tailgate, t = Math.max(0, game.time - fall.at);
+  const gate = model.tailgate, t = Math.max(0, game.clock - fall.at);
   gate.visible = !reduceMotion && t < 0.9;
   if (!gate.visible) return;
   if (gate.parent !== scene) scene.add(gate);
@@ -559,6 +578,41 @@ function buildCargo(type, quality, id = 0) {
       [[-0.12, 0.05], [0.1, -0.08], [0, 0.12], [0.14, 0.1], [-0.1, -0.12]].forEach(([a, b]) => k.add(blob(0.09, 1), "#fff2b8", m(a, S * 0.33, z + b)));
     });
     group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }))));
+  } else if (type === "baguette") {
+    // Code-built stand-ins for the 1.1 cargo until Codex's models arrive.
+    // Drawn 0.3 m longer than its body, reaching back past the rail.
+    const k = new Kit(), L = SH.cargoSize("baguette").w + 0.3, off = -0.15;
+    [-0.2, 0.2].forEach((z) => {
+      k.add(cyl(0.075, 0.075, L - 0.1, 10), "#d79a4a", m(off, 0, z, 0, 0, Math.PI / 2));
+      [-1, 1].forEach((e) => k.add(blob(0.075, 1), "#c98a3c", m(off + e * (L / 2 - 0.05), 0, z, 0, 0, 0, 1, 1, 1)));
+      for (let i = -2; i <= 2; i++) k.add(box(0.05, 0.02, 0.1), "#f1d2a0", m(off + i * 0.18, 0.07, z, 0, 0.5));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75 }))));
+  } else if (type === "cheese") {
+    const k = new Kit();
+    zs.forEach((z) => {
+      k.add(cyl(0.27, 0.27, 0.34, 18), "#f2c64d", m(0, 0, z, Math.PI / 2));
+      k.add(cyl(0.272, 0.272, 0.03, 18), "#d8a531", m(0, 0, z + 0.155, Math.PI / 2));
+      k.add(cyl(0.272, 0.272, 0.03, 18), "#d8a531", m(0, 0, z - 0.155, Math.PI / 2));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55 }))));
+  } else if (type === "pizza") {
+    const k = new Kit(), H = SH.cargoSize("pizza").h - 0.01;
+    zs.forEach((z) => {
+      k.add(box(0.6, H, 0.6), "#f3ead8", m(0, 0, z));
+      k.add(box(0.3, 0.005, 0.3), "#d6342c", m(0, H / 2 + 0.003, z));
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }))));
+  } else if (type === "soda") {
+    const k = new Kit();
+    zs.forEach((z) => {
+      k.add(box(S, S * 0.45, S), "#e8452c", m(0, -S * 0.27, z));
+      [[-0.12, -0.12], [0.12, -0.12], [-0.12, 0.12], [0.12, 0.12]].forEach(([a, b], i) => {
+        k.add(cyl(0.07, 0.08, 0.3, 10), ["#7fd0a0", "#ff9f4a", "#8fc8ff", "#ffd24a"][i], m(a, 0.03, z + b));
+        k.add(cyl(0.035, 0.06, 0.1, 10), "#dfe8ef", m(a, 0.2, z + b));
+      });
+    });
+    group.add(shadow(new THREE.Mesh(k.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.3 }))));
   } else if (type === "icecream") {
     const k = new Kit();
     zs.forEach((z) => {
@@ -750,7 +804,8 @@ function winterBuilding(workshop, shadows) {
 }
 
 export class World3D {
-  constructor(canvas, qualityName) {
+  // autoStart: the tier Auto starts on (from the phone, or where Auto settled last time).
+  constructor(canvas, qualityName, autoStart) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance", stencil: false });
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -758,8 +813,12 @@ export class World3D {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(30, 1, 1, 900);
     this.look = { driver: "corgi", topper: "", upgrades: {} };
-    this.quality = QUALITY[qualityName] || QUALITY.high;
     this.autoQuality = !QUALITY[qualityName];
+    this.quality = QUALITY[qualityName] || QUALITY[autoStart] || QUALITY.high;
+    // Auto steps up at most once a session, between runs, after a minute of smooth
+    // driving; a tier that then drops straight back becomes the ceiling.
+    this.autoCeiling = null; this.fastTime = 0; this.driveTime = 0; this.triedUp = false; this.upReady = false; this.upAt = null;
+    this.onCeiling = null;
     this.width = 1; this.height = 1; this.showView = "home";
     this.camX = 0; this.camY = 0; this.shake = 0; this.time = 0;
     this.fpsTime = 0; this.fpsFrames = 0;
@@ -773,9 +832,9 @@ export class World3D {
     this.renderer.shadowMap.enabled = q.shadows;
     this.renderer.setSize(this.width, this.height, false);
   }
-  setQuality(name) {
+  setQuality(name, autoStart) {
     this.autoQuality = !QUALITY[name];
-    this.quality = QUALITY[name] || QUALITY.high;
+    this.quality = QUALITY[name] || QUALITY[autoStart] || QUALITY.high;
     this.applyQuality();
     this.lastBuild && this.rebuild();
   }
@@ -804,13 +863,15 @@ export class World3D {
       if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((mat) => { if (mat.map && !Object.values(texCache).includes(mat.map)) mat.map.dispose(); if (mat !== texCache.crateMat) mat.dispose(); });
     });
     this.scene.clear();
-    this.cargo = []; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
+    this.sideActors = null;
+    this.cargo = []; this.rope = null; this.truckModel = null; this.ghostModel = null; this.coinMesh = null; this.canMesh = null; this.weather = null;
   }
 
   // ─── Sky, light, ground and scenery for one region ──────────────
-  setStage(terrain, regionIndex, seed, snowy = false, blizzard = false) {
+  setStage(terrain, regionIndex, seed, snowy = false, blizzard = false, light = null) {
     this.clear();
-    const baseTheme = THEMES[regionIndex], scenery = SCENERY[baseTheme.id], q = this.quality;
+    const lit = light && LIGHTS[light] ? { ...THEMES[regionIndex], ...LIGHTS[light], light } : null;
+    const baseTheme = lit || THEMES[regionIndex], scenery = SCENERY[baseTheme.id], q = this.quality;
     const theme = snowy && baseTheme.id === "bakery" ? { ...baseTheme, snowy:true, grass:THEMES[3].grass,
       far:THEMES[3].far, edge:"#d5e5f2", dust:"#eef4fb" } : baseTheme;
     this.theme = theme;
@@ -821,7 +882,7 @@ export class World3D {
       x.fillStyle = g; x.fillRect(0, 0, w, h);
     });
     // The painted sky replaces the gradient once its image is in.
-    const skyArt = texture("art/sky_" + theme.id + ".webp");
+    const skyArt = theme.painted === false ? null : texture("art/sky_" + theme.id + ".webp");
     if (skyArt) whenReady(skyArt, () => { if (this.theme === theme) this.scene.background = skyArt; });
     this.scene.fog = new THREE.Fog(theme.fog, 70, theme.fogFar);
     this.scene.add(new THREE.HemisphereLight(theme.hemi[0], theme.hemi[1], theme.hemi[2]));
@@ -1062,12 +1123,16 @@ export class World3D {
 
   // ─── Route items ────────────────────────────────────────────────
   buildRoute(game) {
+    if (this.upReady) this.stepUp();
     this.lastBuild = { game };
     const t = game.terrain;
-    this.setStage(t, game.regionIndex, game.delivery.id, game.delivery.snowy || game.delivery.winter, game.delivery.twist === "blizzard");
+    this.setStage(t, game.regionIndex, game.delivery.id, game.delivery.snowy || game.delivery.winter, game.delivery.twist === "blizzard", game.delivery.light);
     const scene = this.scene, q = this.quality, theme = this.theme;
 
-    const model = buildTruck(game.spec, game.rail, q, this.look);
+    // Your own truck gets the detailed model on High graphics, the lighter one on
+    // Medium and Low (Auto steps down on its own when the frame rate drops). Ghosts
+    // always use the lighter one.
+    const model = buildTruck(game.spec, game.rail, q, this.look, q.level < 2);
     scene.add(model.root); model.wheels.forEach((w) => scene.add(w));
     this.truckModel = model;
     this.buildGhost(q);
@@ -1161,6 +1226,7 @@ export class World3D {
     }) }));
     sign.position.set(t.zoneStart, zy + 10.6, 3.3);
     scene.add(sign);
+    this.buildSpots(game);
 
     const p = game.truck.getPosition();
     this.camX = p.x + 2; this.camY = p.y; this.shake = 0; this.zoomOut = 0;
@@ -1237,6 +1303,9 @@ export class World3D {
       } else if (f.type === "pickup") {
         strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
         const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx);
+        if (game.bonusOn) this.stopSign(game.delivery, cx, y);
+        // The region's own stall stands behind the stop (when Codex has made it); the stand still marks the mat.
+        if (game.bonusOn) stand("road/stall_" + SH.stopKey(game.delivery), cx, -8.2);
         if (stand("road/pickup_stand", cx, -5.8)) return;
         kit.add(box(6, 3.2, 3), "#efe2c6", m(cx, y + 1.6, -6.5));
         kit.add(box(6.6, 0.4, 3.6), "#3f9a5a", m(cx, y + 3.4, -6.5));
@@ -1258,6 +1327,7 @@ export class World3D {
     });
     // Long Haul: a flag every 100 metres.
     if (game.delivery.long) for (let x = 108; x < t.zoneStart; x += 100) stand("road/checkpoint_flag", x, -3.3);
+    this.buildSideActors(game, kit, post);
     if (kit.pos.length) {
       const mesh = new THREE.Mesh(kit.build(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }));
       mesh.castShadow = this.quality.shadows;
@@ -1269,6 +1339,97 @@ export class World3D {
       this.headlight = new THREE.PointLight("#ffe2a8", 60, 26, 1.6);
       this.scene.add(this.headlight);
     } else this.headlight = null;
+  }
+
+  // ─── Back Roads features: ducks, hay bales and the seesaw ───────
+  // Code-built stand-ins until authored models arrive (Codex brief, Back Roads).
+  // Bales and planks follow their physics bodies; ducks follow SH.duckState.
+  buildSideActors(game, kit, post) {
+    const t = game.terrain, actors = { ducks: [], bales: [], planks: [], sails: [] }, shadows = this.quality.shadows;
+    const solid = (geo) => { const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 })); mesh.castShadow = shadows; this.scene.add(mesh); return mesh; };
+    (game.crossings || []).filter((f) => f.type === "sails").forEach((f) => {
+      // A windmill behind the road whose sails sweep down over it: a blade points
+      // straight down in the middle of each closed spell of the gate's clock.
+      const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx), tower = new Kit();
+      // The tower stands well back and slim, so it frames the road rather than hiding it.
+      tower.add(cyl(1.1, 1.7, 7.5, 8), "#efe3cc", m(cx, y + 3.75, -9));
+      tower.add(new THREE.ConeGeometry(1.45, 1.8, 8), "#a8553a", m(cx, y + 8.4, -9));
+      tower.add(box(0.3, 0.3, 7.6), "#6b4a2c", m(cx, y + 5.6, -5.3));
+      kit.add(box(0.8, 1.3, 0.1), "#7a4a2c", m(cx, y + 0.65, -8));
+      this.scene.add(solid(tower.build()));
+      const hub = new THREE.Group(), blades = new Kit();
+      for (let k = 0; k < 4; k++) {
+        const a = k * Math.PI / 2, c = Math.cos(a), sn = Math.sin(a);
+        blades.add(box(0.18, 5.2, 0.1), "#6b4a2c", m(c * 0 - sn * 2.6, c * 2.6, 0, 0, 0, a));
+        blades.add(box(1.1, 4.2, 0.05), k % 2 ? "#f4efe4" : "#e9dcc4", m(-sn * 3.0 + c * 0.6, c * 3.0 + sn * 0.6, 0.04, 0, 0, a));
+      }
+      blades.add(blob(0.4, 1), "#6b4a2c");
+      hub.add(solid(blades.build()));
+      hub.position.set(cx, y + 5.6, -1.5);
+      this.scene.add(hub);
+      actors.sails.push({ f, hub });
+    });
+    (game.crossings || []).filter((f) => f.type !== "sails").forEach((f) => {
+      // A yellow diamond sign on each side, and a mother duck with five ducklings.
+      [f.x0 - 3.5, f.x1 + 3.5].forEach((x) => { post(x, 1.6, "#e8e0cc", -3.1); kit.add(box(0.62, 0.62, 0.06), "#f4c430", m(x, SH.heightAt(t, x) + 1.85, -3.06, 0, 0, Math.PI / 4)); });
+      const y = SH.heightAt(t, (f.x0 + f.x1) / 2), list = [];
+      for (let k = 0; k < 6; k++) {
+        const big = k === 0, d = new Kit(), s = big ? 1 : 0.6;
+        d.add(blob(0.32 * s, 1), big ? "#f4f1ea" : "#ffd84a", m(0, 0.3 * s, 0, 0, 0, 0, 1.25, 0.95, 0.9));
+        d.add(blob(0.2 * s, 1), big ? "#f4f1ea" : "#ffd84a", m(0, 0.62 * s, 0.22 * s));
+        d.add(box(0.12 * s, 0.07 * s, 0.18 * s), "#f08a24", m(0, 0.6 * s, 0.44 * s));
+        d.add(blob(0.04 * s, 0), "#1c1a1a", m(0.11 * s, 0.68 * s, 0.33 * s));
+        d.add(blob(0.04 * s, 0), "#1c1a1a", m(-0.11 * s, 0.68 * s, 0.33 * s));
+        const mesh = solid(d.build());
+        list.push({ mesh, k, dx: (f.x1 - f.x0) * (0.15 + 0.14 * k) + f.x0, y });
+      }
+      actors.ducks.push({ f, list });
+    });
+    (game.hay || []).forEach((body) => {
+      const h = new Kit();
+      h.add(box(1.16, 0.64, 1.3), "#e3c25a");
+      h.add(box(1.18, 0.05, 1.32), "#b8923a", m(0, 0.12, 0)); h.add(box(1.18, 0.05, 1.32), "#b8923a", m(0, -0.12, 0));
+      actors.bales.push({ body, mesh: solid(h.build()) });
+    });
+    (game.seesaws || []).forEach((body) => {
+      const f = body.getUserData().seesaw, half = SH.SEESAW.half, p = new Kit();
+      for (let i = 0; i < 9; i++) p.add(box(half * 2 / 9 - 0.04, SH.SEESAW.thick * 2, 3.4), i % 2 ? "#a87a4c" : "#b98a58", m(-half + (i + 0.5) * half * 2 / 9, 0, 0));
+      p.add(box(half * 2, 0.08, 0.12), "#6b4a2c", m(0, SH.SEESAW.thick + 0.03, 1.62)); p.add(box(half * 2, 0.08, 0.12), "#6b4a2c", m(0, SH.SEESAW.thick + 0.03, -1.62));
+      actors.planks.push({ body, mesh: solid(p.build()) });
+      // The mill stream under it, and the hinge posts either side of the road.
+      const water = new THREE.Mesh(new THREE.PlaneGeometry(half * 2 + 0.6, 9), new THREE.MeshStandardMaterial({ color: this.theme.night ? "#2d5f8a" : "#4fa6d8", roughness: 0.25, metalness: 0.1, transparent: true, opacity: 0.85 }));
+      water.rotation.x = -Math.PI / 2; water.position.set(f.xc, f.level - 1.15, 0); this.scene.add(water);
+      const py = body.getPosition().y;
+      [-1.9, 1.9].forEach((z) => kit.add(box(0.3, py - (f.level - 1.6) + 0.2, 0.3), "#6b4a2c", m(f.xc, (py + f.level - 1.6) / 2, z)));
+    });
+    this.sideActors = actors;
+  }
+  syncSideActors(game) {
+    const a = this.sideActors;
+    if (!a) return;
+    a.bales.forEach((b) => {
+      b.mesh.visible = b.body.isActive();
+      if (!b.mesh.visible) return;
+      const p = this.pose(b.body);
+      b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a;
+    });
+    a.planks.forEach((b) => { const p = this.pose(b.body); b.mesh.position.set(p.x, p.y, 0); b.mesh.rotation.z = p.a; });
+    a.sails.forEach(({ f, hub }) => {
+      // Blade 0 hangs straight down at the middle of each closed spell.
+      const turns = ((game.clock || 0) + (f.phase || 0)) / f.period - f.cross / (2 * f.period);
+      hub.rotation.z = Math.PI - turns * Math.PI / 2;
+    });
+    a.ducks.forEach(({ f, list }) => {
+      const st = SH.duckState(f, game.clock || 0), wob = Math.sin(this.time * 14);
+      list.forEach((d) => {
+        // Waiting on the far verge, crossing towards the camera, then gone into the grass.
+        const lag = d.k * 0.08, u = st.active ? Math.max(0, Math.min(1, (st.u - lag) / (1 - 0.5))) : 0;
+        const z = st.active ? -3.6 + u * 7.6 : st.warn ? -3.9 : -6.5;
+        d.mesh.visible = st.active || st.warn;
+        d.mesh.position.set(d.dx, d.y + (st.active ? Math.abs(wob) * 0.05 : 0), z);
+        d.mesh.rotation.set(0, st.active ? 0 : Math.PI / 2, wob * 0.12);
+      });
+    });
   }
 
   // ─── Menu showcase: the truck parked in its region ──────────────
@@ -1410,7 +1571,7 @@ export class World3D {
     if (!gg) return;
     // Dash Dalloway, the rival, drives an orange-tinted pickup with no driver styling of yours.
     const rival = this.ghostKind === "rival";
-    const gm = buildTruck(gg.spec, gg.rail, q, rival ? {} : this.look);
+    const gm = buildTruck(gg.spec, gg.rail, q, rival ? {} : this.look, true);
     const ghostify = (o) => o.traverse((c) => {
       if (c.isLight) c.visible = false;
       if (!c.isMesh) return;
@@ -1475,6 +1636,19 @@ export class World3D {
     });
     model.brakes.forEach((b) => { b.material.emissiveIntensity = game.brakeOn ? 3.4 : 0.8; });
     if (this.headlight) this.headlight.position.set(p.x + 5, p.y + 2.2, 1.5);
+    this.syncSideActors(game);
+    // Lantern Lane: the light fades as the drive goes on.
+    if (this.theme.fall && this.sun) this.sun.intensity = this.theme.sunI * (1 - 0.6 * Math.min(1, p.x / game.terrain.total));
+    if (this.rope) {
+      // A sagging rope from the cab roof to the roped load, fading out.
+      const r = this.rope, cab = { x: p.x + Math.cos(p.a) * game.dim.cabX - Math.sin(p.a) * 1.2, y: p.y + Math.sin(p.a) * game.dim.cabX + Math.cos(p.a) * 1.2 };
+      const end = r.cargo ? r.cargo.group.position : { x: cab.x - 2, y: cab.y };
+      const pos = r.line.geometry.attributes.position;
+      for (let i = 0; i < 12; i++) { const u = i / 11; pos.setXYZ(i, cab.x + (end.x - cab.x) * u, cab.y + (end.y - cab.y) * u - Math.sin(Math.PI * u) * 0.4 * (r.life / 0.7), 0.3); }
+      pos.needsUpdate = true;
+      r.life -= dt;
+      if (r.life <= 0) { this.scene.remove(r.line); r.line.geometry.dispose(); r.line.material.dispose(); this.rope = null; }
+    }
 
     this.cargo.forEach((c) => {
       c.group.visible = !c.info.delivered;
@@ -1482,6 +1656,13 @@ export class World3D {
       const b = c.info.body, cp = this.pose(b);
       c.group.position.set(cp.x, cp.y, 0);
       c.group.rotation.z = cp.a;
+      if (c.tween) {
+        // Ease from where it fell to where it now sits, lifted on an arc.
+        c.tween.t = Math.min(1, c.tween.t + dt / 0.35);
+        const k = 1 - Math.pow(1 - c.tween.t, 3);
+        c.group.position.set(c.tween.x + (cp.x - c.tween.x) * k, c.tween.y + (cp.y - c.tween.y) * k + Math.sin(Math.PI * c.tween.t) * 1.2, 0);
+        if (c.tween.t >= 1) c.tween = null;
+      }
       if (c.group.userData.wobble) {
         c.wob += dt * 9;
         const v = b.getLinearVelocity().length();
@@ -1562,6 +1743,16 @@ export class World3D {
   // Turns game events into effects.
   react(ev) {
     const z = () => (Math.random() - 0.5) * 1.8;
+    if (ev.type === "lasso") {
+      // The roped load flies back in a short arc, with a rope from the cab to it.
+      const c = this.cargo.find((k) => k.info.id === ev.id);
+      if (c) c.tween = { x: ev.x, y: ev.y, t: 0 };
+      const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 12 }, () => new THREE.Vector3())), new THREE.LineBasicMaterial({ color: "#c8955a" }));
+      rope.frustumCulled = false;
+      this.scene.add(rope);
+      this.rope = { line: rope, cargo: c, life: 0.7 };
+      return;
+    }
     if (ev.type === "pickup") {
       ev.items.forEach((c) => { const g = buildCargo(c.type, this.quality, c.id); this.scene.add(g); this.cargo.push({ info: c, group: g, age: 0, wob: 0 }); });
       const green = col("#6fe08f");
@@ -1596,6 +1787,45 @@ export class World3D {
     }
   }
 
+  // Hold for more: a roadside sign naming the stop, readable from the side camera.
+  stopSign(d, x, y) {
+    const name = SH.stopName(d).toUpperCase();
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.7), new THREE.MeshBasicMaterial({ map: canvasTex(512, 168, (c, w, h) => {
+      c.fillStyle = "#2f7d4a"; c.fillRect(0, 0, w, h);
+      c.fillStyle = "#fff6e0"; c.fillRect(8, 8, w - 16, 4); c.fillRect(8, h - 12, w - 16, 4);
+      c.textAlign = "center"; c.textBaseline = "middle";
+      c.font = "800 64px sans-serif"; c.fillText(name, w / 2, 62);
+      c.fillStyle = "#ffe08a"; c.font = "700 40px sans-serif"; c.fillText("Stay to load more", w / 2, 126);
+    }) }));
+    // Before the mat on the far verge, so it is read on the way in and never hides the truck.
+    plate.position.set(x - 9.5, y + 3.1, -3.6);
+    this.scene.add(plate);
+  }
+
+  // Parking Spots: two rings on the depot floor where the front wheel should rest,
+  // each with a short marker post on the far side so they read from the side camera.
+  buildSpots(game) {
+    this.spotMeshes = [];
+    if (!game.parkable) return;
+    const t = game.terrain;
+    t.spots.forEach((sp) => {
+      const deep = sp.kind === "deep", tint = deep ? "#ffc93a" : "#5fd6c4", y = SH.heightAt(t, sp.x);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.46, 0.6, 32), new THREE.MeshBasicMaterial({ color: tint, transparent: true, opacity: 0.7, depthWrite: false, fog: false }));
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(sp.x, y + 0.05, 1.0);
+      const far = ring.clone(); far.material = ring.material; far.position.z = -1.0;
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.3, 8), new THREE.MeshStandardMaterial({ color: "#d8d2c6" }));
+      post.position.set(sp.x, y + 0.65, -2.7);
+      const disc = new THREE.Mesh(new THREE.CircleGeometry(0.42, 24), new THREE.MeshBasicMaterial({ map: canvasTex(128, 128, (c, w, h) => {
+        c.fillStyle = tint; c.beginPath(); c.arc(w / 2, h / 2, w / 2 - 2, 0, Math.PI * 2); c.fill();
+        c.fillStyle = "#2a2a2e"; c.font = "900 74px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("P", w / 2, h / 2 + 4);
+      }) }));
+      disc.position.set(sp.x, y + 1.55, -2.66);
+      [ring, far, post, disc].forEach((o) => this.scene.add(o));
+      this.spotMeshes.push({ kind: sp.kind, mat: ring.material, base: col(tint), lit: col("#ffffff") });
+    });
+  }
+
   frameGame(game, dt) {
     this.showcasing = false;
     this.time += dt;
@@ -1618,6 +1848,10 @@ export class World3D {
       this.puff(p.x + c * bx, p.y + s * bx - 0.1, 0.5, -1 - Math.random(), 0.5, 0, 0.1, 0.5, game.spec.runners ? (this.sparkle ||= col("#ffcd54")) : (this.smoke ||= col("#8d8a86")));
     }
     if (this.zoneMesh) this.zoneMesh.material.opacity = 0.72 + Math.sin(this.time * 4) * 0.25;
+    if (this.spotMeshes && this.spotMeshes.length) {
+      const on = game.spotAt();
+      this.spotMeshes.forEach((sp) => { sp.mat.color.copy(on === sp.kind ? sp.lit : sp.base); sp.mat.opacity = on === sp.kind ? 0.95 : 0.7; });
+    }
     this.animateSky(dt);
     this.stepParticles(dt);
     this.renderer.render(this.scene, this.camera);
@@ -1627,11 +1861,18 @@ export class World3D {
   // Steps quality down if the phone cannot hold a steady frame rate.
   watchFrameRate(dt) {
     if (!this.autoQuality) return;
+    this.driveTime += dt;
     this.fpsTime += dt; this.fpsFrames += 1;
     if (this.fpsTime < 3) return;
-    const fps = this.fpsFrames / this.fpsTime;
+    const fps = this.fpsFrames / this.fpsTime, span = this.fpsTime;
     this.fpsTime = 0; this.fpsFrames = 0;
+    this.fastTime = fps >= 55 ? this.fastTime + span : 0;
+    if (this.fastTime >= 60 && !this.triedUp && this.quality.level < 2 && (this.autoCeiling == null || this.quality.level < this.autoCeiling)) this.upReady = true;
     if (fps >= 34) return;
+    this.upReady = false; this.fastTime = 0;
+    // A step up that could not hold for 30 s of driving: never try that tier again.
+    if (this.upAt != null && this.driveTime - this.upAt < 30) { this.autoCeiling = this.quality.level; this.onCeiling && this.onCeiling(this.autoCeiling); }
+    this.upAt = null;
     const next = this.quality === QUALITY.high ? QUALITY.medium : this.quality === QUALITY.medium ? QUALITY.low : null;
     if (!next) return;
     this.quality = next;
@@ -1640,6 +1881,18 @@ export class World3D {
       this.sun.castShadow = false;
       this.scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; });
     }
+    this.onQualityChange && this.onQualityChange(next.name);
+  }
+
+  // One tier up, applied as the next road is built, never mid-drive.
+  stepUp() {
+    this.upReady = false; this.triedUp = true;
+    const next = this.quality === QUALITY.low ? QUALITY.medium : this.quality === QUALITY.medium ? QUALITY.high : null;
+    if (!next) return;
+    this.quality = next; this.upAt = this.driveTime; this.fastTime = 0;
+    this.applyQuality();
+    this.sun.castShadow = next.shadows;
+    this.scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; });
     this.onQualityChange && this.onQualityChange(next.name);
   }
 

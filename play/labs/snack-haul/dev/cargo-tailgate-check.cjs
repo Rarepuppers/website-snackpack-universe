@@ -87,7 +87,7 @@ assert.equal(blocksRearCargo(legacy), true);
 for (const legacyCargoPhysics of [false, true]) {
   const opts = { id: "bakery-5", truck: "pickup", upgrades: SH.rivalUpgrades(1), legacyCargoPhysics };
   const g = SH.createGame(opts);
-  while (g.status === "driving" && g.time < 180) g.step(SH.botInput(g, 6));
+  while (g.status === "driving" && g.clock < 180) g.step(SH.botInput(g, 6));
   assert.equal(g.status, "done");
   assert.deepEqual(SH.ghostPath(opts, g.rec).report, SH.report(g));
 }
