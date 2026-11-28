@@ -114,6 +114,12 @@ const sound = {
     else if (kind === "spatula") this.tone(440, 0.2, "triangle", 0.12, 1.8);
     else this.tone(660, 0.12, "triangle", 0.1, 0.7);
   },
+  shake(kind, lead) {
+    if (sample("sfx/shake_" + kind)) return;
+    if (kind === "rumble") for (let i = 0; i < 6; i++) setTimeout(() => this.tone(70 + (i % 2) * 15, 0.08, "sawtooth", 0.06), i * 80);
+    else if (kind === "bump") setTimeout(() => { this.tone(90, 0.25, "sine", 0.3, 0.5); this.tone(240, 0.12, "triangle", 0.08, 0.6); }, (lead || 0) * 1000);
+    else for (let i = 0; i < 12; i++) setTimeout(() => this.tone(45 + (i * 7) % 30, 0.14, "sawtooth", 0.08), i * 100);
+  },
   fever() { if (!sample("sfx/fever_start")) [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.tone(f, 0.16, "triangle", 0.12), i * 55)); },
   feverEnd() { if (!sample("sfx/fever_end")) this.tone(880, 0.35, "sine", 0.08, 0.5); },
   over() {
@@ -184,7 +190,7 @@ function start(m, resume) {
 // The game in progress, saved after every drop and when the page is hidden,
 // so closing the tab or the app picks up where it left off.
 function saveGame() {
-  if (BOT || !realGame || !game || game.status !== "playing" || !game.drops) return;
+  if (BOT || !realGame || !game || game.status !== "playing" || !game.drops || game.shake || game.guard > 0) return;
   save.resume = { mode, day: dayKey(), steps, log: dropLog, snap: game.snapshot() };
   writeSave(); dirty = false;
 }
@@ -389,6 +395,9 @@ window.addEventListener("pagehide", () => { if (game && game.status === "playing
 let armed = null, pendingTool = null;
 const tray = $("tray"), hint = $("hint");
 const GLYPH = {
+  rumble: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="8" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 9v6M21 9v6M1 11v2M23 11v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  bump: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="10" y="7" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M2 13h6M5.5 10 8.5 13l-3 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  quake: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M2 20l4-3 3 3 3-3 3 3 3-3 4 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
   swap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12l-3-3M19 15H7l3 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   spatula: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="9" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 11v1.5l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
   levelup: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 17V8M8 11.5 12 7.5l4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -402,7 +411,7 @@ function updateTray() {
   for (let i = 0; i < SD.TOOL_EARN.slots; i++) {
     const id = game.tray[i];
     slots.push(id
-      ? `<button class="tool${armed === id && game.tray.indexOf(id) === i ? " armed" : ""}" data-tool="${id}" aria-label="${SD.TOOLS[id].name}">${toolGlyph(id)}<small>${SD.TOOLS[id].name}</small></button>`
+      ? `<button class="tool${armed === id && game.tray.indexOf(id) === i ? " armed" : ""}${SD.TOOLS[id].rare ? " rare" : ""}${SD.TOOLS[id].shake && !game.canUse(id, "l") ? " wait" : ""}" data-tool="${id}" aria-label="${SD.TOOLS[id].name}">${toolGlyph(id)}<small>${SD.TOOLS[id].name}</small></button>`
       : `<span class="tool empty" aria-hidden="true"></span>`);
   }
   tray.innerHTML = slots.join("");
@@ -410,7 +419,7 @@ function updateTray() {
 function disarm() { armed = null; view.armed = null; hint.classList.remove("on"); document.body.classList.remove("arming"); updateTray(); }
 function arm(id) {
   armed = id; document.body.classList.add("arming");
-  hint.textContent = id === "spatula" ? "Tap a snack to lift it out" : "Tap a snack to make it one bigger";
+  hint.textContent = id === "spatula" ? "Tap a snack to lift it out" : id === "bump" ? "Tap the side of the crate to knock" : "Tap a snack to make it one bigger";
   hint.classList.add("on"); updateTray();
 }
 tray.addEventListener("click", (e) => {
@@ -419,12 +428,21 @@ tray.addEventListener("click", (e) => {
   sound.wake();
   const id = b.dataset.tool;
   if (armed === id) return disarm();
-  if (!SD.TOOLS[id].target) { disarm(); pendingTool = { id }; return; }
+  const T = SD.TOOLS[id];
+  if (T.shake && !T.side) { if (!game.canUse(id)) return; disarm(); pendingTool = { id }; return; }
+  if (!T.target && !T.side) { disarm(); pendingTool = { id }; return; }
   arm(id);
 });
 // Which snack a tap means: the one under the finger, or the nearest one it can act on.
 function pickTarget(cx, cy) {
   const p = view.worldPoint(cx, cy), C = SD.CRATE;
+  if (armed === "bump") {
+    // Bump: whichever side of the crate was tapped is the side that gets knocked.
+    if (p.y < -1 || p.y > C.height + 2) return disarm();
+    const side = p.x < 0 ? "l" : "r";
+    if (game.canUse("bump", side)) { pendingTool = { id: "bump", target: side }; disarm(); }
+    return;
+  }
   if (Math.abs(p.x) > C.half + 0.5 || p.y < -0.6 || p.y > C.height + 1.5) return disarm();
   let best = null, bestD = 1e9;
   for (const sn of game.snacks) {
@@ -481,8 +499,10 @@ function handle(ev) {
     if (!REDUCED && ev.tier >= 8) hitStop = 0.06;
     if (!REDUCED && ev.tier >= 9) { slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
   }
-  if (ev.type === "tool") { updateTray(); if (ev.why !== "start") toast("New tool: " + SD.TOOLS[ev.id].name); sound.tool("get"); }
+  if (ev.type === "tool") { updateTray(); if (ev.why !== "start") toast(ev.why === "rare" ? "Rare tool: Earthquake!" : "New tool: " + SD.TOOLS[ev.id].name); sound.tool("get"); }
   if (ev.type === "swap" || ev.type === "spatula" || ev.type === "levelup") { updateTray(); sound.tool(ev.type); }
+  if (ev.type === "shake") { updateTray(); sound.shake(ev.kind, ev.lead); if (ev.kind === "quake") toast("Earthquake!"); }
+  if (ev.type === "shakeEnd") updateTray();
   if (ev.type === "fever") {
     feverMax = ev.time;
     if (ev.start) { sound.fever(); toast("Fever! ×" + SD.FEVER.mult + " for " + SD.FEVER.time + " s"); view.shake = Math.max(view.shake, 0.12); }
@@ -535,6 +555,8 @@ function frame(now) {
     view.alpha = Math.min(1, acc / SD.STEP);
     $("score").textContent = game.score;
     feverHud();
+    // The shake buttons wait while the last drop is still falling.
+    if (game.rules.tools && (game.time - game.lastDrop) < SD.SHAKE.gap + 0.05 && (game.time - game.lastDrop) > SD.SHAKE.gap - 0.05) updateTray();
     if (armed) {
       const ids = new Set(); for (const sn of game.snacks) if (game.canUse(armed, sn.id)) ids.add(sn.id);
       view.armed = ids;
