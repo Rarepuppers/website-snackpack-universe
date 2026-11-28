@@ -1,6 +1,6 @@
 # Arcade + classroom plan (plan of record)
 
-Started 21 November 2026, rewritten 26 November 2026, updated 27 November 2026. This is the live plan for
+Started 21 November 2026, rewritten 26 November 2026, updated 28 November 2026. This is the live plan for
 `/play/`, the classroom audience and the site's event counts. It replaces
 `ARCADE-NEXT-PLAN-2026-10-20.md`, `ARCADE-AUDIT-2026-10-17.md` and
 `ARCADE-QUALITY-PLAN-2026-09.md` (all now in `docs/archive/`); their open items are carried
@@ -21,6 +21,13 @@ is archived. This plan stays open for the measurements in section 5. The
 November readings already settled the immediate release decisions. Reopen
 feature work only if the longer measurements meet the recorded decision
 rules.
+
+### 28 November delivery
+
+- [Classic Felt](https://github.com/Rarepuppers/website-snackpack-universe/commit/61f4956b10d48c4dff37168fc301120c367f8232) is live on Solitaire, FreeCell, TriPeaks, Hearts and Spades. The Vol. 1 app page leads its gallery with the library and links to the five browser games. FreeCell fits all eight columns at 320 CSS pixels.
+- The [Thirteen reminder](https://github.com/Rarepuppers/website-snackpack-universe/commit/4635cc4f5d176b936a328c73efc26539b92ed66b) appears once per browser after three completed solo games. A click opens Google Play under `thirteen-reminder`, alongside the existing `thirteen` badge and `thirteen-qr` campaigns.
+- The rules guide now uses “How to Play the 13 Card Game (Tiến Lên Rules)”. Its Search Console baseline for 29 October–25 November was 3 clicks from 1,364 impressions. [Title and breadcrumb](https://github.com/Rarepuppers/website-snackpack-universe/commit/767c8193af483ae6ec7fbbf8643107b161650e18)
+- For future small visual changes, check the affected board and live page. Reuse matching CI results and add broader checks only for shared behavior or a specific regression risk.
 
 Data sources and how to read them:
 - **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.
@@ -496,6 +503,7 @@ Name: **Fact Sprint**. "Snack Sums" was rejected: too close to Math Snacks
 | ~11 Dec | Sokoban + Chess Puzzles day 28 (separate plan) | Search Console |
 | ~16 Dec | 14-school-day classroom practice follow-up, including the new teacher-link counts (R3/R16) | GoatCounter |
 | ~24 Dec | Snack Typer at 28 days in search | Search Console |
+| Late Dec, after 28 days of data | Review Thirteen’s reminder, badge and QR campaigns over matching dates. Compare the rules guide with its pre-change baseline. | Cloudflare, Play Console, Search Console |
 
 ---
 
