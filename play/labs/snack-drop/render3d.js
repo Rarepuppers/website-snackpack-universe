@@ -267,6 +267,10 @@ export class Renderer {
     const markGeo = new THREE.RingGeometry(0.9, 1, 40), markMat = new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.85, depthTest: false });
     this.marks = Array.from({ length: 48 }, () => { const m = new THREE.Mesh(markGeo, markMat); m.renderOrder = 3; m.visible = false; s.add(m); return m; });
     this.markMat = markMat;
+
+    // The Bump runner: Codex's Corgi puppet when it has loaded, otherwise a
+    // code-built stand-in with the same node names (body, head, legs, tail).
+    this.runner = null; this.run = null;
     this.nextShow = new THREE.Group(); s.add(this.nextShow);
     this.heldTier = -1; this.nextTier = -1;
   }
@@ -310,6 +314,13 @@ export class Renderer {
 
   // Called by the game on every event so effects line up with the physics.
   onEvent(ev) {
+    if (ev.type === "shake") {
+      if (ev.kind === "bump") this.startRunner(ev.side, ev.lead);
+      if (ev.kind === "quake") {
+        this.quake = ev.time;
+        this.burst(-CRATE.half + 0.3, 0.3, "#d9c3a0", 26); this.burst(CRATE.half - 0.3, 0.3, "#d9c3a0", 26);
+      }
+    }
     if (ev.type === "spatula") this.burst(ev.x, ev.y, "#fff3d6", 14);
     if (ev.type === "levelup") { this.burst(ev.x, ev.y, "#ffd54a", 22); if (ev.newId) this.pops.set(ev.newId, 0); }
     if (ev.type === "swap") { this.heldTier = this.nextTier = this.ghostTier = -1; this.swapPop = 0; }
@@ -421,6 +432,58 @@ export class Renderer {
     };
     swap("containers/container_" + this.containerId, this.crateGroup, "crateModel");
     swap("backdrops/backdrop_" + this.containerId, this.kitchenGroup, "kitchenModel");
+  }
+
+  buildRunner() {
+    const authored = model("cameos/cameo_corgi-on-the-cob");
+    this.runnerAuthored = !!authored;
+    if (authored) { authored.traverse((o) => { if (o.isMesh) o.castShadow = true; }); return authored; }
+    const g = new THREE.Group(), fur = mat("#e8913a"), white = mat("#fff3e4"), dark = mat("#3a2414"), corn = mat("#f4c430");
+    const body = rounded(1.5, 0.75, 0.8, 0.3, fur); body.name = "body"; body.position.y = 0.95; g.add(body);
+    const head = new THREE.Group(); head.name = "head"; head.position.set(0.85, 1.45, 0);
+    head.add(mesh(new THREE.SphereGeometry(0.42, 20, 14), fur));
+    const snout = mesh(new THREE.SphereGeometry(0.22, 14, 10), white, 0.33, -0.08, 0); snout.scale.set(1.2, 0.8, 0.9); head.add(snout);
+    head.add(mesh(new THREE.SphereGeometry(0.06, 8, 6), dark, 0.58, -0.02, 0));
+    [-1, 1].forEach((z) => { head.add(mesh(new THREE.SphereGeometry(0.05, 8, 6), dark, 0.22, 0.12, z * 0.2)); const muff = mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.32, 12), corn, -0.05, 0.38, z * 0.3); muff.rotation.x = Math.PI / 2; head.add(muff); });
+    g.add(head);
+    [["leg_fl", 0.5, 0.25], ["leg_fr", 0.5, -0.25], ["leg_bl", -0.5, 0.25], ["leg_br", -0.5, -0.25]].forEach(([n, x, z]) => {
+      const leg = new THREE.Group(); leg.name = n; leg.position.set(x, 0.65, z);
+      leg.add(mesh(new THREE.CylinderGeometry(0.11, 0.1, 0.62, 10), fur, 0, -0.31, 0)); g.add(leg);
+    });
+    const tail = new THREE.Group(); tail.name = "tail"; tail.position.set(-0.78, 1.15, 0);
+    tail.add(mesh(new THREE.SphereGeometry(0.2, 12, 10), white, -0.12, 0.1, 0)); g.add(tail);
+    return g;
+  }
+  startRunner(side, lead) {
+    if (!this.runner) { this.runner = this.buildRunner(); this.scene.add(this.runner); }
+    // From off-screen on the hit side, into the crate's side, then back out.
+    const dir = side === "l" ? 1 : -1;
+    this.run = { dir, t: 0, lead, from: -dir * 9.5, hit: -dir * (CRATE.half + CRATE.wall * 2 + 1.0) };
+    this.runner.visible = true;
+  }
+  stepRunner(dt) {
+    const R = this.run;
+    if (!R || !this.runner) return;
+    R.t += dt;
+    const out = 0.7, t = R.t;
+    let x;
+    if (t < R.lead) x = R.from + (R.hit - R.from) * (t / R.lead);
+    else if (t < R.lead + 0.15) x = R.hit + R.dir * 0.25 * Math.sin(((t - R.lead) / 0.15) * Math.PI);
+    else x = R.hit + (R.from - R.hit) * Math.min(1, (t - R.lead - 0.15) / out);
+    const back = t >= R.lead + 0.15;
+    this.runner.position.set(x, -0.6, 1.4);
+    // The stand-in is built facing +X; an authored puppet faces +Z (the brief),
+    // so it turns a quarter more and its legs swing about its own X axis.
+    const A = this.runnerAuthored, axis = A ? "x" : "z";
+    this.runner.rotation.y = ((back ? -R.dir : R.dir) > 0 ? 0 : Math.PI) + (A ? Math.PI / 2 : 0);
+    const swing = Math.sin(t * 28) * 0.7;
+    this.runner.traverse((o) => {
+      if (o.name === "leg_fl" || o.name === "leg_br") o.rotation[axis] = swing;
+      if (o.name === "leg_fr" || o.name === "leg_bl") o.rotation[axis] = -swing;
+      if (o.name === "tail") o.rotation[axis] = Math.sin(t * 20) * 0.5;
+      if (o.name === "head") o.rotation[axis] = t > R.lead && t < R.lead + 0.15 ? -0.4 : 0;
+    });
+    if (t > R.lead + 0.15 + out) { this.run = null; this.runner.visible = false; }
   }
 
   // Called by the game loop before each physics step: remembers where every
@@ -552,6 +615,19 @@ export class Renderer {
     if (live || this.crumbsWereLive) this.crumbMesh.instanceMatrix.needsUpdate = true;
     this.crumbsWereLive = live;
 
+    // Shakes: the crate follows the physics crate; an Earthquake rattles the
+    // kitchen and shakes the camera.
+    const off = g.crateOffset || { x: 0, y: 0 };
+    for (const o of [this.crateGroup, this.crateModel]) if (o) o.position.set(off.x, off.y, 0);
+    if (this.quake > 0) {
+      this.quake -= dt;
+      this.shake = Math.max(this.shake, 0.18);
+      const j = this.reduced ? 0 : 0.03;
+      for (const o of [this.kitchenGroup, this.kitchenModel]) if (o) o.position.set((Math.random() - 0.5) * j, (Math.random() - 0.5) * j, 0);
+      if (this.quake <= 0) for (const o of [this.kitchenGroup, this.kitchenModel]) if (o) o.position.set(0, 0, 0);
+    }
+    this.stepRunner(dt);
+
     // Camera, slightly above, with a small shake on big merges.
     this.shake = Math.max(0, this.shake - dt);
     const amp = this.reduced ? 0 : this.shake;
@@ -569,7 +645,8 @@ export class Renderer {
     for (const m of this.meshes.values()) this.scene.remove(m);
     this.meshes.clear(); this.pops.clear(); this.prev.clear(); this.squash.clear(); this.wasLanded.clear();
     for (const c of this.crumbData) c.life = 0;
-    this.push.amount = this.push.target = 0; this.shake = 0;
+    this.push.amount = this.push.target = 0; this.shake = 0; this.quake = 0;
+    this.run = null; if (this.runner) this.runner.visible = false;
     this.heldTier = this.nextTier = -1;
   }
 }

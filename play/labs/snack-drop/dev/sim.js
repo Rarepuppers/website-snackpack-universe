@@ -4,6 +4,7 @@
 // node play/labs/snack-drop/dev/sim.js band       every container inside the bot band
 // node play/labs/snack-drop/dev/sim.js same       the same seed and drops must give the same game
 // node play/labs/snack-drop/dev/sim.js restore    a saved snapshot puts the crate back exactly and plays on (resume)
+// node play/labs/snack-drop/dev/sim.js shakes     200 shakes: none ends a game, no snack leaves the crate
 // node play/labs/snack-drop/dev/sim.js replay     a saved drop log replays to exactly the same crate (resume)
 // BAL='{"dropGap":0.6}' overrides BALANCE for tuning.
 // "Minutes" assumes a person takes about 2 seconds per drop (aiming plus watching).
@@ -29,6 +30,38 @@ function play(seed, style, container, mode = "classic", maxDrops = 2000, tools =
 function pct(list, p) { const s = [...list].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(p * s.length))]; }
 
 const arg = process.argv[2];
+if (arg === "shakes") {
+  // PLAN 20 step 6: across 200 shakes, no game ends during a shake or its
+  // guard, and no snack ever leaves the crate. Bots play Arcade and are handed
+  // a shake every few seconds.
+  const kinds = ["rumble", "bump", "quake"];
+  let shakes = 0, endedInGuard = 0, escaped = 0, games = 0;
+  const merged = { rumble: 0, bump: 0, quake: 0 }, count = { rumble: 0, bump: 0, quake: 0 };
+  for (let k = 1; shakes < 200 && k < 400; k++) {
+    const seed = k * 271, container = SD.CONTAINER_ORDER[k % 4], g = SD.createGame({ seed, container, mode: "arcade" }), rand = SD.rng(seed);
+    games++;
+    for (let st = 0; g.status === "playing" && st < 60 * 600 && shakes < 200; st++) {
+      let tool = null;
+      if (st % 240 === 120 && !g.shake && g.time - g.lastDrop >= SD.SHAKE.gap) {
+        const kind = kinds[shakes % 3];
+        g.tray.length = 0; g.tray.push(kind);
+        tool = { id: kind, target: kind === "bump" ? (rand() < 0.5 ? "l" : "r") : undefined };
+      }
+      const ready = !tool && g.canDrop() && g.snacks.every((s) => s.landed);
+      const before = g.shake, m0 = g.merges;
+      g.step({ tool, drop: ready ? SD.botAim(g, "careful", rand) : null });
+      if (!before && g.shake) { shakes++; count[g.shake.kind]++; }
+      if (g.shake && !ready) merged[g.shake.kind] += g.merges - m0;
+      if (g.status === "over" && (g.shake || g.guard > 0)) endedInGuard++;
+      for (const s of g.snacks) { const p = s.body.getPosition(); if (Math.abs(p.x) > SD.CRATE.half + 0.4 || p.y < -0.5 || p.y > SD.CRATE.height + 1) { escaped++; break; } }
+    }
+  }
+  console.log(`${shakes} shakes in ${games} games: ${endedInGuard} games ended during a shake or its guard, ${escaped} steps with a snack outside the crate`);
+  console.log("merges during the shake itself, per shake: " + Object.keys(count).map((k) => `${k} ${(merged[k] / Math.max(1, count[k])).toFixed(2)}`).join(", "));
+  const ok = shakes >= 200 && !endedInGuard && !escaped;
+  console.log(ok ? "shakes: OK" : "shakes: FAIL");
+  process.exit(ok ? 0 : 1);
+}
 if (arg === "restore") {
   // Resume restores a snapshot. Check it puts the crate back exactly, survives
   // JSON, and plays on without errors or snacks flying off.

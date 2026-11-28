@@ -101,3 +101,5 @@ body.arming #view { cursor: crosshair; }
 .chip.on { border-color: var(--sun); background: #fff3d9; }
 .sheet { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }
 .tool.empty { background: #fff8eecc; }
+.tool.rare { border-color: #f2c14e; box-shadow: 0 0 0 3px #f2c14e66, 0 3px 0 #b5741a; }
+.tool.wait { opacity: .55; }

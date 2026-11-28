@@ -63,9 +63,19 @@
   var TOOLS = {
     swap:    { id: "swap",    name: "Swap",     target: false },
     spatula: { id: "spatula", name: "Spatula",  target: true, maxTier: 6 },
-    levelup: { id: "levelup", name: "Level Up", target: true, maxTier: 6 }
+    levelup: { id: "levelup", name: "Level Up", target: true, maxTier: 6 },
+    // The shakes (PLAN 9a) move the crate itself; the snacks react to its walls.
+    rumble:  { id: "rumble",  name: "Rumble",   shake: true },
+    bump:    { id: "bump",    name: "Bump",     shake: true, side: true },
+    quake:   { id: "quake",   name: "Earthquake", shake: true, rare: true }
   };
-  var TOOL_ORDER = ["swap", "spatula", "levelup"];
+  // Tools that can be earned at random or picked to start with. Earthquake is
+  // only ever earned (Chain x6 or 4,000 points, once a game).
+  var TOOL_ORDER = ["swap", "spatula", "levelup", "rumble", "bump"];
+  // Shake shapes: how long the crate moves, and the guard after it during
+  // which the line timer stays stopped and a lid keeps snacks in.
+  var SHAKE = { rumble: { time: 0.5, amp: 0.04, hz: 14 }, bump: { lead: 0.35, push: 0.12, back: 0.3, amp: 0.25 },
+    quake: { time: 1.2, amp: 0.14 }, guard: 1.5, quakeChain: 6, quakeScore: 4000, gap: 0.3 };
   // A tool at 1,000 points and every 1,500 after, and one for each Chain x5.
   var TOOL_EARN = { first: 1000, every: 1500, chain: 5, slots: 3 };
 
@@ -160,7 +170,8 @@
       mode: rules.id, rules: rules, seed: opts.seed, world: world, container: box.id,
       line: box.line - (rules.lineDrop || 0), overLimit: rules.overLimit || BALANCE.overLimit,
       fever: 0, fevers: 0, dropMerges: 0, maxChain: 0,
-      tray: [], toolsUsed: 0, nextToolAt: TOOL_EARN.first,
+      tray: [], toolsUsed: 0, nextToolAt: TOOL_EARN.first, quakeGiven: false,
+      shake: null, guard: 0, crateOffset: { x: 0, y: 0 }, lastDrop: -99,
       snacks: [], nextId: 1, time: 0, status: "playing",
       score: 0, drops: 0, merges: 0, best: 0, made: TIERS.map(function () { return 0; }),
       current: pick(rand), next: pick(rand), aim: 0, wait: 0,
@@ -170,6 +181,11 @@
     // Tools draw from their own random stream, so the snack queue is the same
     // with or without them, and every Daily Drop player gets the same tools.
     var toolRand = rng(hash("tools-" + (opts.seed == null ? 1 : opts.seed)));
+    function giveQuake() {
+      if (!rules.tools || g.quakeGiven || g.tray.length >= TOOL_EARN.slots) return;
+      g.quakeGiven = true; g.tray.push("quake");
+      g.events.push({ type: "tool", id: "quake", why: "rare" });
+    }
     function giveTool(id, why) {
       if (!rules.tools || g.tray.length >= TOOL_EARN.slots) return;
       id = id || TOOL_ORDER[Math.floor(toolRand() * TOOL_ORDER.length)];
@@ -179,15 +195,71 @@
     function canUse(id, target) {
       var tool = TOOLS[id];
       if (!tool || g.status !== "playing" || g.tray.indexOf(id) < 0) return null;
+      // One shake at a time, and not while the last drop is still falling.
+      if (tool.shake) return !g.shake && g.time - g.lastDrop >= SHAKE.gap && (!tool.side || target === "l" || target === "r") ? true : null;
       if (!tool.target) return true;
       for (var i = 0; i < g.snacks.length; i++) if (g.snacks[i].id === target) return g.snacks[i].tier <= tool.maxTier ? g.snacks[i] : null;
       return null;
     }
+    // ── Shakes ──
+    // For a shake the crate becomes kinematic and follows an offset curve; the
+    // snacks only feel its walls and floor. Every number comes from the seed
+    // (the Earthquake's phases) or is fixed, so a replay shakes the same.
+    var lid = null;
+    function startShake(kind, side) {
+      var sh = { kind: kind, side: side, t: 0, ph1: 0, ph2: 0 };
+      if (kind === "rumble") sh.end = SHAKE.rumble.time;
+      else if (kind === "bump") sh.end = SHAKE.bump.lead + SHAKE.bump.push + SHAKE.bump.back;
+      else { sh.end = SHAKE.quake.time; sh.ph1 = toolRand() * Math.PI * 2; sh.ph2 = toolRand() * Math.PI * 2; }
+      g.shake = sh;
+      g.guard = sh.end + SHAKE.guard;
+      crate.setKinematic();
+      for (var i = 0; i < g.snacks.length; i++) g.snacks[i].body.setAwake(true);
+      if (!lid) lid = crate.createFixture({ shape: new planck.Box(CRATE.half + CRATE.wall, 0.15, { x: 0, y: CRATE.height + 0.15 }, 0), friction: 0.2 });
+      g.events.push({ type: "shake", kind: kind, side: side, time: sh.end, lead: kind === "bump" ? SHAKE.bump.lead : 0 });
+    }
+    function ease(u) { return u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u); }
+    function shakeOffset(sh, t) {
+      if (sh.kind === "rumble") {
+        var R = SHAKE.rumble, env = Math.sin(Math.PI * Math.min(1, t / R.time));
+        return { x: R.amp * env * Math.sin(2 * Math.PI * R.hz * t), y: 0 };
+      }
+      if (sh.kind === "bump") {
+        // Hit from the left pushes the crate right, so the snacks slide left.
+        var B = SHAKE.bump, dir = sh.side === "l" ? 1 : -1, u = t - B.lead;
+        if (u <= 0) return { x: 0, y: 0 };
+        var k = u < B.push ? ease(u / B.push) : 1 - ease((u - B.push) / B.back);
+        return { x: dir * B.amp * k, y: 0 };
+      }
+      var Q = SHAKE.quake, e = Math.sin(Math.PI * Math.min(1, t / Q.time));
+      return { x: Q.amp * e * Math.sin(2 * Math.PI * 5 * t + sh.ph1), y: Q.amp * 0.8 * e * Math.sin(2 * Math.PI * 7 * t + sh.ph2) };
+    }
+    function stepShake() {
+      if (g.guard > 0) { g.guard -= STEP; if (g.guard <= 0) { g.guard = 0; if (lid && !g.shake) { crate.destroyFixture(lid); lid = null; } } }
+      var sh = g.shake;
+      if (!sh) return;
+      sh.t += STEP;
+      if (sh.t >= sh.end) {
+        // Back exactly where it started, and still again.
+        crate.setLinearVelocity({ x: 0, y: 0 });
+        crate.setPosition({ x: 0, y: 0 });
+        crate.setStatic();
+        g.crateOffset = { x: 0, y: 0 };
+        g.shake = null;
+        g.events.push({ type: "shakeEnd", kind: sh.kind });
+        return;
+      }
+      var next = shakeOffset(sh, sh.t + STEP), now = crate.getPosition();
+      crate.setLinearVelocity({ x: (next.x - now.x) / STEP, y: (next.y - now.y) / STEP });
+      g.crateOffset = { x: now.x, y: now.y };
+    }
+
     function useTool(id, target) {
       var s = canUse(id, target);
       if (!s) return false;
       g.tray.splice(g.tray.indexOf(id), 1);
       g.toolsUsed++;
+      if (TOOLS[id].shake) { startShake(id, target); return true; }
       if (id === "swap") {
         var held = g.current; g.current = g.next; g.next = held;
         g.events.push({ type: "swap" });
@@ -242,7 +314,7 @@
       x = clampAim(x, tier);
       makeBody(tier, x, CRATE.dropY, 0, { x: 0, y: -1 });
       g.drops++;
-      g.dropMerges = 0;
+      g.dropMerges = 0; g.lastDrop = g.time;
       g.events.push({ type: "drop", tier: tier, x: x });
       g.current = g.next; g.next = pick(rand); g.wait = BALANCE.dropGap;
       return true;
@@ -269,6 +341,7 @@
         g.merges++;
         if (g.chain > g.maxChain) g.maxChain = g.chain;
         if (g.chain === TOOL_EARN.chain) giveTool(null, "chain");
+        if (g.chain === SHAKE.quakeChain) giveQuake();
         // Fever: the third merge from one drop starts it, or adds time to it.
         if (++g.dropMerges === FEVER.merges) {
           var started = g.fever <= 0;
@@ -306,16 +379,19 @@
       if (g.wait > 0) g.wait -= STEP;
       if (g.fever > 0) { g.fever -= STEP; if (g.fever <= 0) { g.fever = 0; g.events.push({ type: "feverEnd" }); } }
       if (input.tool) useTool(input.tool.id, input.tool.target);
+      stepShake();
       if (input.drop != null) drop(input.drop);
       world.step(STEP);
       merges();
       while (rules.tools && g.score >= g.nextToolAt) { g.nextToolAt += TOOL_EARN.every; giveTool(null, "points"); }
+      if (rules.tools && g.score >= SHAKE.quakeScore) giveQuake();
       var worst = 0;
       for (var i = 0; i < g.snacks.length; i++) {
         var s = g.snacks[i];
         if (!s.landed && g.time - s.born > BALANCE.landGrace) s.landed = true;
         if (!s.landed) continue;
-        if (topOf(s) > g.line) s.over += STEP; else s.over = 0;
+        // During a shake and its guard the line timer stops: a shake never loses the game.
+        if (topOf(s) > g.line) { if (!g.guard) s.over += STEP; } else s.over = 0;
         if (s.over > worst) worst = s.over;
       }
       g.danger = Math.min(1, worst / g.overLimit);
@@ -331,7 +407,7 @@
     // bit-for-bit continuation, which only the drop-log replay is).
     function snapshot() {
       return {
-        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, tray: g.tray.slice(), toolsUsed: g.toolsUsed, nextToolAt: g.nextToolAt, toolRand: toolRand.get(), fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, tray: g.tray.slice(), toolsUsed: g.toolsUsed, nextToolAt: g.nextToolAt, toolRand: toolRand.get(), quakeGiven: g.quakeGiven, lastDrop: g.lastDrop, fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
         merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
         chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
         snacks: g.snacks.map(function (s) {
@@ -349,7 +425,7 @@
       rand.set(r.rand);
       if (r.toolRand != null) toolRand.set(r.toolRand);
       if (r.tray) g.tray = r.tray.slice();
-      ["toolsUsed", "nextToolAt", "fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
+      ["quakeGiven", "lastDrop", "toolsUsed", "nextToolAt", "fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
       g.made = r.made.slice();
     }
 
@@ -421,6 +497,29 @@
         }
       }
     }
+    var canShake = !g.shake && g.time - g.lastDrop >= SHAKE.gap;
+    // Earthquake: the pile is within 1 m of the line.
+    if (has("quake") && canShake) {
+      var top = 0;
+      for (var q = 0; q < g.snacks.length; q++) if (g.snacks[q].landed) top = Math.max(top, g.snacks[q].fixture.getAABB(0).upperBound.y);
+      if (top > g.line - 1) return { id: "quake" };
+    }
+    // Rumble: two matching snacks almost touching.
+    if (has("rumble") && canShake) {
+      for (var r1 = 0; r1 < g.snacks.length; r1++) for (var r2 = r1 + 1; r2 < g.snacks.length; r2++) {
+        var x1 = g.snacks[r1], x2 = g.snacks[r2];
+        if (x1.tier !== x2.tier || !x1.landed || !x2.landed) continue;
+        var p1 = x1.body.getPosition(), p2 = x2.body.getPosition(), gap = Math.hypot(p1.x - p2.x, p1.y - p2.y) - 2 * TIERS[x1.tier].halfW;
+        if (gap > 0.02 && gap < 0.3) return { id: "rumble" };
+      }
+    }
+    // Bump: the pile leans to one side; knock it from the other so it slides into the gap.
+    if (has("bump") && canShake && g.snacks.length > 5) {
+      var sum = 0;
+      for (var m = 0; m < g.snacks.length; m++) sum += g.snacks[m].body.getPosition().x;
+      var avg = sum / g.snacks.length;
+      if (Math.abs(avg) > 0.6) return { id: "bump", target: avg > 0 ? "l" : "r" };
+    }
     // Swap: the next snack has a good spot and the held one doesn't.
     if (has("swap") && g.canDrop() && botBest(g, g.next).score > botBest(g, g.current).score + 4) return { id: "swap" };
     return null;
@@ -428,6 +527,6 @@
 
   return {
     STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, MODES: MODES, FEVER: FEVER, MAX_MULT: MAX_MULT, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
-    DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, botTool: botTool, TOOLS: TOOLS, TOOL_ORDER: TOOL_ORDER, TOOL_EARN: TOOL_EARN, hash: hash, rng: rng
+    DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, botTool: botTool, TOOLS: TOOLS, TOOL_ORDER: TOOL_ORDER, TOOL_EARN: TOOL_EARN, SHAKE: SHAKE, hash: hash, rng: rng
   };
 });
