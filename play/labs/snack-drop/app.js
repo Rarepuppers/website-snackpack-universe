@@ -1,17 +1,48 @@
 // Snack Drop page: menus, input, the fixed-step loop, sound and saved bests.
 // ?bot=1 lets the careful bot play (for screenshots and quick checks).
 import { Renderer, TIER_COLORS } from "./render3d.js";
+import { loadAssets, soundData, has, url } from "./assets.js";
 
 const SD = window.SnackDrop;
 const $ = (id) => document.getElementById(id);
 const query = new URLSearchParams(location.search);
 const BOT = query.get("bot") === "1";
+const DEV = query.get("dev") === "1";
+const PERF = query.get("perf") === "1" ? [] : null;  // ?perf=1: main-thread milliseconds per frame, for dev/perf.mjs
 
 // ════ Save ════════════════════════════════════════════════════════
-const store = {
-  get(k, d) { try { const v = localStorage.getItem("sp_snackdrop_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem("sp_snackdrop_" + k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
-};
+// Everything lives in one versioned entry, so the app shell has one thing to
+// read and back up. Bests and saved games carry the rules version, so results
+// from older rules are never mixed with new ones.
+const SAVE_KEY = "sp_snackdrop_v1";
+function blankSave() { return { v: 1, bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
+function loadSave() {
+  try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.v === 1) return Object.assign(blankSave(), d); } catch (e) { /* fall through */ }
+  // First run on this version: bring over the prototype's separate keys.
+  const d = blankSave(), old = (k) => { try { const v = localStorage.getItem("sp_snackdrop_" + k); return v == null ? null : JSON.parse(v); } catch (e) { return null; } };
+  if (old("best")) d.bests["pantry:classic"] = { score: old("best"), rules: 1 };
+  d.biggest = old("biggest") || 0; d.mute = !!old("mute");
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const m = /^sp_snackdrop_daily_(\d{4}-\d{2}-\d{2})$/.exec(localStorage.key(i));
+      if (m) d.daily[m[1]] = { best: old("daily_" + m[1]) || 0, first: old("daily_" + m[1]) || 0, rules: 1 };
+    }
+  } catch (e) { /* private mode */ }
+  return d;
+}
+const save = loadSave();
+function writeSave() {
+  // Keep the daily history short.
+  const days = Object.keys(save.daily).sort();
+  while (days.length > 60) delete save.daily[days.shift()];
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* private mode or full */ }
+}
+const CONTAINER = "pantry";  // one container until build step 3
+function bestOf(m) {
+  if (m === "daily") { const d = save.daily[dayKey()]; return d ? d.best : 0; }
+  const b = save.bests[CONTAINER + ":" + m]; return b && b.rules === SD.RULES_VERSION ? b.score : 0;
+}
+
 // Local calendar day, not UTC, so the Daily Drop changes at the player's midnight.
 function dayKey(d = new Date()) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -20,8 +51,27 @@ function dayKey(d = new Date()) {
 // ════ Sound ═══════════════════════════════════════════════════════
 // C major pentatonic, two octaves up from G4.
 const CHAIN_NOTES = [392, 440, 523, 587, 659, 784, 880, 1047, 1175, 1319];
+// Authored sounds (assets/audio/sfx/*.ogg) play when present; otherwise the
+// synthesised tones below stand in.
+const buffers = {};
+function sample(name, rate = 1, vol = 1) {
+  if (sound.muted || !sound.ctx) return false;
+  const b = buffers[name];
+  if (b === undefined) {
+    const data = soundData(name);
+    if (!data) return false;
+    buffers[name] = null;
+    sound.ctx.decodeAudioData(data.slice(0)).then((d) => { buffers[name] = d; }, () => { buffers[name] = false; });
+    return false;
+  }
+  if (!b) return false;
+  const src = sound.ctx.createBufferSource(), g = sound.ctx.createGain();
+  src.buffer = b; src.playbackRate.value = rate; g.gain.value = vol;
+  src.connect(g).connect(sound.ctx.destination); src.start();
+  return true;
+}
 const sound = {
-  ctx: null, muted: store.get("mute", false),
+  ctx: null, muted: save.mute,
   wake() { if (!this.ctx) { const C = window.AudioContext || window.webkitAudioContext; if (C) this.ctx = new C(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
   tone(freq, dur, type = "sine", vol = 0.18, slide = 0) {
     if (this.muted || !this.ctx) return;
@@ -31,14 +81,18 @@ const sound = {
     g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
   },
-  drop() { this.tone(220, 0.12, "triangle", 0.12, 0.6); },
+  drop(tier) { if (!sample(SD.TIERS[tier].shape === "circle" ? "sfx/drop_soft" : "sfx/drop_clack")) this.tone(220, 0.12, "triangle", 0.12, 0.6); },
   merge(tier, chain) {
-    const f = 330 * Math.pow(1.122, tier); this.tone(f, 0.18, "sine", 0.2, 1.5); this.tone(f * 1.5, 0.12, "triangle", 0.08, 1.2);
+    if (!sample(tier >= 6 ? "sfx/merge_big" : "sfx/merge_small", Math.pow(1.06, tier))) {
+      const f = 330 * Math.pow(1.122, tier); this.tone(f, 0.18, "sine", 0.2, 1.5); this.tone(f * 1.5, 0.12, "triangle", 0.08, 1.2);
+    }
     // Each chain step plays the next note of a scale, so a long chain sounds like a little tune.
     if (chain >= 2) { const n = CHAIN_NOTES[Math.min(chain - 2, CHAIN_NOTES.length - 1)]; setTimeout(() => this.tone(n, 0.22, "triangle", 0.13), 40); }
   },
-  packed() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.25, "triangle", 0.16), i * 90)); },
-  over() { [392, 330, 262].forEach((f, i) => setTimeout(() => this.tone(f, 0.3, "sine", 0.16), i * 160)); }
+  packed() {
+    if (sample("sfx/hamper_fanfare")) return; [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.25, "triangle", 0.16), i * 90)); },
+  over() {
+    if (sample("sfx/game_over")) return; [392, 330, 262].forEach((f, i) => setTimeout(() => this.tone(f, 0.3, "sine", 0.16), i * 160)); }
 };
 
 // ════ State ═══════════════════════════════════════════════════════
@@ -47,10 +101,10 @@ let game = null, mode = "classic", paused = true, acc = 0, last = performance.no
 let aimX = 0, botRand = SD.rng(99), overShown = false;
 // Slow motion and hit-stop only change how many fixed physics steps run per
 // frame, never the step itself, so the game plays out the same either way.
+let steps = 0, dropLog = [], dirty = false, realGame = false;  // realGame: not the demo crate behind the menu  // physics steps this game and the drops made, for the save and bug reports
 let timeScale = 1, hitStop = 0, slowFor = 0, maxChain = 0, overAt = 0, cardUrl = "", cardBlob = null;
 const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function bestKey() { return mode === "daily" ? "daily_" + dayKey() : "best"; }
 
 function buildLadder() {
   const ol = $("ladder");
@@ -70,21 +124,49 @@ function toast(text) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("on"), 1200);
 }
 
-function start(m) {
-  mode = m;
-  const seed = m === "daily" ? SD.hash("snackdrop-" + dayKey()) : (Math.random() * 2 ** 31) | 0;
-  game = SD.createGame({ seed, mode: m });
+function start(m, resume) {
+  mode = m; realGame = true;
+  if (resume) {
+    game = SD.createGame({ seed: resume.snap.seed, mode: m, restore: resume.snap });
+    steps = resume.steps; dropLog = resume.log.slice();
+  } else {
+    const seed = m === "daily" ? SD.hash("snackdrop-" + dayKey()) : (Math.random() * 2 ** 31) | 0;
+    game = SD.createGame({ seed, mode: m });
+    steps = 0; dropLog = [];
+    if (!BOT) {
+      const c = save.counters, d = dayKey();
+      c.games++; if (!c.first) c.first = d;
+      if (!c.days.includes(d)) { c.days.push(d); if (c.days.length > 90) c.days.shift(); }
+    }
+  }
+  save.resume = null; writeSave();
   view.reset();
   aimX = 0; acc = 0; overShown = false; paused = false;
-  timeScale = 1; hitStop = 0; slowFor = 0; maxChain = 0; overAt = 0;
+  timeScale = 1; hitStop = 0; slowFor = 0; maxChain = resume ? resume.maxChain : 0; overAt = 0;
   chainEl.classList.remove("on");
   $("hud").hidden = false; $("ladder").hidden = false;
-  $("score").textContent = "0";
-  $("bestline").textContent = (m === "daily" ? "Today's best " : "Best ") + store.get(bestKey(), 0);
+  $("score").textContent = String(game.score);
+  $("bestline").textContent = (m === "daily" ? "Today's best " : "Best ") + bestOf(m);
   updateLadder();
   closeSheet();
   sound.wake();
 }
+
+// The game in progress, saved after every drop and when the page is hidden,
+// so closing the tab or the app picks up where it left off.
+function saveGame() {
+  if (BOT || !realGame || !game || game.status !== "playing" || !game.drops) return;
+  save.resume = { mode, day: dayKey(), steps, maxChain, log: dropLog, snap: game.snapshot() };
+  writeSave(); dirty = false;
+}
+function savedGame() {
+  const r = save.resume;
+  if (!r || !r.snap || r.snap.rules !== SD.RULES_VERSION) return null;
+  if (r.mode === "daily" && r.day !== dayKey()) return null;  // yesterday's Daily Drop is over
+  return r;
+}
+// Dev only (?dev=1): the seed and every drop, which replays this exact game in dev/sim.js.
+function gameCode() { return JSON.stringify({ rules: SD.RULES_VERSION, seed: game.seed, mode, steps, log: dropLog }); }
 
 // ════ Sheets ══════════════════════════════════════════════════════
 function openSheet(html) { $("sheet").innerHTML = html; $("veil").classList.add("on"); const b = $("sheet").querySelector("button"); if (b) b.focus(); }
@@ -93,14 +175,16 @@ function tiersHtml() { return `<div class="tiers">${SD.TIERS.map((t, i) => `<spa
 
 function home() {
   paused = true;
-  const daily = store.get("daily_" + dayKey(), 0);
+  const today = save.daily[dayKey()], resume = savedGame();
+  const daily = today ? (today.first === today.best ? "Today " + today.best : "First try " + today.first + " · best " + today.best) : "";
   openSheet(`
     <h1 id="sheet-title">Snack Drop</h1>
     <p>Drop snacks in the crate. Two of the same make the next snack up. Keep the pile under the red line.</p>
     ${tiersHtml()}
     <div class="stack">
-      <button class="btn primary" data-go="classic">Play<small>Best ${store.get("best", 0)}</small></button>
-      <button class="btn" data-go="daily">Daily Drop<small>${daily ? "Today's best " + daily : "Everyone gets the same snacks today"}</small></button>
+      ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${resume.mode === "daily" ? "Daily Drop" : "Classic"} · ${resume.snap.score} points</small></button>` : ""}
+      <button class="btn${resume ? "" : " primary"}" data-go="classic">${resume ? "New game" : "Play"}<small>Best ${bestOf("classic")}</small></button>
+      <button class="btn" data-go="daily">Daily Drop<small>${daily || "Everyone gets the same snacks today"}</small></button>
     </div>
     <p class="how">Prototype. Move to aim, let go to drop. Keyboard: ← → and Space.</p>`);
 }
@@ -114,6 +198,7 @@ function pauseSheet() {
       <button class="btn primary" data-act="resume">Keep going</button>
       <button class="btn" data-go="${mode}">Start again</button>
       <button class="btn" data-act="home">Menu</button>
+      ${DEV ? '<button class="btn" data-act="code">Copy game code</button>' : ""}
     </div>`);
 }
 
@@ -163,9 +248,15 @@ function shareText() {
 }
 
 function overSheet() {
-  const key = bestKey(), prev = store.get(key, 0), isBest = game.score > prev && game.score > 0;
-  if (isBest) store.set(key, game.score);
-  if (game.best > store.get("biggest", 0)) store.set("biggest", game.best);
+  const prev = bestOf(mode), isBest = game.score > prev && game.score > 0;
+  if (mode === "daily") {
+    // The first finished game of the day is the one that counts; replays are practice.
+    const d = save.daily[dayKey()] || (save.daily[dayKey()] = { best: 0, first: 0, rules: SD.RULES_VERSION });
+    if (!d.first) d.first = game.score;
+    d.best = Math.max(d.best, game.score);
+  } else if (isBest) save.bests[CONTAINER + ":" + mode] = { score: game.score, rules: SD.RULES_VERSION };
+  if (game.best > save.biggest) save.biggest = game.best;
+  save.counters.finished++; save.resume = null; writeSave();
   view.release();
   const card = makeCard(isBest);
   if (cardUrl) URL.revokeObjectURL(cardUrl);
@@ -173,7 +264,7 @@ function overSheet() {
   card.toBlob((b) => { cardBlob = b; if (b) { cardUrl = URL.createObjectURL(b); const img = $("card"); if (img) img.src = cardUrl; } }, "image/png");
   openSheet(`
     <h2 id="sheet-title">${isBest ? "New best!" : "Crate's full"}</h2>
-    <img class="card" id="card" alt="Score card: ${game.score} points, best snack ${SD.TIERS[game.best].name}" src="${card.toDataURL("image/jpeg", 0.7)}">
+    <img class="card" id="card" alt="Score card: ${game.score} points, best snack ${SD.TIERS[game.best].name}">
     <p class="sr">${game.score} points. Best snack ${SD.TIERS[game.best].name}. ${game.drops} drops.${isBest ? "" : " Best " + prev + "."}</p>
     <div class="stack">
       <button class="btn primary" data-go="${mode}">${mode === "daily" ? "Try today's again" : "Play again"}</button>
@@ -188,6 +279,8 @@ $("sheet").addEventListener("click", (e) => {
   if (b.dataset.go) return start(b.dataset.go);
   const act = b.dataset.act;
   if (act === "resume") { closeSheet(); paused = false; }
+  if (act === "continue") { const r = savedGame(); if (r) start(r.mode, r); return; }
+  if (act === "code" && navigator.clipboard) navigator.clipboard.writeText(gameCode()).then(() => { b.textContent = "Copied"; });
   if (act === "home") home();
   if (act === "share") {
     const text = shareText();
@@ -203,8 +296,10 @@ $("sheet").addEventListener("click", (e) => {
 });
 
 $("pause").addEventListener("click", () => { if (game && game.status === "playing") pauseSheet(); });
-function muteLabel() { $("mute").textContent = sound.muted ? "🔇" : "🔊"; $("mute").setAttribute("aria-label", sound.muted ? "Sound off" : "Sound on"); }
-$("mute").addEventListener("click", () => { sound.muted = !sound.muted; store.set("mute", sound.muted); muteLabel(); sound.wake(); });
+function muteLabel() {
+  const f = sound.muted ? "ui/sound_off.webp" : "ui/sound_on.webp";
+  if (has(f)) $("mute").innerHTML = `<img src="${url(f)}" alt="">`; else $("mute").textContent = sound.muted ? "🔇" : "🔊"; $("mute").setAttribute("aria-label", sound.muted ? "Sound off" : "Sound on"); }
+$("mute").addEventListener("click", () => { sound.muted = !sound.muted; save.mute = sound.muted; writeSave(); muteLabel(); sound.wake(); });
 muteLabel();
 
 // ════ Input ═══════════════════════════════════════════════════════
@@ -233,7 +328,12 @@ window.addEventListener("keydown", (e) => {
   if (e.key === " " || e.key === "ArrowDown" || e.key === "Enter") { e.preventDefault(); pendingDrop = true; }
 });
 window.addEventListener("keyup", (e) => { keys[e.key] = false; });
-document.addEventListener("visibilitychange", () => { if (document.hidden && game && game.status === "playing" && !paused && !BOT) pauseSheet(); });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden || !realGame || !game || game.status !== "playing" || BOT) return;
+  saveGame();
+  if (!paused) pauseSheet();
+});
+window.addEventListener("pagehide", () => { if (game && game.status === "playing" && !paused) saveGame(); });
 
 // ════ Pop-ups and the chain counter ═════════════════════════════════
 const popLayer = $("pops"), chainEl = $("chain");
@@ -260,7 +360,7 @@ function showChain(n) {
 // ════ Loop ════════════════════════════════════════════════════════
 function handle(ev) {
   view.onEvent(ev);
-  if (ev.type === "drop") { sound.drop(); updateLadder(); }
+  if (ev.type === "drop") { sound.drop(ev.tier); updateLadder(); dirty = true; }
   if (ev.type === "merge") {
     sound.merge(ev.tier, ev.chain);
     scorePop(ev);
@@ -286,6 +386,7 @@ function handle(ev) {
 }
 
 function frame(now) {
+  const t0 = PERF ? performance.now() : 0;
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
   if (game && !paused && game.status === "playing") {
     const speed = 6 * dt;
@@ -301,7 +402,9 @@ function frame(now) {
       let drop = null;
       if (BOT) { if (game.canDrop() && game.snacks.every((s) => s.landed)) { aimX = SD.botAim(game, "careful", botRand); drop = aimX; } }
       else if (pendingDrop && game.canDrop()) { drop = aimX; pendingDrop = false; }
+      if (drop != null && game.status === "playing") dropLog.push([steps, drop]);
       game.step({ aim: aimX, drop });
+      steps++;
       aimX = game.aim;
       for (const ev of game.events) handle(ev);
       game.events.length = 0;
@@ -310,6 +413,8 @@ function frame(now) {
     if (n === 6) acc = 0;
     view.alpha = Math.min(1, acc / SD.STEP);
     $("score").textContent = game.score;
+    // Save once the drop has settled a little, not mid-fall.
+    if (dirty && game.status === "playing" && game.snacks.every((s) => s.landed)) saveGame();
   } else if (game && game.status === "over") {
     // The pile keeps settling in slow motion while the camera moves in.
     overAt += dt;
@@ -321,6 +426,7 @@ function frame(now) {
   } else view.alpha = 1;
   if (game) view.draw(game, dt, !paused);
   else view.renderer.render(view.scene, view.camera);
+  if (PERF && PERF.length < 20000) PERF.push(performance.now() - t0);
   requestAnimationFrame(frame);
 }
 
@@ -331,4 +437,19 @@ for (let i = 0; i < 60 * 14; i++) { if (game.canDrop() && game.snacks.every((s) 
 game.events.length = 0;
 if (BOT) start("classic"); else home();
 requestAnimationFrame(frame);
-window.__snackdrop = { get game() { return game; }, view };
+window.__snackdrop = { get game() { return game; }, view, save, gameCode, perf: PERF };
+
+// Authored art and sound, when the manifest lists any. Until then, and if
+// anything fails, the code-built models and synthesised sounds stay.
+function applyAssets() {
+  view.refreshAssets();
+  [...$("ladder").children].forEach((li, i) => {
+    const f = "ui/snack_" + SD.TIERS[i].id + ".webp";
+    if (has(f)) { li.style.backgroundImage = `url("${url(f)}")`; li.classList.add("pic"); }
+  });
+  [["pause", "ui/pause.webp"], ["mute", sound.muted ? "ui/sound_off.webp" : "ui/sound_on.webp"]].forEach(([id, f]) => {
+    const b = $(id);
+    if (has(f)) b.innerHTML = `<img src="${url(f)}" alt="">`;
+  });
+}
+loadAssets(applyAssets);

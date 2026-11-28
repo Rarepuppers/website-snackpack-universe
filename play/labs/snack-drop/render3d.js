@@ -2,6 +2,7 @@
 // Every model is code-built for the prototype. Blender GLBs replace them in
 // phase 2 through the same per-tier template, so nothing else has to change.
 import * as THREE from "./vendor/three.module.min.js";
+import { model, hasModel } from "./assets.js";
 
 const SD = window.SnackDrop;
 const { CRATE, TIERS } = SD;
@@ -188,7 +189,8 @@ export class Renderer {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#f6e3c8");
     this.camera = new THREE.PerspectiveCamera(30, 1, 1, 200);
-    this.templates = TIERS.map((t) => { const m = BUILD[t.id](t); m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); return m; });
+    this.fromModel = TIERS.map(() => false);
+    this.templates = TIERS.map((t, i) => this.buildTemplate(i));
     this.meshes = new Map();
     this.pops = new Map();
     this.squash = new Map();   // id -> seconds since it landed
@@ -199,11 +201,7 @@ export class Renderer {
     this.push = { amount: 0, target: 0, x: 0, y: 0 };  // camera push toward a point
     this.reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.ghostMat = new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.3, depthWrite: false });
-    this.ghosts = TIERS.map((t, i) => {
-      const m = this.templates[i].clone();
-      m.traverse((o) => { if (o.isMesh) { o.material = this.ghostMat; o.castShadow = false; o.receiveShadow = false; } });
-      return m;
-    });
+    this.ghosts = TIERS.map((t, i) => this.buildGhost(i));
     this.buildScene();
     this.resize();
     window.addEventListener("resize", () => this.resize());
@@ -219,23 +217,28 @@ export class Renderer {
     sun.shadow.bias = -0.0008;
     s.add(sun, sun.target);
 
+    // Code-built stand-ins, each in its own group so an authored model can
+    // replace it (assets/models/backdrops/backdrop_pantry.glb and
+    // containers/container_pantry.glb). The line, guide and held snack stay code-built.
+    const K = this.kitchenGroup = new THREE.Group(), C = this.crateGroup = new THREE.Group();
+    s.add(K, C);
     // Kitchen wall with soft tiles, and a counter top.
-    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat("#f3dcc0", { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; s.add(wall);
-    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat("#e6c9a6"), i * 1.6, 8, -3.19); l.castShadow = false; s.add(l); }
-    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat("#e6c9a6"), 0, -1 + j * 1.6, -3.19); l.castShadow = false; s.add(l); }
-    const counter = mesh(new THREE.BoxGeometry(40, 1, 8), mat("#9c6b43", { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0); s.add(counter);
+    const wall = mesh(new THREE.PlaneGeometry(60, 40), mat("#f3dcc0", { roughness: 0.95 }), 0, 8, -3.2); wall.castShadow = false; K.add(wall);
+    for (let i = -8; i <= 8; i++) { const l = mesh(new THREE.PlaneGeometry(0.04, 40), mat("#e6c9a6"), i * 1.6, 8, -3.19); l.castShadow = false; K.add(l); }
+    for (let j = 0; j < 12; j++) { const l = mesh(new THREE.PlaneGeometry(60, 0.04), mat("#e6c9a6"), 0, -1 + j * 1.6, -3.19); l.castShadow = false; K.add(l); }
+    const counter = mesh(new THREE.BoxGeometry(40, 1, 8), mat("#9c6b43", { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0); K.add(counter);
 
     // The crate: back boards, sides, floor. The front stays open.
     const wood = mat("#c8955c", { roughness: 0.85 }), dark = mat("#a7743f", { roughness: 0.85 });
     const depth = 2.0;
-    s.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), dark, 0, -Wl, 0));
+    C.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), dark, 0, -Wl, 0));
     for (let i = 0; i < 6; i++) {
       const board = mesh(new THREE.BoxGeometry(2 * H, ht / 6 - 0.06, 0.16), i % 2 ? wood : dark, 0, (i + 0.5) * ht / 6, -depth / 2 - 0.08);
-      s.add(board);
+      C.add(board);
     }
     [-1, 1].forEach((side) => {
-      s.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), wood, side * (H + Wl), ht / 2, 0));
-      const cap = mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), dark, side * (H + Wl), ht + Wl + 0.05, 0); s.add(cap);
+      C.add(mesh(new THREE.BoxGeometry(2 * Wl, ht + 2 * Wl, depth + 0.4), wood, side * (H + Wl), ht / 2, 0));
+      const cap = mesh(new THREE.BoxGeometry(2 * Wl + 0.1, 0.18, depth + 0.5), dark, side * (H + Wl), ht + Wl + 0.05, 0); C.add(cap);
     });
 
     // The line snacks must stay under.
@@ -322,6 +325,40 @@ export class Renderer {
     this.crumbMesh.instanceColor.needsUpdate = true;
   }
 
+  // A tier's template: the authored model when it has loaded, otherwise the code-built one.
+  buildTemplate(i) {
+    const t = TIERS[i], authored = model("snacks/snack_" + t.id);
+    this.fromModel[i] = !!authored;
+    const m = authored || BUILD[t.id](t);
+    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    return m;
+  }
+  buildGhost(i) {
+    const m = this.templates[i].clone();
+    m.traverse((o) => { if (o.isMesh) { o.material = this.ghostMat; o.castShadow = false; o.receiveShadow = false; } });
+    return m;
+  }
+
+  // Called whenever more assets have loaded: swaps in any authored model that
+  // arrived. Snacks on screen rebuild on the next frame in the same places.
+  refreshAssets() {
+    let changed = false;
+    TIERS.forEach((t, i) => {
+      if (this.fromModel[i] || !hasModel("snacks/snack_" + t.id)) return;
+      this.templates[i] = this.buildTemplate(i); this.ghosts[i] = this.buildGhost(i); changed = true;
+      for (const [id, m] of this.meshes) if (m.userData.tier === i) { this.scene.remove(m); this.meshes.delete(id); }
+    });
+    if (changed) this.heldTier = this.nextTier = this.ghostTier = -1;
+    const swap = (name, group, key) => {
+      if (this[key] || !hasModel(name)) return;
+      const m = model(name);
+      m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      this[key] = m; group.visible = false; this.scene.add(m);
+    };
+    swap("containers/container_pantry", this.crateGroup, "crateModel");
+    swap("backdrops/backdrop_pantry", this.kitchenGroup, "kitchenModel");
+  }
+
   // Called by the game loop before each physics step: remembers where every
   // snack was, so draw() can blend between steps on 90 and 120 Hz screens.
   beforeStep(g) {
@@ -352,7 +389,7 @@ export class Renderer {
     for (const s of g.snacks) {
       seen.add(s.id);
       let m = this.meshes.get(s.id);
-      if (!m) { m = this.templates[s.tier].clone(); this.scene.add(m); this.meshes.set(s.id, m); }
+      if (!m) { m = this.templates[s.tier].clone(); m.userData.tier = s.tier; this.scene.add(m); this.meshes.set(s.id, m); }
       const p = s.body.getPosition(), ang = s.body.getAngle(), o = this.prev.get(s.id), al = this.alpha;
       if (o) { m.position.set(o.x + (p.x - o.x) * al, o.y + (p.y - o.y) * al, 0); m.rotation.z = o.a + (ang - o.a) * al; }
       else { m.position.set(p.x, p.y, 0); m.rotation.z = ang; }
