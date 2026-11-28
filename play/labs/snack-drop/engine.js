@@ -11,6 +11,9 @@
   "use strict";
 
   var STEP = 1 / 60;
+  // Bump whenever a change alters how a game plays out (physics, rules, scoring).
+  // Saves, bests and share cards carry it, so old results are never mixed with new ones.
+  var RULES_VERSION = 1;
 
   // The crate. x = 0 is the middle, y = 0 is the floor.
   var CRATE = { half: 3.3, wall: 0.3, height: 10.4, line: 8.2, dropY: 9.35 };
@@ -65,12 +68,16 @@
   }
   function rng(seed) {
     var a = seed >>> 0;
-    return function () {
+    var next = function () {
       a = (a + 0x6D2B79F5) | 0;
       var t = Math.imul(a ^ (a >>> 15), 1 | a);
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
+    // The state, so a saved game can carry on with the same snack queue.
+    next.get = function () { return a; };
+    next.set = function (v) { a = v | 0; };
+    return next;
   }
   function pick(rand) {
     var total = 0, i;
@@ -81,7 +88,7 @@
   }
 
   // ════ Game ════════════════════════════════════════════════════════
-  // opts = { seed: number, mode: "classic" | "daily" }
+  // opts = { seed: number, mode: "classic" | "daily", restore: snapshot }
   function createGame(opts) {
     opts = opts || {};
     var rand = rng(opts.seed == null ? 1 : opts.seed);
@@ -208,7 +215,33 @@
       }
     }
 
-    g.step = step; g.drop = drop; g.canDrop = canDrop; g.clampAim = clampAim; g.topOf = topOf;
+    // A saved game: every field that matters plus each snack's position and
+    // speed. Restoring puts the crate back exactly as it looked; from there it
+    // plays on normally (Box2D's contact cache isn't saved, so it is not a
+    // bit-for-bit continuation, which only the drop-log replay is).
+    function snapshot() {
+      return {
+        rules: RULES_VERSION, seed: g.seed, mode: g.mode, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+        merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
+        chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
+        snacks: g.snacks.map(function (s) {
+          var p = s.body.getPosition(), v = s.body.getLinearVelocity();
+          return [s.id, s.tier, p.x, p.y, s.body.getAngle(), v.x, v.y, s.body.getAngularVelocity(), s.born, s.landed ? 1 : 0, s.over];
+        })
+      };
+    }
+    if (opts.restore) {
+      var r = opts.restore;
+      r.snacks.forEach(function (a) {
+        var s = makeBody(a[1], a[2], a[3], a[4], { x: a[5], y: a[6] });
+        s.body.setAngularVelocity(a[7]); s.id = a[0]; s.born = a[8]; s.landed = !!a[9]; s.over = a[10];
+      });
+      rand.set(r.rand);
+      ["time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { g[k] = r[k]; });
+      g.made = r.made.slice();
+    }
+
+    g.step = step; g.drop = drop; g.canDrop = canDrop; g.clampAim = clampAim; g.topOf = topOf; g.snapshot = snapshot;
     return g;
   }
 
@@ -242,7 +275,7 @@
   }
 
   return {
-    STEP: STEP, CRATE: CRATE, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
+    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
     DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, hash: hash, rng: rng
   };
 });

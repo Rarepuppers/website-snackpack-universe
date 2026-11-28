@@ -54,7 +54,7 @@ h1, h2 { font-family: var(--serif); margin: 0; }
 .pop.go { animation: popup .9s ease-out forwards; }
 @keyframes popup { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.7); } 15% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -260%) scale(1); } }
 
-.sheet .card { display: block; width: 100%; max-height: 48vh; object-fit: contain; border-radius: 14px; margin: 10px 0 12px; box-shadow: 0 4px 14px #3a241433; }
+.sheet .card { display: block; width: 100%; aspect-ratio: 1080 / 1350; background: #f6e3c8; max-height: 48vh; object-fit: contain; border-radius: 14px; margin: 10px 0 12px; box-shadow: 0 4px 14px #3a241433; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -63,3 +63,6 @@ h1, h2 { font-family: var(--serif); margin: 0; }
   .pop.go { animation: popfade .9s linear forwards; }
   @keyframes popfade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
 }
+.icon img { width: 26px; height: 26px; display: block; margin: auto; }
+.ladder li.pic { background-color: transparent; background-size: contain; background-repeat: no-repeat; background-position: center; width: 20px; height: 20px; border-radius: 0; }
+.sheet .card:not([src]) { visibility: hidden; }
