@@ -43,3 +43,53 @@ test("FreeCell checks the board for the chosen difficulty and keeps the four-cel
   await page.getByRole("button", { name: "4 cells", exact: true }).click();
   await expect(deal).toHaveText("1");
 });
+
+test("Jump back in restores the saved Solitaire draw mode", async ({ page }) => {
+  await page.goto("/play/solitaire/?deal=2167&draw=3");
+  await page.locator('#sol-stock [data-act="draw"]').click();
+  await expect(page.locator("#sol-waste .sol-card")).toHaveCount(3);
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("pagehide"));
+    localStorage.setItem("sp_solitaire_pref_draw", "1");
+  });
+
+  await page.goto("/play/");
+  const recent = page.locator(".arcade-recent-grid a").filter({ hasText: "Solitaire" });
+  await expect(recent).toContainText("Resume saved game");
+  await expect(recent).toHaveAttribute("href", /\/play\/solitaire\/\?draw=3$/);
+  await recent.click();
+  await expect(page.locator('[data-draw="3"]')).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Resume game" }).click();
+  await expect(page.locator("#sol-deal")).toHaveText("2167");
+  await expect(page.locator("#sol-waste .sol-card")).toHaveCount(3);
+});
+
+test("Jump back in opens the saved FreeCell Daily and ignores expired saves", async ({ page }) => {
+  await page.goto("/play/freecell/?daily=0&cells=1");
+  await page.locator('#fc-cascades [data-type="cascade"][data-i="0"] .fc-card').last().click();
+  await page.locator('#fc-top [data-type="free"][data-i="0"]').click();
+  await expect(page.locator("#fc-moves")).toHaveText("1");
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("pagehide"));
+    localStorage.setItem("sp_freecell_pref_cells", "4");
+  });
+
+  await page.goto("/play/");
+  const recent = page.locator(".arcade-recent-grid a").filter({ hasText: "FreeCell" });
+  await expect(recent).toHaveAttribute("href", /\/play\/freecell\/\?daily=0&cells=1$/);
+  await recent.click();
+  await expect(page.locator('[data-cells="1"]')).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Resume game" }).click();
+  await expect(page.locator("#fc-moves")).toHaveText("1");
+
+  await page.goto("/play/");
+  await page.evaluate(() => {
+    const key = "sp_freecell_save_daily_0_cells_1";
+    const saved = JSON.parse(localStorage.getItem(key));
+    saved.updatedAt -= 8 * 24 * 60 * 60 * 1000;
+    localStorage.setItem(key, JSON.stringify(saved));
+  });
+  await page.reload();
+  await expect(recent).toHaveText(/Play again/);
+  await expect(recent).toHaveAttribute("href", /\/play\/freecell\/$/);
+});

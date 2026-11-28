@@ -58,8 +58,11 @@
       var key = "sp_" + slug + "_pref_" + attr;
       var saved = null;
       try { saved = localStorage.getItem(key); } catch (error) {}
-      var savedButton = saved && Array.from(group.querySelectorAll("[data-" + attr + "]")).find(function (button) { return button.dataset[attr] === saved; });
-      if (savedButton && savedButton.getAttribute("aria-pressed") !== "true") savedButton.click();
+      var buttons = Array.from(group.querySelectorAll("[data-" + attr + "]"));
+      var explicit = group.hasAttribute("data-game-options-url") && new URLSearchParams(location.search).get(attr);
+      var pinned = explicit && buttons.some(function (button) { return button.dataset[attr] === explicit; });
+      var savedButton = saved && buttons.find(function (button) { return button.dataset[attr] === saved; });
+      if (!pinned && savedButton && savedButton.getAttribute("aria-pressed") !== "true") savedButton.click();
       group.addEventListener("click", function (event) {
         var button = event.target.closest("[data-" + attr + "]");
         if (!button) return;

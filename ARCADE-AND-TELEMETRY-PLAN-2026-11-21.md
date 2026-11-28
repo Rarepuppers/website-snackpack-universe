@@ -34,6 +34,8 @@ rules.
 - Replayed Klondike deal 2167 to a win in Draw 1 and Draw 3 through the browser. Restart deal resets the current board, and the game checks the accessible stock cards before suggesting a restart.
 - FreeCell serves verified starting deals for four, two and one free cell. The reduced pools contain 1,047 two-cell and 182 one-cell deals. Four-cell Daily keeps its existing schedule. Older saves can still be resumed.
 - Regenerate the reduced pools with `node scripts/gen-freecell-seeds.js --reduced --write`. Check the changed pools with `node scripts/verify-freecell-deals.js --reduced-only`.
+- The arcade’s Jump back in links open the latest saved Solitaire draw mode or FreeCell difficulty and Daily date. Explicit link options take priority over the browser’s saved preferences. Expired saves use the ordinary Play again link.
+- The arcade describes which starting deals are checked and links to the relevant browser and Android privacy policies.
 
 Data sources and how to read them:
 - **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.

@@ -232,7 +232,7 @@
             <span class="readout-chip"><span>Best</span><b id="sol-best">–</b></span>
           </div>
           <div class="game-controls">
-            <div class="seg" role="group" aria-label="Draw mode">
+            <div class="seg" role="group" aria-label="Draw mode" data-game-options-url>
               <button type="button" data-draw="1" aria-pressed="true">Draw 1</button>
               <button type="button" data-draw="3" aria-pressed="false">Draw 3</button>
             </div>
@@ -461,7 +461,8 @@
   applyCardSize();
 
   var stock, waste, foundations, tableau;
-  var drawN = 1, moves, solved, sel = null, timer, seconds, started;
+  var requestedDraw = new URLSearchParams(location.search).get("draw");
+  var drawN = requestedDraw === "3" ? 3 : 1, moves, solved, sel = null, timer, seconds, started;
   var history = [], resume = null;
 
   // ── Best-time (per draw mode, saved locally) ──────
@@ -1081,6 +1082,9 @@
   window.addEventListener("resize", function () { if (tableau) render(); });
 
   var requestedSeed = Number(new URLSearchParams(location.search).get("deal"));
+  document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
+    btn.setAttribute("aria-pressed", String(+btn.dataset.draw === drawN));
+  });
   deal(VERIFIED_SEEDS.includes(requestedSeed) ? requestedSeed : undefined);
   function validCard(c) { return c && Number.isInteger(c.s) && c.s >= 0 && c.s < 4 && Number.isInteger(c.r) && c.r >= 1 && c.r <= 13 && typeof c.up === "boolean"; }
   function validSave(p) {

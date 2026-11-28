@@ -38,7 +38,6 @@
     var match = url.pathname.match(/\/play\/([^/]+)\/?$/);
     return match ? match[1] : "";
   }
-  function clean(value) { return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, ""); }
   function readJSON(key, fallback) {
     try { var value = JSON.parse(localStorage.getItem(key) || "null"); return value == null ? fallback : value; }
     catch (error) { return fallback; }
@@ -128,11 +127,18 @@
   var empty = panel.querySelector(".arcade-empty");
   var activeCategory = "all";
 
-  function hasSave(slug) {
-    var prefix = "sp_" + clean(slug) + "_save_";
-    try { for (var i = 0; i < localStorage.length; i++) if ((localStorage.key(i) || "").indexOf(prefix) === 0) return true; }
-    catch (error) {}
-    return false;
+  function resumeParams(slug, variant) {
+    var match;
+    if (slug === "solitaire" && (match = /^draw-([13])$/.exec(variant))) {
+      return { draw: match[1] };
+    }
+    if (slug === "freecell") {
+      match = /^random-cells-([124])$/.exec(variant);
+      if (match) return { cells: match[1] };
+      match = /^daily-(-?\d+)-cells-([124])$/.exec(variant);
+      if (match && Number.isSafeInteger(Number(match[1]))) return { daily: match[1], cells: match[2] };
+    }
+    return null;
   }
   function renderRecent() {
     var recent = readJSON("sp_recent", []);
@@ -147,9 +153,18 @@
       var record = bySlug[item.slug];
       var link = document.createElement("a");
       link.className = "arcade-recent-card";
-      link.href = record.tile.href;
+      var url = new URL(record.tile.href);
+      var resume = window.SnackPackResume;
+      var direct = item.slug === "solitaire" || item.slug === "freecell";
+      var saved = resume && resume.latest(item.slug, direct ? function (entry) {
+        return entry.schemaVersion === 1 && entry.gameVersion === 1 && resumeParams(item.slug, entry.variant);
+      } : null);
+      var params = saved && resumeParams(item.slug, saved.variant);
+      if (params) Object.entries(params).forEach(function (entry) { url.searchParams.set(entry[0], entry[1]); });
+      link.href = url.href;
       var img = record.tile.querySelector("img");
-      link.innerHTML = (img ? img.outerHTML : "") + '<span><strong>' + record.title + '</strong><small>' + (hasSave(item.slug) ? 'Resume saved game' : 'Play again') + '</small></span><b aria-hidden="true">→</b>';
+      var label = params ? "Resume saved game" : saved ? "Saved progress on this device" : "Play again";
+      link.innerHTML = (img ? img.outerHTML : "") + '<span><strong>' + record.title + '</strong><small>' + label + '</small></span><b aria-hidden="true">→</b>';
       recentGrid.appendChild(link);
     });
   }

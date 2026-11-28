@@ -3,6 +3,29 @@
 
   var DEFAULT_TTL = 7 * 24 * 60 * 60 * 1000;
 
+  function isFresh(value, ttl) {
+    return value && Number.isFinite(value.updatedAt) && Date.now() - value.updatedAt <= ttl;
+  }
+
+  function latest(game, accepts) {
+    var store = window.SnackPackStore;
+    if (!store) return null;
+    var prefix = store.key(game, "save") + "_";
+    var newest = null;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (!key || !key.startsWith(prefix)) continue;
+        var entry = store.getJSON(key, null);
+        if (!isFresh(entry, DEFAULT_TTL) || typeof entry.variant !== "string" ||
+            !("payload" in entry) || key !== store.key(game, "save", entry.variant)) continue;
+        if (accepts && !accepts(entry)) continue;
+        if (!newest || entry.updatedAt > newest.updatedAt) newest = entry;
+      }
+    } catch (error) {}
+    return newest;
+  }
+
   function attach(options) {
     if (!window.SnackPackStore || !options || !options.game) return null;
 
@@ -26,8 +49,7 @@
       if (value.schemaVersion !== (options.schemaVersion || 1)) return false;
       if (value.gameVersion !== (options.gameVersion || 1)) return false;
       if (String(value.variant) !== String(expectedVariant)) return false;
-      if (!Number.isFinite(value.updatedAt)) return false;
-      if (Date.now() - value.updatedAt > (options.ttl || DEFAULT_TTL)) return false;
+      if (!isFresh(value, options.ttl || DEFAULT_TTL)) return false;
       if (!("payload" in value)) return false;
       if (options.validate) {
         try { return options.validate(value.payload) === true; }
@@ -165,5 +187,5 @@
     };
   }
 
-  window.SnackPackResume = { attach: attach };
+  window.SnackPackResume = { attach: attach, latest: latest };
 })();
