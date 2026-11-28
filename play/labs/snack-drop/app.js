@@ -15,7 +15,7 @@ const PERF = query.get("perf") === "1" ? [] : null;  // ?perf=1: main-thread mil
 // read and back up. Bests and saved games carry the rules version, so results
 // from older rules are never mixed with new ones.
 const SAVE_KEY = "sp_snackdrop_v1";
-function blankSave() { return { v: 1, container: "pantry", bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
+function blankSave() { return { v: 1, container: "pantry", mode: "classic", bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
 function loadSave() {
   try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.v === 1) return Object.assign(blankSave(), d); } catch (e) { /* fall through */ }
   // First run on this version: bring over the prototype's separate keys.
@@ -47,9 +47,16 @@ function dailyContainer(key = dayKey()) {
 }
 function containerFor(m) { return m === "daily" ? dailyContainer() : save.container; }
 function bestOf(m, c = containerFor(m)) {
-  if (m === "daily") { const d = save.daily[dayKey()]; return d ? d.best : 0; }
+  if (m === "daily") { const d = save.daily[dayKey()]; return d && d.rules === SD.RULES_VERSION ? d.best : 0; }
   const b = save.bests[c + ":" + m]; return b && b.rules === SD.RULES_VERSION ? b.score : 0;
 }
+// A best from older rules is kept and shown as such, never mixed with new ones.
+function oldBest(m, c) { const b = save.bests[c + ":" + m]; return b && b.rules !== SD.RULES_VERSION ? b.score : 0; }
+function bestLabel(m, c) { const b = bestOf(m, c), o = oldBest(m, c); return b ? "best " + b : o ? "best " + o + " (old rules)" : "no best yet"; }
+// Pro opens in a container once you score this much in Classic there (PLAN 4b).
+const PRO_GATE = 2500;
+function proOpen(c) { return DEV || Math.max(bestOf("classic", c), oldBest("classic", c)) >= PRO_GATE; }
+if (!["classic", "pro"].includes(save.mode)) save.mode = "classic";
 
 // Local calendar day, not UTC, so the Daily Drop changes at the player's midnight.
 function dayKey(d = new Date()) {
@@ -99,6 +106,8 @@ const sound = {
   },
   packed() {
     if (sample("sfx/hamper_fanfare")) return; [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.25, "triangle", 0.16), i * 90)); },
+  fever() { if (!sample("sfx/fever_start")) [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.tone(f, 0.16, "triangle", 0.12), i * 55)); },
+  feverEnd() { if (!sample("sfx/fever_end")) this.tone(880, 0.35, "sine", 0.08, 0.5); },
   over() {
     if (sample("sfx/game_over")) return; [392, 330, 262].forEach((f, i) => setTimeout(() => this.tone(f, 0.3, "sine", 0.16), i * 160)); }
 };
@@ -110,7 +119,7 @@ let aimX = 0, botRand = SD.rng(99), overShown = false;
 // Slow motion and hit-stop only change how many fixed physics steps run per
 // frame, never the step itself, so the game plays out the same either way.
 let steps = 0, dropLog = [], dirty = false, realGame = false;  // realGame: not the demo crate behind the menu  // physics steps this game and the drops made, for the save and bug reports
-let timeScale = 1, hitStop = 0, slowFor = 0, maxChain = 0, overAt = 0, cardUrl = "", cardBlob = null;
+let timeScale = 1, hitStop = 0, slowFor = 0, overAt = 0, cardUrl = "", cardBlob = null;
 const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 
@@ -151,7 +160,9 @@ function start(m, resume) {
   view.reset();
   view.setContainer(game.container);
   aimX = 0; acc = 0; overShown = false; paused = false;
-  timeScale = 1; hitStop = 0; slowFor = 0; maxChain = resume ? resume.maxChain : 0; overAt = 0;
+  timeScale = 1; hitStop = 0; slowFor = 0; overAt = 0;
+  feverEl.classList.remove("on"); $("score").classList.remove("hot");
+  $("hud").classList.toggle("no-next", !!game.rules.hideNext);
   chainEl.classList.remove("on");
   $("hud").hidden = false; $("ladder").hidden = false;
   $("score").textContent = String(game.score);
@@ -165,7 +176,7 @@ function start(m, resume) {
 // so closing the tab or the app picks up where it left off.
 function saveGame() {
   if (BOT || !realGame || !game || game.status !== "playing" || !game.drops) return;
-  save.resume = { mode, day: dayKey(), steps, maxChain, log: dropLog, snap: game.snapshot() };
+  save.resume = { mode, day: dayKey(), steps, log: dropLog, snap: game.snapshot() };
   writeSave(); dirty = false;
 }
 function savedGame() {
@@ -182,17 +193,24 @@ function openSheet(html) { $("sheet").innerHTML = html; $("veil").classList.add(
 function closeSheet() { $("veil").classList.remove("on"); }
 function tiersHtml() { return `<div class="tiers">${SD.TIERS.map((t, i) => `<span style="--c:${TIER_COLORS[i]}">${t.name}</span>`).join("")}</div>`; }
 
+// The mode the Play button starts: the last one picked, if open in this container.
+function playMode() { return save.mode === "pro" && proOpen(save.container) ? "pro" : "classic"; }
+
 function home() {
   paused = true;
-  const today = save.daily[dayKey()], resume = savedGame();
+  const today = save.daily[dayKey()] && save.daily[dayKey()].rules === SD.RULES_VERSION ? save.daily[dayKey()] : null, resume = savedGame();
   const daily = today ? (today.first === today.best ? "Today " + today.best : "First try " + today.first + " · best " + today.best) : "";
   openSheet(`
     <h1 id="sheet-title">Snack Drop</h1>
     <p>Drop snacks in the crate. Two of the same make the next snack up. Keep the pile under the red line.</p>
     ${tiersHtml()}
     <div class="stack">
-      ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${resume.mode === "daily" ? "Daily Drop" : "Classic"} · ${BOXES[resume.snap.container || "pantry"].name} · ${resume.snap.score} points</small></button>` : ""}
-      <button class="btn${resume ? "" : " primary"}" data-go="classic">${resume ? "New game" : "Play"}<small>${BOXES[save.container].name} · best ${bestOf("classic")}</small></button>
+      ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${SD.MODES[resume.mode].name} · ${BOXES[resume.snap.container || "pantry"].name} · ${resume.snap.score} points</small></button>` : ""}
+      <button class="btn${resume ? "" : " primary"}" data-go="${playMode()}">${resume ? "New game" : "Play"}<small>${SD.MODES[playMode()].name} · ${BOXES[save.container].name} · ${bestLabel(playMode(), save.container)}</small></button>
+      <div class="modes" role="radiogroup" aria-label="Mode">${["classic", "pro"].map((m) => {
+        const locked = m === "pro" && !proOpen(save.container);
+        return `<button class="mode${m === playMode() ? " on" : ""}" role="radio" aria-checked="${m === playMode()}" data-mode="${m}"${locked ? " disabled" : ""}><b>${SD.MODES[m].name}</b><small>${m === "classic" ? "Drops, merges, chains" : locked ? "Score " + PRO_GATE.toLocaleString("en-US") + " in Classic here to open" : "Lower line, 1 second, no preview"}</small></button>`;
+      }).join("")}</div>
       <div class="boxes" role="radiogroup" aria-label="Container">${ORDER.map((id) => `<button class="box${id === save.container ? " on" : ""}" role="radio" aria-checked="${id === save.container}" data-box="${id}"><b>${BOXES[id].name}</b><small>${BOXES[id].blurb}</small>${BOXES[id].free ? "" : '<i>Full game</i>'}</button>`).join("")}</div>
       <button class="btn" data-go="daily">Daily Drop<small>${daily || "Today in the " + BOXES[dailyContainer()].name + ", same snacks for everyone"}</small></button>
     </div>
@@ -212,7 +230,6 @@ function pauseSheet() {
     </div>`);
 }
 
-const MODE_NAME = { classic: "Classic", daily: "Daily Drop" };
 
 // The score card: a picture of the crate as it ended plus the numbers, made on
 // a 2D canvas so it can be shared as an image.
@@ -238,30 +255,31 @@ function makeCard(isBest) {
   x.textAlign = "center"; x.fillStyle = "#3a2414";
   x.font = "700 64px Fraunces, Georgia, serif"; x.fillText("Snack Drop", W / 2, 110);
   x.font = "700 34px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40";
-  x.fillText(MODE_NAME[mode] + " · " + BOXES[game.container].name + " · " + dayKey(), W / 2, 170);
+  x.fillText(SD.MODES[mode].name + " · " + BOXES[game.container].name + " · " + dayKey(), W / 2, 170);
   if (isBest) { x.fillStyle = "#f7b73d"; roundRect(x, W / 2 - 150, 196, 300, 48, 24); x.fill(); x.fillStyle = "#33210a"; x.font = "800 28px 'DM Sans', system-ui, sans-serif"; x.fillText("New best!", W / 2, 230); }
   x.fillStyle = "#3a2414"; x.font = "700 150px Fraunces, Georgia, serif"; x.fillText(String(game.score), W / 2, 1120);
-  const stats = [["Best snack", SD.TIERS[game.best].name], ["Longest chain", maxChain >= 2 ? "×" + maxChain : "—"], ["Drops", String(game.drops)]];
+  const stats = [["Best snack", SD.TIERS[game.best].name], ["Longest chain", game.maxChain >= 2 ? "×" + game.maxChain : "—"], ["Fevers", String(game.fevers)], ["Drops", String(game.drops)]];
   stats.forEach(([label, value], i) => {
-    const cx = 200 + i * 340;
+    const cx = [190, 450, 690, 900][i];
     x.font = "700 28px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40"; x.fillText(label, cx, 1190);
     x.font = "800 40px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#3a2414"; x.fillText(value, cx, 1245);
   });
-  x.fillStyle = TIER_COLORS[game.best]; x.beginPath(); x.arc(200 - x.measureText(stats[0][1]).width / 2 - 26, 1231, 13, 0, Math.PI * 2); x.fill();
+  x.fillStyle = TIER_COLORS[game.best]; x.beginPath(); x.arc(190 - x.measureText(stats[0][1]).width / 2 - 24, 1231, 13, 0, Math.PI * 2); x.fill();
   x.font = "600 26px 'DM Sans', system-ui, sans-serif"; x.fillStyle = "#7a5a40"; x.fillText("snackpackuniverse.com/play", W / 2, 1310);
   return c;
 }
 function roundRect(x, l, t, w, h, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + h, r); x.arcTo(l + w, t + h, l, t + h, r); x.arcTo(l, t + h, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); }
 
 function shareText() {
-  return `Snack Drop ${mode === "daily" ? "Daily " + dayKey() : "Classic"} in the ${BOXES[game.container].name}: ${game.score} points, made a ${SD.TIERS[game.best].name}${maxChain >= 2 ? ", chain ×" + maxChain : ""}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
+  return `Snack Drop ${mode === "daily" ? "Daily " + dayKey() : SD.MODES[mode].name} in the ${BOXES[game.container].name}: ${game.score} points, made a ${SD.TIERS[game.best].name}${game.maxChain >= 2 ? ", chain ×" + game.maxChain : ""}${game.fevers ? ", " + game.fevers + " Fever" + (game.fevers > 1 ? "s" : "") : ""}. https://www.snackpackuniverse.com/play/labs/snack-drop/`;
 }
 
 function overSheet() {
   const prev = bestOf(mode, game.container), isBest = game.score > prev && game.score > 0;
   if (mode === "daily") {
     // The first finished game of the day is the one that counts; replays are practice.
-    const d = save.daily[dayKey()] || (save.daily[dayKey()] = { best: 0, first: 0, rules: SD.RULES_VERSION });
+    let d = save.daily[dayKey()];
+    if (!d || d.rules !== SD.RULES_VERSION) d = save.daily[dayKey()] = { best: 0, first: 0, rules: SD.RULES_VERSION };
     if (!d.first) d.first = game.score;
     d.best = Math.max(d.best, game.score);
   } else if (isBest) save.bests[game.container + ":" + mode] = { score: game.score, rules: SD.RULES_VERSION };
@@ -287,6 +305,7 @@ $("sheet").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
   sound.wake();
   if (b.dataset.go) return start(b.dataset.go);
+  if (b.dataset.mode) { save.mode = b.dataset.mode; writeSave(); home(); const f = $("sheet").querySelector(`[data-mode="${save.mode}"]`); if (f) f.focus(); return; }
   if (b.dataset.box) { save.container = b.dataset.box; writeSave(); demo(save.container); home(); const f = $("sheet").querySelector(`[data-box="${save.container}"]`); if (f) f.focus(); return; }
   const act = b.dataset.act;
   if (act === "resume") { closeSheet(); paused = false; }
@@ -353,10 +372,19 @@ let popNext = 0, chainTimer = 0;
 function scorePop(ev) {
   const d = popPool[popNext]; popNext = (popNext + 1) % popPool.length;
   const at = view.toScreen(ev.x, ev.y);
-  d.textContent = "+" + ev.points + (ev.chain >= 2 ? " ×" + (1 + 0.25 * (ev.chain - 1)).toFixed(2).replace(/\.?0+$/, "") : "");
-  d.className = "pop" + (ev.chain >= 2 || ev.type === "packed" ? " gold" : "") + (ev.tier >= 8 ? " big" : "");
+  d.textContent = "+" + ev.points + (ev.mult > 1 ? " ×" + ev.mult.toFixed(2).replace(/\.?0+$/, "") : "");
+  d.className = "pop" + (ev.mult > 1 || ev.type === "packed" ? " gold" : "") + (ev.tier >= 8 ? " big" : "");
   d.style.left = at.x + "px"; d.style.top = at.y + "px";
   void d.offsetWidth; d.classList.add("go");
+}
+// Fever badge: shows while it lasts, with a bar that drains.
+const feverEl = $("fever"), feverBar = feverEl.querySelector("i");
+let feverMax = SD.FEVER.time;
+function feverHud() {
+  const on = game && game.fever > 0 && game.status === "playing";
+  feverEl.classList.toggle("on", on);
+  $("score").classList.toggle("hot", on);
+  if (on) feverBar.style.transform = `scaleX(${Math.min(1, game.fever / feverMax)})`;
 }
 // Colours climb with the chain, from cream to gold to hot pink.
 const CHAIN_COLORS = ["#fff8ee", "#ffe39a", "#f7b73d", "#f28c3a", "#ee6b5f", "#e0448f"];
@@ -375,7 +403,6 @@ function handle(ev) {
   if (ev.type === "merge") {
     sound.merge(ev.tier, ev.chain);
     scorePop(ev);
-    if (ev.chain > maxChain) maxChain = ev.chain;
     if (ev.chain >= 2) showChain(ev.chain);
     if (ev.tier === game.best && game.made[ev.tier] === 1 && ev.tier >= 4) toast(`First ${SD.TIERS[ev.tier].name}!`);
     updateLadder(game.made[ev.tier] === 1 ? ev.tier : null);
@@ -383,6 +410,12 @@ function handle(ev) {
     if (!REDUCED && ev.tier >= 8) hitStop = 0.06;
     if (!REDUCED && ev.tier >= 9) { slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
   }
+  if (ev.type === "fever") {
+    feverMax = ev.time;
+    if (ev.start) { sound.fever(); toast("Fever! ×" + SD.FEVER.mult + " for " + SD.FEVER.time + " s"); view.shake = Math.max(view.shake, 0.12); }
+    else toast("Fever +" + SD.FEVER.extend + " s");
+  }
+  if (ev.type === "feverEnd") sound.feverEnd();
   if (ev.type === "packed") {
     sound.packed(); scorePop(ev); toast(`Hamper packed! +${ev.points}`);
     if (!REDUCED) { hitStop = 0.06; slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
@@ -392,6 +425,7 @@ function handle(ev) {
     let worst = null;
     for (const s of game.snacks) if (!worst || s.over > worst.over) worst = s;
     if (worst) { const p = worst.body.getPosition(); view.pushTo(p.x, p.y, 0.55); }
+    feverEl.classList.remove("on"); $("score").classList.remove("hot");
     sound.over();
   }
 }
@@ -424,6 +458,7 @@ function frame(now) {
     if (n === 6) acc = 0;
     view.alpha = Math.min(1, acc / SD.STEP);
     $("score").textContent = game.score;
+    feverHud();
     // Save once the drop has settled a little, not mid-fall.
     if (dirty && game.status === "playing" && game.snacks.every((s) => s.landed)) saveGame();
   } else if (game && game.status === "over") {
