@@ -1304,8 +1304,8 @@ export class World3D {
         strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
         const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx);
         if (game.bonusOn) this.stopSign(game.delivery, cx, y);
-        // A region's own stall when Codex has made it, else the shared stand, else code-built.
-        if (game.bonusOn && stand("road/stall_" + SH.stopKey(game.delivery), cx, -5.8)) return;
+        // The region's own stall stands behind the stop (when Codex has made it); the stand still marks the mat.
+        if (game.bonusOn) stand("road/stall_" + SH.stopKey(game.delivery), cx, -8.2);
         if (stand("road/pickup_stand", cx, -5.8)) return;
         kit.add(box(6, 3.2, 3), "#efe2c6", m(cx, y + 1.6, -6.5));
         kit.add(box(6.6, 0.4, 3.6), "#3f9a5a", m(cx, y + 3.4, -6.5));
