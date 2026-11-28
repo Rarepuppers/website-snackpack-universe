@@ -36,15 +36,17 @@ async function stub(page, { beacon }) {
   return events;
 }
 
-test("a /go/ page reports the view to Cloudflare before it leaves for Play", async ({ page }) => {
-  const events = await stub(page, { beacon: "ok" });
-  await page.goto(GO, { waitUntil: "commit" });
-  await page.waitForURL(/play\.google\.com/, { timeout: 5_000 });
-  expect(events).toEqual(["rum", "play"]);
-  // The Play referrer the interstitial carries must survive the hop.
-  expect(page.url()).toContain("id=com.snackpackuniverse.braingames2");
-  expect(page.url()).toContain("utm_campaign%3Dthirteen");
-});
+for (const campaign of ["thirteen", "thirteen-qr", "thirteen-reminder"]) {
+  test(`${campaign} reports the view to Cloudflare and preserves its Play campaign`, async ({ page }) => {
+    const events = await stub(page, { beacon: "ok" });
+    await page.goto(`/go/arcade/${campaign}/braingames2/`, { waitUntil: "commit" });
+    await page.waitForURL(/play\.google\.com/, { timeout: 5_000 });
+    expect(events).toEqual(["rum", "play"]);
+    const playUrl = new URL(page.url());
+    expect(playUrl.searchParams.get("id")).toBe("com.snackpackuniverse.braingames2");
+    expect(new URLSearchParams(playUrl.searchParams.get("referrer")).get("utm_campaign")).toBe(campaign);
+  });
+}
 
 test("a blocked beacon does not strand the visitor", async ({ page }) => {
   const events = await stub(page, { beacon: "blocked" });

@@ -233,6 +233,14 @@
           <span id="t-suggest-option"><button class="btn-game" id="t-suggest" type="button" disabled>Show legal move</button></span>
         </div>
         <p class="game-hint" id="t-combohint" role="status"></p>
+        <section class="th-practice-banner" id="t-app-reminder" aria-labelledby="t-app-reminder-title" hidden>
+          <h2 id="t-app-reminder-title">Play Thirteen offline</h2>
+          <p>Thirteen is also in Snackpack Brain Games Vol 2 on Android.</p>
+          <div class="th-actions">
+            <a class="btn-game" href="/go/arcade/thirteen-reminder/braingames2/" target="_blank" rel="noopener">View on Google Play</a>
+            <button class="btn-game" id="t-app-reminder-dismiss" type="button">Dismiss</button>
+          </div>
+        </section>
         <div class="th-extras" id="t-extras">
           <details id="t-learn" hidden><summary>Learn</summary><div id="t-lessons" class="th-practice-list"></div></details>
           <details id="t-challenges" hidden><summary>Challenges</summary><div id="t-challenge-list" class="th-practice-list"></div></details>
@@ -430,8 +438,7 @@
   </div>
 </footer>
 
-<script>window.SP_PLAY_URL = "https://www.snackpackuniverse.com/go/arcade/thirteen/braingames2/";</script>
-<script src="../funnel.js"></script>
+<script defer src="../game-events.js"></script>
 <script src="../game-ui-controls.js"></script>
 <script src="../game-ui-assets.js"></script><script src="../audio.js"></script><script src="../store.js"></script><script src="../resume.js"></script>
 <script src="../daily-state.js"></script><script src="../share-result.js"></script><script defer src="./rooms.js"></script>
@@ -705,6 +712,11 @@ function cpuChoosePlay(state, playerIdx) {
   var suggestBtn = document.getElementById("t-suggest");
   var suggestOption = document.getElementById("t-suggest-option");
   var newBtn = document.getElementById("t-new");
+  var appReminder = document.getElementById("t-app-reminder");
+  document.getElementById("t-app-reminder-dismiss").addEventListener("click", function () {
+    appReminder.hidden = true;
+    newBtn.focus();
+  });
   var winsEl = document.getElementById("t-wins");
   var hintEl = document.getElementById("t-combohint");
 
@@ -1025,6 +1037,7 @@ function cpuChoosePlay(state, playerIdx) {
 
   function render() {
     if (!gs) return;
+    if (gs.phase !== "gameover" || practice || series || dailyMode) appReminder.hidden = true;
     var dailyDescription = document.getElementById("t-daily-description");
     dailyDescription.hidden = !featuredDaily || !!practice;
     gameSettings.classList.toggle("th-featured", featuredDaily);
@@ -1159,14 +1172,19 @@ function cpuChoosePlay(state, playerIdx) {
     var r = readRecord(); if (gs.winner === 0) r.won++; else r.lost++;
     try { localStorage.setItem(recordKey(), JSON.stringify(r)); } catch (e) {}
     showRecord();
+    if (!dailyMode && window.SnackPackStore) {
+      var store = window.SnackPackStore;
+      var completed = (Number(store.get("thirteen", "app_reminder_deals")) || 0) + 1;
+      // Persist the milestone before showing it, so continuing or reloading never repeats it.
+      if (completed <= 3) {
+        var saved = store.set("thirteen", "app_reminder_deals", String(completed));
+        if (saved && completed === 3) appReminder.hidden = false;
+      }
+    }
     if (gs.winner === 0) {
       wins++; winsEl.textContent = wins;
       try { localStorage.setItem("sp_thirteen_wins", String(wins)); } catch (e) {}
-      if (window.SnackPack) window.SnackPack.celebrate({
-        title: "You emptied your hand! 🏆",
-        body: "Sharp card play. We build these calm, ad-free games as a tiny studio — a small tip helps, or grab the free app to play Thirteen and more, offline."
-      });
-      // After celebrate, always — the share card must not be able to suppress the funnel.
+      window.SnackPack?.celebrate?.();
       if (window.SnackPackShare) window.SnackPackShare.result({
         game: "Thirteen",
         puzzle: dailyMode ? dailyNumber() : null,

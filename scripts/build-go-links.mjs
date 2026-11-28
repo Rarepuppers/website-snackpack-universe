@@ -228,10 +228,13 @@ for (const file of walkHtml(root)) {
         problems.push(`${rel}: cannot tell which app "${href}" is for`);
         return match;
       }
-      const dest = `/go/${surface}/${campaign}/${shortName(pkg)}/`;
+      const linkCampaign = rel === "play/thirteen/index.html" && href === "/go/arcade/thirteen-reminder/braingames2/"
+        ? "thirteen-reminder"
+        : campaign;
+      const dest = `/go/${surface}/${linkCampaign}/${shortName(pkg)}/`;
       wanted.set(
-        `go/${surface}/${campaign}/${shortName(pkg)}/index.html`,
-        interstitial({ surface, campaign, pkg, from })
+        `go/${surface}/${linkCampaign}/${shortName(pkg)}/index.html`,
+        interstitial({ surface, campaign: linkCampaign, pkg, from })
       );
       repointed += 1;
       return `${open}${dest}${close}`;
@@ -316,7 +319,7 @@ for (const file of walkHtml(root)) {
 // ---------------------------------------------------------------------------
 
 // The printed payload in the Thirteen QR image has no HTML anchor to collect.
-// Keep scan arrivals and their Play campaign separate from the badge and modal.
+// Keep scan arrivals and their Play campaign separate from the badge and reminder.
 const thirteenQr = {
   surface: "arcade",
   campaign: "thirteen-qr",

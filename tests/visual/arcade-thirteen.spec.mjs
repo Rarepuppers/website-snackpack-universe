@@ -114,6 +114,52 @@ test("solo players can select cards by keyboard and preview a legal opening", as
   await expect(page.locator("#t-suggest")).toBeHidden();
 });
 
+test("Thirteen offers the Android app once after three completed solo deals", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.addInitScript(() => {
+    if (new URLSearchParams(location.search).has("fresh")) return;
+    const variant = "random-standard-normal";
+    const cpuTurn = new URLSearchParams(location.search).has("cpu");
+    localStorage.setItem("sp_thirteen_save_random_standard_normal", JSON.stringify({
+      schemaVersion: 1, gameVersion: 1, updatedAt: Date.now(), variant,
+      payload: {
+        phase: "playing", mode: "standard", currentPlayer: cpuTurn ? 1 : 0,
+        winner: null, lastCombo: null, lastPlayerIdx: null, isFirstTurn: false,
+        roundStarter: 0, passed: [], selected: [],
+        players: [6, 7, 8, 9].map((value, id) => ({
+          id, name: id === 0 ? "You" : "CPU " + id, hand: [{ value, suit: 0, id: value + "-0" }],
+        })),
+      },
+    }));
+  });
+  const reminder = page.getByRole("region", { name: "Play Thirteen offline" });
+  await page.goto("/play/thirteen/?fresh");
+  await page.getByRole("button", { name: "New game" }).click();
+  await expect(reminder).toBeHidden();
+  for (let deal = 1; deal <= 4; deal++) {
+    await page.goto("/play/thirteen/" + (deal === 2 ? "?cpu" : ""));
+    await expect(reminder).toBeHidden();
+    await page.getByRole("button", { name: "Resume game" }).click();
+    if (deal !== 2) {
+      await page.getByRole("button", { name: "6 of spades" }).click();
+      await page.locator("#t-play").click();
+    }
+    await expect(page.locator("#t-status")).toContainText(/win/);
+    await expect(page).toHaveURL(/\/play\/thirteen\//);
+    expect(page.context().pages()).toHaveLength(1);
+    if (deal === 3) {
+      await expect(reminder).toBeVisible();
+      const link = reminder.getByRole("link", { name: "View on Google Play" });
+      await expect(link).toHaveAttribute("href", "/go/arcade/thirteen-reminder/braingames2/");
+      await expect(link).toHaveAttribute("target", "_blank");
+      await reminder.getByRole("button", { name: "Dismiss" }).click();
+      await expect(page.getByRole("button", { name: "New game" })).toBeFocused();
+    }
+    await expect(reminder).toBeHidden();
+    await expect(page.getByRole("dialog", { name: "Support SnackPack Studios" })).toHaveCount(0);
+  }
+});
+
 test("the rules table's Classic claims match the engine", () => {
   const E = (() => {
     const engine = html.slice(html.indexOf("// ════ Engine"), html.indexOf("// ════ UI"));
