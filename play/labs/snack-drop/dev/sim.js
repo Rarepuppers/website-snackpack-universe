@@ -10,7 +10,7 @@
 const SD = require("../engine.js");
 if (process.env.BAL) Object.assign(SD.BALANCE, JSON.parse(process.env.BAL));
 
-function play(seed, style, container, mode = "classic", maxDrops = 2000) {
+function play(seed, style, container, mode = "classic", maxDrops = 2000, tools = false) {
   const g = SD.createGame({ seed, container, mode });
   const rand = SD.rng(seed * 7 + 3);
   let frames = 0;
@@ -18,10 +18,12 @@ function play(seed, style, container, mode = "classic", maxDrops = 2000) {
     frames++;
     // Wait for the pile to settle a little, like a person watching the last drop.
     const settled = g.snacks.every((s) => s.landed);
-    const drop = g.canDrop() && (settled || g.wait < -0.6) ? SD.botAim(g, style, rand) : null;
-    g.step({ drop });
+    const ready = g.canDrop() && (settled || g.wait < -0.6);
+    const tool = tools && ready ? SD.botTool(g) : null;
+    const drop = ready && !tool ? SD.botAim(g, style, rand) : null;
+    g.step({ drop, tool });
   }
-  return { score: g.score, drops: g.drops, best: g.best, made: g.made, time: g.time, fevers: g.fevers, maxChain: g.maxChain };
+  return { toolsUsed: g.toolsUsed, score: g.score, drops: g.drops, best: g.best, made: g.made, time: g.time, fevers: g.fevers, maxChain: g.maxChain };
 }
 
 function pct(list, p) { const s = [...list].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(p * s.length))]; }
@@ -108,7 +110,16 @@ if (arg === "band") {
     const fev = (cr.reduce((a, x) => a + x.fevers, 0) / n).toFixed(1), sc = pct(cr.map((x) => x.score), 0.5);
     console.log(`  ${id.padEnd(10)} careful ${c}  random ${r}  pro ${p}   classic score median ${sc}, fevers per game ${fev}  ${ok ? "in band" : "OUT OF BAND"}`);
   }
-  console.log(bad ? `band: ${bad} container(s) out` : "band: OK");
+  // Arcade: the bot that uses its tools must last longer than one that doesn't.
+  for (const id of SD.CONTAINER_ORDER) {
+    const plain = Array.from({ length: n }, (_, i) => play(i * 101, "careful", id, "arcade"));
+    const tooled = Array.from({ length: n }, (_, i) => play(i * 101, "careful", id, "arcade", 2000, true));
+    const a = pct(plain.map((x) => x.drops), 0.5), t = pct(tooled.map((x) => x.drops), 0.5), used = (tooled.reduce((s, x) => s + x.toolsUsed, 0) / n).toFixed(1);
+    const ok = t > a;
+    if (!ok) bad++;
+    console.log(`  ${id.padEnd(10)} arcade careful ${a}  with tools ${t} (${used} tools a game)  ${ok ? "tools help" : "TOOLS DON'T HELP"}`);
+  }
+  console.log(bad ? `band: ${bad} check(s) failed` : "band: OK");
   process.exit(bad ? 1 : 0);
 }
 const n = Number(arg) || 40;
