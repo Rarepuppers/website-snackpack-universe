@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../site.css">
 <link rel="stylesheet" href="../play.css?v=13">
+<link rel="stylesheet" href="../lit-card-table.css">
 <style>
 /* Klondike Solitaire (local styles). */
 /* Seven columns plus six gaps have to fit the page's content box, not the
@@ -242,7 +243,7 @@
           </div>
         </div>
         <p class="game-status" id="sol-status" aria-live="polite">Pick a card, then choose where it should go.</p>
-        <div class="game-board-wrap sol-board-wrap">
+        <div class="game-board-wrap sol-board-wrap lit-card-table lit-card-table--tableau">
           <div class="sol-table" id="sol-table">
             <div class="sol-row sol-top">
               <div class="sol-pile" id="sol-stock" data-pile="stock"></div>
@@ -623,7 +624,7 @@
       var f = foundations[pi];
       if (f.length === 0) {
         var fe = document.createElement("div"); fe.className = "sol-slot sol-foundation kbd-target";
-        fe.innerHTML = '<span class="card-suit-icon card-suit-icon--' + SUITS[pi] + '" aria-hidden="true"></span>';
+        fe.innerHTML = '<span aria-hidden="true">' + "♠♥♦♣"[pi] + '</span>';
         pileEl.appendChild(fe);
       } else {
         var fc = cardEl(f[f.length - 1], true);

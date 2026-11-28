@@ -1,0 +1,37 @@
+/* Web crops of emerald-felt-landscape.webp and emerald-felt-portrait.webp
+   in the monorepo's shared-assets/game-ui/table-themes/v2 directory. */
+.game-stage .lit-card-table {
+  --table-art: url("./table-art/classic-felt-wide.webp");
+  --table-ink: #fff8e9;
+  --table-marker: #fff0c2;
+  background: linear-gradient(#08231c29, #08231c29) center / cover,
+    var(--table-art) center / cover #124332;
+}
+
+/* The portrait crop keeps the lamp on the table as a phone tableau grows. */
+@media (max-width: 540px) and (orientation: portrait) {
+  .game-stage .lit-card-table--tableau { --table-art: url("./table-art/classic-felt-tall.webp"); }
+}
+
+.sol-board-wrap.lit-card-table {
+  border-radius: 18px;
+  padding-block: clamp(10px, 3vw, 22px);
+}
+
+.lit-card-table :is(.sol-empty, .sol-foundation, .fc-empty, .tp-slot) {
+  color: var(--table-ink);
+  border-color: #fff8e9aa;
+  background-color: #0a2a2466;
+}
+
+.lit-card-table .sol-empty.recycle { color: var(--table-marker); }
+.lit-card-table .tc-seat,
+.lit-card-table .tp-label { color: var(--table-ink); }
+.lit-card-table .tc-seat .tc-sub { opacity: 1; }
+.lit-card-table .tc-seat.is-turn .tc-name,
+.lit-card-table .tp-streak { color: var(--table-marker); }
+.lit-card-table :focus-visible { outline-color: var(--table-marker); }
+
+@media (forced-colors: active) {
+  .game-stage .lit-card-table { background: Canvas; }
+}
