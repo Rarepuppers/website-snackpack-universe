@@ -6,6 +6,8 @@
  *
  * On a game page (loaded by funnel.js):
  *   start             first real input in the game area (a page view is not a game)
+ *   first-move        first successful slide (2048) or grid digit edit (Killer Sudoku)
+ *   app-reminder-shown  the one-time Thirteen Android reminder was displayed
  *   win               SnackPack.celebrate was called (losses are not counted)
  *   daily             today's daily puzzle completed (daily-state.js)
  *   class-start      play began after opening a teacher link
@@ -96,6 +98,24 @@
     if (document.hidden) onHide();
   });
   window.addEventListener("pagehide", onHide);
+
+  // Keep the established start count separately from these gameplay milestones.
+  if (game === "2048" || game === "killer-sudoku") {
+    var firstMoveSent = false;
+    window.SnackPack.countFirstMove = function () {
+      if (firstMoveSent) return;
+      firstMoveSent = true;
+      count("first-move");
+    };
+  }
+  if (game === "thirteen") {
+    var reminderSent = false;
+    window.SnackPack.countAppReminderShown = function () {
+      if (reminderSent) return;
+      reminderSent = true;
+      count("app-reminder-shown");
+    };
+  }
 
   // ── friends, daily ──
   window.SnackPack.countFriends = function () { count("friends"); };

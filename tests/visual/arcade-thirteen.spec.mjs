@@ -117,6 +117,7 @@ test("solo players can select cards by keyboard and preview a legal opening", as
 test("Thirteen offers the Android app once after three completed solo deals", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.addInitScript(() => {
+    window.SP_EVENTS_DEBUG = [];
     if (new URLSearchParams(location.search).has("fresh")) return;
     const variant = "random-standard-normal";
     const cpuTurn = new URLSearchParams(location.search).has("cpu");
@@ -147,6 +148,7 @@ test("Thirteen offers the Android app once after three completed solo deals", as
     await expect(page.locator("#t-status")).toContainText(/win/);
     await expect(page).toHaveURL(/\/play\/thirteen\//);
     expect(page.context().pages()).toHaveLength(1);
+    expect(await page.evaluate(() => window.SP_EVENTS_DEBUG.filter((event) => event === "/arcade/thirteen/app-reminder-shown"))).toHaveLength(deal === 3 ? 1 : 0);
     if (deal === 3) {
       await expect(reminder).toBeVisible();
       const link = reminder.getByRole("link", { name: "View on Google Play" });
@@ -188,4 +190,39 @@ test("the hub's Featured order leads with the games people search for and play",
   await page.goto("/play/");
   const first = await page.locator(".game-grid .game-tile").evaluateAll((ts) => ts.filter((t) => !t.closest("[hidden]")).slice(0, 5).map((t) => t.getAttribute("href")));
   expect(first.map((h) => h.replace(/^\.?\/?(play\/)?|\/$/g, ""))).toEqual(["thirteen", "2048", "connect-4", "snacky-worm", "hearts"]);
+});
+
+test("leaving a linked Daily switches to the casual save without discarding the Daily", async ({ page }) => {
+  await page.addInitScript(() => {
+    Math.random = () => 0.999;
+    const date = new URLSearchParams(location.search).get("daily");
+    const day = Math.floor(Date.parse(date + "T00:00:00Z") / 86400000);
+    const payload = {
+      phase: "playing", mode: "standard", currentPlayer: 0,
+      winner: null, lastCombo: null, lastPlayerIdx: null, isFirstTurn: false,
+      roundStarter: 0, passed: [], selected: [],
+      players: [6, 7, 8, 9].map((value, id) => ({
+        id, name: id === 0 ? "You" : "CPU " + id, hand: [{ value, suit: 0, id: value + "-0" }],
+      })),
+    };
+    for (const [variant, key] of [
+      ["random-standard-normal", "sp_thirteen_save_random_standard_normal"],
+      ["featured-" + day + "-standard-normal", "sp_thirteen_save_featured_" + day + "_standard_normal"],
+    ]) localStorage.setItem(key, JSON.stringify({ schemaVersion: 1, gameVersion: 1, variant, updatedAt: Date.now(), payload }));
+  });
+  await page.goto("/play/thirteen/?daily=2026-11-18&featured=1&fixture=1");
+  const dailyKey = "sp_thirteen_save_featured_" + Math.floor(Date.parse("2026-11-18") / 86400000) + "_standard_normal";
+  const resume = page.getByRole("button", { name: "Resume game" });
+  await expect(resume).toBeVisible();
+  await page.getByRole("button", { name: "New game" }).click();
+  await expect(page).toHaveURL(/\/play\/thirteen\/\?fixture=1$/);
+  await expect(page.locator("#t-daily")).toHaveAttribute("aria-pressed", "false");
+  await expect(resume).toHaveCount(1);
+  await resume.click();
+  await expect(page.getByRole("button", { name: "6 of spades" })).toBeVisible();
+  expect(await page.evaluate((key) => localStorage.getItem(key), dailyKey)).not.toBeNull();
+  const options = page.locator('.sp-options-toggle');
+  if (await options.isVisible()) await options.click();
+  await page.locator('.seg [data-mode="standard"]').click();
+  await expect(page.getByRole("button", { name: "6 of spades" })).toBeVisible();
 });

@@ -121,6 +121,13 @@ for (const [slug, g] of Object.entries(games).sort((a, b) => b[1].start - a[1].s
     BANDS.map((k) => g.bands[k] || 0).join(" / ") + " | " +
     BANDS.map((k) => g.bandWhere[k]?.hn ?? 0).join(" / "));
 }
+console.log("\nFIRST BOARD MOVES (once per page visit)");
+for (const slug of ["2048", "killer-sudoku"]) {
+  const g = games[slug];
+  console.log(`${slug}: ${g?.["first-move"] ?? 0} first moves, ${g?.start ?? 0} starts`);
+}
+console.log(`Thirteen Android reminder displays: ${games.thirteen?.["app-reminder-shown"] ?? 0}`);
+
 for (const slug of ["typing", "math-facts"]) {
   const g = games[slug];
   if (!g || (!g["class-start"] && !g["class-daily"])) continue;

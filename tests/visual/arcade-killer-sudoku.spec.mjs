@@ -55,9 +55,50 @@ test("the daily puzzle is the same for everyone", async ({ browser }) => {
   for (let k = 0; k < 2; k++) {
     const ctx = await browser.newContext(); const page = await ctx.newPage();
     await page.goto("/play/killer-sudoku/?daily=2026-10-22");
+    await expect(page.locator("#ks-status")).toContainText("Daily practice");
     seen.push(await page.locator("#ks-board .ks-sum").allTextContents());
     await ctx.close();
   }
   expect(seen[0].length).toBeGreaterThan(5);
   expect(seen[0]).toEqual(seen[1]);
+});
+
+test("only actual edits get undo steps, and resumed progress survives another visit", async ({ page }) => {
+  await page.addInitScript(() => { window.SP_EVENTS_DEBUG = []; });
+  await page.goto("/play/killer-sudoku/");
+  await page.waitForFunction(() => window.__spGameEvents === true);
+  const i = E.EASY[0].solution.findIndex((_, index) => !E.EASY[0].givens.some(([given]) => given === index));
+  const digit = String(E.EASY[0].solution[i]);
+  const undo = page.locator('#ks-pad [data-act="undo"]');
+  const notes = page.locator('#ks-pad [data-act="notes"]');
+  const events = () => page.evaluate(() => window.SP_EVENTS_DEBUG);
+  await cell(page, i).click();
+  await page.keyboard.press("Backspace");
+  await expect(undo).toBeDisabled();
+  await notes.click();
+  await page.keyboard.press(digit);
+  await expect(cell(page, i)).toHaveAttribute("aria-label", /notes/);
+  await page.keyboard.press("Backspace");
+  await expect(cell(page, i)).toHaveAttribute("aria-label", /empty/);
+  expect(await events()).toEqual(["/arcade/killer-sudoku/start"]);
+  await notes.click();
+  await page.keyboard.press(digit);
+  await page.keyboard.press(digit);
+  await notes.click();
+  await page.keyboard.press("1");
+  await undo.click();
+  await expect(cell(page, i).locator(".ks-val")).toHaveText("");
+  await notes.click();
+  await page.keyboard.press(digit);
+  expect(await events()).toEqual(["/arcade/killer-sudoku/start", "/arcade/killer-sudoku/first-move"]);
+  const options = page.locator('.sp-options-toggle');
+  if (await options.isVisible()) await options.click();
+  await page.locator('.seg [data-level="easy"]').click();
+  await expect(cell(page, i).locator(".ks-val")).toHaveText(digit);
+  for (let visit = 0; visit < 2; visit++) {
+    await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
+    await page.reload();
+    await page.getByRole("button", { name: "Resume game" }).click();
+    await expect(cell(page, i).locator(".ks-val")).toHaveText(digit);
+  }
 });

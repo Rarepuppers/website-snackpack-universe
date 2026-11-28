@@ -1178,7 +1178,10 @@ function cpuChoosePlay(state, playerIdx) {
       // Persist the milestone before showing it, so continuing or reloading never repeats it.
       if (completed <= 3) {
         var saved = store.set("thirteen", "app_reminder_deals", String(completed));
-        if (saved && completed === 3) appReminder.hidden = false;
+        if (saved && completed === 3) {
+          appReminder.hidden = false;
+          window.SnackPack?.countAppReminderShown?.();
+        }
       }
     }
     if (gs.winner === 0) {
@@ -1275,15 +1278,24 @@ function cpuChoosePlay(state, playerIdx) {
     render();
   });
 
-  // "New game" leaves daily mode — a daily is one deal, so re-rolling it while
-  // still calling it today's would be a lie.
-  newBtn.addEventListener("click", function () {
-    if (resume) resume.clear();
+  function leaveDaily() {
     dailyMode = false;
     featuredDaily = false;
     dailyDealDay = null;
     urlSeed = null;
     dailyBtn.setAttribute("aria-pressed", "false");
+    var url = new URL(location.href);
+    url.searchParams.delete("daily");
+    url.searchParams.delete("featured");
+    history.replaceState(history.state, "", url);
+  }
+
+  newBtn.addEventListener("click", function () {
+    if (dailyMode) {
+      if (resume) resume.save();
+      leaveDaily();
+      if (resume) resume.variantChanged();
+    } else if (resume) resume.clear();
     newGame();
   });
 
@@ -1291,12 +1303,17 @@ function cpuChoosePlay(state, playerIdx) {
   dailyBtn.setAttribute("aria-pressed", String(dailyMode));
   dailyBtn.addEventListener("click", function () {
     if (resume) resume.save();
-    dailyMode = !dailyMode;
-    featuredDaily = dailyMode;
-    dailyDealDay = null;
-    if (dailyMode) dailyDealDay = dailyNumber();
-    if (!dailyMode) urlSeed = null;
-    dailyBtn.setAttribute("aria-pressed", String(dailyMode));
+    if (dailyMode) leaveDaily();
+    else {
+      dailyMode = true;
+      featuredDaily = true;
+      dailyDealDay = dailyNumber();
+      var url = new URL(location.href);
+      url.searchParams.set("daily", new Date(dailyDealDay * 86400000).toISOString().slice(0, 10));
+      url.searchParams.set("featured", "1");
+      history.replaceState(history.state, "", url);
+      dailyBtn.setAttribute("aria-pressed", "true");
+    }
     if (resume) resume.variantChanged();
     newGame();
   });
@@ -1315,14 +1332,10 @@ function cpuChoosePlay(state, playerIdx) {
 
   document.querySelectorAll(".seg [data-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (btn.dataset.mode === mode && !featuredDaily) return;
       if (resume) resume.save();
       mode = btn.dataset.mode;
-      if (featuredDaily) {
-        featuredDaily = false;
-        dailyMode = false;
-        dailyDealDay = null;
-        dailyBtn.setAttribute("aria-pressed", "false");
-      }
+      if (featuredDaily) leaveDaily();
       document.querySelectorAll(".seg [data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === btn)); });
       if (resume) resume.variantChanged();
       newGame();

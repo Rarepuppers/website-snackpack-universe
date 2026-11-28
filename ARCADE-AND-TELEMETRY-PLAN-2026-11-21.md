@@ -37,6 +37,18 @@ rules.
 - The arcade’s Jump back in links open the latest saved Solitaire draw mode or FreeCell difficulty and Daily date. Explicit link options take priority over the browser’s saved preferences. Expired saves use the ordinary Play again link.
 - The arcade describes which starting deals are checked and links to the relevant browser and Android privacy policies.
 
+### Thirteen, 2048 and Killer Sudoku follow-up, 29 November 2026
+
+Google Search Console ranked Thirteen first and 2048 second for 30 October–26 November (135 and 10 clicks). Cloudflare ranked Thirteen and Killer Sudoku first and second by visits for 31 October–27 November UTC after excluding ChromeHeadless (about 150 and 100). Measure board actions before moving Killer Sudoku into the featured row.
+
+1. **Thirteen continuity.** Reproduce leaving a linked Daily while its resume prompt is open. Save the Daily separately, remove its URL parameters on return to casual play, and offer the casual save if one exists. Re-selecting the same casual rule should keep the live hand. Leave Standard and Classic rules, CPU levels and friend tables alone. Count the existing reminder when it is revealed after the third completed solo deal. The existing `thirteen-reminder` Google Play campaign measures outbound traffic separately from the badge and QR.
+2. **2048 continuity.** Keep independent saves for 3×3, 4×4, 5×5 and Daily. Offer the destination save on a switch, and only discard progress through an explicit reset or Start fresh. Save a board after its first successful move, even before a merge earns points. On a resumed Daily, reconstruct the random stream from the saved spawn counter so the same next move produces the same tiles. Keep the existing Daily seed, save keys and no-undo rule. Reaching a 2048 tile remains a milestone, and the Daily records completion when no moves remain. Count the first successful slide or merge once per page visit.
+3. **Killer Sudoku editing.** Ignore repeated digits, erasing an already empty cell, and adding notes to a filled cell before touching the timer or undo history. Erase candidate notes when erasing a notes-only cell. Retain real progress across reload, mode changes and a second reload immediately after resuming. Count the first change to a committed grid digit once per page visit. Keep past Daily puzzles playable and record a daily streak only for today's solution. Preserve the puzzle bank, cage validation and keyboard controls.
+4. **Reporting and privacy.** Keep the old start counter for trend continuity. Report first moves and reminder displays as separate fixed GoatCounter events. Check the published disclosure, the existing opt-outs, and the store campaign destination. Compare first moves with same-window starts and use Play Console for tagged installs. Give the events 28 days before using them to reorder the hub or reconsider the reminder.
+5. **Release checks.** Exercise the saved-mode transitions, the resumed Daily against an uninterrupted run, and real versus no-op puzzle inputs. Check one reminder display across four completed deals and confirm analytics are suppressed under Global Privacy Control. Run the targeted browser checks and verify the published game pages after deployment.
+
+
+
 Data sources and how to read them:
 - **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.
   Key: the "### read access" section of `~/billing/goatcounter.txt`.

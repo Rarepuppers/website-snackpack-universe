@@ -97,7 +97,9 @@
 
     function clear(forVariant) {
       window.clearTimeout(timer);
-      return window.SnackPackStore.remove(storageKey(forVariant || variant()));
+      var targetVariant = forVariant || variant();
+      if (targetVariant === currentVariant && pendingChoice) removePrompt();
+      return window.SnackPackStore.remove(storageKey(targetVariant));
     }
 
     function removePrompt() {

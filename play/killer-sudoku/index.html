@@ -494,9 +494,10 @@ function completedDigits(st) {
     var iso = urlDaily && /^\d{4}-\d{2}-\d{2}$/.test(urlDaily) ? Date.parse(urlDaily + "T00:00:00Z") : NaN;
     if (!isNaN(iso)) return Math.floor(iso / 86400000);
     var n = urlDaily == null ? NaN : Number(urlDaily);
-    return isNaN(n) ? Math.floor(Date.now() / 86400000) : n;
+    return Number.isSafeInteger(n) ? n : Math.floor(Date.now() / 86400000);
   }
   var daily = !!urlDaily;
+  function isToday() { return daily && dailyNumber() === Math.floor(Date.now() / 86400000); }
 
   var puzzle, cageOf, st, notes, sel = 0, notesMode = false, undo = [], elapsed = 0, started = null, timer = null, solved = false, resume = null;
 
@@ -514,6 +515,7 @@ function completedDigits(st) {
   function load(p) {
     puzzle = p; cageOf = cageOfMap(p); st = createState(p);
     notes = []; for (var i = 0; i < 81; i++) notes.push([]);
+    clearInterval(timer);
     undo = []; elapsed = 0; started = null; solved = false; sel = st.given.indexOf(false);
     build(); render();
   }
@@ -561,24 +563,26 @@ function completedDigits(st) {
 
   function enter(d) {
     if (solved || st.given[sel]) return;
+    var current = st.values[sel];
+    var editingNote = notesMode && d !== 0;
+    if (editingNote ? current !== 0 : d === current && (d !== 0 || !notes[sel].length)) return;
     startClock();
     undo.push({ values: st.values.slice(), notes: notes.map(function (n) { return n.slice(); }) });
     if (undo.length > 200) undo.shift();
-    if (notesMode && d) {
+    if (editingNote) {
       var n = notes[sel], k = n.indexOf(d);
-      if (st.values[sel]) return render();
       if (k >= 0) n.splice(k, 1); else { n.push(d); n.sort(); }
     } else {
-      st = setValue(st, sel, d === 0 ? (st.values[sel] || 0) : d);
-      if (d === 0) st = { values: st.values.map(function (v, i) { return i === sel ? 0 : v; }), given: st.given };
+      st = setValue(st, sel, d);
+      notes[sel] = [];
+      if (d !== current) window.SnackPack?.countFirstMove?.();
       if (st.values[sel]) {
         // Clear that digit from the notes of the square's row, column, box and cage.
         for (var i = 0; i < 81; i++) if (rowOf(i) === rowOf(sel) || colOf(i) === colOf(sel) || boxOf(i) === boxOf(sel) || cageOf[i] === cageOf[sel]) { var j = notes[i].indexOf(st.values[sel]); if (j >= 0) notes[i].splice(j, 1); }
-        notes[sel] = [];
       }
       if (window.SnackPackAudio) window.SnackPackAudio.play(conflictCells(st, puzzle).has(sel) ? "invalid" : "place");
     }
-    render(); save();
+    render(); save(true);
     if (isWin(st, puzzle)) win();
   }
   function win() {
@@ -591,7 +595,8 @@ function completedDigits(st) {
     if (resume) resume.clear();
     if (window.SnackPackAudio) window.SnackPackAudio.play("win");
     if (window.SnackPack) window.SnackPack.celebrate({ title: "Solved! 🎉", body: "Killer Sudoku in " + fmt(t) + ". We build these calm, ad-free games as a tiny studio. A small tip helps, or grab the free app for more logic puzzles, offline." });
-    if (window.SnackPackShare) window.SnackPackShare.result({ game: "Killer Sudoku", puzzle: daily ? dailyNumber() : undefined, headline: "Solved " + (daily ? "the daily" : level[0].toUpperCase() + level.slice(1) + " #" + (BANK[level].indexOf(puzzle) + 1)) + " in " + fmt(t), stats: best && prev ? ["new personal best"] : [] });
+    var dailyDate = isToday() ? new Date(dailyNumber() * 86400000).toISOString().slice(0, 10) : null;
+    if (window.SnackPackShare) window.SnackPackShare.result({ game: "Killer Sudoku", puzzle: daily ? dailyNumber() : undefined, dailyDate: dailyDate, headline: "Solved " + (daily ? "the daily" : level[0].toUpperCase() + level.slice(1) + " #" + (BANK[level].indexOf(puzzle) + 1)) + " in " + fmt(t), stats: best && prev ? ["new personal best"] : [] });
   }
 
   boardEl.addEventListener("click", function (e) { var b = e.target.closest(".ks-cell"); if (!b) return; sel = +b.dataset.i; render(); });
@@ -601,7 +606,7 @@ function completedDigits(st) {
     if (b.dataset.num) return enter(+b.dataset.num);
     if (b.dataset.act === "erase") return enter(0);
     if (b.dataset.act === "notes") { notesMode = !notesMode; return render(); }
-    if (b.dataset.act === "undo" && undo.length && !solved) { var u = undo.pop(); st = { values: u.values, given: st.given }; notes = u.notes; render(); save(); }
+    if (b.dataset.act === "undo" && undo.length && !solved) { var u = undo.pop(); st = { values: u.values, given: st.given }; notes = u.notes; render(); save(true); }
   });
   document.addEventListener("keydown", function (e) {
     if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -609,16 +614,36 @@ function completedDigits(st) {
     else if (e.key === "0" || e.key === "Backspace" || e.key === "Delete") { enter(0); e.preventDefault(); }
     else if (e.key === "n" || e.key === "N") { notesMode = !notesMode; render(); }
   });
-  document.addEventListener("visibilitychange", function () { if (document.hidden) { stopClock(); save(); } else if (!solved && undo.length) startClock(); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { stopClock(); save(); } else if (hasProgress()) startClock(); });
 
   function choose() {
     if (daily) return ALL[((dailyNumber() % ALL.length) + ALL.length) % ALL.length];
     return BANK[level][readIndex()];
   }
-  function fresh(p) { load(p); setStatus(daily ? "Daily Killer Sudoku #" + dailyNumber() + ": the same puzzle for everyone today." : level[0].toUpperCase() + level.slice(1) + " puzzle " + (BANK[level].indexOf(p) + 1) + ". Pick a square, then a digit."); }
+  function fresh(p) {
+    load(p);
+    if (daily) {
+      setStatus(isToday() ? "Daily Killer Sudoku #" + dailyNumber() + ": the same puzzle for everyone today." : "Daily practice · Puzzle #" + dailyNumber() + ". Pick a square, then a digit.");
+      return;
+    }
+    setStatus(level[0].toUpperCase() + level.slice(1) + " puzzle " + (BANK[level].indexOf(p) + 1) + ". Pick a square, then a digit.");
+  }
+  function leaveDaily() {
+    daily = false;
+    urlDaily = null;
+    var url = new URL(location.href);
+    url.searchParams.delete("daily");
+    history.replaceState(history.state, "", url);
+  }
   $("ks-new").addEventListener("click", function () {
+    if (daily) {
+      if (resume) resume.save();
+      leaveDaily();
+      fresh(choose());
+      if (resume) resume.variantChanged();
+      return;
+    }
     if (resume) resume.clear();
-    if (daily) { daily = false; urlDaily = null; history.replaceState(null, "", location.pathname); fresh(choose()); return; }
     var bank = BANK[level], i = (bank.indexOf(puzzle) + 1) % bank.length;
     try { localStorage.setItem(indexKey(), String(i)); } catch (e) {}
     fresh(bank[i]);
@@ -627,13 +652,23 @@ function completedDigits(st) {
   function syncSegs() { document.querySelectorAll(".seg [data-level]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.level === level)); }); }
   document.querySelectorAll(".seg [data-level]").forEach(function (b) {
     b.addEventListener("click", function () {
+      if (!daily && level === b.dataset.level) return;
       if (resume) resume.save();
       level = b.dataset.level; try { localStorage.setItem("sp_killersudoku_level", level); } catch (e) {}
-      if (daily) { daily = false; urlDaily = null; history.replaceState(null, "", location.pathname); }
-      syncSegs(); if (resume) resume.variantChanged(); fresh(choose());
+      if (daily) leaveDaily();
+      syncSegs();
+      fresh(choose());
+      if (resume) resume.variantChanged();
     });
   });
-  function save() { if (resume) resume.changed(); }
+  function hasProgress() {
+    return !solved && st.values.some(function (value, i) { return (!st.given[i] && value !== 0) || notes[i].length > 0; });
+  }
+  function save(discardIfEmpty) {
+    if (!resume) return;
+    if (hasProgress()) resume.changed();
+    else if (discardIfEmpty && !solved) resume.clear();
+  }
 
   syncSegs();
   fresh(choose());
@@ -660,7 +695,7 @@ function completedDigits(st) {
         setStatus("Saved puzzle restored."); render();
         return true;
       },
-      isActive: function () { return !solved && undo.length > 0; }
+      isActive: hasProgress
     });
   }
 })();

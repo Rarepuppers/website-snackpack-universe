@@ -27,7 +27,6 @@ test("a game page counts start, one time band, and a win — not the page view",
   expect(await events(page)).toEqual([]);
 
   await page.locator(".game-stage").first().click({ position: { x: 20, y: 20 } });
-  await page.keyboard.press("ArrowLeft");
   await page.evaluate(() => window.SnackPack.celebrate({ delay: 999999 }));
   await page.evaluate(() => window.SnackPack.celebrate({ delay: 999999 })); // within 5 s: one win
   await hide(page);
@@ -53,9 +52,12 @@ test("today's daily puzzle is counted once", async ({ page }) => {
 
 test("Global Privacy Control sends nothing", async ({ page }) => {
   await debugPage(page, { gpc: true });
+  await page.addInitScript(() => { Math.random = () => 0.999; });
   await page.goto("/play/2048/");
   await page.waitForTimeout(300);
   await page.locator(".game-stage").first().click({ position: { x: 20, y: 20 } });
+  await page.keyboard.press("ArrowUp");
+  await expect(page.locator("#g-tiles .g2048-tile")).toHaveCount(3);
   await page.evaluate(() => window.SnackPack.celebrate({ delay: 999999 }));
   await hide(page);
   expect(await events(page)).toEqual([]);

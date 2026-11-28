@@ -336,6 +336,13 @@
   }
   var rnd = Math.random;
 
+  function dailyRandom(spawns) {
+    var day = Math.floor(Date.parse(dailyIso + "T00:00:00Z") / 86400000);
+    var seed = Math.imul(day, 2654435761);
+    // Each spawned tile draws once for its position and once for its value.
+    return mulberry32(seed + Math.imul(spawns * 2, 0x6d2b79f5));
+  }
+
   var tilesEl = document.getElementById("g-tiles");
   var gridEl = document.getElementById("g-grid");
   var scoreEl = document.getElementById("g-score");
@@ -392,16 +399,13 @@
   buildBoard();
 
   function reset() {
-    // Starting fresh retires the saved run; otherwise abandoning the new board
-    // before it scores would leave the old save to be offered back next visit.
-    if (resume) resume.clear();
     grid = [];
     for (var r = 0; r < SIZE; r++) { grid[r] = []; for (var c = 0; c < SIZE; c++) grid[r][c] = null; }
     score = 0; over = false; won = false; uid = 1;
     history = []; if (undoBtn) undoBtn.disabled = true;
     tilesEl.innerHTML = "";
     scoreEl.textContent = "0";
-    rnd = dailyIso ? mulberry32((Math.floor(Date.parse(dailyIso + "T00:00:00Z") / 86400000) * 2654435761) >>> 0) : Math.random;
+    rnd = dailyIso ? dailyRandom(0) : Math.random;
     statusEl.textContent = dailyIso ? "Today's daily: the same tiles for everyone today. Play until no moves are left." : "Use the arrow keys or swipe to start.";
     statusEl.className = "game-status";
     addRandom(); addRandom();
@@ -502,6 +506,7 @@
     grid = newGrid;
     score += gained;
     addRandom();
+    window.SnackPack?.countFirstMove?.();
     render();
 
     if (won) {
@@ -514,11 +519,13 @@
       if (w && window.SnackPackShare) window.SnackPackShare.result({
         game: "2048",
         headline: "Reached the 2048 tile",
+        dailyDate: null,
         stats: ["score " + score.toLocaleString()]
       });
     }
     if (!hasMoves()) {
       over = true;
+      if (resume) resume.clear();
       statusEl.textContent = dailyIso ? "Daily done: " + score.toLocaleString() + " points. Come back tomorrow." : "No moves left — game over. Hit New game to try again.";
       statusEl.className = "game-status game-status--lose";
       // The daily is finished when the board is full, whatever the score.
@@ -563,7 +570,10 @@
     else move(dy > 0 ? "down" : "up");
   }, { passive: true });
 
-  newBtn.addEventListener("click", reset);
+  newBtn.addEventListener("click", function () {
+    if (resume) resume.clear();
+    reset();
+  });
   document.querySelectorAll("#g-sizes [data-size]").forEach(function (b) {
     b.addEventListener("click", function () {
       var n = +b.dataset.size;
@@ -573,17 +583,18 @@
       try { localStorage.setItem("sp_2048_size", String(n)); } catch (e) {}
       if (window.history.replaceState && location.search) window.history.replaceState(null, "", location.pathname);
       buildBoard();
-      if (resume) resume.variantChanged();
       reset();
+      if (resume) resume.variantChanged();
     });
   });
   document.getElementById("g-daily").addEventListener("click", function () {
+    if (dailyIso) return;
     if (resume) resume.save();
     dailyIso = todayIso; SIZE = 4;
     if (window.history.replaceState) window.history.replaceState(null, "", location.pathname + "?daily=" + dailyIso);
     buildBoard();
-    if (resume) resume.variantChanged();
     reset();
+    if (resume) resume.variantChanged();
   });
   reset();
 
@@ -602,7 +613,7 @@
         if (!cell || !Number.isFinite(cell.v) || cell.v < 2) return false;
       }
     }
-    return Number.isFinite(p.score) && Number.isFinite(p.uid);
+    return Number.isFinite(p.score) && Number.isSafeInteger(p.uid) && p.uid >= 3 && !p.over;
   }
 
   if (window.SnackPackResume) {
@@ -616,6 +627,7 @@
       validate: validSave,
       restore: function (p) {
         grid = p.grid; score = p.score; over = !!p.over; won = !!p.won; uid = p.uid;
+        if (dailyIso) rnd = dailyRandom(uid - 1);
         history = Array.isArray(p.history) ? p.history : [];
         if (undoBtn) undoBtn.disabled = history.length === 0;
         scoreEl.textContent = String(score);
@@ -624,8 +636,8 @@
         render();
         return true;
       },
-      // Only worth offering back a run that actually got going.
-      isActive: function () { return !over && score > 0; }
+      // Two tiles spawn at setup. Any later tile means the board has been played.
+      isActive: function () { return !over && uid > 3; }
     });
     new MutationObserver(function () { resume.changed(); }).observe(tilesEl, { childList: true });
   }
