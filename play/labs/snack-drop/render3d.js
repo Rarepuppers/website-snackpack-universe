@@ -261,6 +261,12 @@ export class Renderer {
     this.ringGeos = Array.from({ length: this.ringSteps + 1 }, (_, i) => new THREE.RingGeometry(0.86, 1, 48, 1, Math.PI / 2, Math.max(0.001, (i / this.ringSteps) * Math.PI * 2)));
     this.ring = new THREE.Mesh(this.ringGeos[this.ringSteps], new THREE.MeshBasicMaterial({ color: "#ee6b5f", transparent: true, opacity: 0.9, depthTest: false }));
     this.ring.renderOrder = 3; this.ring.visible = false; s.add(this.ring);
+
+    // Target markers while a tool is armed: a soft ring round every snack it can act on.
+    this.armed = null;  // a Set of snack ids, or null
+    const markGeo = new THREE.RingGeometry(0.9, 1, 40), markMat = new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.85, depthTest: false });
+    this.marks = Array.from({ length: 48 }, () => { const m = new THREE.Mesh(markGeo, markMat); m.renderOrder = 3; m.visible = false; s.add(m); return m; });
+    this.markMat = markMat;
     this.nextShow = new THREE.Group(); s.add(this.nextShow);
     this.heldTier = -1; this.nextTier = -1;
   }
@@ -279,6 +285,15 @@ export class Renderer {
     this.camera.updateProjectionMatrix();
   }
 
+  // Screen point to the game plane (x and y). Used to pick a snack for a tool.
+  worldPoint(clientX, clientY) {
+    const r = this.canvas.getBoundingClientRect();
+    const v = new THREE.Vector3(((clientX - r.left) / r.width) * 2 - 1, -((clientY - r.top) / r.height) * 2 + 1, 0.5).unproject(this.camera);
+    const dir = v.sub(this.camera.position).normalize();
+    const t = -this.camera.position.z / dir.z;
+    return { x: this.camera.position.x + dir.x * t, y: this.camera.position.y + dir.y * t };
+  }
+
   // Screen point to the game plane's x. Used for aiming.
   worldX(clientX, clientY) {
     const r = this.canvas.getBoundingClientRect();
@@ -295,6 +310,9 @@ export class Renderer {
 
   // Called by the game on every event so effects line up with the physics.
   onEvent(ev) {
+    if (ev.type === "spatula") this.burst(ev.x, ev.y, "#fff3d6", 14);
+    if (ev.type === "levelup") { this.burst(ev.x, ev.y, "#ffd54a", 22); if (ev.newId) this.pops.set(ev.newId, 0); }
+    if (ev.type === "swap") { this.heldTier = this.nextTier = this.ghostTier = -1; this.swapPop = 0; }
     if (ev.type === "merge" || ev.type === "packed") {
       this.burst(ev.x, ev.y, TIER_COLORS[Math.min(ev.tier, TIER_COLORS.length - 1)], 10 + ev.tier * 3);
       if (ev.tier >= 6) this.shake = Math.min(0.35, 0.08 + ev.tier * 0.02);
@@ -458,10 +476,24 @@ export class Renderer {
     // Held snack, guide line, next snack.
     if (this.heldTier !== g.current) { this.heldTier = g.current; this.setHeld(this.held, g.current); }
     if (this.nextTier !== g.next) { this.nextTier = g.next; this.setHeld(this.nextShow, g.next); }
-    const ready = showHeld && g.canDrop();
-    this.held.visible = showHeld && g.status === "playing";
+    const ready = showHeld && g.canDrop() && !this.armed;
+    this.held.visible = showHeld && g.status === "playing" && !this.armed;
+    // Armed tool: mark every snack it can act on; hide the held snack and guide.
+    let mi = 0;
+    if (this.armed) {
+      this.markMat.opacity = 0.55 + 0.35 * Math.sin(performance.now() / 160);
+      for (const sn of g.snacks) {
+        if (!this.armed.has(sn.id) || mi >= this.marks.length) continue;
+        const m = this.meshes.get(sn.id), mk = this.marks[mi++], t = TIERS[sn.tier];
+        if (!m) continue;
+        mk.position.set(m.position.x, m.position.y, 1.2); mk.scale.setScalar(Math.max(t.halfW, t.halfH) + 0.18); mk.visible = true;
+      }
+    }
+    for (; mi < this.marks.length; mi++) this.marks[mi].visible = false;
     this.held.position.set(g.aim, CRATE.dropY + (ready ? 0 : 0.4), 0);
-    this.held.scale.setScalar(ready ? 1 : 0.85);
+    let k = ready ? 1 : 0.85;
+    if (this.swapPop != null) { this.swapPop += dt; k *= this.swapPop < 0.2 ? 0.7 + 1.5 * this.swapPop : 1; if (this.swapPop >= 0.2) this.swapPop = null; }
+    this.held.scale.setScalar(k);
     let floor = 0;
     for (const s of g.snacks) {
       const box = s.fixture.getAABB(0), t = TIERS[g.current];

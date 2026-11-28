@@ -85,3 +85,19 @@ h1, h2 { font-family: var(--serif); margin: 0; }
 .mode.on { border-color: var(--sun); background: #fff3d9; }
 .mode:disabled { opacity: .55; cursor: default; }
 @media (prefers-reduced-motion: reduce) { .fever.on { animation: none; } .fever { transition: none; } }
+.tray { position: fixed; left: 50%; bottom: calc(max(8px, env(safe-area-inset-bottom)) + 40px); transform: translateX(-50%); display: flex; gap: 10px; }
+.tool { width: 62px; height: 62px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; color: var(--ink); box-shadow: 0 3px 0 #3a241422; }
+.tool svg, .tool img { width: 26px; height: 26px; }
+.tool small { font-size: .6rem; font-weight: 800; line-height: 1; }
+.tool.empty { border-style: dashed; background: #fff8ee77; box-shadow: none; }
+.tool.armed { border-color: var(--sun); background: #fff3d9; transform: translateY(-4px); box-shadow: 0 0 0 4px #f7b73d55, 0 6px 0 #b57d16; }
+.hint { position: fixed; left: 50%; bottom: calc(max(8px, env(safe-area-inset-bottom)) + 114px); transform: translateX(-50%); background: var(--ink); color: #fff; font-weight: 800; font-size: .9rem; padding: 7px 14px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .15s; white-space: nowrap; }
+.hint.on { opacity: 1; }
+body.arming #view { cursor: crosshair; }
+.modes { grid-template-columns: 1fr 1fr 1fr; }
+.start-tool { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; font-size: .8rem; font-weight: 700; color: var(--soft); }
+.chip { display: inline-flex; align-items: center; gap: 4px; border: 2px solid transparent; background: #fbf1e3; border-radius: 999px; padding: 4px 10px; font-size: .78rem; font-weight: 800; min-height: 36px; }
+.chip svg, .chip img { width: 16px; height: 16px; }
+.chip.on { border-color: var(--sun); background: #fff3d9; }
+.sheet { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+.tool.empty { background: #fff8eecc; }

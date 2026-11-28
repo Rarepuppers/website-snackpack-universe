@@ -58,6 +58,17 @@
   var FEVER = { merges: 3, time: 8, extend: 3, max: 15, mult: 1.5 };
   var MAX_MULT = 4;  // Chain x Fever never goes over this
 
+  // Tools (PLAN 9), Arcade and Daily Drop only. Each is an input to step(),
+  // so a game with tools still replays exactly. maxTier: Pie (6) or smaller.
+  var TOOLS = {
+    swap:    { id: "swap",    name: "Swap",     target: false },
+    spatula: { id: "spatula", name: "Spatula",  target: true, maxTier: 6 },
+    levelup: { id: "levelup", name: "Level Up", target: true, maxTier: 6 }
+  };
+  var TOOL_ORDER = ["swap", "spatula", "levelup"];
+  // A tool at 1,000 points and every 1,500 after, and one for each Chain x5.
+  var TOOL_EARN = { first: 1000, every: 1500, chain: 5, slots: 3 };
+
   // The snack ladder. Two of the same merge into the next one. Shapes matter:
   // round snacks roll into gaps, square ones stack, the wedge tips over.
   var TIERS = [
@@ -149,12 +160,51 @@
       mode: rules.id, rules: rules, seed: opts.seed, world: world, container: box.id,
       line: box.line - (rules.lineDrop || 0), overLimit: rules.overLimit || BALANCE.overLimit,
       fever: 0, fevers: 0, dropMerges: 0, maxChain: 0,
+      tray: [], toolsUsed: 0, nextToolAt: TOOL_EARN.first,
       snacks: [], nextId: 1, time: 0, status: "playing",
       score: 0, drops: 0, merges: 0, best: 0, made: TIERS.map(function () { return 0; }),
       current: pick(rand), next: pick(rand), aim: 0, wait: 0,
       chain: 0, lastMerge: -99, danger: 0, events: []
     };
     var pairs = [];
+    // Tools draw from their own random stream, so the snack queue is the same
+    // with or without them, and every Daily Drop player gets the same tools.
+    var toolRand = rng(hash("tools-" + (opts.seed == null ? 1 : opts.seed)));
+    function giveTool(id, why) {
+      if (!rules.tools || g.tray.length >= TOOL_EARN.slots) return;
+      id = id || TOOL_ORDER[Math.floor(toolRand() * TOOL_ORDER.length)];
+      g.tray.push(id);
+      g.events.push({ type: "tool", id: id, why: why });
+    }
+    function canUse(id, target) {
+      var tool = TOOLS[id];
+      if (!tool || g.status !== "playing" || g.tray.indexOf(id) < 0) return null;
+      if (!tool.target) return true;
+      for (var i = 0; i < g.snacks.length; i++) if (g.snacks[i].id === target) return g.snacks[i].tier <= tool.maxTier ? g.snacks[i] : null;
+      return null;
+    }
+    function useTool(id, target) {
+      var s = canUse(id, target);
+      if (!s) return false;
+      g.tray.splice(g.tray.indexOf(id), 1);
+      g.toolsUsed++;
+      if (id === "swap") {
+        var held = g.current; g.current = g.next; g.next = held;
+        g.events.push({ type: "swap" });
+        return true;
+      }
+      var p = s.body.getPosition(), a = s.body.getAngle(), v = s.body.getLinearVelocity();
+      var ev = { type: id, tier: s.tier, x: p.x, y: p.y, id: s.id };
+      remove(s);
+      if (id === "levelup") {
+        // The next snack up, in the same place; if it now touches its match they merge.
+        var nt = TIERS[s.tier + 1], ux = Math.max(-CRATE.half + nt.halfW, Math.min(CRATE.half - nt.halfW, p.x));
+        var up = makeBody(s.tier + 1, ux, Math.max(p.y, nt.halfH), a, { x: v.x, y: v.y });
+        up.landed = true; ev.newId = up.id; ev.tier = s.tier + 1;
+      }
+      g.events.push(ev);
+      return true;
+    }
 
     function makeBody(tier, x, y, angle, vel) {
       var t = TIERS[tier];
@@ -218,6 +268,7 @@
         remove(a); remove(b);
         g.merges++;
         if (g.chain > g.maxChain) g.maxChain = g.chain;
+        if (g.chain === TOOL_EARN.chain) giveTool(null, "chain");
         // Fever: the third merge from one drop starts it, or adds time to it.
         if (++g.dropMerges === FEVER.merges) {
           var started = g.fever <= 0;
@@ -254,9 +305,11 @@
       g.time += STEP;
       if (g.wait > 0) g.wait -= STEP;
       if (g.fever > 0) { g.fever -= STEP; if (g.fever <= 0) { g.fever = 0; g.events.push({ type: "feverEnd" }); } }
+      if (input.tool) useTool(input.tool.id, input.tool.target);
       if (input.drop != null) drop(input.drop);
       world.step(STEP);
       merges();
+      while (rules.tools && g.score >= g.nextToolAt) { g.nextToolAt += TOOL_EARN.every; giveTool(null, "points"); }
       var worst = 0;
       for (var i = 0; i < g.snacks.length; i++) {
         var s = g.snacks[i];
@@ -278,7 +331,7 @@
     // bit-for-bit continuation, which only the drop-log replay is).
     function snapshot() {
       return {
-        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, tray: g.tray.slice(), toolsUsed: g.toolsUsed, nextToolAt: g.nextToolAt, toolRand: toolRand.get(), fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
         merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
         chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
         snacks: g.snacks.map(function (s) {
@@ -294,9 +347,16 @@
         s.body.setAngularVelocity(a[7]); s.id = a[0]; s.born = a[8]; s.landed = !!a[9]; s.over = a[10];
       });
       rand.set(r.rand);
-      ["fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
+      if (r.toolRand != null) toolRand.set(r.toolRand);
+      if (r.tray) g.tray = r.tray.slice();
+      ["toolsUsed", "nextToolAt", "fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
       g.made = r.made.slice();
     }
+
+    // The tool a game starts with: the player's choice in Arcade, the same
+    // seeded one for everybody in the Daily Drop.
+    if (rules.tools && !opts.restore) giveTool(opts.mode === "daily" ? null : (TOOLS[opts.startTool] ? opts.startTool : "swap"), "start");
+    g.canUse = function (id, target) { return !!canUse(id, target); };
 
     g.step = step; g.drop = drop; g.canDrop = canDrop; g.clampAim = clampAim; g.topOf = topOf; g.snapshot = snapshot;
     return g;
@@ -308,6 +368,13 @@
   function botAim(g, style, rand) {
     var t = TIERS[g.current], lim = CRATE.half - t.halfW - 0.02;
     if (style === "random") return -lim + rand() * 2 * lim;
+    var b = botBest(g, g.current);
+    // A human doesn't hit the exact spot.
+    return b.x + (rand() - 0.5) * 0.3;
+  }
+  // The careful bot's best drop for a tier: where, and how good it looks.
+  function botBest(g, tier) {
+    var t = TIERS[tier], lim = CRATE.half - t.halfW - 0.02;
     var best = -1e9, bestX = 0, n = 25;
     for (var k = 0; k < n; k++) {
       var x = -lim + (2 * lim * k) / (n - 1);
@@ -319,20 +386,48 @@
       }
       var score = -top * 1.2;
       if (under) {
-        if (under.tier === g.current) score += 9 - Math.abs(under.body.getPosition().x - x) * 3;
-        else if (under.tier < g.current) score -= (g.current - under.tier) * 1.1;
-        else score -= (under.tier - g.current) * 0.35;
+        if (under.tier === tier) score += 9 - Math.abs(under.body.getPosition().x - x) * 3;
+        else if (under.tier < tier) score -= (tier - under.tier) * 1.1;
+        else score -= (under.tier - tier) * 0.35;
       }
       // Big snacks to the walls keeps the middle open for merges.
-      if (g.current >= 3) score += Math.abs(x) / lim * 0.6;
+      if (tier >= 3) score += Math.abs(x) / lim * 0.6;
       if (score > best) { best = score; bestX = x; }
     }
-    // A human doesn't hit the exact spot.
-    return bestX + (rand() - 0.5) * 0.3;
+    return { x: bestX, score: best };
+  }
+
+  // The tool bot (PLAN 20, item 5): simple rules a decent player would use.
+  // Returns a tool input for step() or null.
+  function botTool(g) {
+    if (!g.tray.length) return null;
+    var has = function (id) { return g.tray.indexOf(id) >= 0; };
+    // Spatula: a small snack over the line, before it ends the game.
+    if (has("spatula")) {
+      var worst = null;
+      for (var i = 0; i < g.snacks.length; i++) { var s = g.snacks[i]; if (s.over > 0.3 && s.tier <= 6 && (!worst || s.over > worst.over)) worst = s; }
+      if (worst) return { id: "spatula", target: worst.id };
+    }
+    // Level Up: a snack touching a snack one tier bigger.
+    if (has("levelup")) {
+      for (var a = 0; a < g.snacks.length; a++) {
+        var sa = g.snacks[a];
+        if (sa.tier > 6 || !sa.landed) continue;
+        for (var b = 0; b < g.snacks.length; b++) {
+          var sb = g.snacks[b];
+          if (sb.tier !== sa.tier + 1) continue;
+          var pa = sa.body.getPosition(), pb = sb.body.getPosition();
+          if (Math.hypot(pa.x - pb.x, pa.y - pb.y) < TIERS[sa.tier].halfW + TIERS[sb.tier].halfW + 0.15) return { id: "levelup", target: sa.id };
+        }
+      }
+    }
+    // Swap: the next snack has a good spot and the held one doesn't.
+    if (has("swap") && g.canDrop() && botBest(g, g.next).score > botBest(g, g.current).score + 4) return { id: "swap" };
+    return null;
   }
 
   return {
     STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, MODES: MODES, FEVER: FEVER, MAX_MULT: MAX_MULT, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
-    DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, hash: hash, rng: rng
+    DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, botTool: botTool, TOOLS: TOOLS, TOOL_ORDER: TOOL_ORDER, TOOL_EARN: TOOL_EARN, hash: hash, rng: rng
   };
 });

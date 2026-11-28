@@ -15,7 +15,7 @@ const PERF = query.get("perf") === "1" ? [] : null;  // ?perf=1: main-thread mil
 // read and back up. Bests and saved games carry the rules version, so results
 // from older rules are never mixed with new ones.
 const SAVE_KEY = "sp_snackdrop_v1";
-function blankSave() { return { v: 1, container: "pantry", mode: "classic", bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
+function blankSave() { return { v: 1, container: "pantry", mode: "arcade", startTool: "swap", bests: {}, daily: {}, biggest: 0, mute: false, resume: null, counters: { games: 0, finished: 0, days: [], first: "" } }; }
 function loadSave() {
   try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.v === 1) return Object.assign(blankSave(), d); } catch (e) { /* fall through */ }
   // First run on this version: bring over the prototype's separate keys.
@@ -56,7 +56,8 @@ function bestLabel(m, c) { const b = bestOf(m, c), o = oldBest(m, c); return b ?
 // Pro opens in a container once you score this much in Classic there (PLAN 4b).
 const PRO_GATE = 2500;
 function proOpen(c) { return DEV || Math.max(bestOf("classic", c), oldBest("classic", c)) >= PRO_GATE; }
-if (!["classic", "pro"].includes(save.mode)) save.mode = "classic";
+if (!["classic", "arcade", "pro"].includes(save.mode)) save.mode = "arcade";
+if (!SD.TOOLS[save.startTool]) save.startTool = "swap";
 
 // Local calendar day, not UTC, so the Daily Drop changes at the player's midnight.
 function dayKey(d = new Date()) {
@@ -106,6 +107,13 @@ const sound = {
   },
   packed() {
     if (sample("sfx/hamper_fanfare")) return; [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.25, "triangle", 0.16), i * 90)); },
+  tool(kind) {
+    if (sample("sfx/tool_" + kind)) return;
+    if (kind === "get") [784, 988].forEach((f, i) => setTimeout(() => this.tone(f, 0.12, "triangle", 0.1), i * 70));
+    else if (kind === "levelup") [523, 784, 1047].forEach((f, i) => setTimeout(() => this.tone(f, 0.14, "sine", 0.13), i * 60));
+    else if (kind === "spatula") this.tone(440, 0.2, "triangle", 0.12, 1.8);
+    else this.tone(660, 0.12, "triangle", 0.1, 0.7);
+  },
   fever() { if (!sample("sfx/fever_start")) [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.tone(f, 0.16, "triangle", 0.12), i * 55)); },
   feverEnd() { if (!sample("sfx/fever_end")) this.tone(880, 0.35, "sine", 0.08, 0.5); },
   over() {
@@ -148,7 +156,7 @@ function start(m, resume) {
     steps = resume.steps; dropLog = resume.log.slice();
   } else {
     const seed = m === "daily" ? SD.hash("snackdrop-" + dayKey()) : (Math.random() * 2 ** 31) | 0;
-    game = SD.createGame({ seed, mode: m, container: containerFor(m) });
+    game = SD.createGame({ seed, mode: m, container: containerFor(m), startTool: save.startTool });
     steps = 0; dropLog = [];
     if (!BOT) {
       const c = save.counters, d = dayKey();
@@ -163,6 +171,7 @@ function start(m, resume) {
   timeScale = 1; hitStop = 0; slowFor = 0; overAt = 0;
   feverEl.classList.remove("on"); $("score").classList.remove("hot");
   $("hud").classList.toggle("no-next", !!game.rules.hideNext);
+  disarm(); pendingTool = null; game.events.length = 0; updateTray();
   chainEl.classList.remove("on");
   $("hud").hidden = false; $("ladder").hidden = false;
   $("score").textContent = String(game.score);
@@ -194,7 +203,7 @@ function closeSheet() { $("veil").classList.remove("on"); }
 function tiersHtml() { return `<div class="tiers">${SD.TIERS.map((t, i) => `<span style="--c:${TIER_COLORS[i]}">${t.name}</span>`).join("")}</div>`; }
 
 // The mode the Play button starts: the last one picked, if open in this container.
-function playMode() { return save.mode === "pro" && proOpen(save.container) ? "pro" : "classic"; }
+function playMode() { return save.mode === "pro" ? (proOpen(save.container) ? "pro" : "arcade") : save.mode; }
 
 function home() {
   paused = true;
@@ -207,10 +216,11 @@ function home() {
     <div class="stack">
       ${resume ? `<button class="btn primary" data-act="continue">Continue<small>${SD.MODES[resume.mode].name} · ${BOXES[resume.snap.container || "pantry"].name} · ${resume.snap.score} points</small></button>` : ""}
       <button class="btn${resume ? "" : " primary"}" data-go="${playMode()}">${resume ? "New game" : "Play"}<small>${SD.MODES[playMode()].name} · ${BOXES[save.container].name} · ${bestLabel(playMode(), save.container)}</small></button>
-      <div class="modes" role="radiogroup" aria-label="Mode">${["classic", "pro"].map((m) => {
+      <div class="modes" role="radiogroup" aria-label="Mode">${["classic", "arcade", "pro"].map((m) => {
         const locked = m === "pro" && !proOpen(save.container);
-        return `<button class="mode${m === playMode() ? " on" : ""}" role="radio" aria-checked="${m === playMode()}" data-mode="${m}"${locked ? " disabled" : ""}><b>${SD.MODES[m].name}</b><small>${m === "classic" ? "Drops, merges, chains" : locked ? "Score " + PRO_GATE.toLocaleString("en-US") + " in Classic here to open" : "Lower line, 1 second, no preview"}</small></button>`;
+        return `<button class="mode${m === playMode() ? " on" : ""}" role="radio" aria-checked="${m === playMode()}" data-mode="${m}"${locked ? " disabled" : ""}><b>${SD.MODES[m].name}</b><small>${m === "classic" ? "Pure: drops, merges, chains" : m === "arcade" ? "With tools" : locked ? "Score " + PRO_GATE.toLocaleString("en-US") + " in Classic here to open" : "Lower line, 1 second, no preview"}</small></button>`;
       }).join("")}</div>
+      ${playMode() === "arcade" ? `<div class="start-tool" role="radiogroup" aria-label="Starting tool"><span>Start with</span>${SD.TOOL_ORDER.map((t) => `<button class="chip${t === save.startTool ? " on" : ""}" role="radio" aria-checked="${t === save.startTool}" data-start="${t}">${toolGlyph(t)} ${SD.TOOLS[t].name}</button>`).join("")}</div>` : ""}
       <div class="boxes" role="radiogroup" aria-label="Container">${ORDER.map((id) => `<button class="box${id === save.container ? " on" : ""}" role="radio" aria-checked="${id === save.container}" data-box="${id}"><b>${BOXES[id].name}</b><small>${BOXES[id].blurb}</small>${BOXES[id].free ? "" : '<i>Full game</i>'}</button>`).join("")}</div>
       <button class="btn" data-go="daily">Daily Drop<small>${daily || "Today in the " + BOXES[dailyContainer()].name + ", same snacks for everyone"}</small></button>
     </div>
@@ -305,6 +315,7 @@ $("sheet").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
   sound.wake();
   if (b.dataset.go) return start(b.dataset.go);
+  if (b.dataset.start) { save.startTool = b.dataset.start; writeSave(); home(); const f = $("sheet").querySelector(`[data-start="${save.startTool}"]`); if (f) f.focus(); return; }
   if (b.dataset.mode) { save.mode = b.dataset.mode; writeSave(); home(); const f = $("sheet").querySelector(`[data-mode="${save.mode}"]`); if (f) f.focus(); return; }
   if (b.dataset.box) { save.container = b.dataset.box; writeSave(); demo(save.container); home(); const f = $("sheet").querySelector(`[data-box="${save.container}"]`); if (f) f.focus(); return; }
   const act = b.dataset.act;
@@ -339,23 +350,28 @@ muteLabel();
 // Phones would otherwise turn a long press into a context menu (Android) or a
 // callout and text selection (iOS), which cancels the touch mid-hold, so those
 // are switched off and the pointer is captured for the whole press.
-let pressing = false, pendingDrop = false;
+let pressing = false, pendingDrop = false, armedPress = false;
 const canvas = $("view");
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 canvas.addEventListener("pointerdown", (e) => {
   if (paused) return;
+  // With a tool armed, a press picks a snack and never drops one.
+  if (armed) { armedPress = true; pendingDrop = false; return; }
   pressing = true; aimX = view.worldX(e.clientX, e.clientY); sound.wake();
   try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ }
 });
 canvas.addEventListener("pointermove", (e) => { if (paused) return; if (pressing || e.pointerType === "mouse") aimX = view.worldX(e.clientX, e.clientY); });
-canvas.addEventListener("pointerup", (e) => { if (paused || !pressing) return; pressing = false; aimX = view.worldX(e.clientX, e.clientY); pendingDrop = true; });
+canvas.addEventListener("pointerup", (e) => {
+  if (armedPress) { armedPress = false; if (!paused && armed) pickTarget(e.clientX, e.clientY); return; }
+  if (paused || !pressing) return; pressing = false; aimX = view.worldX(e.clientX, e.clientY); pendingDrop = true; });
 canvas.addEventListener("pointercancel", () => { pressing = false; });
 const keys = {};
 window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && armed) return disarm();
   if (e.key === "Escape" && game && game.status === "playing" && !paused) return pauseSheet();
   if (paused) return;
   keys[e.key] = true;
-  if (e.key === " " || e.key === "ArrowDown" || e.key === "Enter") { e.preventDefault(); pendingDrop = true; }
+  if ((e.key === " " || e.key === "ArrowDown" || e.key === "Enter") && !armed) { e.preventDefault(); pendingDrop = true; }
 });
 window.addEventListener("keyup", (e) => { keys[e.key] = false; });
 document.addEventListener("visibilitychange", () => {
@@ -364,6 +380,61 @@ document.addEventListener("visibilitychange", () => {
   if (!paused) pauseSheet();
 });
 window.addEventListener("pagehide", () => { if (game && game.status === "playing" && !paused) saveGame(); });
+
+// ════ Tools ═══════════════════════════════════════════════════════
+// Arcade and Daily Drop (PLAN 9). Tap a tool to use it: Swap works straight
+// away; Spatula and Level Up arm, the snacks they can act on get a ring, and
+// the next tap on one of them uses the tool. Tap the tool again, or outside
+// the crate, to cancel. While a tool is armed, nothing drops.
+let armed = null, pendingTool = null;
+const tray = $("tray"), hint = $("hint");
+const GLYPH = {
+  swap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12l-3-3M19 15H7l3 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  spatula: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="9" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 11v1.5l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  levelup: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 17V8M8 11.5 12 7.5l4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function toolGlyph(id) { const f = "ui/tool_" + id + ".webp"; return has(f) ? `<img src="${url(f)}" alt="">` : GLYPH[id]; }
+function updateTray() {
+  const on = !!(game && game.rules && game.rules.tools && realGame);
+  tray.hidden = !on;
+  if (!on) return;
+  const slots = [];
+  for (let i = 0; i < SD.TOOL_EARN.slots; i++) {
+    const id = game.tray[i];
+    slots.push(id
+      ? `<button class="tool${armed === id && game.tray.indexOf(id) === i ? " armed" : ""}" data-tool="${id}" aria-label="${SD.TOOLS[id].name}">${toolGlyph(id)}<small>${SD.TOOLS[id].name}</small></button>`
+      : `<span class="tool empty" aria-hidden="true"></span>`);
+  }
+  tray.innerHTML = slots.join("");
+}
+function disarm() { armed = null; view.armed = null; hint.classList.remove("on"); document.body.classList.remove("arming"); updateTray(); }
+function arm(id) {
+  armed = id; document.body.classList.add("arming");
+  hint.textContent = id === "spatula" ? "Tap a snack to lift it out" : "Tap a snack to make it one bigger";
+  hint.classList.add("on"); updateTray();
+}
+tray.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tool]");
+  if (!b || paused || !game || game.status !== "playing") return;
+  sound.wake();
+  const id = b.dataset.tool;
+  if (armed === id) return disarm();
+  if (!SD.TOOLS[id].target) { disarm(); pendingTool = { id }; return; }
+  arm(id);
+});
+// Which snack a tap means: the one under the finger, or the nearest one it can act on.
+function pickTarget(cx, cy) {
+  const p = view.worldPoint(cx, cy), C = SD.CRATE;
+  if (Math.abs(p.x) > C.half + 0.5 || p.y < -0.6 || p.y > C.height + 1.5) return disarm();
+  let best = null, bestD = 1e9;
+  for (const sn of game.snacks) {
+    if (!game.canUse(armed, sn.id)) continue;
+    const q = sn.body.getPosition(), t = SD.TIERS[sn.tier];
+    const d = sn.fixture.testPoint(p) ? 0 : Math.hypot(q.x - p.x, q.y - p.y) - Math.max(t.halfW, t.halfH);
+    if (d < bestD) { bestD = d; best = sn; }
+  }
+  if (best && bestD < 0.45) { pendingTool = { id: armed, target: best.id }; disarm(); }
+}
 
 // ════ Pop-ups and the chain counter ═════════════════════════════════
 const popLayer = $("pops"), chainEl = $("chain");
@@ -410,6 +481,8 @@ function handle(ev) {
     if (!REDUCED && ev.tier >= 8) hitStop = 0.06;
     if (!REDUCED && ev.tier >= 9) { slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
   }
+  if (ev.type === "tool") { updateTray(); if (ev.why !== "start") toast("New tool: " + SD.TOOLS[ev.id].name); sound.tool("get"); }
+  if (ev.type === "swap" || ev.type === "spatula" || ev.type === "levelup") { updateTray(); sound.tool(ev.type); }
   if (ev.type === "fever") {
     feverMax = ev.time;
     if (ev.start) { sound.fever(); toast("Fever! ×" + SD.FEVER.mult + " for " + SD.FEVER.time + " s"); view.shake = Math.max(view.shake, 0.12); }
@@ -426,6 +499,7 @@ function handle(ev) {
     for (const s of game.snacks) if (!worst || s.over > worst.over) worst = s;
     if (worst) { const p = worst.body.getPosition(); view.pushTo(p.x, p.y, 0.55); }
     feverEl.classList.remove("on"); $("score").classList.remove("hot");
+    disarm(); tray.hidden = true;
     sound.over();
   }
 }
@@ -447,8 +521,10 @@ function frame(now) {
       let drop = null;
       if (BOT) { if (game.canDrop() && game.snacks.every((s) => s.landed)) { aimX = SD.botAim(game, "careful", botRand); drop = aimX; } }
       else if (pendingDrop && game.canDrop()) { drop = aimX; pendingDrop = false; }
+      let tool = null;
+      if (pendingTool && !BOT) { tool = pendingTool; pendingTool = null; drop = null; dropLog.push([steps, "t", tool.id, tool.target == null ? null : tool.target]); }
       if (drop != null && game.status === "playing") dropLog.push([steps, drop]);
-      game.step({ aim: aimX, drop });
+      game.step({ aim: aimX, drop, tool });
       steps++;
       aimX = game.aim;
       for (const ev of game.events) handle(ev);
@@ -459,6 +535,11 @@ function frame(now) {
     view.alpha = Math.min(1, acc / SD.STEP);
     $("score").textContent = game.score;
     feverHud();
+    if (armed) {
+      const ids = new Set(); for (const sn of game.snacks) if (game.canUse(armed, sn.id)) ids.add(sn.id);
+      view.armed = ids;
+      if (!game.tray.includes(armed)) disarm();
+    }
     // Save once the drop has settled a little, not mid-fall.
     if (dirty && game.status === "playing" && game.snacks.every((s) => s.landed)) saveGame();
   } else if (game && game.status === "over") {
@@ -486,6 +567,7 @@ function demo(c) {
   for (let i = 0; i < 60 * 14; i++) { if (game.canDrop() && game.snacks.every((s) => s.landed)) game.step({ drop: SD.botAim(game, "careful", r) }); else game.step({}); }
   game.events.length = 0;
   view.reset(); view.setContainer(c);
+  if (typeof updateTray === "function") updateTray();
 }
 demo(save.container);
 if (BOT) start("classic"); else home();

@@ -57,5 +57,30 @@ await touch("touchEnd");
 await page.waitForTimeout(700);
 check((await state()).drops === before.drops + 1, "release after a long hold drops one snack");
 
+// Tools (Arcade): an armed tool never drops a snack, and a tap on a snack uses it.
+await page.evaluate(() => { localStorage.clear(); });
+await page.reload();
+await page.waitForFunction(() => window.__snackdrop && window.__snackdrop.game);
+await page.tap('[data-mode="arcade"]');
+await page.tap('[data-start="spatula"]');
+await page.tap('[data-go="arcade"]');
+await page.waitForTimeout(400);
+for (const x of [110, 300, 200]) { await touch("touchStart", x, 500); await touch("touchEnd"); await page.waitForTimeout(900); }
+await page.waitForTimeout(1200);
+const t0 = await page.evaluate(() => { const g = window.__snackdrop.game; return { drops: g.drops, n: g.snacks.length, tray: g.tray.slice() }; });
+check(t0.tray.includes("spatula"), "Arcade starts with the chosen tool (" + t0.tray + ")");
+await page.tap('[data-tool="spatula"]');
+await page.waitForTimeout(200);
+check(await page.evaluate(() => document.body.classList.contains("arming")), "tapping Spatula arms it");
+// A tap in empty space inside the crate: nothing drops, still armed.
+await touch("touchStart", 206, 330); await touch("touchEnd"); await page.waitForTimeout(700);
+const t1 = await page.evaluate(() => ({ drops: window.__snackdrop.game.drops, arming: document.body.classList.contains("arming") }));
+check(t1.drops === t0.drops && t1.arming, "a tap on empty space with a tool armed drops nothing and stays armed");
+// A tap on a snack lifts it out.
+const at = await page.evaluate(() => { const g = window.__snackdrop.game, s = g.snacks.find((x) => x.tier <= 6), p = s.body.getPosition(); return window.__snackdrop.view.toScreen(p.x, p.y); });
+await touch("touchStart", at.x, at.y); await touch("touchEnd"); await page.waitForTimeout(700);
+const t2 = await page.evaluate(() => { const g = window.__snackdrop.game; return { drops: g.drops, n: g.snacks.length, tray: g.tray.slice(), arming: document.body.classList.contains("arming") }; });
+check(t2.drops === t0.drops && t2.n === t0.n - 1 && !t2.tray.includes("spatula") && !t2.arming, `a tap on a snack uses the Spatula and drops nothing (${t0.n} -> ${t2.n} snacks)`);
+
 await browser.close(); server.close();
 process.exit(fails ? 1 : 0);

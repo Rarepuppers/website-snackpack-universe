@@ -18,7 +18,7 @@ ok(await page.evaluate(() => window.__snackdrop.save.bests["pantry:classic"].sco
 await page.click("text=Play");
 for (const x of [120, 300, 200, 160, 260, 220]) { await page.mouse.click(x, 400); await page.waitForTimeout(900); }
 await page.waitForTimeout(1500);
-const before = await page.evaluate(() => { const g = window.__snackdrop.game; return { score: g.score, drops: g.drops, n: g.snacks.length, current: g.current, next: g.next }; });
+const before = await page.evaluate(() => { const g = window.__snackdrop.game; return { mode: g.mode, score: g.score, drops: g.drops, n: g.snacks.length, current: g.current, next: g.next, tray: g.tray.join(",") }; });
 // Leaving the page (switching app, closing the tab) saves the game.
 await page.evaluate(() => { Object.defineProperty(document, "hidden", { value: true, configurable: true }); document.dispatchEvent(new Event("visibilitychange")); });
 const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("sp_snackdrop_v1")).resume);
@@ -33,7 +33,7 @@ await page2.waitForFunction(() => window.__snackdrop && window.__snackdrop.game)
 ok(await page2.isVisible("text=Continue"), "menu offers Continue");
 await page2.click("text=Continue");
 await page2.waitForTimeout(100);
-const after = await page2.evaluate(() => { const g = window.__snackdrop.game; return { score: g.score, drops: g.drops, n: g.snacks.length, current: g.current, next: g.next }; });
+const after = await page2.evaluate(() => { const g = window.__snackdrop.game; return { mode: g.mode, score: g.score, drops: g.drops, n: g.snacks.length, current: g.current, next: g.next, tray: g.tray.join(",") }; });
 ok(JSON.stringify(after) === JSON.stringify(before), `same game back: ${JSON.stringify(before)} -> ${JSON.stringify(after)}`);
 await page2.mouse.click(200, 400); await page2.waitForTimeout(800);
 ok(await page2.evaluate(() => window.__snackdrop.game.drops) === before.drops + 1, "can keep dropping");
