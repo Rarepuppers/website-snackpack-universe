@@ -798,7 +798,8 @@ function winterBuilding(workshop, shadows) {
 }
 
 export class World3D {
-  constructor(canvas, qualityName) {
+  // autoStart: the tier Auto starts on (from the phone, or where Auto settled last time).
+  constructor(canvas, qualityName, autoStart) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance", stencil: false });
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -806,8 +807,12 @@ export class World3D {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(30, 1, 1, 900);
     this.look = { driver: "corgi", topper: "", upgrades: {} };
-    this.quality = QUALITY[qualityName] || QUALITY.high;
     this.autoQuality = !QUALITY[qualityName];
+    this.quality = QUALITY[qualityName] || QUALITY[autoStart] || QUALITY.high;
+    // Auto steps up at most once a session, between runs, after a minute of smooth
+    // driving; a tier that then drops straight back becomes the ceiling.
+    this.autoCeiling = null; this.fastTime = 0; this.driveTime = 0; this.triedUp = false; this.upReady = false; this.upAt = null;
+    this.onCeiling = null;
     this.width = 1; this.height = 1; this.showView = "home";
     this.camX = 0; this.camY = 0; this.shake = 0; this.time = 0;
     this.fpsTime = 0; this.fpsFrames = 0;
@@ -821,9 +826,9 @@ export class World3D {
     this.renderer.shadowMap.enabled = q.shadows;
     this.renderer.setSize(this.width, this.height, false);
   }
-  setQuality(name) {
+  setQuality(name, autoStart) {
     this.autoQuality = !QUALITY[name];
-    this.quality = QUALITY[name] || QUALITY.high;
+    this.quality = QUALITY[name] || QUALITY[autoStart] || QUALITY.high;
     this.applyQuality();
     this.lastBuild && this.rebuild();
   }
@@ -1110,6 +1115,7 @@ export class World3D {
 
   // ─── Route items ────────────────────────────────────────────────
   buildRoute(game) {
+    if (this.upReady) this.stepUp();
     this.lastBuild = { game };
     const t = game.terrain;
     this.setStage(t, game.regionIndex, game.delivery.id, game.delivery.snowy || game.delivery.winter, game.delivery.twist === "blizzard", game.delivery.light);
@@ -1209,6 +1215,7 @@ export class World3D {
     }) }));
     sign.position.set(t.zoneStart, zy + 10.6, 3.3);
     scene.add(sign);
+    this.buildSpots(game);
 
     const p = game.truck.getPosition();
     this.camX = p.x + 2; this.camY = p.y; this.shake = 0; this.zoomOut = 0;
@@ -1269,6 +1276,7 @@ export class World3D {
       } else if (f.type === "pickup") {
         strip(glow, f.x0, f.x1, "#6fe08f", 0.04, 4.7);
         const cx = (f.x0 + f.x1) / 2, y = SH.heightAt(t, cx);
+        if (game.bonusOn) this.stopSign(game.delivery, cx, y);
         if (stand("road/pickup_stand", cx, -5.8)) return;
         kit.add(box(6, 3.2, 3), "#efe2c6", m(cx, y + 1.6, -6.5));
         kit.add(box(6.6, 0.4, 3.6), "#3f9a5a", m(cx, y + 3.4, -6.5));
@@ -1750,6 +1758,45 @@ export class World3D {
     }
   }
 
+  // Hold for more: a roadside sign naming the stop, readable from the side camera.
+  stopSign(d, x, y) {
+    const name = SH.stopName(d).toUpperCase();
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 1.7), new THREE.MeshBasicMaterial({ map: canvasTex(512, 168, (c, w, h) => {
+      c.fillStyle = "#2f7d4a"; c.fillRect(0, 0, w, h);
+      c.fillStyle = "#fff6e0"; c.fillRect(8, 8, w - 16, 4); c.fillRect(8, h - 12, w - 16, 4);
+      c.textAlign = "center"; c.textBaseline = "middle";
+      c.font = "800 64px sans-serif"; c.fillText(name, w / 2, 62);
+      c.fillStyle = "#ffe08a"; c.font = "700 40px sans-serif"; c.fillText("Stay to load more", w / 2, 126);
+    }) }));
+    // Before the mat on the far verge, so it is read on the way in and never hides the truck.
+    plate.position.set(x - 9.5, y + 3.1, -3.6);
+    this.scene.add(plate);
+  }
+
+  // Parking Spots: two rings on the depot floor where the front wheel should rest,
+  // each with a short marker post on the far side so they read from the side camera.
+  buildSpots(game) {
+    this.spotMeshes = [];
+    if (!game.parkable) return;
+    const t = game.terrain;
+    t.spots.forEach((sp) => {
+      const deep = sp.kind === "deep", tint = deep ? "#ffc93a" : "#5fd6c4", y = SH.heightAt(t, sp.x);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.46, 0.6, 32), new THREE.MeshBasicMaterial({ color: tint, transparent: true, opacity: 0.7, depthWrite: false, fog: false }));
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(sp.x, y + 0.05, 1.0);
+      const far = ring.clone(); far.material = ring.material; far.position.z = -1.0;
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.3, 8), new THREE.MeshStandardMaterial({ color: "#d8d2c6" }));
+      post.position.set(sp.x, y + 0.65, -2.7);
+      const disc = new THREE.Mesh(new THREE.CircleGeometry(0.42, 24), new THREE.MeshBasicMaterial({ map: canvasTex(128, 128, (c, w, h) => {
+        c.fillStyle = tint; c.beginPath(); c.arc(w / 2, h / 2, w / 2 - 2, 0, Math.PI * 2); c.fill();
+        c.fillStyle = "#2a2a2e"; c.font = "900 74px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("P", w / 2, h / 2 + 4);
+      }) }));
+      disc.position.set(sp.x, y + 1.55, -2.66);
+      [ring, far, post, disc].forEach((o) => this.scene.add(o));
+      this.spotMeshes.push({ kind: sp.kind, mat: ring.material, base: col(tint), lit: col("#ffffff") });
+    });
+  }
+
   frameGame(game, dt) {
     this.showcasing = false;
     this.time += dt;
@@ -1772,6 +1819,10 @@ export class World3D {
       this.puff(p.x + c * bx, p.y + s * bx - 0.1, 0.5, -1 - Math.random(), 0.5, 0, 0.1, 0.5, game.spec.runners ? (this.sparkle ||= col("#ffcd54")) : (this.smoke ||= col("#8d8a86")));
     }
     if (this.zoneMesh) this.zoneMesh.material.opacity = 0.72 + Math.sin(this.time * 4) * 0.25;
+    if (this.spotMeshes && this.spotMeshes.length) {
+      const on = game.spotAt();
+      this.spotMeshes.forEach((sp) => { sp.mat.color.copy(on === sp.kind ? sp.lit : sp.base); sp.mat.opacity = on === sp.kind ? 0.95 : 0.7; });
+    }
     this.animateSky(dt);
     this.stepParticles(dt);
     this.renderer.render(this.scene, this.camera);
@@ -1781,11 +1832,18 @@ export class World3D {
   // Steps quality down if the phone cannot hold a steady frame rate.
   watchFrameRate(dt) {
     if (!this.autoQuality) return;
+    this.driveTime += dt;
     this.fpsTime += dt; this.fpsFrames += 1;
     if (this.fpsTime < 3) return;
-    const fps = this.fpsFrames / this.fpsTime;
+    const fps = this.fpsFrames / this.fpsTime, span = this.fpsTime;
     this.fpsTime = 0; this.fpsFrames = 0;
+    this.fastTime = fps >= 55 ? this.fastTime + span : 0;
+    if (this.fastTime >= 60 && !this.triedUp && this.quality.level < 2 && (this.autoCeiling == null || this.quality.level < this.autoCeiling)) this.upReady = true;
     if (fps >= 34) return;
+    this.upReady = false; this.fastTime = 0;
+    // A step up that could not hold for 30 s of driving: never try that tier again.
+    if (this.upAt != null && this.driveTime - this.upAt < 30) { this.autoCeiling = this.quality.level; this.onCeiling && this.onCeiling(this.autoCeiling); }
+    this.upAt = null;
     const next = this.quality === QUALITY.high ? QUALITY.medium : this.quality === QUALITY.medium ? QUALITY.low : null;
     if (!next) return;
     this.quality = next;
@@ -1794,6 +1852,18 @@ export class World3D {
       this.sun.castShadow = false;
       this.scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; });
     }
+    this.onQualityChange && this.onQualityChange(next.name);
+  }
+
+  // One tier up, applied as the next road is built, never mid-drive.
+  stepUp() {
+    this.upReady = false; this.triedUp = true;
+    const next = this.quality === QUALITY.low ? QUALITY.medium : this.quality === QUALITY.medium ? QUALITY.high : null;
+    if (!next) return;
+    this.quality = next; this.upAt = this.driveTime; this.fastTime = 0;
+    this.applyQuality();
+    this.sun.castShadow = next.shadows;
+    this.scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; });
     this.onQualityChange && this.onQualityChange(next.name);
   }
 

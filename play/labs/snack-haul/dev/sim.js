@@ -9,6 +9,8 @@
 // node play/labs/snack-haul/dev/sim.js testdrives every Test Drive with learners and careful drivers
 // node play/labs/snack-haul/dev/sim.js topup      the Top-Up Run reaches its target stops
 // node play/labs/snack-haul/dev/sim.js lasso      the Lucky Lasso fires once and ghosts replay it
+// node play/labs/snack-haul/dev/sim.js bonus      Hold for more: normal bots unchanged, greedy bots never stuck, ghosts replay
+// node play/labs/snack-haul/dev/sim.js park       Parking Spots: the careful bot reaches the deep spot without wall hits
 // node play/labs/snack-haul/dev/sim.js side       Back Roads, Extra Mile and Old Crust's orders: drivers and ghost replays
 const SH = require("../engine.js");
 
@@ -16,14 +18,14 @@ if (process.env.BAL) Object.assign(SH.BALANCE, JSON.parse(process.env.BAL));
 
 // target = cruising speed. A careful driver slows for crests and dips ahead.
 function drive(id, upgrades, target, maxSeconds, truck, delivery, watch, opts = {}) {
-  const g = SH.createGame({ id, delivery, upgrades, truck });
+  const g = SH.createGame({ id, delivery, upgrades, truck, bonus: !!opts.bonus });
   const log = [];
   const t = g.terrain;
   let frames = 0;
   while (g.status === "driving" && frames < maxSeconds * 60) {
     frames++;
     const pos = g.truck.getPosition(), vx = g.truck.getLinearVelocity().x;
-    const input = SH.botInput(g, target);
+    const input = SH.botInput(g, target, opts.bot);
     if (opts.noBrake) {
       input.brake = false;
       // No brakes: lift off early and coast into the depot.
@@ -456,6 +458,77 @@ function side() {
   process.exitCode = bad ? 1 : 0;
 }
 
+// Hold for more. 1) A bot that drives off after loading gets the same run with the
+// feature on, so medals, rivals and old ghosts stay valid. 2) A greedy bot that waits
+// for every bonus load must never get stuck. 3) A greedy run replays exactly as a ghost.
+function bonus() {
+  const full = { engine: 5, suspension: 5, tyres: 5, straps: 5, tank: 5 };
+  const roads = SH.DELIVERIES.filter((d) => d.pickup).concat(SH.SIDE.filter((d) => d.pickup));
+  let bad = 0, same = 0, taken = 0, kept = 0, starsLost = 0, n = 0;
+  for (const d of roads) {
+    const fails = [];
+    for (const speed of [5, 7]) {
+      const off = drive(null, base, speed, 200, "pickup", d), on = drive(null, base, speed, 200, "pickup", d, false, { bonus: true });
+      if (off.status === on.status && off.kept === on.kept && Math.abs(off.time - on.time) < 1e-9 && on.bonusTaken === 0) same++;
+      else fails.push("normal run changed (" + on.bonusTaken + " bonus)");
+    }
+    const row = [];
+    for (const [label, up] of [["L0", base], ["L5", full]]) {
+      const plain = drive(null, up, 6, 200, "pickup", d);
+      const r = drive(null, up, 6, 260, "pickup", d, false, { bonus: true, bot: { greedy: true } });
+      n++; taken += r.bonusTaken; kept += r.bonusKept;
+      if (r.stars < plain.stars) starsLost++;
+      if ((r.reason || "").startsWith("timeout")) fails.push(label + " greedy stuck");
+      // A greedy driver that reaches the stop must be handed all three.
+      if (r.bonusTaken !== 3 && r.bonusTaken + (r.missedPickup ? 1 : 0) > 0) fails.push(label + " took " + r.bonusTaken);
+      row.push(label + " " + cell(plain, 9) + "-> " + cell(r, 9) + " bonus " + r.bonusKept + "/" + r.bonusTaken);
+    }
+    // Ghost replay of a greedy run.
+    const g = SH.createGame({ delivery: d, upgrades: base, truck: "pickup", bonus: true });
+    for (let k = 0; g.status === "driving" && k < 260 * 60; k++) g.step(SH.botInput(g, 6, { greedy: true }));
+    const a = SH.report(g), b = SH.ghostPath({ delivery: d, upgrades: base, truck: "pickup", bonus: true }, g.rec).report;
+    if (!(a.status === b.status && a.kept === b.kept && a.bonusKept === b.bonusKept && Math.abs(a.time - b.time) < 1e-9)) fails.push("GHOST DIFFERS");
+    if (fails.length) bad++;
+    console.log(d.id.padEnd(13), row.join("   "), fails.join(", "));
+  }
+  console.log(`roads ${roads.length}, failing ${bad}; normal runs unchanged ${same}/${roads.length * 2}; greedy bonus kept ${kept}/${taken}; greedy runs with fewer stars ${starsLost}/${n}`);
+  // Top-Up Run: the greedy bot stacks higher than the plain one.
+  for (const L of [0, 5]) {
+    const t = SH.topUpRun(0, "2026-12-01"), up = SH.rivalUpgrades(L);
+    const p = drive(null, up, 5, 600, "pickup", t), q = drive(null, up, 5, 600, "pickup", t, false, { bonus: true, bot: { greedy: true } });
+    console.log("top-up L" + L + " plain: stop", p.stops, "score", p.score, "| greedy: stop", q.stops, "score", q.score, "bonus", q.bonusTaken);
+  }
+  process.exitCode = bad ? 1 : 0;
+}
+
+// Parking Spots: the careful bot aims its front wheel at each spot on every road.
+function park() {
+  const full = { engine: 5, suspension: 5, tyres: 5, straps: 5, tank: 5 };
+  const trucks = SH.TRUCKS.map((t) => t.id);
+  let bad = 0, deep = 0, near = 0, runs = 0, walls = 0, plainParks = 0, judged = 0; const misses = [];
+  for (const d of SH.DELIVERIES) {
+    const row = [];
+    for (const truck of trucks) {
+      // A second try at a calmer cruise, as a player would retry a road.
+      let r = drive(d.id, full, 6, 200, truck, d, false, { bot: { park: "deep" } });
+      if (r.parked !== "deep") r = drive(d.id, full, 4.5, 200, truck, d, false, { bot: { park: "deep" } });
+      runs++; if (r.parked === "deep") deep++; if (r.dockHit) walls++;
+      let p = drive(d.id, full, 6, 200, truck, d, false, { bot: { park: "near" } });
+      if (p.parked !== "near") p = drive(d.id, full, 4.5, 200, truck, d, false, { bot: { park: "near" } });
+      if (p.parked === "near") near++;
+      const plain = drive(d.id, full, 6, 200, truck, d);
+      if (plain.parked) plainParks++;
+      row.push(truck.slice(0, 4) + (r.parked === "deep" ? " D" : r.status === "done" ? " -" : " F") + (p.parked === "near" ? "N" : "-") + (r.dockHit ? "W" : " "));
+      // Judged only where this truck finishes the road anyway at this level.
+      if (plain.status === "done") { judged++; if (r.dockHit || p.dockHit || r.parked !== "deep" || p.parked !== "near") { bad++; misses.push(`${d.id} ${truck}: deep ${r.status} ${r.reason || ""} ${r.parked}, near ${p.status} ${p.reason || ""} ${p.parked}`); } }
+    }
+    console.log(d.id.padEnd(12), row.join("  "));
+  }
+  console.log(`runs ${runs}: deep ${deep}, near ${near}, wall hits ${walls}; finishable ${judged}, missed a spot ${bad}; plain bot parked by chance ${plainParks}`);
+  misses.forEach((m) => console.log("  missed:", m));
+  process.exitCode = bad || walls ? 1 : 0;
+}
+
 const mode = process.argv[2];
 if (mode === "career") career();
 else if (mode === "late") late();
@@ -473,6 +546,8 @@ else if (mode === "testdrives") testDrives();
 else if (mode === "topup") topup();
 else if (mode === "lasso") lasso();
 else if (mode === "side") side();
+else if (mode === "bonus") bonus();
+else if (mode === "park") park();
 else if (["winter","northpole","advent","sleigh","workshop"].includes(mode)) {
   import("./check-winter.mjs").catch((error) => { console.error(error); process.exitCode=1; });
 }
