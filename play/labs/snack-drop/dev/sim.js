@@ -10,8 +10,8 @@
 const SD = require("../engine.js");
 if (process.env.BAL) Object.assign(SD.BALANCE, JSON.parse(process.env.BAL));
 
-function play(seed, style, container, maxDrops = 2000) {
-  const g = SD.createGame({ seed, container });
+function play(seed, style, container, mode = "classic", maxDrops = 2000) {
+  const g = SD.createGame({ seed, container, mode });
   const rand = SD.rng(seed * 7 + 3);
   let frames = 0;
   while (g.status === "playing" && g.drops < maxDrops && frames < 60 * 60 * 120) {
@@ -21,7 +21,7 @@ function play(seed, style, container, maxDrops = 2000) {
     const drop = g.canDrop() && (settled || g.wait < -0.6) ? SD.botAim(g, style, rand) : null;
     g.step({ drop });
   }
-  return { score: g.score, drops: g.drops, best: g.best, made: g.made, time: g.time };
+  return { score: g.score, drops: g.drops, best: g.best, made: g.made, time: g.time, fevers: g.fevers, maxChain: g.maxChain };
 }
 
 function pct(list, p) { const s = [...list].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(p * s.length))]; }
@@ -93,15 +93,20 @@ if (arg === "same") {
   process.exit(ok ? 0 : 1);
 }
 // node dev/sim.js band [n]   every container: the careful bot's median must sit
-// inside 150 to 280 drops and the random bot must stay clearly worse (PLAN 4a).
+// inside 150 to 280 drops, the random bot must stay clearly worse (PLAN 4a), and
+// Pro must be clearly shorter than Classic (under 90%) but at least 60 drops.
 if (arg === "band") {
   const n = Number(process.argv[3]) || 30;
   let bad = 0;
   for (const id of SD.CONTAINER_ORDER) {
-    const med = (style) => pct(Array.from({ length: n }, (_, i) => play(i * 101, style, id).drops), 0.5);
-    const c = med("careful"), r = med("random"), ok = c >= 150 && c <= 280 && r <= c * 0.8;
+    const runs = (style, mode) => Array.from({ length: n }, (_, i) => play(i * 101, style, id, mode));
+    const cr = runs("careful", "classic"), pr = runs("careful", "pro");
+    const c = pct(cr.map((x) => x.drops), 0.5), r = pct(runs("random", "classic").map((x) => x.drops), 0.5), p = pct(pr.map((x) => x.drops), 0.5);
+    // Pro must be clearly harder, but still a game a good player can play.
+    const ok = c >= 150 && c <= 280 && r <= c * 0.8 && p < c * 0.9 && p >= 60;
     if (!ok) bad++;
-    console.log(`  ${id.padEnd(10)} careful median ${c}  random median ${r}  ${ok ? "in band" : "OUT OF BAND"}`);
+    const fev = (cr.reduce((a, x) => a + x.fevers, 0) / n).toFixed(1), sc = pct(cr.map((x) => x.score), 0.5);
+    console.log(`  ${id.padEnd(10)} careful ${c}  random ${r}  pro ${p}   classic score median ${sc}, fevers per game ${fev}  ${ok ? "in band" : "OUT OF BAND"}`);
   }
   console.log(bad ? `band: ${bad} container(s) out` : "band: OK");
   process.exit(bad ? 1 : 0);

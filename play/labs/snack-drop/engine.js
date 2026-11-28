@@ -13,7 +13,7 @@
   var STEP = 1 / 60;
   // Bump whenever a change alters how a game plays out (physics, rules, scoring).
   // Saves, bests and share cards carry it, so old results are never mixed with new ones.
-  var RULES_VERSION = 1;
+  var RULES_VERSION = 2;  // 2: Fever and the x4 cap on multipliers (28 Nov 2026)
 
   // The crate. x = 0 is the middle, y = 0 is the floor.
   var CRATE = { half: 3.3, wall: 0.3, height: 10.4, line: 8.2, dropY: 9.35 };
@@ -44,6 +44,19 @@
     market:    { id: "market",    name: "Market Crate", free: false, line: 8.2, floor: 0.8,  wall: 0.95, grip: 1.0,  blurb: "Rough slats: snacks stay where they land" }
   };
   var CONTAINER_ORDER = ["pantry", "toybox", "icecooler", "market"];
+
+  // Modes (PLAN 4, 4b). Classic is pure; Arcade adds the tools, specials and
+  // helper cameos as they are built; Pro is Classic with less room, less time
+  // and no preview of the next snack. The Daily Drop plays Arcade rules.
+  var MODES = {
+    classic: { id: "classic", name: "Classic" },
+    arcade:  { id: "arcade",  name: "Arcade", tools: true, specials: true, helpers: true },
+    pro:     { id: "pro",     name: "Pro", lineDrop: 0.7, overLimit: 1.0, hideNext: true },
+    daily:   { id: "daily",   name: "Daily Drop", tools: true, specials: true, helpers: true }
+  };
+  // Fever (PLAN 5): one drop that sets off 3 or more merges.
+  var FEVER = { merges: 3, time: 8, extend: 3, max: 15, mult: 1.5 };
+  var MAX_MULT = 4;  // Chain x Fever never goes over this
 
   // The snack ladder. Two of the same merge into the next one. Shapes matter:
   // round snacks roll into gaps, square ones stack, the wedge tips over.
@@ -109,6 +122,7 @@
   function createGame(opts) {
     opts = opts || {};
     var box = CONTAINERS[opts.container] || CONTAINERS.pantry;
+    var rules = MODES[opts.mode] || MODES.classic;
     var rand = rng(opts.seed == null ? 1 : opts.seed);
     var world = new planck.World({ gravity: { x: 0, y: -BALANCE.gravity }, allowSleep: true });
     var crate = world.createBody();
@@ -132,7 +146,9 @@
     crate.setUserData({ crate: true });
 
     var g = {
-      mode: opts.mode || "classic", seed: opts.seed, world: world, container: box.id, line: box.line,
+      mode: rules.id, rules: rules, seed: opts.seed, world: world, container: box.id,
+      line: box.line - (rules.lineDrop || 0), overLimit: rules.overLimit || BALANCE.overLimit,
+      fever: 0, fevers: 0, dropMerges: 0, maxChain: 0,
       snacks: [], nextId: 1, time: 0, status: "playing",
       score: 0, drops: 0, merges: 0, best: 0, made: TIERS.map(function () { return 0; }),
       current: pick(rand), next: pick(rand), aim: 0, wait: 0,
@@ -176,6 +192,7 @@
       x = clampAim(x, tier);
       makeBody(tier, x, CRATE.dropY, 0, { x: 0, y: -1 });
       g.drops++;
+      g.dropMerges = 0;
       g.events.push({ type: "drop", tier: tier, x: x });
       g.current = g.next; g.next = pick(rand); g.wait = BALANCE.dropGap;
       return true;
@@ -200,11 +217,19 @@
         g.lastMerge = g.time;
         remove(a); remove(b);
         g.merges++;
-        var mult = 1 + 0.25 * (g.chain - 1);
+        if (g.chain > g.maxChain) g.maxChain = g.chain;
+        // Fever: the third merge from one drop starts it, or adds time to it.
+        if (++g.dropMerges === FEVER.merges) {
+          var started = g.fever <= 0;
+          g.fever = started ? FEVER.time : Math.min(FEVER.max, g.fever + FEVER.extend);
+          if (started) g.fevers++;
+          g.events.push({ type: "fever", start: started, time: g.fever, x: x, y: y });
+        }
+        var mult = Math.min(MAX_MULT, (1 + 0.25 * (g.chain - 1)) * (g.fever > 0 ? FEVER.mult : 1));
         if (tier === TOP) {
           var bonus = Math.round(HAMPER_BONUS * mult);
           g.score += bonus;
-          g.events.push({ type: "packed", tier: tier, x: x, y: y, points: bonus, chain: g.chain });
+          g.events.push({ type: "packed", tier: tier, x: x, y: y, points: bonus, chain: g.chain, mult: mult });
           continue;
         }
         var t = TIERS[tier + 1];
@@ -215,7 +240,7 @@
         made.landed = true;
         var points = Math.round(SCORE[tier + 1] * mult);
         g.score += points;
-        g.events.push({ type: "merge", tier: tier + 1, x: x, y: y, points: points, chain: g.chain, id: made.id });
+        g.events.push({ type: "merge", tier: tier + 1, x: x, y: y, points: points, chain: g.chain, mult: mult, id: made.id });
       }
     }
 
@@ -228,6 +253,7 @@
       if (g.status !== "playing") { world.step(STEP); return; }
       g.time += STEP;
       if (g.wait > 0) g.wait -= STEP;
+      if (g.fever > 0) { g.fever -= STEP; if (g.fever <= 0) { g.fever = 0; g.events.push({ type: "feverEnd" }); } }
       if (input.drop != null) drop(input.drop);
       world.step(STEP);
       merges();
@@ -236,11 +262,11 @@
         var s = g.snacks[i];
         if (!s.landed && g.time - s.born > BALANCE.landGrace) s.landed = true;
         if (!s.landed) continue;
-        if (topOf(s) > box.line) s.over += STEP; else s.over = 0;
+        if (topOf(s) > g.line) s.over += STEP; else s.over = 0;
         if (s.over > worst) worst = s.over;
       }
-      g.danger = Math.min(1, worst / BALANCE.overLimit);
-      if (worst >= BALANCE.overLimit) {
+      g.danger = Math.min(1, worst / g.overLimit);
+      if (worst >= g.overLimit) {
         g.status = "over";
         g.events.push({ type: "over", score: g.score });
       }
@@ -252,7 +278,7 @@
     // bit-for-bit continuation, which only the drop-log replay is).
     function snapshot() {
       return {
-        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
         merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
         chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
         snacks: g.snacks.map(function (s) {
@@ -268,7 +294,7 @@
         s.body.setAngularVelocity(a[7]); s.id = a[0]; s.born = a[8]; s.landed = !!a[9]; s.over = a[10];
       });
       rand.set(r.rand);
-      ["time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { g[k] = r[k]; });
+      ["fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
       g.made = r.made.slice();
     }
 
@@ -306,7 +332,7 @@
   }
 
   return {
-    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
+    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, MODES: MODES, FEVER: FEVER, MAX_MULT: MAX_MULT, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
     DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, hash: hash, rng: rng
   };
 });

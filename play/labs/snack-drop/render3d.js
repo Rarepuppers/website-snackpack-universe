@@ -334,7 +334,11 @@ export class Renderer {
     K.add(mesh(new THREE.BoxGeometry(40, 1, 8), mat(L.counter, { roughness: 0.6 }), 0, -Wl * 2 - 0.5, 0));
 
     // The container: back boards, sides, floor. The front stays open.
-    const side = mat(L.side, { roughness: L.rough }), cap = mat(L.cap, { roughness: L.rough });
+    const side = mat(L.side, { roughness: L.rough });
+    // The caps are the code-built "trim": they glow during Fever. Their own
+    // material (not the shared cache) so the glow touches nothing else.
+    const cap = new THREE.MeshStandardMaterial({ color: L.cap, roughness: L.rough });
+    this.trimMats = [cap];
     C.add(mesh(new THREE.BoxGeometry(2 * H + 2 * Wl, 2 * Wl, depth + 0.4), mat(L.floor, { roughness: L.rough }), 0, -Wl, 0));
     if (L.slats) {
       // Rough market crate: narrow slats with dark gaps between them.
@@ -390,6 +394,12 @@ export class Renderer {
       const m = model(name);
       m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
       this[key] = m; group.visible = false; this.scene.add(m);
+      if (key === "crateModel") {
+        // An authored container's Fever glow is its material named "trim".
+        const trims = [];
+        m.traverse((o) => { if (o.isMesh && o.material && o.material.name === "trim") { o.material = o.material.clone(); trims.push(o.material); } });
+        if (trims.length) this.trimMats = trims;
+      }
     };
     swap("containers/container_" + this.containerId, this.crateGroup, "crateModel");
     swap("backdrops/backdrop_" + this.containerId, this.kitchenGroup, "kitchenModel");
@@ -470,7 +480,15 @@ export class Renderer {
     this.nextShow.scale.setScalar(ns);
     this.nextShow.position.set(0, CRATE.height + 2.9, 0);
     this.nextShow.rotation.y = Math.sin(performance.now() / 700) * 0.45;
-    this.nextShow.visible = g.status === "playing";
+    this.nextShow.visible = g.status === "playing" && !(g.rules && g.rules.hideNext);
+    // The line sits where this game's rules put it (Pro is lower).
+    if (this.line.position.y !== g.line) { this.line.position.y = g.line; for (const d of this.dashes) d.position.y = g.line; }
+    // Fever: the trim glows warm gold and pulses.
+    const fv = g.fever > 0 ? Math.min(1, g.fever / 1.2) * (0.65 + 0.35 * Math.sin(performance.now() / 120)) : 0;
+    if (fv !== this.lastFever) {
+      this.lastFever = fv;
+      for (const m of this.trimMats || []) { m.emissive.set("#ffb020"); m.emissiveIntensity = fv * 1.6; }
+    }
 
     // The line glows as a snack sits over it.
     const pulse = g.danger > 0 ? 0.5 + 0.5 * Math.sin(performance.now() / 90) : 0;
@@ -480,7 +498,7 @@ export class Renderer {
     let worst = null;
     for (const s of g.snacks) if (s.over > 0 && (!worst || s.over > worst.over)) worst = s;
     if (worst && g.status === "playing") {
-      const left = Math.max(0, 1 - worst.over / SD.BALANCE.overLimit), m = this.meshes.get(worst.id), t = TIERS[worst.tier];
+      const left = Math.max(0, 1 - worst.over / g.overLimit), m = this.meshes.get(worst.id), t = TIERS[worst.tier];
       this.ring.geometry = this.ringGeos[Math.round(left * this.ringSteps)];
       this.ring.visible = true;
       if (m) this.ring.position.set(m.position.x, m.position.y, 1.2);
