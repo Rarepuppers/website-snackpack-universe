@@ -52,9 +52,13 @@ const cameos = {
   "cameo_pork-ulele": ["body", "head", "leg_l", "leg_r", "prop"],
   "cameo_professor-hooten": ["body", "head", "eyes_glow"],
   "cameo_ted-e-bear": ["body", "head", "arm_r", "button"],
-  booklava_driver: [], truck_van: [],
+  booklava_driver: [], truck_van: [], wheel_van: [],
 };
-for (const name of Object.keys(cameos)) glb(name.includes("corgi") ? 1 : 4, "cameos", name, 250000, 3000);
+for (const name of Object.keys(cameos)) {
+  // D4 calls for the existing Snack Haul van as an exact copy.
+  const reusedVan = name === "truck_van";
+  glb(name.includes("corgi") ? 1 : 4, "cameos", name, reusedVan ? 339412 : 250000, reusedVan ? 4750 : 3000);
+}
 for (const name of ["drop_soft", "drop_clack", "merge_small", "merge_big"]) audio(1, name, name.startsWith("merge") ? .4 : 1.5);
 for (const name of ["chain_tick", "game_over", "new_best", "phew", "danger_creak", "ui_tap",
   "tool_swap", "tool_spatula", "tool_levelup", "fever_start", "fever_end", "special_sprinkle",
@@ -128,6 +132,8 @@ function snack(file, root, data, bounds) {
 
 function container(file, root, data) {
   const id = path.basename(file, ".glb").slice("container_".length);
+  const wallAt = (y) => id === "hopper" ? 2.10 + y * (3.30 - 2.10) / CRATE.height
+    : id === "toybox" && y < .6 ? 2.70 + Math.sqrt(.6 ** 2 - (y - .6) ** 2) : CRATE.half;
   for (const name of ["back", "floor", "side_l", "side_r", "post_l", "post_r"]) {
     expect(root.getObjectByName(name), `${file} lacks ${name}`);
   }
@@ -139,8 +145,7 @@ function container(file, root, data) {
     }
     const levels = id === "toybox" ? [.04, .15, .30, .45, .5, .59, 5, 10] : [.5, 5, 10];
     for (const y of levels) {
-      const half = id === "hopper" ? 2.10 + y * (3.30 - 2.10) / CRATE.height
-        : id === "toybox" && y < .6 ? 2.70 + Math.sqrt(.6 ** 2 - (y - .6) ** 2) : CRATE.half;
+      const half = wallAt(y);
       for (const z of [-.8, 0, .8]) {
         const wall = sample(data, v(0, y, z), v(sign, 0, 0));
         expect(wall && close(wall.x, sign * half, .02), `${file} ${side} wall at y=${y}, z=${z} is ${wall?.x.toFixed(3) || "missing"}, expected ${(sign * half).toFixed(3)}`);
@@ -158,12 +163,13 @@ function container(file, root, data) {
   const trimArea = trim.reduce((area, mesh) => area + projected(mesh), 0);
   const frontArea = data.reduce((area, mesh) => area + projected(mesh), 0);
   expect(trimArea >= frontArea * .04, `${file} trim accounts for less than 4% of the projected front`);
-  for (const [x, y] of [[0, 1], [0, 5], [0, 10], [-3, 5], [3, 5]]) {
+  for (const [x, y] of [[0, 1], [0, 5], [0, 10], [-wallAt(5) + .3, 5], [wallAt(5) - .3, 5]]) {
     const surface = sample(data, v(x, y, 2), v(0, 0, -1));
     expect(!surface || surface.z <= 1.05001, `${file} obstructs its open front near ${x}, ${y}`);
   }
   for (const { vertices } of data) {
-    expect(!vertices.some(({ x, y, z }) => Math.abs(x) < CRATE.half - .001 && y > 0 && z > 1.05001),
+    expect(!vertices.some(({ x, y, z }) => y > 0 && y <= CRATE.height &&
+      Math.abs(x) < wallAt(y) - .001 && z > 1.05001),
       `${file} has geometry inside the open front`);
   }
   if (id === "icecooler") {
@@ -249,6 +255,27 @@ function webp(bytes) {
   return [bytes.readUInt16LE(26) & 0x3fff, bytes.readUInt16LE(28) & 0x3fff, false];
 }
 
+function oggFrameCount(bytes) {
+  let at = 0;
+  let frames = null;
+  while (at < bytes.length) {
+    if (bytes.toString("ascii", at, at + 4) !== "OggS" || at + 27 > bytes.length) {
+      throw new Error("invalid Ogg page header");
+    }
+    const segments = bytes[at + 26];
+    const start = at + 27 + segments;
+    if (start > bytes.length) throw new Error("truncated Ogg lacing table");
+    const payload = bytes.subarray(at + 27, start).reduce((sum, length) => sum + length, 0);
+    if (bytes[at + 5] & 4) frames = bytes.readBigInt64LE(at + 6);
+    at = start + payload;
+    if (at > bytes.length) throw new Error("truncated Ogg payload");
+  }
+  if (frames == null || frames <= 0n || frames > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new Error("invalid Ogg final granule");
+  }
+  return Number(frames);
+}
+
 function checkAudio(file, full, spec) {
   // EBU R128 needs a 400 ms analysis window, longer than several effects.
   const filter = spec.music ? "ebur128=peak=true" : "apad=whole_len=17640,ebur128=peak=true";
@@ -260,7 +287,7 @@ function checkAudio(file, full, spec) {
   const seconds = duration ? Number(duration[1]) * 3600 + Number(duration[2]) * 60 + Number(duration[3]) : Infinity;
   const loudness = Number(result.match(/Integrated loudness:\s*I:\s*([-\d.]+) LUFS/)?.[1]);
   const peak = Number(result.match(/True peak:\s*Peak:\s*([-\d.]+) dBFS/)?.[1]);
-  expect(result.includes("Audio: vorbis") && (spec.music ? /Hz, stereo/.test(result) : /44100 Hz, mono/.test(result)),
+  expect(result.includes("Audio: vorbis") && (spec.music ? /44100 Hz, stereo/.test(result) : /44100 Hz, mono/.test(result)),
     `${file} does not use the required Vorbis channel and sample format`);
   expect(seconds <= spec.seconds + .01 && (!spec.music || seconds >= 60), `${file} duration is ${seconds}s`);
   expect(close(loudness, spec.music ? -20 : -14, 3) && peak <= 0, `${file} measured ${loudness} LUFS, peak ${peak} dBFS`);
@@ -270,6 +297,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(assets, "manifest.json"), 
 const listed = new Set(manifest.files);
 expect(listed.size === manifest.files.length, "Manifest repeats one or more files");
 const registered = new Set();
+const audioLengths = new Map();
 const totals = Array(7).fill(0);
 const batch = Number(selection[1][1]);
 const batchLimits = [0, 1600000, 3000000, 1000000, 2500000, 4000000, 1500000];
@@ -299,7 +327,10 @@ for (const relative of fs.readdirSync(assets, { recursive: true })) {
       expect(spec.sizes ? spec.sizes.includes(width) && height === width
         : width === spec.width && (spec.height === undefined || height === spec.height), `${file} has incorrect dimensions ${width} × ${height}`);
       expect(!spec.alpha || alpha, `${file} lacks transparency`);
-    } else checkAudio(file, full, spec);
+    } else {
+      checkAudio(file, full, spec);
+      if (spec.music) audioLengths.set(file, oggFrameCount(bytes));
+    }
   } catch (error) {
     issues.push(`${file}: ${error.message}`);
   }
@@ -308,6 +339,10 @@ for (const relative of fs.readdirSync(assets, { recursive: true })) {
 for (const file of listed) expect(registered.has(file), `Manifest entry ${file} does not exist on disk`);
 for (const [file, spec] of specs) {
   if (spec.batch <= batch) expect(registered.has(file), `D${spec.batch} is missing ${file}`);
+}
+const stems = ["play", "fever", "danger"].map((id) => audioLengths.get(`audio/music/music_${id}.ogg`));
+if (stems.every(Number.isFinite)) {
+  expect(stems.every((length) => length === stems[0]), "Play, Fever and Danger have different sample-frame counts");
 }
 if (modelFiles.length) {
   const info = spawnSync(process.execPath, [path.join(here, "../../snack-haul/dev/glb-info.mjs"), ...modelFiles], { encoding: "utf8" });

@@ -57,7 +57,7 @@ function line(parent, points, closed = false) {
   parent.add(overlay);
 }
 
-function makeView(title, scene, labels = [], fitWidth = CRATE.half * 2 + 3.4) {
+function makeView(title, scene, labels = [], framing = {}) {
   const figure = document.createElement("figure");
   const caption = document.createElement("figcaption");
   caption.textContent = title;
@@ -95,10 +95,11 @@ function makeView(title, scene, labels = [], fitWidth = CRATE.half * 2 + 3.4) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     const tangent = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    const dist = Math.max((CRATE.height + 4.6) / (2 * tangent), fitWidth / (2 * tangent * camera.aspect));
-    const focus = CRATE.height / 2 + 1.1;
-    camera.position.set(0, focus + dist * .17, dist);
-    camera.lookAt(0, focus, 0);
+    const { span = CRATE.half * 2 + 3.4, tall = CRATE.height + 4.6,
+      focus = CRATE.height / 2 + 1.1, x = 0 } = framing;
+    const dist = Math.max(tall / (2 * tangent), span / (2 * tangent * camera.aspect));
+    camera.position.set(x, focus + dist * .17, dist);
+    camera.lookAt(x, focus, 0);
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
     for (const { badge, at } of badges) {
@@ -157,13 +158,17 @@ function snacks() {
 }
 
 function containerView() {
-  for (const kind of Object.values(window.SnackDrop.CONTAINERS)) {
+  const boxes = Object.values(window.SnackDrop.CONTAINERS);
+  if (!boxes.some((box) => box.id === "hopper") && report.files.has("models/containers/container_hopper.glb")) {
+    boxes.push({ id: "hopper", name: "Vending Hopper" });
+  }
+  for (const kind of boxes) {
     const scene = new THREE.Scene();
     const crate = model(`containers/container_${kind.id}`);
     scene.add(model(`backdrops/backdrop_${kind.id}`) || new THREE.Group(), crate || fallbackContainer());
     const half = CRATE.half;
     const radius = kind.fillet || 0;
-    const right = [[half - radius, 0, 1.035]];
+    const right = [[kind.id === "hopper" ? 2.10 : half - radius, 0, 1.035]];
     if (radius) {
       for (let i = 7; i >= 0; i--) {
         const angle = i * Math.PI / 16;
@@ -177,35 +182,69 @@ function containerView() {
 }
 
 function cameos() {
-  const scene = new THREE.Scene();
-  const backdrop = model("backdrops/backdrop_pantry");
-  if (backdrop) scene.add(backdrop);
-  const anchor = backdrop?.getObjectByName("anchor_floor_r");
-  const at = anchor?.getWorldPosition(new THREE.Vector3()) || new THREE.Vector3(4.6, -.6, .6);
-  const available = [...report.files].filter((entry) => /^models\/cameos\/.+\.glb$/.test(entry));
-  const labels = [];
-  for (const [index, entry] of available.entries()) {
-    const id = entry.slice("models/".length, -4);
+  const names = {
+    "corgi-on-the-cob": "Corgi-on-the-Cob", "belgian-waffle": "Belgian-Waffle",
+    "pork-ulele": "Pork-ulele", "professor-hooten": "Professor Hooten",
+    "ted-e-bear": "Ted-E-Bear", booklava_driver: "Booklava and the van",
+  };
+  for (const [slug, title] of Object.entries(names)) {
+    const parked = slug === "booklava_driver";
+    const id = parked ? "cameos/booklava_driver" : `cameos/cameo_${slug}`;
     const standing = model(id);
-    const posed = model(id);
+    const posed = model(parked ? "cameos/truck_van" : id);
     if (!standing || !posed) continue;
+    const scene = new THREE.Scene();
+    const backdrop = model("backdrops/backdrop_pantry");
+    if (backdrop) scene.add(backdrop);
+    const anchor = backdrop?.getObjectByName("anchor_floor_r");
+    const at = anchor?.getWorldPosition(new THREE.Vector3()) || new THREE.Vector3(4.6, -.6, .6);
     standing.position.copy(at);
-    standing.position.x -= index * 2.28;
     posed.position.copy(standing.position);
     posed.position.x -= 2.3;
-    posed.rotation.y = -Math.PI / 2;
+    posed.rotation.y = slug === "corgi-on-the-cob" ? -Math.PI / 2 : -.22;
     for (const [joint, swing] of Object.entries({ leg_fl: .62, leg_fr: -.57,
       leg_bl: -.58, leg_br: .60, leg_l: .5, leg_r: -.48, tail: -.25 })) {
       const part = posed.getObjectByName(joint);
       if (part) part.rotation.x += swing;
     }
     const head = posed.getObjectByName("head");
-    if (head) head.rotation.y += .39;
+    if (head) head.rotation.y += slug === "professor-hooten" ? .95 : .39;
+    const wingL = posed.getObjectByName("wing_l"), wingR = posed.getObjectByName("wing_r");
+    if (wingL && wingR) { wingL.rotation.z = -.42; wingR.rotation.z = .50; }
+    const arm = posed.getObjectByName("arm_r");
+    if (arm && slug === "ted-e-bear") {
+      arm.rotation.z = -1.74;
+      arm.rotation.x = -.36;
+    }
+    if (parked) {
+      for (const axle of [-1.10, 1.20]) {
+        for (const side of [-1, 1]) {
+          const wheel = model("cameos/wheel_van");
+          if (!wheel) continue;
+          wheel.position.set(axle, -.58, side * .82);
+          if (side < 0) wheel.rotation.y = Math.PI;
+          posed.add(wheel);
+        }
+      }
+      const seat = posed.getObjectByName("seat");
+      if (seat) {
+        const driver = model(id);
+        driver.position.copy(posed.worldToLocal(seat.getWorldPosition(new THREE.Vector3())));
+        posed.add(driver);
+      }
+      const bounds = new THREE.Box3().setFromObject(posed, true);
+      const size = bounds.getSize(new THREE.Vector3());
+      const scale = 2.9 / Math.max(size.x, size.z);
+      posed.scale.setScalar(scale);
+      posed.position.y -= (bounds.min.y - at.y) * scale;
+      const driverBottom = new THREE.Box3().setFromObject(standing, true).min.y - at.y;
+      standing.scale.setScalar(2.2);
+      standing.position.y = at.y + .19 - driverBottom * 2.2;
+      box(scene, pale, [.77, .19, .64], [at.x, at.y + .095, at.z]);
+    }
     scene.add(standing, posed);
-    labels.push({ text: id.split("/")[1].replace(/^cameo_/, "").replaceAll("_", " "),
-      at: [standing.position.x, at.y + 2.7, at.z] });
+    makeView(title, scene, [], { x: at.x - 1.13, focus: at.y + 1.2, span: parked ? 6.1 : 5.2, tall: 3.45 });
   }
-  makeView("Standing and posed", scene, labels, CRATE.half * 2 + 5.6);
 }
 
 ({ snacks, containers: containerView, cameos })[view]();

@@ -15,15 +15,19 @@
     nav a { color: inherit; min-height: 36px; display: grid; place-items: center; padding: 0 10px; border-radius: 7px; }
     nav a[aria-current] { background: #f0d9bb; font-weight: 650; }
     #gallery { display: grid; gap: 10px; }
-    #gallery.containers { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    #gallery.containers { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    #gallery.cameos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     figure { position: relative; min-width: 0; margin: 0; border: 1px solid #dfc0a0; border-radius: 12px; overflow: hidden; background: #f3dfc4; }
     figcaption { position: absolute; top: 9px; left: 10px; z-index: 1; border-radius: 5px; background: #fff8ea; padding: 3px 6px; font-size: 13px; font-weight: 650; }
     .view { position: relative; height: clamp(420px, calc(100dvh - 105px), 710px); }
     .containers .view { height: clamp(220px, 48vw, 510px); }
+    .cameos .view { height: clamp(220px, 45vw, 304px); }
     canvas { display: block; width: 100%; height: 100%; }
     .tier-label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none; background: #fff8eb; color: #3a2414; border-radius: 4px; padding: 1px 3px; font-size: clamp(8px, 2vw, 12px); font-weight: 700; }
     #status { margin: 8px 0 0; font-size: 13px; }
-    @media (max-width: 700px) { #gallery.containers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px) {
+      #gallery.containers, #gallery.cameos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
   </style>
   <script src="../vendor/planck-1.5.1.min.js"></script>
   <script src="../engine.js"></script>
