@@ -29,6 +29,15 @@
 <div class="fever" id="fever" aria-hidden="true"><b>Fever ×1.5</b><i></i></div>
 <div class="pops" id="pops" aria-hidden="true"></div>
 <div class="tray" id="tray" role="toolbar" aria-label="Tools" hidden></div>
+<div class="rush-rail" id="rush-rail" aria-hidden="true" hidden></div>
+<section class="rush-controls" id="rush-controls" aria-label="Rush conveyor" hidden>
+  <ol id="rush-lanes" class="rush-lanes" aria-label="Planned drop lanes from left to right" hidden></ol>
+  <div class="rush-buttons">
+    <button type="button" class="btn primary" id="rush-action">Rapid Drop</button>
+    <button type="button" class="btn" id="rush-cancel" hidden>Cancel</button>
+  </div>
+  <small id="rush-count"></small>
+</section>
 <div class="hint" id="hint" role="status" aria-live="polite"></div>
 <ol class="ladder" id="ladder" aria-label="Snack ladder" hidden></ol>
 

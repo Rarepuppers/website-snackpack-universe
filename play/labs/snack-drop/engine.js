@@ -14,6 +14,9 @@
   // Bump whenever a change alters how a game plays out (physics, rules, scoring).
   // Saves, bests and share cards carry it, so old results are never mixed with new ones.
   var RULES_VERSION = 2;  // 2: Fever and the x4 cap on multipliers (28 Nov 2026)
+  var RUSH_VERSION = 1;
+  var RUSH = { stock: 2, earnEvery: 8, interval: 12, maxBlocked: 15,
+    maxBodies: 40, lanes: [-2.3, -1.15, 0, 1.15, 2.3] };
 
   // The crate. x = 0 is the middle, y = 0 is the floor.
   var CRATE = { half: 3.3, wall: 0.3, height: 10.4, line: 8.2, dropY: 9.35 };
@@ -52,7 +55,8 @@
     classic: { id: "classic", name: "Classic" },
     arcade:  { id: "arcade",  name: "Arcade", tools: true, specials: true, helpers: true },
     pro:     { id: "pro",     name: "Pro", lineDrop: 0.7, overLimit: 1.0, hideNext: true },
-    daily:   { id: "daily",   name: "Daily Drop", tools: true, specials: true, helpers: true }
+    daily:   { id: "daily",   name: "Daily Drop", tools: true, specials: true, helpers: true },
+    rush:    { id: "rush",    name: "Rush" }
   };
   // Fever (PLAN 5): one drop that sets off 3 or more merges.
   var FEVER = { merges: 3, time: 8, extend: 3, max: 15, mult: 1.5 };
@@ -142,8 +146,11 @@
   // opts = { seed: number, mode: "classic" | "daily", container: id, restore: snapshot }
   function createGame(opts) {
     opts = opts || {};
-    var box = CONTAINERS[opts.container] || CONTAINERS.pantry;
     var rules = MODES[opts.mode] || MODES.classic;
+    var isRush = rules.id === "rush", restore = opts.restore;
+    if (restore && isRush !== (restore.mode === "rush")) restore = null;
+    if (restore && isRush && (restore.rules !== RUSH_VERSION || !restore.rush)) restore = null;
+    var box = isRush ? CONTAINERS.pantry : CONTAINERS[opts.container] || CONTAINERS.pantry;
     var rand = rng(opts.seed == null ? 1 : opts.seed);
     var world = new planck.World({ gravity: { x: 0, y: -BALANCE.gravity }, allowSleep: true });
     var crate = world.createBody();
@@ -181,6 +188,8 @@
     // Tools draw from their own random stream, so the snack queue is the same
     // with or without them, and every Daily Drop player gets the same tools.
     var toolRand = rng(hash("tools-" + (opts.seed == null ? 1 : opts.seed)));
+    var rushRand = isRush ? rng(hash("rush-" + (opts.seed == null ? 1 : opts.seed))) : null;
+    if (rushRand) g.rush = { tick: 0, charges: 1, drops: 0, active: null, queued: null };
     function giveQuake() {
       if (!rules.tools || g.quakeGiven || g.tray.length >= TOOL_EARN.slots) return;
       g.quakeGiven = true; g.tray.push("quake");
@@ -278,13 +287,17 @@
       return true;
     }
 
+    function snackShape(tier) {
+      var t = TIERS[tier];
+      return t.shape === "circle" ? new planck.Circle(t.r)
+        : t.shape === "box" ? new planck.Box(t.w / 2, t.h / 2)
+        : new planck.Polygon(t.points);
+    }
+
     function makeBody(tier, x, y, angle, vel) {
       var t = TIERS[tier];
       var body = world.createBody({ type: "dynamic", position: { x: x, y: y }, angle: angle || 0, angularDamping: 0.3, linearDamping: 0.05 });
-      var shape = t.shape === "circle" ? new planck.Circle(t.r)
-        : t.shape === "box" ? new planck.Box(t.w / 2, t.h / 2)
-        : new planck.Polygon(t.points);
-      var fixture = body.createFixture({ shape: shape, density: 1, friction: (box.grip != null ? box.grip : BALANCE.friction) - (t.shape === "box" ? Math.min(0.1, (box.grip != null ? box.grip : BALANCE.friction) / 3) : 0), restitution: box.lightBounce != null && tier <= 2 ? box.lightBounce : BALANCE.restitution });
+      var fixture = body.createFixture({ shape: snackShape(tier), density: 1, friction: (box.grip != null ? box.grip : BALANCE.friction) - (t.shape === "box" ? Math.min(0.1, (box.grip != null ? box.grip : BALANCE.friction) / 3) : 0), restitution: box.lightBounce != null && tier <= 2 ? box.lightBounce : BALANCE.restitution });
       if (vel) body.setLinearVelocity(vel);
       var s = { id: g.nextId++, tier: tier, body: body, fixture: fixture, born: g.time, landed: false, over: 0, alive: true };
       body.setUserData(s);
@@ -306,7 +319,7 @@
       return Math.max(-lim, Math.min(lim, x));
     }
 
-    function canDrop() { return g.status === "playing" && g.wait <= 0; }
+    function canDrop() { return g.status === "playing" && g.wait <= 0 && (!g.rush || !g.rush.active); }
 
     function drop(x) {
       if (!canDrop()) return false;
@@ -317,7 +330,91 @@
       g.dropMerges = 0; g.lastDrop = g.time;
       g.events.push({ type: "drop", tier: tier, x: x });
       g.current = g.next; g.next = pick(rand); g.wait = BALANCE.dropGap;
+      if (g.rush && g.drops % RUSH.earnEvery === 0 && g.rush.charges < RUSH.stock) {
+        g.rush.charges++;
+        g.events.push({ type: "rush", action: "earned" });
+      }
       return true;
+    }
+
+    function canRush() {
+      return !!(g.rush && g.status === "playing" && !g.rush.queued &&
+        g.rush.charges > (g.rush.active && !g.rush.active.spent ? 1 : 0));
+    }
+
+    // Preview and confirmation draw the same plan. Only acceptance advances the stream.
+    function rushPlan(next) {
+      var lanes = RUSH.lanes.map(function (_, i) { return i; });
+      for (var i = lanes.length - 1; i > 0; i--) {
+        var j = Math.floor(next() * (i + 1)), swap = lanes[i];
+        lanes[i] = lanes[j]; lanes[j] = swap;
+      }
+      return lanes.map(function (lane) { return { lane: lane, tier: 1 + Math.floor(next() * 3) }; });
+    }
+
+    function rushLane(slot) {
+      if (g.snacks.length >= RUSH.maxBodies) return null;
+      var shape = snackShape(slot.tier);
+      var bounds = new planck.AABB();
+      var lanes = RUSH.lanes.map(function (_, i) { return i; }).sort(function (a, b) {
+        return Math.abs(a - slot.lane) - Math.abs(b - slot.lane) || a - b;
+      });
+      for (var lane of lanes) {
+        var x = RUSH.lanes[lane], transform = new planck.Transform({ x: x, y: CRATE.dropY }, 0);
+        var blocked = false;
+        shape.computeAABB(bounds, transform, 0);
+        world.queryAABB(bounds, function (fixture) {
+          blocked = planck.testOverlap(shape, 0, fixture.getShape(), 0, transform, fixture.getBody().getTransform());
+          return !blocked;
+        });
+        if (!blocked) return x;
+      }
+      return null;
+    }
+
+    function rushBurst(slots, due) {
+      return { slots: slots, index: 0, due: due, blockedAt: null, spent: false };
+    }
+
+    function acceptRush() {
+      if (!canRush()) return;
+      var rush = g.rush, next = rng(rushRand.get()), slots = rushPlan(next);
+      if (!rush.active && rushLane(slots[0]) == null) {
+        g.events.push({ type: "rush", action: "blocked" });
+        return;
+      }
+      rushRand.set(next.get());
+      if (rush.active) rush.queued = slots;
+      else rush.active = rushBurst(slots, rush.tick);
+      g.events.push({ type: "rush", action: rush.queued ? "queued" : "started" });
+    }
+
+    function stepRush() {
+      var rush = g.rush, run = rush.active;
+      if (!run || rush.tick < run.due) return;
+      var slot = run.slots[run.index], x = rushLane(slot);
+      if (x == null) {
+        if (run.blockedAt == null) run.blockedAt = rush.tick;
+        if (rush.tick - run.blockedAt < RUSH.maxBlocked) return;
+        run.index = run.spent ? run.index + 1 : run.slots.length;
+        g.events.push({ type: "rush", action: run.spent ? "skipped" : "blocked" });
+      } else {
+        if (!run.spent) {
+          run.spent = true; rush.charges--; g.dropMerges = 0;
+        }
+        makeBody(slot.tier, x, CRATE.dropY, 0, { x: 0, y: -1 });
+        rush.drops++; run.index++;
+        g.lastDrop = g.time;
+        g.events.push({ type: "drop", tier: slot.tier, x: x, rapid: true });
+        g.events.push({ type: "rush", action: "drop" });
+      }
+      run.blockedAt = null;
+      run.due = rush.tick + RUSH.interval;
+      if (run.index === run.slots.length) {
+        rush.active = rush.queued ? rushBurst(rush.queued, run.due) : null;
+        rush.queued = null;
+        g.events.push({ type: "rush", action: "ended" });
+      }
     }
 
     function remove(s) {
@@ -378,9 +475,11 @@
       g.time += STEP;
       if (g.wait > 0) g.wait -= STEP;
       if (g.fever > 0) { g.fever -= STEP; if (g.fever <= 0) { g.fever = 0; g.events.push({ type: "feverEnd" }); } }
+      if (g.rush) { g.rush.tick++; if (input.rush) acceptRush(); }
       if (input.tool) useTool(input.tool.id, input.tool.target);
       stepShake();
       if (input.drop != null) drop(input.drop);
+      if (g.rush) stepRush();
       world.step(STEP);
       merges();
       while (rules.tools && g.score >= g.nextToolAt) { g.nextToolAt += TOOL_EARN.every; giveTool(null, "points"); }
@@ -406,8 +505,8 @@
     // plays on normally (Box2D's contact cache isn't saved, so it is not a
     // bit-for-bit continuation, which only the drop-log replay is).
     function snapshot() {
-      return {
-        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, tray: g.tray.slice(), toolsUsed: g.toolsUsed, nextToolAt: g.nextToolAt, toolRand: toolRand.get(), quakeGiven: g.quakeGiven, lastDrop: g.lastDrop, fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+      var snap = {
+        rules: g.rush ? RUSH_VERSION : RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, tray: g.tray.slice(), toolsUsed: g.toolsUsed, nextToolAt: g.nextToolAt, toolRand: toolRand.get(), quakeGiven: g.quakeGiven, lastDrop: g.lastDrop, fever: g.fever, fevers: g.fevers, maxChain: g.maxChain, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
         merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
         chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
         snacks: g.snacks.map(function (s) {
@@ -415,9 +514,14 @@
           return [s.id, s.tier, p.x, p.y, s.body.getAngle(), v.x, v.y, s.body.getAngularVelocity(), s.born, s.landed ? 1 : 0, s.over];
         })
       };
+      if (g.rush) snap.rush = Object.assign({}, g.rush, {
+        active: g.rush.active ? Object.assign({}, g.rush.active) : null,
+        rand: rushRand.get(), dropMerges: g.dropMerges
+      });
+      return snap;
     }
-    if (opts.restore) {
-      var r = opts.restore;
+    if (restore) {
+      var r = restore;
       r.snacks.forEach(function (a) {
         var s = makeBody(a[1], a[2], a[3], a[4], { x: a[5], y: a[6] });
         s.body.setAngularVelocity(a[7]); s.id = a[0]; s.born = a[8]; s.landed = !!a[9]; s.over = a[10];
@@ -427,12 +531,23 @@
       if (r.tray) g.tray = r.tray.slice();
       ["quakeGiven", "lastDrop", "toolsUsed", "nextToolAt", "fever", "fevers", "maxChain", "time", "score", "drops", "merges", "best", "current", "next", "aim", "wait", "chain", "lastMerge", "nextId"].forEach(function (k) { if (r[k] != null) g[k] = r[k]; });
       g.made = r.made.slice();
+      if (g.rush) {
+        var saved = r.rush;
+        g.rush = { tick: saved.tick, charges: saved.charges, drops: saved.drops,
+          active: saved.active ? Object.assign({}, saved.active) : null, queued: saved.queued };
+        rushRand.set(saved.rand);
+        g.dropMerges = saved.dropMerges;
+      }
     }
 
     // The tool a game starts with: the player's choice in Arcade, the same
     // seeded one for everybody in the Daily Drop.
-    if (rules.tools && !opts.restore) giveTool(opts.mode === "daily" ? null : (TOOLS[opts.startTool] ? opts.startTool : "swap"), "start");
+    if (rules.tools && !restore) giveTool(opts.mode === "daily" ? null : (TOOLS[opts.startTool] ? opts.startTool : "swap"), "start");
     g.canUse = function (id, target) { return !!canUse(id, target); };
+    if (g.rush) {
+      g.canRush = canRush;
+      g.rushPreview = function () { return canRush() ? rushPlan(rng(rushRand.get())) : []; };
+    }
 
     g.step = step; g.drop = drop; g.canDrop = canDrop; g.clampAim = clampAim; g.topOf = topOf; g.snapshot = snapshot;
     return g;
@@ -526,7 +641,7 @@
   }
 
   return {
-    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, MODES: MODES, FEVER: FEVER, MAX_MULT: MAX_MULT, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
+    STEP: STEP, RULES_VERSION: RULES_VERSION, RUSH_VERSION: RUSH_VERSION, RUSH: RUSH, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, MODES: MODES, FEVER: FEVER, MAX_MULT: MAX_MULT, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
     DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, botTool: botTool, TOOLS: TOOLS, TOOL_ORDER: TOOL_ORDER, TOOL_EARN: TOOL_EARN, SHAKE: SHAKE, hash: hash, rng: rng
   };
 });

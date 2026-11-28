@@ -8,6 +8,7 @@ const $ = (id) => document.getElementById(id);
 const query = new URLSearchParams(location.search);
 const BOT = query.get("bot") === "1";
 const DEV = query.get("dev") === "1";
+const RUSH_ENABLED = DEV && query.get("rush") === "1";
 const PERF = query.get("perf") === "1" ? [] : null;  // ?perf=1: main-thread milliseconds per frame, for dev/perf.mjs
 
 // ════ Save ════════════════════════════════════════════════════════
@@ -35,6 +36,9 @@ function writeSave() {
   // Keep the daily history short.
   const days = Object.keys(save.daily).sort();
   while (days.length > 60) delete save.daily[days.shift()];
+  persistSave();
+}
+function persistSave() {
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* private mode or full */ }
 }
 // Containers (PLAN 4a). The Daily Drop uses a different one each day, the
@@ -45,8 +49,13 @@ function dailyContainer(key = dayKey()) {
   const [y, m, d] = key.split("-").map(Number);
   return ORDER[Math.floor(Date.UTC(y, m - 1, d) / 86400000) % ORDER.length];
 }
-function containerFor(m) { return m === "daily" ? dailyContainer() : save.container; }
+function containerFor(m) { return m === "rush" ? "pantry" : m === "daily" ? dailyContainer() : save.container; }
+function rushSave() {
+  if (!save.rush || typeof save.rush !== "object" || Array.isArray(save.rush)) save.rush = {};
+  return save.rush;
+}
 function bestOf(m, c = containerFor(m)) {
+  if (m === "rush") return save.rush?.best?.rules === SD.RUSH_VERSION ? save.rush.best.score : 0;
   if (m === "daily") { const d = save.daily[dayKey()]; return d && d.rules === SD.RULES_VERSION ? d.best : 0; }
   const b = save.bests[c + ":" + m]; return b && b.rules === SD.RULES_VERSION ? b.score : 0;
 }
@@ -134,6 +143,7 @@ let aimX = 0, botRand = SD.rng(99), overShown = false;
 // frame, never the step itself, so the game plays out the same either way.
 let steps = 0, dropLog = [], dirty = false, realGame = false;  // realGame: not the demo crate behind the menu  // physics steps this game and the drops made, for the save and bug reports
 let timeScale = 1, hitStop = 0, slowFor = 0, overAt = 0, cardUrl = "", cardBlob = null;
+let rushPreview = null, pendingRush = false, rushResult = null;
 const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 
@@ -156,6 +166,9 @@ function toast(text) {
 }
 
 function start(m, resume) {
+  if (m === "rush" && !RUSH_ENABLED) return;
+  if (m === "rush" || mode === "rush") { pendingDrop = false; pressing = false; }
+  rushPreview = null; pendingRush = false; rushResult = null;
   mode = m; realGame = true;
   if (resume) {
     game = SD.createGame({ seed: resume.snap.seed, mode: m, container: resume.snap.container || "pantry", restore: resume.snap });
@@ -164,16 +177,16 @@ function start(m, resume) {
     const seed = m === "daily" ? SD.hash("snackdrop-" + dayKey()) : (Math.random() * 2 ** 31) | 0;
     game = SD.createGame({ seed, mode: m, container: containerFor(m), startTool: save.startTool });
     steps = 0; dropLog = [];
-    if (!BOT) {
+    if (!BOT && m !== "rush") {
       const c = save.counters, d = dayKey();
       c.games++; if (!c.first) c.first = d;
       if (!c.days.includes(d)) { c.days.push(d); if (c.days.length > 90) c.days.shift(); }
     }
   }
-  save.resume = null; writeSave();
+  if (m !== "rush") { save.resume = null; writeSave(); }
   view.reset();
   view.setContainer(game.container);
-  aimX = 0; acc = 0; overShown = false; paused = false;
+  aimX = m === "rush" && resume ? game.aim : 0; acc = 0; overShown = false; paused = false;
   timeScale = 1; hitStop = 0; slowFor = 0; overAt = 0;
   feverEl.classList.remove("on"); $("score").classList.remove("hot");
   $("hud").classList.toggle("no-next", !!game.rules.hideNext);
@@ -181,18 +194,27 @@ function start(m, resume) {
   chainEl.classList.remove("on");
   $("hud").hidden = false; $("ladder").hidden = false;
   $("score").textContent = String(game.score);
-  $("bestline").textContent = (m === "daily" ? "Today's best " : "Best ") + bestOf(m);
+  $("bestline").textContent = (m === "rush" ? "Rush best " : m === "daily" ? "Today's best " : "Best ") + bestOf(m);
   updateLadder();
   closeSheet();
+  if (m === "rush") saveGame();
+  renderRush();
   sound.wake();
 }
 
 // The game in progress, saved after every drop and when the page is hidden,
 // so closing the tab or the app picks up where it left off.
 function saveGame() {
-  if (BOT || !realGame || !game || game.status !== "playing" || !game.drops || game.shake || game.guard > 0) return;
-  save.resume = { mode, day: dayKey(), steps, log: dropLog, snap: game.snapshot() };
-  writeSave(); dirty = false;
+  if (BOT || !realGame || !game || game.status !== "playing") return;
+  if (mode === "rush") {
+    rushSave().resume = { mode, steps, log: dropLog, snap: game.snapshot() };
+    persistSave();
+  } else {
+    if (!game.drops || game.shake || game.guard > 0) return;
+    save.resume = { mode, day: dayKey(), steps, log: dropLog, snap: game.snapshot() };
+    writeSave();
+  }
+  dirty = false;
 }
 function savedGame() {
   const r = save.resume;
@@ -200,8 +222,13 @@ function savedGame() {
   if (r.mode === "daily" && r.day !== dayKey()) return null;  // yesterday's Daily Drop is over
   return r;
 }
+function savedRush() {
+  const r = RUSH_ENABLED && save.rush?.resume;
+  return r?.mode === "rush" && r.snap?.mode === "rush" && r.snap.rules === SD.RUSH_VERSION &&
+    r.snap.rush && Array.isArray(r.log) ? r : null;
+}
 // Dev only (?dev=1): the seed and every drop, which replays this exact game in dev/sim.js.
-function gameCode() { return JSON.stringify({ rules: SD.RULES_VERSION, seed: game.seed, mode, steps, log: dropLog }); }
+function gameCode() { return JSON.stringify({ rules: mode === "rush" ? SD.RUSH_VERSION : SD.RULES_VERSION, seed: game.seed, mode, steps, log: dropLog }); }
 
 // ════ Sheets ══════════════════════════════════════════════════════
 function openSheet(html) { $("sheet").innerHTML = html; $("veil").classList.add("on"); const b = $("sheet").querySelector("button"); if (b) b.focus(); }
@@ -214,6 +241,8 @@ function playMode() { return save.mode === "pro" ? (proOpen(save.container) ? "p
 function home() {
   paused = true;
   const today = save.daily[dayKey()] && save.daily[dayKey()].rules === SD.RULES_VERSION ? save.daily[dayKey()] : null, resume = savedGame();
+  const rush = savedRush();
+  renderRush();
   const daily = today ? (today.first === today.best ? "Today " + today.best : "First try " + today.first + " · best " + today.best) : "";
   openSheet(`
     <h1 id="sheet-title">Snack Drop</h1>
@@ -229,12 +258,14 @@ function home() {
       ${playMode() === "arcade" ? `<div class="start-tool" role="radiogroup" aria-label="Starting tool"><span>Start with</span>${SD.TOOL_ORDER.map((t) => `<button class="chip${t === save.startTool ? " on" : ""}" role="radio" aria-checked="${t === save.startTool}" data-start="${t}">${toolGlyph(t)} ${SD.TOOLS[t].name}</button>`).join("")}</div>` : ""}
       <div class="boxes" role="radiogroup" aria-label="Container">${ORDER.map((id) => `<button class="box${id === save.container ? " on" : ""}" role="radio" aria-checked="${id === save.container}" data-box="${id}"><b>${BOXES[id].name}</b><small>${BOXES[id].blurb}</small>${BOXES[id].free ? "" : '<i>Full game</i>'}</button>`).join("")}</div>
       <button class="btn" data-go="daily">Daily Drop<small>${daily || "Today in the " + BOXES[dailyContainer()].name + ", same snacks for everyone"}</small></button>
+      ${RUSH_ENABLED ? `${rush ? `<button class="btn" data-act="continue-rush">Continue Rush<small>${rush.snap.score} points</small></button>` : ""}<button class="btn" data-go="rush">${rush ? "New Rush game" : "Play Rush"}<small>Rapid Drop · Pantry Box · Best ${bestOf("rush")}</small></button>` : ""}
     </div>
     <p class="how">Prototype. Move to aim, let go to drop. Keyboard: ← → and Space.</p>`);
 }
 
 function pauseSheet() {
   paused = true;
+  if (mode === "rush") { saveGame(); renderRush(); }
   openSheet(`
     <h2 id="sheet-title">Paused</h2>
     <p>Score ${game.score}</p>
@@ -291,6 +322,18 @@ function shareText() {
 }
 
 function overSheet() {
+  if (mode === "rush") {
+    const { prev, isBest } = rushResult;
+    openSheet(`
+      <h2 id="sheet-title">${isBest ? "New Rush best!" : "Rush complete"}</h2>
+      <p>${game.score} points · Best ${Math.max(prev, game.score)}</p>
+      <p>${game.drops} manual drops · ${game.rush.drops} conveyor drops</p>
+      <div class="stack">
+        <button class="btn primary" data-go="rush">Play Rush again</button>
+        <button class="btn" data-act="home">Menu</button>
+      </div>`);
+    return;
+  }
   const prev = bestOf(mode, game.container), isBest = game.score > prev && game.score > 0;
   if (mode === "daily") {
     // The first finished game of the day is the one that counts; replays are practice.
@@ -325,8 +368,9 @@ $("sheet").addEventListener("click", (e) => {
   if (b.dataset.mode) { save.mode = b.dataset.mode; writeSave(); home(); const f = $("sheet").querySelector(`[data-mode="${save.mode}"]`); if (f) f.focus(); return; }
   if (b.dataset.box) { save.container = b.dataset.box; writeSave(); demo(save.container); home(); const f = $("sheet").querySelector(`[data-box="${save.container}"]`); if (f) f.focus(); return; }
   const act = b.dataset.act;
-  if (act === "resume") { closeSheet(); paused = false; }
+  if (act === "resume") { closeSheet(); paused = false; renderRush(); }
   if (act === "continue") { const r = savedGame(); if (r) start(r.mode, r); return; }
+  if (act === "continue-rush") { const r = savedRush(); if (r) start("rush", r); return; }
   if (act === "code" && navigator.clipboard) navigator.clipboard.writeText(gameCode()).then(() => { b.textContent = "Copied"; });
   if (act === "home") { saveGame(); home(); }
   if (act === "share") {
@@ -360,7 +404,7 @@ let pressing = false, pendingDrop = false, armedPress = false;
 const canvas = $("view");
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 canvas.addEventListener("pointerdown", (e) => {
-  if (paused) return;
+  if (paused || game?.rush?.active || pendingRush) return;
   // With a tool armed, a press picks a snack and never drops one.
   if (armed) { armedPress = true; pendingDrop = false; return; }
   pressing = true; aimX = view.worldX(e.clientX, e.clientY); sound.wake();
@@ -369,15 +413,24 @@ canvas.addEventListener("pointerdown", (e) => {
 canvas.addEventListener("pointermove", (e) => { if (paused) return; if (pressing || e.pointerType === "mouse") aimX = view.worldX(e.clientX, e.clientY); });
 canvas.addEventListener("pointerup", (e) => {
   if (armedPress) { armedPress = false; if (!paused && armed) pickTarget(e.clientX, e.clientY); return; }
-  if (paused || !pressing) return; pressing = false; aimX = view.worldX(e.clientX, e.clientY); pendingDrop = true; });
+  if (paused || !pressing) return;
+  pressing = false;
+  if (game?.rush?.active || pendingRush) return;
+  aimX = view.worldX(e.clientX, e.clientY); pendingDrop = true; });
 canvas.addEventListener("pointercancel", () => { pressing = false; });
 const keys = {};
 window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && rushPreview && !paused) { cancelRushPreview(); return; }
   if (e.key === "Escape" && armed) return disarm();
   if (e.key === "Escape" && game && game.status === "playing" && !paused) return pauseSheet();
   if (paused) return;
   keys[e.key] = true;
-  if ((e.key === " " || e.key === "ArrowDown" || e.key === "Enter") && !armed) { e.preventDefault(); pendingDrop = true; }
+  if ((e.key === " " || e.key === "ArrowDown" || e.key === "Enter") && !armed) {
+    if (game?.rush && (e.key === " " || e.key === "Enter") &&
+      (e.target === $("rush-action") || e.target === $("rush-cancel"))) return;
+    e.preventDefault();
+    if (!game?.rush?.active && !pendingRush) pendingDrop = true;
+  }
 });
 window.addEventListener("keyup", (e) => { keys[e.key] = false; });
 document.addEventListener("visibilitychange", () => {
@@ -386,6 +439,52 @@ document.addEventListener("visibilitychange", () => {
   if (!paused) pauseSheet();
 });
 window.addEventListener("pagehide", () => { if (game && game.status === "playing" && !paused) saveGame(); });
+
+function renderRush() {
+  const controls = $("rush-controls"), action = $("rush-action"), cancel = $("rush-cancel");
+  const active = game?.rush?.active;
+  controls.hidden = !(game?.rush && realGame && !paused && game.status === "playing");
+  const slots = rushPreview || active?.slots;
+  $("rush-rail").hidden = controls.hidden || !slots;
+  if (controls.hidden) return;
+  const { charges, queued } = game.rush;
+  $("rush-count").textContent = `${charges}/${SD.RUSH.stock} charges · ${queued ? "Next burst queued"
+    : active ? `Conveyor ${active.index}/${active.slots.length}`
+    : charges ? "Earn a charge every 8 manual drops" : `${game.drops % SD.RUSH.earnEvery}/${SD.RUSH.earnEvery} manual drops to recharge`}`;
+  action.disabled = pendingRush || !game.canRush();
+  action.textContent = rushPreview ? (active ? "Queue burst" : "Start burst") : active ? "Preview next burst" : "Rapid Drop";
+  cancel.hidden = !rushPreview;
+  const lanes = $("rush-lanes");
+  lanes.hidden = !slots;
+  if (!slots) return;
+  const labels = slots.map(({ lane, tier }, i) => ({ lane, tier, order: i + 1 })).sort((a, b) => a.lane - b.lane);
+  const next = (order) => !rushPreview && order === active.index + 1 ? ' class="next"' : "";
+  lanes.innerHTML = labels.map(({ tier, order }) => `<li${next(order)}>
+    <b>${order}</b> ${SD.TIERS[tier].name}</li>`).join("");
+  $("rush-rail").innerHTML = labels.map(({ order }) => `<span${next(order)}>${order}</span>`).join("");
+}
+
+function positionRushRail() {
+  const rail = $("rush-rail");
+  if (rail.hidden) return;
+  const lanes = SD.RUSH.lanes, y = SD.CRATE.dropY + .82;
+  const left = view.toScreen(lanes[0], y), right = view.toScreen(lanes.at(-1), y);
+  rail.style.left = `${left.x - 11}px`;
+  rail.style.top = `${(left.y + right.y) / 2 - 11}px`;
+  rail.style.width = `${right.x - left.x + 22}px`;
+}
+
+function cancelRushPreview() { rushPreview = null; renderRush(); $("rush-action").focus(); }
+$("rush-cancel").addEventListener("click", cancelRushPreview);
+$("rush-action").addEventListener("click", () => {
+  if (paused || pendingRush || !game?.canRush?.()) return;
+  if (!rushPreview) rushPreview = game.rushPreview();
+  else {
+    rushPreview = null; pendingRush = true; pendingDrop = false; pressing = false;
+    sound.wake();
+  }
+  renderRush();
+});
 
 // ════ Tools ═══════════════════════════════════════════════════════
 // Arcade and Daily Drop (PLAN 9). Tap a tool to use it: Swap works straight
@@ -489,6 +588,7 @@ function showChain(n) {
 function handle(ev) {
   view.onEvent(ev);
   if (ev.type === "drop") { sound.drop(ev.tier); updateLadder(); dirty = true; }
+  if (ev.type === "rush" && ev.action === "blocked") toast("Conveyor blocked · charge kept");
   if (ev.type === "merge") {
     sound.merge(ev.tier, ev.chain);
     scorePop(ev);
@@ -514,6 +614,14 @@ function handle(ev) {
     if (!REDUCED) { hitStop = 0.06; slowFor = 0.3; view.pushTo(ev.x, ev.y, 0.25); }
   }
   if (ev.type === "over") {
+    if (game.rush) {
+      const prev = bestOf("rush"), isBest = game.score > prev;
+      rushResult = { prev, isBest };
+      if (isBest) rushSave().best = { rules: SD.RUSH_VERSION, score: game.score };
+      rushSave().resume = null;
+      persistSave();
+      renderRush();
+    }
     // Slow motion and a camera push onto the snack that went over the line.
     let worst = null;
     for (const s of game.snacks) if (!worst || s.over > worst.over) worst = s;
@@ -544,10 +652,16 @@ function frame(now) {
       let tool = null;
       if (pendingTool && !BOT) { tool = pendingTool; pendingTool = null; drop = null; dropLog.push([steps, "t", tool.id, tool.target == null ? null : tool.target]); }
       if (drop != null && game.status === "playing") dropLog.push([steps, drop]);
-      game.step({ aim: aimX, drop, tool });
+      const rush = pendingRush;
+      if (rush) { pendingRush = false; dropLog.push([steps, "rush"]); }
+      game.step({ aim: aimX, drop, tool, rush });
       steps++;
       aimX = game.aim;
       for (const ev of game.events) handle(ev);
+      if (game.rush && (rush || game.events.some((ev) => ev.type === "rush" || ev.type === "drop"))) {
+        renderRush();
+        saveGame();
+      }
       game.events.length = 0;
       acc -= SD.STEP; n++;
     }
@@ -573,7 +687,10 @@ function frame(now) {
     game.events.length = 0;
     if (!overShown && overAt > 1.3) { overShown = true; overSheet(); }
   } else view.alpha = 1;
-  if (game) view.draw(game, dt, !paused);
+  if (game) {
+    view.draw(game, dt, !paused && !game.rush?.active);
+    if (game.rush) positionRushRail();
+  }
   else view.renderer.render(view.scene, view.camera);
   if (PERF && PERF.length < 20000) PERF.push(performance.now() - t0);
   requestAnimationFrame(frame);
