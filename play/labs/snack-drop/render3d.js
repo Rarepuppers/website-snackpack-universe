@@ -477,9 +477,11 @@ export class Renderer {
     const A = this.runnerAuthored, axis = A ? "x" : "z";
     this.runner.rotation.y = ((back ? -R.dir : R.dir) > 0 ? 0 : Math.PI) + (A ? Math.PI / 2 : 0);
     const swing = Math.sin(t * 28) * 0.7;
+    // Front-left with back-right, front-right with back-left. A puppet built to
+    // the older brief names its legs arm_l/arm_r (front) and leg_l/leg_r (back).
     this.runner.traverse((o) => {
-      if (o.name === "leg_fl" || o.name === "leg_br") o.rotation[axis] = swing;
-      if (o.name === "leg_fr" || o.name === "leg_bl") o.rotation[axis] = -swing;
+      if (o.name === "leg_fl" || o.name === "leg_br" || o.name === "arm_l" || o.name === "leg_r") o.rotation[axis] = swing;
+      if (o.name === "leg_fr" || o.name === "leg_bl" || o.name === "arm_r" || o.name === "leg_l") o.rotation[axis] = -swing;
       if (o.name === "tail") o.rotation[axis] = Math.sin(t * 20) * 0.5;
       if (o.name === "head") o.rotation[axis] = t > R.lead && t < R.lead + 0.15 ? -0.4 : 0;
     });
