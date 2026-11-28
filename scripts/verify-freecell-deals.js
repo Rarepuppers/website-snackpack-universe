@@ -4,7 +4,7 @@
 //
 // Usage (from the website repo root):
 //   node scripts/verify-freecell-deals.js
-// Exits non-zero if any shipped deal is proven unsolvable.
+// Use --reduced-only when the four-cell pool is unchanged.
 
 const fs = require('fs');
 const path = require('path');
@@ -14,24 +14,32 @@ const { deal, solve } = require('./freecell-solver');
 // ships. A hard-coded copy here was the previous failure mode.
 const PAGE = path.join(__dirname, '..', 'play', 'freecell', 'index.html');
 const html = fs.readFileSync(PAGE, 'utf8');
-const m = html.match(/CHECKED\s*=\s*\[([^\]]*)\]/);
-if (!m) {
-  console.error('Could not find the CHECKED pool in', PAGE);
-  process.exit(2);
-}
-const CHECKED = m[1].split(',').map(s => Number(s.trim())).filter(n => Number.isFinite(n));
-
-const BUDGET = 250000;
-const bad = [];
-const unknown = [];
-for (const seed of CHECKED) {
-  const res = solve(deal(seed), BUDGET);
-  if (res.ok) continue;
-  (res.hitBudget ? unknown : bad).push(seed);
+function readPool(name) {
+  const match = html.match(new RegExp(`\\b${name}\\s*=\\s*(\\[[^\\]]*\\])`));
+  if (!match) throw new Error(`Missing ${name} in ${PAGE}`);
+  const seeds = JSON.parse(match[1]);
+  if (!seeds.length || seeds.some((seed, i) => !Number.isSafeInteger(seed) || seed < 1 || (i && seed <= seeds[i - 1]))) {
+    throw new Error(`${name} must contain sorted, unique, positive deal numbers`);
+  }
+  return seeds;
 }
 
-console.log('deals in shipped pool :', CHECKED.length);
-console.log('solved                :', CHECKED.length - bad.length - unknown.length);
-console.log('PROVEN UNSOLVABLE     :', bad.length ? bad.join(',') : 'none');
-console.log('inconclusive          :', unknown.length ? unknown.join(',') : 'none');
-process.exit(bad.length ? 1 : 0);
+const four = readPool('CHECKED');
+const two = readPool('CHECKED_TWO');
+const one = readPool('CHECKED_ONE');
+if (!one.every(seed => two.includes(seed)) || !two.every(seed => four.includes(seed))) {
+  throw new Error('Reduced FreeCell pools must be nested subsets of the original pool.');
+}
+
+function verify(seeds, cells, budget) {
+  const failed = seeds.filter(seed => !solve(deal(seed), budget, cells).ok);
+  console.log(`${cells}-cell proofs: ${seeds.length - failed.length}/${seeds.length} solved`);
+  if (failed.length) {
+    console.error('No solution found within the check budget:', failed.join(', '));
+    process.exitCode = 1;
+  }
+}
+
+verify(one, 1, 12000);
+verify(two.filter(seed => !one.includes(seed)), 2, 12000);
+if (!process.argv.includes('--reduced-only')) verify(four, 4, 250000);

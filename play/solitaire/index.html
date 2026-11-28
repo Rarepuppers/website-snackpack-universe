@@ -120,7 +120,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "Is this Klondike Solitaire free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It plays free in your browser with no ads, no sign-in, and no download required." } },
-    { "@type": "Question", "name": "Is every Solitaire deal winnable?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each deal is verified by a solver before you see it, in both Draw 1 and Draw 3, so a deal that beats you is one you have not found the line in yet. Clicking a card sends it wherever it legally goes." } },
+    { "@type": "Question", "name": "Is every Solitaire deal winnable?", "acceptedAnswer": { "@type": "Answer", "text": "Each starting deal has a verified solution in Draw 1 and Draw 3. You can still reach a dead end during play. Use Undo or Restart deal to try a different line." } },
     { "@type": "Question", "name": "How do I play Klondike Solitaire with a keyboard?", "acceptedAnswer": { "@type": "Answer", "text": "Tab once to land on the board, then the arrow keys move a highlight and Enter or Space plays the focused square. Home and End jump to the ends of a row." } },
     { "@type": "Question", "name": "Does my progress save?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, on this device only. A game in progress is saved, so you can close the tab and pick it back up, and your best result is kept too. There is no account and nothing is uploaded." } },
     { "@type": "Question", "name": "Can I play Klondike Solitaire offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site installs from your browser and keeps working with no connection: once you have opened a game it is cached on your device, so it loads and plays on a plane or a dead signal. If you would rather have it from the store, Klondike Solitaire is also in Snackpack Brain Games on Android." } }
@@ -271,6 +271,7 @@
         </div>
         <p class="game-hint">Drag a card to move it — or pick a card, then its destination · Double-click sends a card to its foundation · Tap or click the stock to deal.</p>
       </div>
+      <p class="game-hint"><button class="btn-game" id="sol-restart" type="button">Restart deal</button></p>
     </div>
   </section>
 
@@ -323,7 +324,7 @@
       <h3>Frequently asked questions</h3>
       <div class="faq-list" style="margin-top:14px;">
         <details class="faq-item"><summary>Is this Solitaire free?</summary><p>Yes — it plays free in your browser with no ads, no sign-in, and nothing to install.</p></details>
-        <details class="faq-item"><summary>Is every deal winnable?</summary><p>Yes. Each deal is pulled from a pool that's already been solved by a computer under both Draw 1 and Draw 3, so a winning line always exists — losing comes down to your moves, not an unfair shuffle. Roughly a fifth of truly random Klondike deals have no solution at all; this pool skips those entirely.</p></details>
+        <details class="faq-item"><summary>Is every deal winnable?</summary><p>Each starting deal has a verified solution in Draw 1 and Draw 3. You can still reach a dead end during play. Use Undo or Restart deal to try a different line.</p></details>
         <details class="faq-item"><summary>What's the difference between Draw 1 and Draw 3?</summary><p>Draw 1 turns over one stock card at a time (easier); Draw 3 turns over three at once, so you see fewer options each pass.</p></details>
         <details class="faq-item"><summary>How do I move a card?</summary><p>Click a card to select it, then click the pile or card you want to move it onto. Double-click a card to send it to a foundation automatically.</p></details>
         <details class="faq-item"><summary>Can I play offline?</summary><p>The web version needs an open browser tab. For fully offline play with saved best times, install the free <a class="text-link" href="../../apps/snackpack-brain-games/" style="color:var(--accent);">Snackpack Brain Games</a> app on Android.</p></details>
@@ -529,19 +530,17 @@
   var VERIFIED_SEEDS = [1,2,4,9,10,13,14,22,23,24,26,27,29,30,31,33,34,35,39,42,45,46,48,49,52,55,56,59,60,61,65,68,69,72,75,77,80,81,84,88,89,92,96,103,108,109,110,114,117,120,126,128,132,133,134,137,139,141,144,149,154,156,161,171,174,175,183,184,185,186,187,191,198,199,200,201,202,208,209,210,212,217,218,219,222,224,227,228,229,230,233,244,247,251,253,256,258,259,266,271,272,276,281,283,287,288,291,293,295,297,299,301,313,316,318,322,324,325,329,331,332,337,347,348,352,354,360,368,369,370,372,374,377,378,379,380,382,387,389,393,394,395,398,400,401,404,405,413,414,416,419,420,422,423,424,426,427,428,431,437,438,451,455,457,459,460,462,467,470,473,479,484,485,486,487,488,490,495,496,498,506,509,510,513,518,523,524,526,529,530,531,534,536,537,538,542,546,547,548,551,552,555,560,561,563,565,566,568,569,570,571,576,577,581,582,585,586,587,594,596,600,601,602,604,605,607,608,610,612,613,614,615,619,620,623,628,629,630,631,633,637,641,645,647,650,652,656,657,660,661,662,665,667,669,672,674,676,677,678,681,682,689,692,694,697,698,700,702,704,709,715,717,718,721,724,728,738,740,742,743,749,752,754,755,756,759,761,765,770,771,775,778,781,785,792,796,797,798,804,806,807,812,814,815,816,817,819,821,823,826,827,830,831,833,836,839,844,848,852,854,855,860,861,862,863,865,871,872,873,876,882,883,884,890,891,892,895,897,898,904,907,908,914,919,921,932,933,935,939,943,948,957,958,960,961,962,963,964,967,972,974,975,983,986,987,990,991,992,993,995,998,1000,1002,1005,1006,1007,1010,1017,1022,1023,1024,1028,1029,1031,1036,1037,1039,1042,1049,1050,1052,1061,1062,1064,1065,1069,1070,1075,1076,1081,1084,1087,1088,1092,1094,1095,1096,1098,1099,1100,1101,1102,1104,1108,1110,1121,1123,1125,1128,1130,1131,1132,1138,1140,1141,1143,1147,1150,1152,1154,1163,1165,1166,1167,1168,1174,1176,1177,1180,1182,1183,1185,1186,1187,1189,1190,1194,1195,1203,1204,1206,1207,1212,1215,1216,1217,1218,1219,1222,1223,1224,1229,1232,1234,1235,1236,1237,1239,1242,1243,1244,1245,1246,1253,1256,1259,1263,1266,1267,1269,1276,1277,1278,1279,1282,1283,1284,1285,1290,1291,1292,1293,1294,1296,1299,1304,1305,1313,1315,1316,1320,1321,1325,1329,1331,1333,1334,1336,1339,1340,1341,1344,1345,1352,1353,1358,1363,1365,1368,1369,1370,1373,1375,1377,1378,1381,1384,1385,1388,1390,1397,1398,1399,1400,1404,1407,1410,1414,1415,1417,1421,1427,1430,1431,1434,1435,1437,1438,1440,1441,1443,1446,1449,1455,1456,1458,1459,1461,1468,1472,1474,1475,1476,1479,1482,1485,1487,1489,1490,1495,1496,1498,1505,1508,1510,1513,1515,1518,1524,1525,1528,1530,1532,1534,1540,1546,1547,1548,1549,1562,1568,1571,1572,1577,1580,1581,1582,1612,1613,1615,1616,1618,1621,1627,1632,1633,1635,1636,1638,1643,1645,1656,1658,1660,1669,1673,1683,1685,1697,1700,1707,1709,1710,1711,1713,1714,1721,1722,1726,1729,1732,1737,1739,1741,1742,1744,1748,1749,1751,1752,1758,1765,1767,1768,1774,1777,1780,1782,1784,1785,1786,1787,1790,1792,1793,1794,1795,1800,1802,1808,1810,1811,1812,1815,1816,1820,1822,1823,1824,1825,1829,1830,1831,1832,1833,1834,1839,1842,1851,1853,1855,1864,1865,1868,1869,1874,1876,1877,1881,1884,1886,1887,1891,1892,1895,1897,1898,1902,1905,1907,1910,1917,1922,1931,1939,1941,1942,1946,1948,1949,1951,1957,1959,1960,1962,1963,1964,1966,1973,1974,1978,1980,1981,1984,1985,1986,1988,1989,1991,1993,1994,1996,1998,2000,2001,2005,2006,2007,2010,2011,2013,2014,2022,2025,2027,2029,2033,2034,2036,2042,2048,2054,2059,2061,2065,2069,2073,2080,2085,2090,2092,2093,2098,2109,2117,2119,2120,2126,2128,2133,2137,2140,2143,2149,2150,2160,2161,2164,2167,2168,2170,2176,2179,2185,2192,2195,2196,2202,2203,2204,2205,2208,2210,2211,2213,2215,2217,2227,2228,2230,2237,2239,2241,2242,2245,2249,2250,2251,2254,2258,2259,2276,2277,2278,2279,2283,2285,2287,2289,2292,2303,2305,2306,2307,2308,2311,2318,2319,2325,2327,2328,2329,2332,2333,2340,2341,2344,2345,2348,2352,2354,2356,2358,2360,2365,2369,2372,2373,2378,2379,2381,2382,2384,2387,2388,2391,2394,2396,2400,2402,2405,2406,2409,2410,2419,2420,2425,2426,2427,2429,2432,2434,2435,2438,2443,2444,2448,2450,2452,2453,2454,2455,2457,2460,2465,2467,2468,2472,2475,2477,2478,2483,2486,2487,2488,2489,2494,2496,2498,2499,2501,2502,2503,2504,2517,2518,2519,2521,2524,2525,2527,2534,2536,2541,2543,2544,2548,2558,2559,2561,2569,2571,2572,2576,2578,2584,2586,2588,2591,2594,2599,2600,2602,2606,2608,2611,2619,2622,2627,2629,2631,2632,2633,2636,2637,2638,2641,2642,2644,2645,2647,2648,2651,2654,2657,2664,2665,2666,2667,2668,2670,2673,2676,2679,2686,2689,2693,2695,2696,2697,2699,2702,2704,2709,2713,2714,2715,2716,2717,2718,2719,2721,2724,2730,2733,2734,2737,2739,2742,2743,2744,2748,2749,2755,2756,2763,2764,2767,2769,2773];
 
   function pickVerifiedDeal() {
-    var seed = VERIFIED_SEEDS[Math.floor(Math.random() * VERIFIED_SEEDS.length)];
-    // Don't hand out the same deal twice in a row.
-    while (VERIFIED_SEEDS.length > 1 && seed === currentDealSeed) {
-      seed = VERIFIED_SEEDS[Math.floor(Math.random() * VERIFIED_SEEDS.length)];
-    }
-    currentDealSeed = seed;
-    return dealFromDeck(makeDeck(seed));
+    var previous = VERIFIED_SEEDS.length > 1 ? VERIFIED_SEEDS.indexOf(currentDealSeed) : -1;
+    var count = VERIFIED_SEEDS.length - (previous < 0 ? 0 : 1);
+    var index = Math.floor(Math.random() * count);
+    return VERIFIED_SEEDS[previous >= 0 && index >= previous ? index + 1 : index];
   }
 
   // Picking from the pre-verified pool is instant, so this can stay
   // synchronous — no "Shuffling…" placeholder needed any more.
-  function deal() {
-    var dealt = pickVerifiedDeal();
+  function deal(seed) {
+    currentDealSeed = seed ?? pickVerifiedDeal();
+    var dealt = dealFromDeck(makeDeck(currentDealSeed));
     tableau = dealt.tableau;
     stock = dealt.stock;
     waste = [];
@@ -766,12 +765,27 @@
     checkWin();
   }
 
-  // True once there is no legal move anywhere: no waste/tableau card can
-  // reach a foundation, no card or run can restack elsewhere, and the
-  // stock/waste can no longer be drawn or recycled. A genuine dead end.
+  function canPlayWaste(card) {
+    return card && (canToFoundation(card, card.s) ||
+      tableau.some(function (_, col) { return canStackTableau([card], col); }));
+  }
+
+  function canPlayDrawnCard(cards) {
+    for (var count = drawN; count < cards.length; count += drawN) {
+      if (canPlayWaste(cards[count - 1])) return true;
+    }
+    return canPlayWaste(cards.at(-1));
+  }
+
   function hasAnyMove() {
-    if (stock.length || waste.length > 1) return true; // more to draw/cycle through
-    if (waste.length === 1 && foundations.some(function (f, pi) { return canToFoundation(waste[0], pi); })) return true;
+    if (canPlayWaste(waste.at(-1))) return true;
+    var undrawn = stock.slice().reverse();
+    // Further recycles expose the same cards unless the player moves one.
+    if (canPlayDrawnCard(undrawn) || canPlayDrawnCard(waste.concat(undrawn))) return true;
+    if (foundations.some(function (pile) {
+      var top = pile.at(-1);
+      return top && tableau.some(function (_, col) { return canStackTableau([top], col); });
+    })) return true;
     for (var col = 0; col < 7; col++) {
       var pile = tableau[col];
       if (!pile.length) continue;
@@ -822,7 +836,11 @@
       if (window.SnackPackAudio) window.SnackPackAudio.play("win");
       return;
     }
-    statusEl.textContent = hasAnyMove() ? "Pick a card, then choose where it should go." : "No legal moves left — try Undo or start a New Game.";
+    describePosition();
+  }
+
+  function describePosition() {
+    statusEl.textContent = hasAnyMove() ? "Pick a card, then choose where it should go." : "No playable cards left, even after recycling the stock. Try Undo or Restart deal.";
   }
 
   // ── Stock / waste ────────────────────────────────
@@ -1040,8 +1058,13 @@
   });
 
   newBtn.addEventListener("click", function () { if (resume) resume.clear(); deal(); });
+  document.getElementById("sol-restart").addEventListener("click", function () {
+    if (resume) resume.clear();
+    deal(VERIFIED_SEEDS.includes(currentDealSeed) ? currentDealSeed : undefined);
+  });
   document.querySelectorAll(".seg [data-draw]").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (+btn.dataset.draw === drawN) return;
       if (resume) resume.save();
       drawN = +btn.dataset.draw;
       document.querySelectorAll(".seg [data-draw]").forEach(function (b) {
@@ -1051,13 +1074,14 @@
       // mode can keep the current deal rather than forcing a new one.
       renderBest();
       if (resume) resume.variantChanged();
-      deal();
+      deal(VERIFIED_SEEDS.includes(currentDealSeed) ? currentDealSeed : undefined);
     });
   });
 
   window.addEventListener("resize", function () { if (tableau) render(); });
 
-  deal();
+  var requestedSeed = Number(new URLSearchParams(location.search).get("deal"));
+  deal(VERIFIED_SEEDS.includes(requestedSeed) ? requestedSeed : undefined);
   function validCard(c) { return c && Number.isInteger(c.s) && c.s >= 0 && c.s < 4 && Number.isInteger(c.r) && c.r >= 1 && c.r <= 13 && typeof c.up === "boolean"; }
   function validSave(p) {
     if (!p || !Array.isArray(p.stock) || !Array.isArray(p.waste) || !Array.isArray(p.foundations) || p.foundations.length !== 4 || !Array.isArray(p.tableau) || p.tableau.length !== 7) return false;
@@ -1070,6 +1094,7 @@
     serialize: function () { return { stock: stock, waste: waste, foundations: foundations, tableau: tableau, moves: moves, seconds: seconds, started: started, seed: currentDealSeed, history: history.slice(-200) }; },
     validate: validSave,
     restore: function (p) { stock=p.stock; waste=p.waste; foundations=p.foundations; tableau=p.tableau; moves=p.moves; seconds=p.seconds; started=!!p.started; currentDealSeed=p.seed; history=Array.isArray(p.history)?p.history:[]; solved=false; sel=null; clearInterval(timer); renderTime(); document.getElementById("sol-deal").textContent=String(currentDealSeed); renderBest(); render(); if(started)timer=setInterval(function(){seconds++;renderTime();},1000); return true; },
+    onRestore: function () { if (!hasAnyMove()) describePosition(); },
     isActive: function () { return !solved && (started || moves > 0); }
   });
   new MutationObserver(function(){ if(resume) resume.changed(); }).observe(tableEl,{childList:true,subtree:true});

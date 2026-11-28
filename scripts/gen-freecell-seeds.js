@@ -11,6 +11,7 @@
 //   node scripts/gen-freecell-seeds.js --max=3000            # scan, report only
 //   node scripts/gen-freecell-seeds.js --max=3000 --write     # scan and update
 //   node scripts/gen-freecell-seeds.js --max=3000 --budget=400000 --write
+//   node scripts/gen-freecell-seeds.js --reduced --write     # prove 1/2-cell subsets
 //
 // Slow by design: solving is the whole point. ~1-2s/deal at the default budget.
 
@@ -29,6 +30,30 @@ const MIN = argVal('min', 1);
 const WRITE = args.includes('--write');
 
 const PAGE = path.join(__dirname, '..', 'play', 'freecell', 'index.html');
+
+if (args.includes('--reduced')) {
+  let html = fs.readFileSync(PAGE, 'utf8');
+  const seeds = JSON.parse(html.match(/\bCHECKED\s*=\s*(\[[^\]]*\])/)[1]);
+  const budget = argVal('budget', 12000);
+  const one = [], two = [];
+  for (const seed of seeds) {
+    const board = deal(seed);
+    if (solve(board, budget, 1).ok) {
+      one.push(seed);
+      two.push(seed);
+    } else if (solve(board, budget, 2).ok) {
+      two.push(seed);
+    }
+  }
+  console.log(`Verified ${one.length} one-cell deals and ${two.length} two-cell deals.`);
+  if (WRITE) {
+    if (!one.length || !two.length) throw new Error('The reduced pools must both contain verified deals.');
+    html = html.replace(/(\bCHECKED_ONE\s*=\s*)\[[^\]]*\]/, (_, prefix) => prefix + JSON.stringify(one));
+    html = html.replace(/(\bCHECKED_TWO\s*=\s*)\[[^\]]*\]/, (_, prefix) => prefix + JSON.stringify(two));
+    fs.writeFileSync(PAGE, html);
+  }
+  process.exit(0);
+}
 
 console.log(`scanning seeds ${MIN}..${MAX} (budget ${BUDGET.toLocaleString()} nodes/deal)`);
 const good = [];
@@ -69,7 +94,16 @@ if (!m) {
   process.exit(2);
 }
 const before = m[2].split(',').filter(s => s.trim()).length;
-const updated = html.replace(POOL_RE, `$1${good.join(',')}$3`);
+const kept = new Set(good);
+let updated = html.replace(POOL_RE, `$1${good.join(',')}$3`);
+for (const name of ['CHECKED_ONE', 'CHECKED_TWO']) {
+  const re = new RegExp(`(\\b${name}\\s*=\\s*)(\\[[^\\]]*\\])`);
+  const match = html.match(re);
+  if (!match) throw new Error(`Missing ${name} in ${PAGE}`);
+  const seeds = JSON.parse(match[2]).filter(seed => kept.has(seed));
+  if (!seeds.length) throw new Error(`The new four-cell pool would empty ${name}.`);
+  updated = updated.replace(re, (_, prefix) => prefix + JSON.stringify(seeds));
+}
 fs.writeFileSync(PAGE, updated);
 console.log(`\nplay/freecell/index.html updated: ${before} -> ${good.length} deals.`);
 console.log('Now run: node scripts/verify-freecell-deals.js');

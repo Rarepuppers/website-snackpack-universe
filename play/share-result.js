@@ -37,7 +37,7 @@
   // Carrying it in the URL is what closes the loop: without it the recipient of
   // "SnackPack Sudoku #20671" lands in free play and can't play the board being
   // compared, which makes the share pointless to send.
-  function pageUrl(daily) {
+  function pageUrl(daily, dailyParams) {
     // Prefer the canonical link so a share from ?daily=… or a dev host still
     // points at the real page.
     var base;
@@ -48,7 +48,12 @@
     } else base = location.origin + location.pathname;
 
     if (daily == null) return base;
-    return base + (base.indexOf("?") === -1 ? "?" : "&") + "daily=" + daily;
+    var url = new URL(base);
+    url.searchParams.set("daily", daily);
+    Object.entries(dailyParams || {}).forEach(function (entry) {
+      url.searchParams.set(entry[0], entry[1]);
+    });
+    return url.href;
   }
 
   function buildText(opts) {
@@ -59,7 +64,7 @@
     if (opts.headline) lines.push(opts.headline);
     if (opts.grid && opts.grid.length) lines.push("", opts.grid.join("\n"));
     if (opts.stats && opts.stats.length) lines.push("", opts.stats.join(" · "));
-    lines.push("", pageUrl(opts.puzzle));
+    lines.push("", pageUrl(opts.puzzle, opts.dailyParams));
     return lines.join("\n");
   }
 
@@ -209,7 +214,7 @@
     var xBtn = node.querySelector(".sp-share-x");
     xBtn.onclick = function () {
       // X strips the URL out of `text` into its own card, so pass it as `url`.
-      var shareUrl = pageUrl(opts.puzzle);
+      var shareUrl = pageUrl(opts.puzzle, opts.dailyParams);
       var body = text.replace("\n\n" + shareUrl, "");
       window.open(
         "https://twitter.com/intent/tweet?text=" +

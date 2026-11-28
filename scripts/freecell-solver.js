@@ -56,7 +56,7 @@ function autoplay(cas, free, found) {
       const p = cas[i], top = p[p.length - 1];
       if (top !== undefined && safe(top)) { found[S(top)] = R(top); p.pop(); moved = true; }
     }
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < free.length; i++) {
       const c = free[i];
       if (c !== null && safe(c)) { found[S(c)] = R(c); free[i] = null; moved = true; }
     }
@@ -110,9 +110,9 @@ function heuristic(cas, free, found) {
   return h;
 }
 
-function solve(cascades, nodeBudget) {
+function solve(cascades, nodeBudget, cellCount = 4) {
   const cas0 = cascades.map(p => p.slice());
-  const free0 = [null, null, null, null];
+  const free0 = Array(cellCount).fill(null);
   const found0 = [0, 0, 0, 0];
   autoplay(cas0, free0, found0);
 
@@ -143,7 +143,7 @@ function solve(cascades, nodeBudget) {
       const p = cas[i], top = p[p.length - 1];
       if (top !== undefined && found[S(top)] === R(top) - 1) moves.push({ k: 'cf', i, score: 100 });
     }
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < free.length; i++) {
       const c = free[i];
       if (c !== null && found[S(c)] === R(c) - 1) moves.push({ k: 'ff', i, score: 100 });
     }
@@ -171,7 +171,7 @@ function solve(cascades, nodeBudget) {
       }
     }
     // free -> cascade
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < free.length; i++) {
       const c = free[i];
       if (c === null) continue;
       for (let j = 0; j < 8; j++) {

@@ -1,6 +1,6 @@
 # Arcade + classroom plan (plan of record)
 
-Started 21 November 2026, rewritten 26 November 2026, updated 28 November 2026. This is the live plan for
+Started 21 November 2026, rewritten 26 November 2026, updated 29 November 2026. This is the live plan for
 `/play/`, the classroom audience and the site's event counts. It replaces
 `ARCADE-NEXT-PLAN-2026-10-20.md`, `ARCADE-AUDIT-2026-10-17.md` and
 `ARCADE-QUALITY-PLAN-2026-09.md` (all now in `docs/archive/`); their open items are carried
@@ -28,6 +28,12 @@ rules.
 - The [Thirteen reminder](https://github.com/Rarepuppers/website-snackpack-universe/commit/4635cc4f5d176b936a328c73efc26539b92ed66b) appears once per browser after three completed solo games. A click opens Google Play under `thirteen-reminder`, alongside the existing `thirteen` badge and `thirteen-qr` campaigns.
 - The rules guide now uses “How to Play the 13 Card Game (Tiến Lên Rules)”. Its Search Console baseline for 29 October–25 November was 3 clicks from 1,364 impressions. [Title and breadcrumb](https://github.com/Rarepuppers/website-snackpack-universe/commit/767c8193af483ae6ec7fbbf8643107b161650e18)
 - For future small visual changes, check the affected board and live page. Reuse matching CI results and add broader checks only for shared behavior or a specific regression risk.
+
+### 29 November deal verification
+
+- Replayed Klondike deal 2167 to a win in Draw 1 and Draw 3 through the browser. Restart deal resets the current board, and the game checks the accessible stock cards before suggesting a restart.
+- FreeCell serves verified starting deals for four, two and one free cell. The reduced pools contain 1,047 two-cell and 182 one-cell deals. Four-cell Daily keeps its existing schedule. Older saves can still be resumed.
+- Regenerate the reduced pools with `node scripts/gen-freecell-seeds.js --reduced --write`. Check the changed pools with `node scripts/verify-freecell-deals.js --reduced-only`.
 
 Data sources and how to read them:
 - **GoatCounter** (anonymous event counts): `node scripts/read-site-events.mjs --from YYYY-MM-DD [--to …]`.
