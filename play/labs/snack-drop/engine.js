@@ -28,6 +28,23 @@
     restitution: 0.08
   };
 
+  // Containers (PLAN section 4a). Each changes only a few numbers from the
+  // Pantry Box, which is the prototype's crate exactly. Collision walls follow
+  // the Codex brief's section 4.2, so authored models line up with them.
+  //   floor, wall: friction of the floor and the side walls
+  //   grip: snack friction in this container (default BALANCE.friction; boxes 0.1 less)
+  //   lightBounce: restitution for Crumb, Cracker and Cookie (others keep BALANCE.restitution)
+  // Wall friction alone barely shows, because most snacks rest on other snacks,
+  // so the Ice Cooler and Market Crate change the snacks' grip too.
+  //   fillet: radius of rounded inside bottom corners
+  var CONTAINERS = {
+    pantry:    { id: "pantry",    name: "Pantry Box",   free: true,  line: 8.2, floor: 0.6,  wall: 0.3,  blurb: "Balanced and forgiving" },
+    toybox:    { id: "toybox",    name: "Toy Box",      free: true,  line: 8.2, floor: 0.6,  wall: 0.3,  lightBounce: 0.3, fillet: 0.6, blurb: "Rounded corners, bouncy little snacks" },
+    icecooler: { id: "icecooler", name: "Ice Cooler",   free: false, line: 8.2, floor: 0.03, wall: 0.03, grip: 0.08, blurb: "Snacks slide into tight gaps" },
+    market:    { id: "market",    name: "Market Crate", free: false, line: 8.2, floor: 0.8,  wall: 0.95, grip: 1.0,  blurb: "Rough slats: snacks stay where they land" }
+  };
+  var CONTAINER_ORDER = ["pantry", "toybox", "icecooler", "market"];
+
   // The snack ladder. Two of the same merge into the next one. Shapes matter:
   // round snacks roll into gaps, square ones stack, the wedge tips over.
   var TIERS = [
@@ -88,20 +105,34 @@
   }
 
   // ════ Game ════════════════════════════════════════════════════════
-  // opts = { seed: number, mode: "classic" | "daily", restore: snapshot }
+  // opts = { seed: number, mode: "classic" | "daily", container: id, restore: snapshot }
   function createGame(opts) {
     opts = opts || {};
+    var box = CONTAINERS[opts.container] || CONTAINERS.pantry;
     var rand = rng(opts.seed == null ? 1 : opts.seed);
     var world = new planck.World({ gravity: { x: 0, y: -BALANCE.gravity }, allowSleep: true });
     var crate = world.createBody();
     var H = CRATE.half, Wl = CRATE.wall;
-    crate.createFixture({ shape: new planck.Box(H + Wl, Wl, { x: 0, y: -Wl }, 0), friction: 0.6 });
-    crate.createFixture({ shape: new planck.Box(Wl, CRATE.height / 2 + Wl, { x: -H - Wl, y: CRATE.height / 2 }, 0), friction: 0.3 });
-    crate.createFixture({ shape: new planck.Box(Wl, CRATE.height / 2 + Wl, { x: H + Wl, y: CRATE.height / 2 }, 0), friction: 0.3 });
+    crate.createFixture({ shape: new planck.Box(H + Wl, Wl, { x: 0, y: -Wl }, 0), friction: box.floor });
+    crate.createFixture({ shape: new planck.Box(Wl, CRATE.height / 2 + Wl, { x: -H - Wl, y: CRATE.height / 2 }, 0), friction: box.wall });
+    crate.createFixture({ shape: new planck.Box(Wl, CRATE.height / 2 + Wl, { x: H + Wl, y: CRATE.height / 2 }, 0), friction: box.wall });
+    if (box.fillet) {
+      // Quarter-round fillets in the bottom corners, as short straight edges.
+      var R = box.fillet;
+      [-1, 1].forEach(function (side) {
+        var pts = [];
+        for (var i = 0; i <= 8; i++) {
+          var a = (i / 8) * Math.PI / 2;
+          pts.push({ x: side * (H - R + R * Math.sin(a)), y: R - R * Math.cos(a) });
+        }
+        if (side < 0) pts.reverse();
+        crate.createFixture({ shape: new planck.Chain(pts, false), friction: box.wall });
+      });
+    }
     crate.setUserData({ crate: true });
 
     var g = {
-      mode: opts.mode || "classic", seed: opts.seed, world: world,
+      mode: opts.mode || "classic", seed: opts.seed, world: world, container: box.id, line: box.line,
       snacks: [], nextId: 1, time: 0, status: "playing",
       score: 0, drops: 0, merges: 0, best: 0, made: TIERS.map(function () { return 0; }),
       current: pick(rand), next: pick(rand), aim: 0, wait: 0,
@@ -115,7 +146,7 @@
       var shape = t.shape === "circle" ? new planck.Circle(t.r)
         : t.shape === "box" ? new planck.Box(t.w / 2, t.h / 2)
         : new planck.Polygon(t.points);
-      var fixture = body.createFixture({ shape: shape, density: 1, friction: t.shape === "box" ? BALANCE.friction - 0.1 : BALANCE.friction, restitution: BALANCE.restitution });
+      var fixture = body.createFixture({ shape: shape, density: 1, friction: (box.grip != null ? box.grip : BALANCE.friction) - (t.shape === "box" ? Math.min(0.1, (box.grip != null ? box.grip : BALANCE.friction) / 3) : 0), restitution: box.lightBounce != null && tier <= 2 ? box.lightBounce : BALANCE.restitution });
       if (vel) body.setLinearVelocity(vel);
       var s = { id: g.nextId++, tier: tier, body: body, fixture: fixture, born: g.time, landed: false, over: 0, alive: true };
       body.setUserData(s);
@@ -205,7 +236,7 @@
         var s = g.snacks[i];
         if (!s.landed && g.time - s.born > BALANCE.landGrace) s.landed = true;
         if (!s.landed) continue;
-        if (topOf(s) > CRATE.line) s.over += STEP; else s.over = 0;
+        if (topOf(s) > box.line) s.over += STEP; else s.over = 0;
         if (s.over > worst) worst = s.over;
       }
       g.danger = Math.min(1, worst / BALANCE.overLimit);
@@ -221,7 +252,7 @@
     // bit-for-bit continuation, which only the drop-log replay is).
     function snapshot() {
       return {
-        rules: RULES_VERSION, seed: g.seed, mode: g.mode, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
+        rules: RULES_VERSION, seed: g.seed, mode: g.mode, container: box.id, rand: rand.get(), time: g.time, score: g.score, drops: g.drops,
         merges: g.merges, best: g.best, made: g.made.slice(), current: g.current, next: g.next, aim: g.aim, wait: g.wait,
         chain: g.chain, lastMerge: g.lastMerge, nextId: g.nextId,
         snacks: g.snacks.map(function (s) {
@@ -275,7 +306,7 @@
   }
 
   return {
-    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
+    STEP: STEP, RULES_VERSION: RULES_VERSION, CRATE: CRATE, CONTAINERS: CONTAINERS, CONTAINER_ORDER: CONTAINER_ORDER, BALANCE: BALANCE, TIERS: TIERS, TOP: TOP, SCORE: SCORE, HAMPER_BONUS: HAMPER_BONUS,
     DROP_TIERS: DROP_TIERS, createGame: createGame, botAim: botAim, hash: hash, rng: rng
   };
 });
